@@ -168,7 +168,7 @@ One phase at a time, each phase independent: Phase 1 -> Phase 2 -> Phase 3 -> Ph
 |-----------|-------|
 | **Agent** | `business-analyst` |
 | **Goal** | Convert raw intelligence into structured, testable business artifacts |
-| **Skill** | Load `skills/business-analyst/SKILL.md` |
+| **Skill** | Load `skills_library/business-analyst/SKILL.md` |
 
 
 ## Structured Business Pack

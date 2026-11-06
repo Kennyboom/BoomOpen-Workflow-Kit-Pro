@@ -103,7 +103,7 @@ Cross-folder: Same finding = same ID + same severity. `audit-recommendations/` M
 |-----------|-------|
 | **Agent** | `security-engineer` |
 | **Goal** | Validate framework mappings, finalize scoring |
-| **Skill** | Load `skills/docs-audit/references/framework-mapping.md` + `scoring-framework.md` |
+| **Skill** | Load `skills_library/docs-audit/references/framework-mapping.md` + `scoring-framework.md` |
 
 ---
 
