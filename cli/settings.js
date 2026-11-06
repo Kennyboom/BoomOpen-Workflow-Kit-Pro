@@ -2,8 +2,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const SETTINGS_MARKER_START = '<!-- BOOMOPEN-SETTINGS-START -->';
-const SETTINGS_MARKER_END = '<!-- BOOMOPEN-SETTINGS-END -->';
+const { SETTINGS_MARKER_START, SETTINGS_MARKER_END, isKitOwnedText } = require('./markers.js');
 
 const CODING_STANDARDS_PRESETS = {
   pragmatic: { softFileLines: 400, hardFileLines: 500, forbidExplicitAny: true, warnConsoleLog: true },
@@ -227,6 +226,9 @@ function syncSettingsToInstalledPlatforms(settings, options = {}) {
     for (const filePath of fileList) {
       if (fs.existsSync(filePath)) {
         const current = fs.readFileSync(filePath, 'utf8');
+        // Only kit-installed files get the settings block; a user's own CLAUDE.md/AGENTS.md/...
+        // for a tool where the kit is not installed is never modified.
+        if (!isKitOwnedText(current)) continue;
         const updated = injectSettingsBlockIntoText(current, active);
         if (updated !== current) fs.writeFileSync(filePath, updated, 'utf8');
         updatedFiles.push(filePath);

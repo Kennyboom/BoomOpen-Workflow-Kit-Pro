@@ -535,15 +535,19 @@ test('renderActiveSettingsMarkdown and syncSettingsToInstalledPlatforms hot-sync
       fs.mkdirSync(path.dirname(file), { recursive: true });
       fs.writeFileSync(
         file,
-        `# Entrypoint\n\n${renderActiveSettingsMarkdown(DEFAULT_SETTINGS)}\n\n## Rules\n`,
+        `# ENTRY.md — BoomOpen Workflow Kit Orchestrator Instructions\n\n${renderActiveSettingsMarkdown(DEFAULT_SETTINGS)}\n\n## Rules\n`,
         'utf8'
       );
     }
+    // A user's own file (no kit signature) for a tool where the kit is not installed
+    const userOwned = path.join(tmpHome, '.codex', 'AGENTS.md');
+    fs.writeFileSync(userOwned, '# My own Codex rules\n', 'utf8');
 
     const report = syncSettingsToInstalledPlatforms(PRESETS['adversarial-team'], {
       homeDir: tmpHome,
     });
     assert.equal(report.updatedFiles.length, 5);
+    assert.equal(fs.readFileSync(userOwned, 'utf8'), '# My own Codex rules\n', 'user-owned files are never touched');
     assert.deepEqual(report.platforms, {
       antigravity: true,
       claude: true,

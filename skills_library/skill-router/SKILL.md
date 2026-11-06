@@ -211,7 +211,7 @@ Agent: ✅ Primary Skill: @brainstorming
 - UI: `@frontend-design`
 - Data viz: `@claude-d3js-skill`
 - Generative art: `@algorithmic-art`
-- Presentations: `@pptx-official`
+- Presentations: `@frontend-slides`
 
 ### Fully autonomous / parallel execution
 - Full startup mode: `@loki-mode`
@@ -219,10 +219,10 @@ Agent: ✅ Primary Skill: @brainstorming
 - Plan then execute: `@subagent-driven-development`
 
 ### Document creation
-- Word doc: `@docx-official`
-- PDF: `@pdf-official`
-- Spreadsheet: `@xlsx-official`
-- Presentation: `@pptx-official`
+- Word doc: `@libreoffice` (Writer, DOCX export)
+- PDF: `@libreoffice` (PDF export)
+- Spreadsheet: `@libreoffice` (Calc) or `@google-sheets-automation`
+- Presentation: `@frontend-slides`
 
 ---
 

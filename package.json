@@ -24,8 +24,8 @@
     "settings:ui": "node cli/install.js settings --ui",
     "doctor": "node cli/install.js doctor",
     "check": "node cli/install.js check",
-    "test": "node --test cli/install.test.js",
-    "lint": "node --check cli/install.js && node --check cli/doctor.js && node --check cli/checker.js && node --check cli/settings.js && node --check cli/settings-ui.js && echo '✅ JavaScript syntax valid'",
+    "test": "node --test cli/install.test.js cli/user-files.test.js",
+    "lint": "node --check cli/install.js && node --check cli/doctor.js && node --check cli/checker.js && node --check cli/settings.js && node --check cli/settings-ui.js && node --check cli/user-files.js && node --check cli/markers.js && echo '✅ JavaScript syntax valid'",
     "lint:md": "echo 'Run: npx markdownlint \"**/*.md\" --ignore node_modules' to lint Markdown",
     "semantic-release": "semantic-release",
     "prepare": "husky install || true"

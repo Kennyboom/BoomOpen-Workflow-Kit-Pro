@@ -105,10 +105,17 @@ GIT-BASED CI/CD:
 ```
 ⚠️ DANGEROUS — Backup current state FIRST!
 
-A) Revert latest migration
-   → prisma migrate reset (careful!)
-   → npm run migrate:rollback
+A) Revert latest migration (use the project's own down-migration command)
+   → Knex: npx knex migrate:down   (migrate:rollback reverts the whole last BATCH)
+   → Sequelize: npx sequelize-cli db:migrate:undo
+   → TypeORM: npx typeorm migration:revert -d <path/to/data-source>  (ts: typeorm-ts-node-commonjs)
+   → Rails: bin/rails db:rollback
+   → Prisma (no built-in down): generate the down SQL with
+     prisma migrate diff --from-schema-datasource <schema> --to-schema-datamodel <previous-schema> --script,
+     apply it as a NEW migration, then prisma migrate deploy
    → Reverts ONLY the most recent migration
+   ⛔ NEVER run `prisma migrate reset` / `db:reset` / `db:drop` against
+      production — they DROP the whole database and all data.
 
 B) Restore from backup
    → pg_restore -d [db_name] [backup_file]

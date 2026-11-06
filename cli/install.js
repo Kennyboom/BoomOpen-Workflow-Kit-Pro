@@ -40,8 +40,25 @@ const {
     injectSettingsBlockIntoText,
     syncSettingsToInstalledPlatforms,
     runSettingsCommand,
+    SETTINGS_MARKER_START,
+    SETTINGS_MARKER_END,
 } = require('./settings.js');
 const { startSettingsUiServer } = require('./settings-ui.js');
+const {
+    BACKUP_SUFFIX,
+    GEMINI_MARKER_START,
+    GEMINI_MARKER_END,
+    CODEX_MARKER_START,
+    CODEX_MARKER_END,
+    CODEX_DOC_FALLBACK,
+    stripMarkedBlock,
+    backupUserFile,
+    restoreOrRemoveUserFile,
+    removeIfKitOwned,
+    removeMirroredFiles,
+    removeMarkedBlockFromFile,
+    stripCodexManagedConfig,
+} = require('./user-files.js');
 
 // ============================================================================
 // Configuration
@@ -198,30 +215,6 @@ const CORE_DIRS = ['agents', 'rules', 'documents', 'commands', 'matrix-skills', 
 // Root files to copy
 const ROOT_FILES = ['README.md', 'SKILL.md'];
 
-// List of bundled agent names (for cleanup - only remove our agents, keep user-custom)
-const BUNDLED_AGENTS = [
-    'backend-engineer.md',
-    'brainstormer.md',
-    'business-analyst.md',
-    'database-architect.md',
-    'debugger.md',
-    'designer.md',
-    'devops-engineer.md',
-    'docs-manager.md',
-    'frontend-engineer.md',
-    'game-engineer.md',
-    'mobile-engineer.md',
-    'performance-engineer.md',
-    'planner.md',
-    'project-manager.md',
-    'reporter.md',
-    'researcher.md',
-    'reviewer.md',
-    'scouter.md',
-    'security-engineer.md',
-    'tech-lead.md',
-    'tester.md',
-];
 
 // ============================================================================
 // Utility Functions
@@ -471,6 +464,58 @@ function copyFileWithReplace(src, dest, replacements = {}, trackProgress = true)
     }
 }
 
+/**
+ * Copy a kit instruction file into a user-shared location (e.g. ~/.claude/CLAUDE.md),
+ * keeping a backup of any user-authored file it replaces.
+ */
+function installUserFacingFile(src, dest, replacements = {}) {
+    if (!fs.existsSync(src)) return false;
+    try {
+        const backupPath = backupUserFile(dest);
+        if (backupPath) {
+            console.log(`\n  💾 Backed up your existing ${path.basename(dest)} → ${backupPath}`);
+        }
+    } catch (e) {
+        logError('backup', dest, e);
+        console.warn(`\n  ⚠️ Could not back up ${dest} (${e.message}); leaving it untouched.`);
+        return false;
+    }
+    return copyFileWithReplace(src, dest, replacements);
+}
+
+/** Record paths removed by user-files helpers so the uninstall summary counts them. */
+function trackRemoved(paths) {
+    for (const removedPath of paths) {
+        progressState.removedPaths.push(removedPath);
+        updateProgress(`Removed ${path.basename(removedPath)}`);
+    }
+    return paths.length;
+}
+
+/** Uninstall a kit file from a user-shared location and restore the user's backup. */
+function uninstallUserFacingFile(filePath) {
+    try {
+        const outcome = restoreOrRemoveUserFile(filePath);
+        if (outcome.removed) trackRemoved([filePath]);
+        if (outcome.restored) console.log(`  ♻️  Restored your original ${filePath}`);
+        if (outcome.kept) console.log(`  ℹ️  Kept ${filePath} (modified by you after install)`);
+        return outcome.removed || outcome.restored;
+    } catch (e) {
+        logError('remove', filePath, e);
+        return false;
+    }
+}
+
+/** Remove only the files the kit copied from srcDir into a shared destDir. */
+function uninstallMirrored(srcDir, destDir) {
+    try {
+        return trackRemoved(removeMirroredFiles(srcDir, destDir));
+    } catch (e) {
+        logError('remove', destDir, e);
+        return 0;
+    }
+}
+
 function removeDir(dir, trackProgress = true) {
     if (fs.existsSync(dir)) {
         try {
@@ -509,7 +554,9 @@ function removeFile(filePath, trackProgress = true) {
 }
 
 /**
- * Remove all subdirectories within a directory but keep files (For Gemini workflow flattening)
+ * Remove all subdirectories within a directory but keep files.
+ * @deprecated No longer called by the installer: it also deleted user-created subfolders in
+ * shared workflow directories. Kept only for backward compatibility of the module exports.
  */
 function removeSubdirectories(dir, trackProgress = true) {
     if (!fs.existsSync(dir)) return 0;
@@ -690,17 +737,15 @@ function installCursor() {
     // .cursorrules from extension becomes CURSOR.md
     if (tool.assets.cursorRules && fs.existsSync(tool.assets.cursorRules)) {
         const destFile = path.join(tool.paths.editorHome, 'CURSOR.md');
-        if (copyFileWithReplace(tool.assets.cursorRules, destFile, tool.replacements)) total++;
+        if (installUserFacingFile(tool.assets.cursorRules, destFile, tool.replacements)) total++;
     }
 
-    // AGENT.md, CLAUDE.md
+    // AGENT.md, CLAUDE.md (user-authored copies are backed up first)
     const globalFiles = ['AGENT.md', 'CLAUDE.md'];
     for (const file of globalFiles) {
         const src = path.join(ROOT, file);
         const dest = path.join(tool.paths.editorHome, file);
-        if (fs.existsSync(src)) {
-            if (copyFileWithReplace(src, dest, tool.replacements)) total++;
-        }
+        if (installUserFacingFile(src, dest, tool.replacements)) total++;
     }
 
     // --- 2. INSTALL EXTENSION BRAIN (~/.cursor/skills/boomopen-workflow-kit) ---
@@ -792,11 +837,7 @@ function installCopilot() {
     for (const file of globalFiles) {
         const src = path.join(ROOT, file);
         const dest = path.join(tool.paths.home, file);
-        if (fs.existsSync(src)) {
-            if (copyFileWithReplace(src, dest, tool.replacements)) {
-                total++;
-            }
-        }
+        if (installUserFacingFile(src, dest, tool.replacements)) total++;
     }
 
     // --- 2. INSTALL CORE FRAMEWORK (~/.copilot/skills/boomopen-workflow-kit) ---
@@ -883,7 +924,6 @@ function installAntigravity() {
     // 1.1 Workflows (from commands) -> ~/.antigravity/workflows
     ensureDir(tool.paths.workflows);
     total += copyWithReplace(path.join(ROOT, 'commands'), tool.paths.workflows, tool.replacements);
-    removeSubdirectories(tool.paths.workflows, true); // 🔴 Bóc tách: Filter out non-root subdirectories to prevent command jam
 
     // 1.2 Agents -> ~/.antigravity/agents
     ensureDir(tool.paths.agents);
@@ -896,9 +936,9 @@ function installAntigravity() {
     // 2.1 GEMINI.md
     if (tool.assets.geminiMd && fs.existsSync(tool.assets.geminiMd)) {
         const destFile = path.join(tool.paths.gemini, 'GEMINI.md');
-        // Simple overwrite or append logic here, simpler than surgical for now to match extension
-        const MARKER_START = '<!-- boomopen-workflow-kit-START -->';
-        const MARKER_END = '<!-- boomopen-workflow-kit-END -->';
+        // Marker-merge: user content outside the markers is preserved
+        const MARKER_START = GEMINI_MARKER_START;
+        const MARKER_END = GEMINI_MARKER_END;
 
         let bundledContent = fs.readFileSync(tool.assets.geminiMd, 'utf8');
         const keys = Object.keys(tool.replacements).sort((a, b) => b.length - a.length);
@@ -931,15 +971,25 @@ function installAntigravity() {
         total++;
     }
 
-    // 2.2 Remove legacy AGENT.md and CLAUDE.md in ~/.gemini/ to prevent duplicate global rule discovery in Antigravity 2.0
+    // 2.2 Remove legacy kit copies of AGENT.md / CLAUDE.md in ~/.gemini/ (duplicate global rule
+    // discovery in Antigravity 2.0). Files the user wrote themselves are never touched.
     const legacyGlobalFiles = ['AGENT.md', 'CLAUDE.md'];
     for (const file of legacyGlobalFiles) {
-        removeFile(path.join(tool.paths.gemini, file), false);
+        try {
+            removeIfKitOwned(path.join(tool.paths.gemini, file));
+        } catch (e) {
+            logError('remove', path.join(tool.paths.gemini, file), e);
+        }
     }
 
-    // Remove legacy agent-assistant skill folder and legacy global_workflows folder if they exist
+    // Remove the legacy agent-assistant skill folder (the kit's former name) and only the kit's own
+    // files from the legacy global_workflows folder (user workflows there are kept).
     removeDir(path.join(HOME, '.gemini', 'config', 'skills', 'agent-assistant'), false);
-    removeDir(path.join(HOME, '.gemini', 'antigravity', 'global_workflows'), false);
+    try {
+        removeMirroredFiles(path.join(ROOT, 'commands'), path.join(HOME, '.gemini', 'antigravity', 'global_workflows'));
+    } catch (e) {
+        logError('remove', path.join(HOME, '.gemini', 'antigravity', 'global_workflows'), e);
+    }
 
     // 2.3 Global Agents (~/.gemini/agents)
     ensureDir(tool.paths.globalAgents);
@@ -958,7 +1008,6 @@ function installAntigravity() {
     // 3.1 Global Workflows (~/.gemini/config/global_workflows)
     ensureDir(tool.paths.globalWorkflows);
     total += copyWithReplace(path.join(ROOT, 'commands'), tool.paths.globalWorkflows, tool.replacements);
-    removeSubdirectories(tool.paths.globalWorkflows, true); // 🔴 Bóc tách subdirectories
     // 3.2 Core Framework (~/.gemini/config/skills/boomopen-workflow-kit)
     if (fs.existsSync(tool.paths.frameworkPath)) {
         fs.rmSync(tool.paths.frameworkPath, { recursive: true, force: true });
@@ -976,7 +1025,6 @@ function installAntigravity() {
     const commandsSrc = path.join(ROOT, 'commands');
     if (fs.existsSync(commandsSrc)) {
         total += copyWithReplace(commandsSrc, path.join(tool.paths.frameworkPath, 'workflows'), tool.replacements);
-        removeSubdirectories(path.join(tool.paths.frameworkPath, 'workflows'), true); // 🔴 Bóc tách
     }
 
     for (const file of ROOT_FILES) {
@@ -1028,15 +1076,12 @@ function installClaude() {
     // 1.1 Global Config Files (CLAUDE.md, AGENT.md)
     if (tool.assets.claudeMd && fs.existsSync(tool.assets.claudeMd)) {
         const destFile = path.join(tool.paths.home, 'CLAUDE.md');
-        if (copyFileWithReplace(tool.assets.claudeMd, destFile, tool.replacements)) total++;
+        if (installUserFacingFile(tool.assets.claudeMd, destFile, tool.replacements)) total++;
     }
-    
+
     // Copy AGENT.md as well
     const agentMdSrc = path.join(ROOT, 'AGENT.md');
-    if (fs.existsSync(agentMdSrc)) {
-        const agentMdDest = path.join(tool.paths.home, 'AGENT.md');
-        if (copyFileWithReplace(agentMdSrc, agentMdDest, tool.replacements)) total++;
-    }
+    if (installUserFacingFile(agentMdSrc, path.join(tool.paths.home, 'AGENT.md'), tool.replacements)) total++;
 
     // 1.2 Commands (~/.claude/commands)
     ensureDir(tool.paths.commands);
@@ -1104,23 +1149,29 @@ function mergeCodexConfig(templatePath, userConfigPath) {
     // Read existing user config or empty string
     let userConfig = '';
     if (fs.existsSync(userConfigPath)) {
+        // Keep the pristine pre-install config so uninstall can restore the user's own values
+        try {
+            const backupPath = backupUserFile(userConfigPath, {
+                isKitOwned: (text) => text.includes(CODEX_MARKER_START),
+            });
+            if (backupPath) console.log(`   💾 Backed up your existing config.toml → ${backupPath}`);
+        } catch (e) {
+            logError('backup', userConfigPath, e);
+            console.warn(`   ⚠️ Could not back up ${userConfigPath} (${e.message}); leaving it untouched.`);
+            return false;
+        }
         userConfig = fs.readFileSync(userConfigPath, 'utf8');
     }
 
     // Our marker: lines between start and end markers
-    const markerStart = '# === boomopen-workflow-kit START ===';
-    const markerEnd = '# === boomopen-workflow-kit END ===';
+    const markerStart = CODEX_MARKER_START;
+    const markerEnd = CODEX_MARKER_END;
 
     // Remove old boomopen-workflow-kit sections from user config
-    const startIdx = userConfig.indexOf(markerStart);
-    const endIdx = userConfig.indexOf(markerEnd);
-    if (startIdx !== -1 && endIdx !== -1) {
-        userConfig = userConfig.substring(0, startIdx).trimEnd() + '\n' +
-                    userConfig.substring(endIdx + markerEnd.length).trimStart();
-    }
+    userConfig = stripMarkedBlock(userConfig, markerStart, markerEnd).text;
 
     // Update or add project_doc_fallback_filenames in user config
-    const docFallback = 'project_doc_fallback_filenames = ["AGENT.md", "CODEX.md", "AGENTS.md", ".agents.md"]';
+    const docFallback = CODEX_DOC_FALLBACK;
     if (userConfig.includes('project_doc_fallback_filenames')) {
         userConfig = userConfig.replace(/project_doc_fallback_filenames\s*=\s*\[.*?\]/s, docFallback);
     } else {
@@ -1181,19 +1232,16 @@ function installCodex() {
     // 1.1 Global Config Files (AGENTS.md, CODEX.md, AGENT.md)
     if (tool.assets.codexMd && fs.existsSync(tool.assets.codexMd)) {
         const destFile = path.join(tool.paths.home, 'CODEX.md');
-        if (copyFileWithReplace(tool.assets.codexMd, destFile, tool.replacements)) total++;
+        if (installUserFacingFile(tool.assets.codexMd, destFile, tool.replacements)) total++;
 
         // Codex discovers global instructions from ~/.codex/AGENTS.md.
         const agentsDestFile = path.join(tool.paths.home, 'AGENTS.md');
-        if (copyFileWithReplace(tool.assets.codexMd, agentsDestFile, tool.replacements)) total++;
+        if (installUserFacingFile(tool.assets.codexMd, agentsDestFile, tool.replacements)) total++;
     }
-    
+
     // Copy AGENT.md as well
     const agentMdSrc = path.join(ROOT, 'AGENT.md');
-    if (fs.existsSync(agentMdSrc)) {
-        const agentMdDest = path.join(tool.paths.home, 'AGENT.md');
-        if (copyFileWithReplace(agentMdSrc, agentMdDest, tool.replacements)) total++;
-    }
+    if (installUserFacingFile(agentMdSrc, path.join(tool.paths.home, 'AGENT.md'), tool.replacements)) total++;
 
     // 1.2 Codex-native TOML agent configs (~/.codex/agents/)
     ensureDir(tool.paths.agents);
@@ -1280,297 +1328,187 @@ function installCodex() {
 // Uninstall Functions
 // ============================================================================
 
-function removeBundledAgents(agentsDir) {
-    if (!fs.existsSync(agentsDir)) return 0;
+/**
+ * Shared uninstall prologue: reset progress and print the banner.
+ */
+function beginUninstall(tool, estimatedOps) {
+    resetProgress();
+    progressState.total = estimatedOps;
+    console.log(`\n🗑️  Uninstalling BoomOpen Workflow Kit from ${tool.name}...`);
+    console.log(`   Only files shipped by the kit are removed; your own files are kept.\n`);
+}
 
-    let removed = 0;
-    for (const agentFile of BUNDLED_AGENTS) {
-        const agentPath = path.join(agentsDir, agentFile);
-        if (fs.existsSync(agentPath)) {
-            if (removeFile(agentPath)) {
-                removed++;
-            }
-        }
-    }
-
-    // Cleanup: Remove agents folder if empty
-    try {
-        const remaining = fs.readdirSync(agentsDir);
-        if (remaining.length === 0) {
-            removeDir(agentsDir, false);
-        }
-    } catch (e) {
-        // Ignore
-    }
-
+/**
+ * Shared uninstall epilogue: summary + preserved-skills note.
+ */
+function finishUninstall(tool, removed) {
+    completeProgress();
+    printSummary(tool.name, 'uninstall');
+    console.log(`\n   ℹ️  User skills preserved at: ${tool.paths.skills}`);
     return removed;
 }
 
 function uninstallCursor() {
     const tool = TOOLS.cursor;
-    
-    // Reset progress - estimate items to remove
-    resetProgress();
-    progressState.total = 10; // Approximate count of remove operations
-    
-    console.log(`\n🗑️  Uninstalling BoomOpen Workflow Kit from ${tool.name}...`);
-    console.log(`   This will remove the framework while preserving user skills.\n`);
-
+    beginUninstall(tool, 10);
     let removed = 0;
 
-    // 1. Remove Rules & Global Configs
-    const filesToRemove = [
-        path.join(tool.paths.rules, 'boomopen-workflow-kit.mdc'),
-        path.join(tool.paths.editorHome, 'CURSOR.md'),
-        path.join(tool.paths.editorHome, 'AGENT.md'),
-        path.join(tool.paths.editorHome, 'CLAUDE.md')
-    ];
-
-    for (const file of filesToRemove) {
-        if (removeFile(file)) {
-            removed++;
-        }
+    // 1. Kit rules + global instruction files (user originals are restored from backup)
+    removed += uninstallMirrored(tool.assets.rules, tool.paths.rules);
+    for (const file of ['CURSOR.md', 'AGENT.md', 'CLAUDE.md']) {
+        if (uninstallUserFacingFile(path.join(tool.paths.editorHome, file))) removed++;
     }
 
-    // 2. Remove Commands (Entire folder)
-    if (removeDir(tool.paths.commands)) {
-        removed++;
-    }
+    // 2. Commands and native agents: only the files the kit copied
+    removed += uninstallMirrored(path.join(ROOT, 'commands'), tool.paths.commands);
+    removed += uninstallMirrored(path.join(ROOT, 'agents'), tool.paths.agents);
 
-    // 3. Remove Core Framework
-    if (removeDir(tool.paths.frameworkPath)) {
-        removed++;
-    }
+    // 3. Core framework (kit-owned folder)
+    if (removeDir(tool.paths.frameworkPath)) removed++;
 
-    // 4. Remove Native Agents (Entire folder)
-    if (removeDir(tool.paths.agents)) {
-        removed++;
-    }
-
-    // Complete progress bar
-    completeProgress();
-    
-    // Print summary
-    printSummary(tool.name, 'uninstall');
-    
-    console.log(`\n   ℹ️  User skills preserved at: ${tool.paths.skills}`);
-
-    return removed;
+    return finishUninstall(tool, removed);
 }
 
 function uninstallCopilot() {
     const tool = TOOLS.copilot;
-    
-    // Reset progress
-    resetProgress();
-    progressState.total = 10;
-    
-    console.log(`\n🗑️  Uninstalling BoomOpen Workflow Kit from ${tool.name}...`);
-    console.log(`   This will remove the framework while preserving user skills.\n`);
-
+    beginUninstall(tool, 10);
     let removed = 0;
 
-    // 1. Remove from VS Code Prompts
-    const promptFile = path.join(tool.paths.vsCodePrompts, 'boomopen-workflow-kit.agent.md');
-    if (removeFile(promptFile)) {
-        removed++;
+    // 1. Kit prompt file in VS Code prompts (kit-named)
+    if (removeFile(path.join(tool.paths.vsCodePrompts, 'boomopen-workflow-kit.agent.md'))) removed++;
+
+    // 2. Core framework (kit-owned folder)
+    if (removeDir(tool.paths.frameworkPath)) removed++;
+
+    // 3. Commands and native agents: only the files the kit copied
+    removed += uninstallMirrored(path.join(ROOT, 'commands'), tool.paths.commands);
+    removed += uninstallMirrored(path.join(ROOT, 'agents'), tool.paths.agents);
+
+    // 4. Global instruction files (user originals are restored from backup)
+    for (const file of ['AGENT.md', 'COPILOT.md', 'CLAUDE.md']) {
+        if (uninstallUserFacingFile(path.join(tool.paths.home, file))) removed++;
     }
 
-    // 2. Remove core framework
-    if (removeDir(tool.paths.frameworkPath)) {
-        removed++;
-    }
-
-    // 3. Remove commands
-    if (removeDir(tool.paths.commands)) {
-        removed++;
-    }
-
-    // 4. Remove Global Config Files
-    const globalFiles = ['AGENT.md', 'COPILOT.md', 'CLAUDE.md'];
-    for (const file of globalFiles) {
-        const filePath = path.join(tool.paths.home, file);
-        if (removeFile(filePath)) {
-            removed++;
-        }
-    }
-
-    // 5. Remove native agents (Entire folder)
-    if (removeDir(tool.paths.agents)) {
-        removed++;
-    }
-
-    // Complete progress bar
-    completeProgress();
-    
-    // Print summary
-    printSummary(tool.name, 'uninstall');
-    
-    console.log(`\n   ℹ️  User skills preserved at: ${tool.paths.skills}`);
-
-    return removed;
+    return finishUninstall(tool, removed);
 }
 
 function uninstallAntigravity() {
     const tool = TOOLS.antigravity;
-    
-    // Reset progress
-    resetProgress();
-    progressState.total = 12;
-    
-    console.log(`\n🗑️  Uninstalling BoomOpen Workflow Kit from ${tool.name}...`);
-    console.log(`   This will remove the framework while preserving user skills.\n`);
-
+    beginUninstall(tool, 12);
     let removed = 0;
+    const commandsSrc = path.join(ROOT, 'commands');
+    const agentsSrc = path.join(ROOT, 'agents');
 
-    // 1. Remove Editor Config (~/.antigravity)
-    // 1.1 Remove Workflows (~/.antigravity/workflows/)
-    if (removeDir(tool.paths.workflows)) {
-        removed++;
-    }
+    // 1. Editor config (~/.antigravity): only the kit's workflows and agents
+    removed += uninstallMirrored(commandsSrc, tool.paths.workflows);
+    removed += uninstallMirrored(agentsSrc, tool.paths.agents);
 
-    // 1.2 Remove Agents (~/.antigravity/agents/)
-    if (removeDir(tool.paths.agents)) {
-        removed++;
-    }
-
-
-    // 2. Remove Platform Config (~/.gemini)
-    // 2.1 Remove GEMINI.md, AGENT.md, CLAUDE.md
-    const globalFiles = ["GEMINI.md", "AGENT.md", "CLAUDE.md"];
-    for (const file of globalFiles) {
-        const filePath = path.join(tool.paths.gemini, file);
-        if (removeFile(filePath)) {
-            removed++;
+    // 2. ~/.gemini/GEMINI.md: strip only the kit's marked block, keep the user's own rules
+    const geminiMd = path.join(tool.paths.gemini, 'GEMINI.md');
+    try {
+        let status = removeMarkedBlockFromFile(geminiMd, GEMINI_MARKER_START, GEMINI_MARKER_END);
+        if (status === 'updated') {
+            // The settings block may have been injected outside the kit block; drop it too.
+            const settingsStatus = removeMarkedBlockFromFile(geminiMd, SETTINGS_MARKER_START, SETTINGS_MARKER_END);
+            if (settingsStatus === 'deleted') status = 'deleted';
         }
+        if (status === 'deleted') removed += trackRemoved([geminiMd]);
+        if (status === 'updated') {
+            removed++;
+            console.log(`  ✂️  Removed the kit block from ${geminiMd} (your content kept)`);
+        }
+    } catch (e) {
+        logError('remove', geminiMd, e);
     }
 
-    // 2.2 Remove Global Agents Folder (~/.gemini/agents/)
-    if (removeDir(tool.paths.globalAgents)) {
-        removed++;
+    // Legacy kit copies of AGENT.md / CLAUDE.md in ~/.gemini (user-authored ones are kept)
+    for (const file of ['AGENT.md', 'CLAUDE.md']) {
+        if (uninstallUserFacingFile(path.join(tool.paths.gemini, file))) removed++;
     }
 
-    // 3. Remove Extension Brain (~/.gemini/config)
-    // 3.1 Remove Global Workflows (~/.gemini/config/global_workflows)
-    if (removeDir(tool.paths.globalWorkflows)) {
-        removed++;
-    }
+    // 3. Global agents (~/.gemini/agents): kit agents + the kit's orchestrator agent file
+    if (removeFile(path.join(tool.paths.globalAgents, 'AntigravityGlobal.agent.md'))) removed++;
+    removed += uninstallMirrored(agentsSrc, tool.paths.globalAgents);
 
-    // 3.2 Remove Core Framework (~/.gemini/config/skills/boomopen-workflow-kit)
-    if (removeDir(tool.paths.frameworkPath)) {
-        removed++;
-    }
+    // 4. Extension brain: kit workflows + core framework (kit-owned folder)
+    removed += uninstallMirrored(commandsSrc, tool.paths.globalWorkflows);
+    if (removeDir(tool.paths.frameworkPath)) removed++;
 
-    // Complete progress bar
-    completeProgress();
-    
-    // Print summary
-    printSummary(tool.name, 'uninstall');
-    
-    console.log(`\n   ℹ️  User skills preserved at: ${tool.paths.skills}`);
-
-    return removed;
+    return finishUninstall(tool, removed);
 }
 
 function uninstallClaude() {
     const tool = TOOLS.claude;
-    
-    // Reset progress
-    resetProgress();
-    progressState.total = 6;
-    
-    console.log(`\n🗑️  Uninstalling BoomOpen Workflow Kit from ${tool.name}...`);
-    console.log(`   This will remove the framework while preserving user skills.\n`);
-
+    beginUninstall(tool, 6);
     let removed = 0;
 
-    // 1. Remove Global Config
-    const claudeMd = path.join(tool.paths.home, 'CLAUDE.md');
-    if (removeFile(claudeMd)) {
-        removed++;
+    // 1. Global instruction files (user originals are restored from backup)
+    for (const file of ['CLAUDE.md', 'AGENT.md']) {
+        if (uninstallUserFacingFile(path.join(tool.paths.home, file))) removed++;
     }
 
-    // 2. Remove Commands
-    if (removeDir(tool.paths.commands)) {
-        removed++;
+    // 2. Commands and native agents: only the files the kit copied
+    removed += uninstallMirrored(path.join(ROOT, 'commands'), tool.paths.commands);
+    removed += uninstallMirrored(path.join(ROOT, 'agents'), tool.paths.agents);
+
+    // 3. Core framework (kit-owned folder)
+    if (removeDir(tool.paths.frameworkPath)) removed++;
+
+    return finishUninstall(tool, removed);
+}
+
+/**
+ * Remove the kit's managed block (and the keys it rewrote) from ~/.codex/config.toml so the
+ * remaining config never points at deleted agent TOMLs.
+ */
+function uninstallCodexConfig(tool) {
+    const configPath = path.join(tool.paths.home, 'config.toml');
+    const backupPath = configPath + BACKUP_SUFFIX;
+    if (!fs.existsSync(configPath)) return 0;
+    try {
+        const original = fs.existsSync(backupPath) ? fs.readFileSync(backupPath, 'utf8') : null;
+        const current = fs.readFileSync(configPath, 'utf8');
+        const cleaned = stripCodexManagedConfig(current, original);
+        if (cleaned === current) return 0;
+        if (cleaned === '') {
+            fs.unlinkSync(configPath);
+            trackRemoved([configPath]);
+            return 1;
+        }
+        fs.writeFileSync(configPath, cleaned, 'utf8');
+        console.log(`  ✂️  Removed the kit's agent config from ${configPath}`);
+        if (original !== null) console.log(`  ℹ️  Your pre-install config is kept at ${backupPath}`);
+        return 1;
+    } catch (e) {
+        logError('remove', configPath, e);
+        return 0;
     }
-
-    // 3. Remove Native Agents
-    if (removeDir(tool.paths.agents)) {
-        removed++;
-    }
-
-    // 4. Remove Core Framework
-    if (removeDir(tool.paths.frameworkPath)) {
-        removed++;
-    }
-
-    // Complete progress bar
-    completeProgress();
-    
-    // Print summary
-    printSummary(tool.name, 'uninstall');
-    
-    console.log(`\n   ℹ️  User skills preserved at: ${tool.paths.skills}`);
-
-    return removed;
 }
 
 function uninstallCodex() {
     const tool = TOOLS.codex;
-    
-    // Reset progress
-    resetProgress();
-    progressState.total = 6;
-    
-    console.log(`\n🗑️  Uninstalling BoomOpen Workflow Kit from ${tool.name}...`);
-    console.log(`   This will remove the framework while preserving user skills.\n`);
-
+    beginUninstall(tool, 8);
     let removed = 0;
 
-    // 1. Remove Global Config
-    const codexMd = path.join(tool.paths.home, 'CODEX.md');
-    if (removeFile(codexMd)) {
-        removed++;
+    // 1. Global instruction files (user originals are restored from backup)
+    for (const file of ['CODEX.md', 'AGENTS.md', 'AGENT.md']) {
+        if (uninstallUserFacingFile(path.join(tool.paths.home, file))) removed++;
     }
 
-    // Remove AGENTS.md (Codex primary instruction file)
-    const agentsMd = path.join(tool.paths.home, 'AGENTS.md');
-    if (removeFile(agentsMd)) {
-        removed++;
-    }
+    // 2. config.toml managed block first, so Codex never references removed agent TOMLs
+    removed += uninstallCodexConfig(tool);
 
-    // Remove AGENT.md
-    const agentMd = path.join(tool.paths.home, 'AGENT.md');
-    if (removeFile(agentMd)) {
-        removed++;
-    }
+    // 3. Commands, agent TOMLs and Codex command skills: only the files the kit copied
+    removed += uninstallMirrored(path.join(ROOT, 'commands'), tool.paths.commands);
+    removed += uninstallMirrored(tool.assets.agentTomlDir, tool.paths.agents);
+    removed += uninstallMirrored(tool.assets.commandSkillsDir, tool.paths.skills);
 
-    // 2. Remove Commands
-    if (removeDir(tool.paths.commands)) {
-        removed++;
-    }
+    // 4. Core framework (kit-owned folder)
+    if (removeDir(tool.paths.frameworkPath)) removed++;
 
-    // 3. Remove Native Agents
-    if (removeDir(tool.paths.agents)) {
-        removed++;
-    }
-
-    // 4. Remove Core Framework
-    if (removeDir(tool.paths.frameworkPath)) {
-        removed++;
-    }
-
-    // Complete progress bar
-    completeProgress();
-    
-    // Print summary
-    printSummary(tool.name, 'uninstall');
-    
-    console.log(`\n   ℹ️  User skills preserved at: ${tool.paths.skills}`);
-
-    return removed;
+    return finishUninstall(tool, removed);
 }
+
 
 // ============================================================================
 // CLI Interface

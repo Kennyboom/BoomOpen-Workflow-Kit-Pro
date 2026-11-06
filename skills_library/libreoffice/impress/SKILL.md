@@ -169,5 +169,4 @@ soffice --headless --accept="socket,host=localhost,port=8100;urp;"
 - calc
 - draw
 - base
-- pptx-official
 - workflow-automation

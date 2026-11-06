@@ -29,8 +29,6 @@ Use this workflow when:
 
 #### Skills to Invoke
 - `libreoffice-writer` - LibreOffice Writer
-- `docx-official` - Microsoft Word
-- `pdf-official` - PDF handling
 
 #### Actions
 1. Design document template
@@ -44,15 +42,10 @@ Use this workflow when:
 Use @libreoffice-writer to create ODT documents
 ```
 
-```
-Use @docx-official to create Word documents
-```
-
 ### Phase 2: Spreadsheet Automation
 
 #### Skills to Invoke
 - `libreoffice-calc` - LibreOffice Calc
-- `xlsx-official` - Excel spreadsheets
 - `googlesheets-automation` - Google Sheets
 
 #### Actions
@@ -67,15 +60,10 @@ Use @docx-official to create Word documents
 Use @libreoffice-calc to create ODS spreadsheets
 ```
 
-```
-Use @xlsx-official to create Excel reports
-```
-
 ### Phase 3: Presentation Generation
 
 #### Skills to Invoke
 - `libreoffice-impress` - LibreOffice Impress
-- `pptx-official` - PowerPoint
 - `frontend-slides` - HTML slides
 - `nanobanana-ppt-skills` - AI PPT generation
 
@@ -92,10 +80,6 @@ Use @libreoffice-impress to create ODP presentations
 ```
 
 ```
-Use @pptx-official to create PowerPoint presentations
-```
-
-```
 Use @frontend-slides to create HTML presentations
 ```
 
@@ -104,7 +88,6 @@ Use @frontend-slides to create HTML presentations
 #### Skills to Invoke
 - `libreoffice-writer` - Document conversion
 - `libreoffice-calc` - Spreadsheet conversion
-- `pdf-official` - PDF conversion
 
 #### Actions
 1. Identify source format
@@ -192,7 +175,7 @@ Formats: ODT, ODS, ODP, ODG, ODB
 
 ### Microsoft Office
 ```
-Skills: docx-official, xlsx-official, pptx-official
+Skills: libreoffice (Writer/Calc/Impress export to DOCX/XLSX/PPTX)
 Formats: DOCX, XLSX, PPTX
 ```
 

@@ -52,7 +52,7 @@ export function SEO({
       <meta name="twitter:image" content={imageUrl} />
       
       {/* Additional Meta */}
-      <meta name="author" content="Anthropic" />
+      <meta name="author" content="Kennyboom" />
       <meta name="keywords" content="AI, coding assistant, agents, Cursor, Claude, GitHub Copilot, development workflow, orchestration" />
     </Helmet>
   )

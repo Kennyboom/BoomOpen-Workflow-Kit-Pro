@@ -1,6 +1,6 @@
 {
   "version": "5.5.0",
-  "totalSkills": 1471,
+  "totalSkills": 1462,
   "skills": {
     "senior-ml-engineer": {
       "domain": "ai-ml",
@@ -7424,30 +7424,6 @@
       "category": "utility",
       "path": "skills_library/media-processing/SKILL.md"
     },
-    "docx": {
-      "domain": "tools",
-      "priority": 5,
-      "category": "utility",
-      "path": "skills_library/docx/SKILL.md"
-    },
-    "pdf": {
-      "domain": "tools",
-      "priority": 5,
-      "category": "utility",
-      "path": "skills_library/pdf/SKILL.md"
-    },
-    "pptx": {
-      "domain": "tools",
-      "priority": 5,
-      "category": "utility",
-      "path": "skills_library/pptx/SKILL.md"
-    },
-    "xlsx": {
-      "domain": "tools",
-      "priority": 5,
-      "category": "utility",
-      "path": "skills_library/xlsx/SKILL.md"
-    },
     "podcast-generation": {
       "domain": "tools",
       "priority": 5,
@@ -7927,12 +7903,6 @@
       "priority": 6,
       "category": "community",
       "path": "skills_library/docusign-automation/SKILL.md"
-    },
-    "docx-official": {
-      "domain": "tools",
-      "priority": 6,
-      "category": "community",
-      "path": "skills_library/docx-official/SKILL.md"
     },
     "dropbox-automation": {
       "domain": "tools",
@@ -8414,12 +8384,6 @@
       "category": "community",
       "path": "skills_library/pagerduty-automation/SKILL.md"
     },
-    "pdf-official": {
-      "domain": "tools",
-      "priority": 6,
-      "category": "community",
-      "path": "skills_library/pdf-official/SKILL.md"
-    },
     "pipedrive-automation": {
       "domain": "tools",
       "priority": 6,
@@ -8443,12 +8407,6 @@
       "priority": 6,
       "category": "community",
       "path": "skills_library/postmark-automation/SKILL.md"
-    },
-    "pptx-official": {
-      "domain": "tools",
-      "priority": 6,
-      "category": "community",
-      "path": "skills_library/pptx-official/SKILL.md"
     },
     "product-inventor": {
       "domain": "tools",
@@ -8732,12 +8690,6 @@
       "category": "community",
       "path": "skills_library/x-twitter-scraper/SKILL.md"
     },
-    "xlsx-official": {
-      "domain": "tools",
-      "priority": 6,
-      "category": "community",
-      "path": "skills_library/xlsx-official/SKILL.md"
-    },
     "yann-lecun-filosofia": {
       "domain": "tools",
       "priority": 6,
@@ -8815,12 +8767,6 @@
       "priority": 6,
       "category": "community",
       "path": "skills_library/internal-comms-community/SKILL.md"
-    },
-    "document-skills": {
-      "domain": "tools",
-      "priority": 7,
-      "category": "specialized",
-      "path": "skills_library/document-skills/SKILL.md"
     },
     "libreoffice": {
       "domain": "tools",

@@ -196,5 +196,4 @@ soffice --headless --accept="socket,host=localhost,port=8100;urp;"
 - impress
 - draw
 - base
-- xlsx-official
 - workflow-automation

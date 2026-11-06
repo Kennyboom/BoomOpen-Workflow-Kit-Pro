@@ -49,13 +49,6 @@ export function SoftwareApplicationSchema({
       name: 'Kennyboom',
       url: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git',
     },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      ratingCount: '150',
-      bestRating: '5',
-      worstRating: '1',
-    },
   }
 
   return (
