@@ -42,6 +42,7 @@ Choose the Round-1 topology that matches the phase so `:team` workflows never wa
 - **Mandatory For**: `/research:team`, `/brainstorm:team`, `/review:team`, Stage 1 discovery in `/plan:team` & `/design:team`, and **Validated-Plan `/code:team` / `/cook:team`** (where `PLAN-{task}.md` already passed `boomopen plan validate` and `boomopen cook packets` emits locked 5-Field Handoff Packets).
 - **Round 1 (Single Turn-1 Parallel Batch)**:
   - Launch `{tech-lead}` (Vector 1 / Coordinator) + `{executor#1..N}` (`≤ 3–4` files or `1` vector/shard) + `{reviewer#1..M}` (Adversarial Vector / Critic) **simultaneously on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")`!
+  - **🛑 Turn-End Silence Guard**: Output ONLY a brief 1–2 sentence notice of the launched shards and **IMMEDIATELY STOP generating tokens**. NEVER generate repetitive status updates or simulated waiting loops (*"Subagents đang chạy...", "Subagents đang xử lý..."*).
   - **Disjoint Per-Shard Scratch Files (Zero Overwrite Collisions)**: Concurrent Turn-1 research/review shards write to isolated paths (`{TYPE}-{topic}-v{1..N}.md` or `{TYPE}-{topic}-s{1..N}.md` with `UserFacing: false, RequestFeedback: false`) instead of concurrently writing to `MAILBOX-{date}.md`.
 
 ### 🔒 Topology B — Contract-Lock First (`STEP A → Parallel STEP B → Parallel STEP C`)

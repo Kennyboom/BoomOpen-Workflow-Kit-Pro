@@ -135,6 +135,7 @@ REPORTS   = ./reports/{topic}/ (non-Antigravity fallback, /docs, or explicit rep
 - **⚡ `TypeName: "self"` (0-Turn Fast-Track Default)**: Spawns an isolated shard (`Role: "<role>#<shard>"`, `Model: "inherit"`) on Turn 1 with full `write_file` + `run_command` + `search_web` tools.
 - **⚠️ `TypeName: "research"` Limitation**: Has **NO `search_web`, NO `run_command`, and NO `write_file`** — **ALWAYS use `TypeName: "self"`** for `researcher`, `research-team`, `brainstorm-team`, or any Mode B `scouter` writing `SCOUT-*.md`!
 - **5-Field Packets & Warm Reuse**: Emit wave packets via `boomopen cook packets`, record `role#shard -> conversationId`, and reuse warm sessions via `send_message(Recipient: conversationId)` with **Reactive Async Wakeup**.
+- **🛑 Turn-End Silence Guard (Zero Waiting Loop)**: Immediately after dispatching sub-agents via `invoke_subagent` (or launching background tasks), output ONLY a concise 1–2 sentence notice and **STOP generating tokens immediately**. NEVER spam repetitive status updates or enter a text-polling loop (*"Subagents đang chạy...", "Subagents đang xử lý..."*).
 
 ---
 
