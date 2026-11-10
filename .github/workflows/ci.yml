@@ -37,15 +37,18 @@ jobs:
       - name: Kit health check (sandboxed HOME)
         shell: bash
         run: |
-          SANDBOX="$RUNNER_TEMP/boomopen-home"
-          mkdir -p "$SANDBOX/appdata" "$SANDBOX/localappdata" "$SANDBOX/.config"
-          export HOME="$SANDBOX" USERPROFILE="$SANDBOX" APPDATA="$SANDBOX/appdata" \
-                 LOCALAPPDATA="$SANDBOX/localappdata" XDG_CONFIG_HOME="$SANDBOX/.config"
+          SANDBOX="$(node -p "require('node:path').join(process.env.RUNNER_TEMP, 'boomopen-home')")"
+          APPDATA_DIR="$(node -p "require('node:path').join(process.argv[1], 'appdata')" "$SANDBOX")"
+          LOCALAPPDATA_DIR="$(node -p "require('node:path').join(process.argv[1], 'localappdata')" "$SANDBOX")"
+          XDG_DIR="$(node -p "require('node:path').join(process.argv[1], '.config')" "$SANDBOX")"
+          mkdir -p "$APPDATA_DIR" "$LOCALAPPDATA_DIR" "$XDG_DIR"
+          export HOME="$SANDBOX" USERPROFILE="$SANDBOX" APPDATA="$APPDATA_DIR" \
+                 LOCALAPPDATA="$LOCALAPPDATA_DIR" XDG_CONFIG_HOME="$XDG_DIR"
           node cli/install.js install claude
           node cli/install.js doctor
           node cli/install.js uninstall claude
       - name: Coding-standards check
-        run: node cli/install.js check .
+        run: node cli/install.js check . --strict-phase --no-stubs
 
   syntax:
     name: Python and shell syntax (helpers and skills vault)

@@ -133,6 +133,8 @@ function readJsonBody(req, limit = MAX_BODY_BYTES) {
 
 const BASE_HEADERS = {
   'Cache-Control': 'no-store',
+  'Content-Security-Policy':
+    "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'",
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
   'Referrer-Policy': 'no-referrer',

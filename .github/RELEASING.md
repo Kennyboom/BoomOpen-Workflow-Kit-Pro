@@ -3,7 +3,7 @@
 ## Current policy
 
 - **The kit is distributed from source only.** Users install with
-  `git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git && cd BoomOpen-Workflow-Kit && node cli/install.js install <tool>`
+  `git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git && cd BoomOpen-Workflow-Kit-Pro && node cli/install.js install <tool>`
   (or `npm link` and then `boomopen install <tool>`).
 - **npm publishing is disabled** (`"npmPublish": false` for `@semantic-release/npm` in `.releaserc.json`).
   `@boomopen/workflow-kit` is not on the registry. Do not run `npm publish` by hand.

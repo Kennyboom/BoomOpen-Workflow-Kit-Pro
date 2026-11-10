@@ -118,11 +118,24 @@ function loadSettings(options = {}) {
   return loadSettingsDetailed(options).settings;
 }
 
+let tmpWriteCounter = 0;
+
 function writeJsonFile(filePath, data) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  const tmpPath = `${filePath}.${process.pid}.tmp`;
-  fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2) + '\n', 'utf8');
-  fs.renameSync(tmpPath, filePath);
+  const tmpPath = `${filePath}.${process.pid}.${++tmpWriteCounter}.tmp`;
+  const payload = JSON.stringify(data, null, 2) + '\n';
+  fs.writeFileSync(tmpPath, payload, 'utf8');
+  try {
+    fs.renameSync(tmpPath, filePath);
+  } catch (err) {
+    if (err && (err.code === 'EPERM' || err.code === 'EACCES')) {
+      fs.writeFileSync(filePath, payload, 'utf8');
+      fs.rmSync(tmpPath, { force: true });
+      return;
+    }
+    fs.rmSync(tmpPath, { force: true });
+    throw err;
+  }
 }
 
 function assertWritable(filePath, readResult) {

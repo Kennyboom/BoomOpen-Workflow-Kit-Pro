@@ -31,7 +31,7 @@
     "ledger": "node cli/install.js ledger",
     "conduct": "node cli/install.js conduct",
     "test": "node --test cli/checker.test.js cli/cli-e2e.test.js cli/codex-config.test.js cli/conductor.test.js cli/content-integrity.test.js cli/cook.test.js cli/design.test.js cli/docs-content.test.js cli/doctor.test.js cli/hook-guard.test.js cli/hook-registration.test.js cli/install-cli.test.js cli/install-regressions.test.js cli/install-repairs.test.js cli/install-safety.test.js cli/install.test.js cli/instruction-files.test.js cli/ledger.test.js cli/lighthouse-audit.test.js cli/packaging.test.js cli/plan.test.js cli/platform-content.test.js cli/python-scripts.test.js cli/research.test.js cli/settings-e2e.test.js cli/settings-ui.test.js cli/settings.test.js cli/user-files.test.js cli/vault-content.test.js web/build/kit-stats.test.mjs",
-    "test:unit": "node --test cli/checker.test.js cli/codex-config.test.js cli/conductor.test.js cli/cook.test.js cli/design.test.js cli/doctor.test.js cli/hook-guard.test.js cli/hook-registration.test.js cli/instruction-files.test.js cli/ledger.test.js cli/plan.test.js cli/research.test.js cli/settings.test.js",
+    "test:unit": "node --test cli/checker.test.js cli/codex-config.test.js cli/conductor.test.js cli/cook.test.js cli/design.test.js cli/doctor.test.js cli/hook-guard.test.js cli/hook-registration.test.js cli/instruction-files.test.js cli/ledger.test.js cli/plan.test.js cli/platform-content.test.js cli/research.test.js cli/settings.test.js cli/user-files.test.js",
     "lint": "node .github/scripts/check-syntax.js",
     "semantic-release": "semantic-release",
     "test:pack": "node .github/scripts/pack-smoke.js"
@@ -104,10 +104,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git"
+    "url": "https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git"
   },
-  "homepage": "https://github.com/Kennyboom/BoomOpen-Workflow-Kit#readme",
+  "homepage": "https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro#readme",
   "bugs": {
-    "url": "https://github.com/Kennyboom/BoomOpen-Workflow-Kit/issues"
+    "url": "https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/issues"
   }
 }

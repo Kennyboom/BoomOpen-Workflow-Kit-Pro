@@ -201,7 +201,7 @@ function readBackup(backupPath) {
 function describeManualRegistration(scriptPath) {
     const command = buildHookCommand(scriptPath);
     return [
-        `Gemini CLI: add to ~/.gemini/settings.json → "hooks": { "BeforeTool": [ { "matcher": "run_shell_command",`,
+        `Gemini CLI / Antigravity: add to ~/.gemini/settings.json → "hooks": { "BeforeTool": [ { "matcher": "run_shell_command|run_command",`,
         `  "hooks": [ { "name": "boomopen-guard", "type": "command", "command": ${JSON.stringify(command)} } ] } ] }`,
         `Other hosts: run ${command} before each shell command with the tool call JSON on stdin; exit code 2 = blocked.`,
     ];

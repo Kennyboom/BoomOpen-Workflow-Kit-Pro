@@ -276,7 +276,7 @@ function planAgents(scan, template, edits, notes) {
     const skippedRoles = [];
     for (const section of template.filter((s) => s.path[0] === AGENTS_TABLE)) {
         if (section.path.length === 1) {
-            if (!agentsKind) edits.blockSections.push(section.lines);
+            if (!agentsKind || agentsKind === 'implicit') edits.blockSections.push(section.lines);
             continue;
         }
         if (scan.defs.get(section.path)) {

@@ -23,14 +23,34 @@ const { migrateLegacySkills } = require('./legacy-skills.js');
 const LEGACY_KIT_DIR_NAME = 'agent-assistant';
 
 /**
+ * Resolve symlinks on the deepest existing prefix of targetPath and rejoin any not-yet-created
+ * trailing segments, so `/var/folders/...` and `/private/var/folders/...` compare equal on macOS.
+ */
+function canonicalPath(targetPath) {
+    const resolved = path.resolve(targetPath);
+    const tail = [];
+    let current = resolved;
+    for (;;) {
+        try {
+            return path.join(fs.realpathSync.native(current), ...tail);
+        } catch {
+            const parent = path.dirname(current);
+            if (parent === current) return resolved;
+            tail.unshift(path.basename(current));
+            current = parent;
+        }
+    }
+}
+
+/**
  * @param {string} root folder the running CLI belongs to
  * @param {Record<string, { paths: { frameworkPath: string } }>} tools
  * @returns {string|null} why this copy cannot install or uninstall, or null
  */
 function installedCopyProblem(root, tools) {
-    const resolvedRoot = path.resolve(root);
+    const resolvedRoot = canonicalPath(root);
     for (const tool of Object.values(tools)) {
-        const rel = path.relative(path.resolve(tool.paths.frameworkPath), resolvedRoot);
+        const rel = path.relative(canonicalPath(tool.paths.frameworkPath), resolvedRoot);
         if (rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel))) {
             return `this CLI is an installed copy (${resolvedRoot})`;
         }
@@ -107,4 +127,11 @@ function kitInstructionTexts(tool, plan, root) {
     return texts;
 }
 
-module.exports = { installedCopyProblem, hasPreManifestInstall, migrateLegacy, recordToolDirs, kitInstructionTexts };
+module.exports = {
+    canonicalPath,
+    installedCopyProblem,
+    hasPreManifestInstall,
+    migrateLegacy,
+    recordToolDirs,
+    kitInstructionTexts,
+};

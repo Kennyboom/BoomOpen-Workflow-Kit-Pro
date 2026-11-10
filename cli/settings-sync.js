@@ -25,6 +25,7 @@ const {
 } = require('./markers.js');
 const { getVSCodePromptsFolder } = require('./platform-paths.js');
 const { DEFAULT_SETTINGS, validateAndSanitizeSettings, resolvePresetLabel } = require('./settings-schema.js');
+const { canonicalPath } = require('./install-ownership.js');
 const { recordKitRewrite } = require('./manifest.js');
 const { loadGlobalSettings } = require('./settings-store.js');
 
@@ -134,7 +135,7 @@ function detectInstalledPlatforms(homeDir = os.homedir()) {
  * With a custom homeDir (tests, sandboxes) the real APPDATA is never used unless `env` is passed.
  */
 function getSyncTargets(homeDir, options = {}) {
-  const env = options.env || (path.resolve(homeDir) === path.resolve(os.homedir()) ? process.env : {});
+  const env = options.env || (canonicalPath(homeDir) === canonicalPath(os.homedir()) ? process.env : {});
   const vsCodePrompts = getVSCodePromptsFolder(homeDir, env, options.platform || process.platform);
   const home = (...parts) => path.join(homeDir, ...parts);
   return {

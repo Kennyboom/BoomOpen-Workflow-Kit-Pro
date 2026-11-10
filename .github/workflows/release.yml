@@ -40,6 +40,7 @@ jobs:
         run: |
           npm test
           npm run lint
+          node cli/install.js check . --strict-phase --no-stubs
           npm run test:pack
       - name: semantic-release
         env:

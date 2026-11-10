@@ -14,6 +14,14 @@ const {
   renderActiveSettingsMarkdown,
   detectInstalledPlatforms,
 } = require('./settings.js');
+const {
+  LINE_LIMIT_KEYS,
+  MIN_LINE_LIMIT,
+  MAX_LINE_LIMIT,
+  coerceEnumValue,
+  coerceLineLimit,
+  readPatchValue,
+} = require('./settings-schema.js');
 const { renderDashboardHtml } = require('./settings-ui-html.js');
 const {
   HttpError,
@@ -78,11 +86,35 @@ function getSettingsPayload(scope, options) {
   };
 }
 
+function validateLineLimitPatch(patch, scope, options) {
+  const rawSoft = readPatchValue(patch, LINE_LIMIT_KEYS[0]);
+  const rawHard = readPatchValue(patch, LINE_LIMIT_KEYS[1]);
+  if (rawSoft === undefined && rawHard === undefined) return;
+  const patchSoft = rawSoft === undefined ? undefined : coerceLineLimit(rawSoft);
+  const patchHard = rawHard === undefined ? undefined : coerceLineLimit(rawHard);
+  if (rawSoft !== undefined && patchSoft === undefined) {
+    throw new HttpError(400, `Invalid codingStandards.softFileLines "${rawSoft}" (expected integer ${MIN_LINE_LIMIT}..${MAX_LINE_LIMIT})`);
+  }
+  if (rawHard !== undefined && patchHard === undefined) {
+    throw new HttpError(400, `Invalid codingStandards.hardFileLines "${rawHard}" (expected integer ${MIN_LINE_LIMIT}..${MAX_LINE_LIMIT})`);
+  }
+  const currentCs = loadScopedSettings(scope, options).codingStandards;
+  const stdPreset = coerceEnumValue('codingStandards.preset', readPatchValue(patch, 'codingStandards.preset')) || currentCs.preset;
+  const baseCs = stdPreset === currentCs.preset ? currentCs : CODING_STANDARDS_PRESETS[stdPreset];
+  const nextSoft = patchSoft ?? baseCs.softFileLines;
+  const nextHard = patchHard ?? baseCs.hardFileLines;
+  if (nextSoft > nextHard) {
+    throw new HttpError(400, `codingStandards.softFileLines (${nextSoft}) cannot exceed codingStandards.hardFileLines (${nextHard})`);
+  }
+}
+
 async function handlePost(pathname, req, options) {
   const body = await readJsonBody(req);
-  const opts = { ...options, scope: pickScope(body.scope) };
+  const scope = pickScope(body.scope);
+  const opts = { ...options, scope };
   if (pathname === '/api/settings') {
     const patch = body.settings && typeof body.settings === 'object' ? body.settings : {};
+    validateLineLimitPatch(patch, scope, options);
     return resultPayload(saveSettings(patch, opts), options);
   }
   if (pathname === '/api/preset') return resultPayload(applyPreset(body.preset, opts), options);

@@ -180,12 +180,36 @@ test('doctor checks only installed platforms and detects a broken install (H11, 
     const onlyAntigravity = doctor({ platforms: ['antigravity'] });
     assert.ok(!onlyAntigravity.checks.some((c) => c.name.startsWith('Claude')));
     assert.match(findCheck(onlyAntigravity, 'Antigravity: framework files').detail, /scripts/);
+    fs.rmSync(path.join(kitRoot, 'scripts'), { recursive: true, force: true });
+
+    // Missing cli/*.js compiler, missing agents/teams/* file, version drift, vault folder path, and settings desync
+    fs.rmSync(path.join(home, '.antigravity'), { recursive: true, force: true });
+    const agFw = path.join(home, '.gemini', 'config', 'skills', 'boomopen-workflow-kit');
+    fs.rmSync(path.join(agFw, 'cli', 'cook.js'), { force: true });
+    fs.rmSync(path.join(agFw, 'agents', 'teams', 'backend-team', 'reviewer.md'), { force: true });
+    const missingCliAndTeam = doctor({ platforms: ['antigravity'] });
+    assert.equal(findCheck(missingCliAndTeam, 'Antigravity: framework files').passed, false);
+    assert.match(findCheck(missingCliAndTeam, 'Antigravity: framework files').detail, /agents\/.*cli\//);
+
+    // Restore files, then check version drift warning and unindexed vault folder path display
+    assert.equal(runCli(kitRoot, home, ['install', 'antigravity']).status, 0);
+    write(path.join(agFw, 'package.json'), JSON.stringify({ name: '@boomopen/workflow-kit', version: '5.4.0' }));
+    fs.mkdirSync(path.join(home, '.gemini', 'config', 'skills_library', 'orphan-skill'), { recursive: true });
+    const driftAndOrphan = doctor({ platforms: ['antigravity'] });
+    assert.equal(findCheck(driftAndOrphan, 'Antigravity: framework files').warning, true);
+    assert.match(findCheck(driftAndOrphan, 'Antigravity: framework files').detail, /v5\.4\.0 != source/);
+    assert.match(findCheck(driftAndOrphan, 'Antigravity: skills vault').detail, /~\/\.gemini\/config\/skills_library/);
+
+    // Manual edit to ~/.boomopen/settings.json without `boomopen settings sync` is caught by Settings check
+    write(path.join(home, '.boomopen', 'settings.json'), JSON.stringify({ preset: 'adversarial-team', execution: { mode: 'team' } }));
+    const desynced = doctor({ platforms: ['antigravity'] });
+    assert.equal(findCheck(desynced, 'Settings (global + workspace)').passed, false);
+    assert.match(findCheck(desynced, 'Settings (global + workspace)').detail, /out of sync.*boomopen settings sync/);
 
     // A stale committed index is detected (M25).
     write(path.join(kitRoot, 'matrix-skills', 'beta.yaml'), 'skills:\n  - skill_id: lib-two\n  - skill_id: lib-three\n');
     const stale = doctor({ platforms: ['antigravity'] });
     assert.match(findCheck(stale, 'matrix-skills/compact-index.json').detail, /stale/);
-    assert.ok(home.includes(path.sep) && fs.readFileSync(path.join(home, '.gemini', 'GEMINI.md'), 'utf8').indexOf(GEMINI_MARKER_START) === -1);
   } finally {
     removeDir(home);
     removeDir(kitRoot);

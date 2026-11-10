@@ -11,7 +11,9 @@ const os = require('node:os');
 const path = require('node:path');
 
 const { countLines, readTextFile } = require('./checker-text.js');
+const { listSourceFiles } = require('./copy-engine.js');
 const { INDEX_FILE_NAME, buildCompactIndexData, readCompactIndex } = require('./doctor-index.js');
+const { canonicalPath } = require('./install-ownership.js');
 const {
   GEMINI_MARKER_START,
   GEMINI_MARKER_END,
@@ -26,9 +28,8 @@ const { FRAMEWORK_FILE_LIST } = require('./tool-config.js');
 
 const MAX_ENTRY_LINES = 350;
 const FRAMEWORK_DIR = 'boomopen-workflow-kit';
-const MIRRORED_MD_DIRS = ['rules', 'commands', 'agents'];
-// Framework folders that must exist and hold files, whatever the reference copy says.
-const REQUIRED_DIRS = ['rules', 'commands', 'agents', 'scripts'];
+// Framework folders that must exist and hold every runtime file shipped by the kit.
+const REQUIRED_DIRS = ['rules', 'commands', 'agents', 'cli', 'scripts'];
 const MAX_NAMES_SHOWN = 3;
 
 /**
@@ -37,7 +38,7 @@ const MAX_NAMES_SHOWN = 3;
  * @param {{ env?: NodeJS.ProcessEnv, platform?: NodeJS.Platform }} [options]
  */
 function getPlatformLayouts(homeDir, options = {}) {
-  const env = options.env || (path.resolve(homeDir) === path.resolve(os.homedir()) ? process.env : {});
+  const env = options.env || (canonicalPath(homeDir) === canonicalPath(os.homedir()) ? process.env : {});
   const vsCodePrompts = getVSCodePromptsFolder(homeDir, env, options.platform || process.platform);
   const home = (...parts) => path.join(homeDir, ...parts);
   const kitFile = (filePath) => ({ path: filePath, kind: 'kit-file' });
@@ -133,11 +134,6 @@ function checkEntrypoints(layout, homeDir) {
   };
 }
 
-function listMarkdown(dir) {
-  if (!fs.existsSync(dir)) return [];
-  return fs.readdirSync(dir).filter((f) => f.endsWith('.md'));
-}
-
 function hasFiles(dir) {
   try {
     return fs.readdirSync(dir).length > 0;
@@ -147,18 +143,25 @@ function hasFiles(dir) {
   }
 }
 
-/** Files of a kit copy (a checkout or another installed framework) the framework must also hold. */
+function readPackageVersion(dir) {
+  if (!dir) return null;
+  try {
+    const version = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8')).version;
+    return typeof version === 'string' && version ? version : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Recursive runtime files of a kit copy (rules, commands/_ref, agents/teams, cli, scripts) the framework must hold. */
 function missingAgainstReference(fw, referenceRoot) {
   const missing = [];
-  for (const dir of MIRRORED_MD_DIRS) {
-    const lost = listMarkdown(path.join(referenceRoot, dir)).filter((f) => !fs.existsSync(path.join(fw, dir, f)));
+  for (const dir of REQUIRED_DIRS) {
+    const lost = listSourceFiles(path.join(referenceRoot, dir))
+      .map(({ rel }) => rel.split(path.sep).join('/'))
+      .filter((rel) => !fs.existsSync(path.join(fw, dir, ...rel.split('/'))));
     if (lost.length) missing.push(`${dir}/ (${lost.length} files: ${listNames(lost)})`);
   }
-  const repoScripts = fs.existsSync(path.join(referenceRoot, 'scripts'))
-    ? fs.readdirSync(path.join(referenceRoot, 'scripts')).filter((f) => f.endsWith('.py'))
-    : [];
-  const lostScripts = repoScripts.filter((f) => !fs.existsSync(path.join(fw, 'scripts', f)));
-  if (lostScripts.length) missing.push(`scripts/ (${listNames(lostScripts)})`);
   return missing;
 }
 
@@ -207,13 +210,16 @@ function checkFramework(layout, referenceRoot) {
     if (lost.length) missing.push(`${lost.length} installed files (${listNames(lost)})`);
   }
   const noFileList = !referenceRoot && fileList === null;
-  const ok = noFileList
-    ? `required folders present; ⚠️ no ${FRAMEWORK_FILE_LIST} to compare with (older release — reinstall)`
-    : 'SKILL.md, rules, commands, agents, scripts, workflows, hooks, index OK';
+  const refVer = readPackageVersion(referenceRoot);
+  const fwVer = readPackageVersion(fw);
+  const notes = [];
+  if (noFileList) notes.push(`no ${FRAMEWORK_FILE_LIST} to compare with (older release — reinstall)`);
+  if (refVer && fwVer && fwVer !== refVer) notes.push(`version v${fwVer} != source v${refVer} — reinstall`);
+  const ok = `SKILL.md, rules, commands, agents, cli, scripts, workflows, hooks, index OK${notes.length ? `; ⚠️ ${notes.join('; ')}` : ''}`;
   return {
     name,
     passed: missing.length === 0,
-    warning: missing.length === 0 && noFileList,
+    warning: missing.length === 0 && notes.length > 0,
     detail: missing.length === 0 ? ok : `Missing: ${missing.join('; ')} — reinstall`,
   };
 }
@@ -225,8 +231,8 @@ function checkFramework(layout, referenceRoot) {
 function referenceRootFor(layout, options) {
   if (options.isSourceCheckout) return options.repoRoot;
   if (!options.repoRoot) return null;
-  const root = path.resolve(options.repoRoot);
-  if (root === path.resolve(layout.frameworkPath)) return null;
+  const root = canonicalPath(options.repoRoot);
+  if (root === canonicalPath(layout.frameworkPath)) return null;
   return REQUIRED_DIRS.every((dir) => hasFiles(path.join(root, dir))) ? root : null;
 }
 
@@ -269,7 +275,7 @@ function sameIndex(a, b) {
  * Every skill in the installed index must exist in this platform's vault. Stale vault folders and
  * an install older than the kit source are reported but do not fail the check.
  */
-function checkVault(layout, repoIndex) {
+function checkVault(layout, repoIndex, homeDir) {
   const name = `${layout.name}: skills vault`;
   const { data, error } = readCompactIndex(path.join(layout.frameworkPath, 'matrix-skills', INDEX_FILE_NAME));
   if (!data) return { name, passed: false, detail: `compact-index.json ${error}` };
@@ -281,7 +287,8 @@ function checkVault(layout, repoIndex) {
       .filter((d) => d.isDirectory() && !indexedLibrary.has(d.name)).map((d) => d.name)
     : [];
   const notes = [];
-  if (stale.length) notes.push(`${stale.length} folders not in the index (${listNames(stale)})`);
+  const vaultLabel = homeDir ? displayPath(layout.libraryDir, homeDir) : layout.libraryDir;
+  if (stale.length) notes.push(`${stale.length} folders in ${vaultLabel} not in the index (${listNames(stale)})`);
   if (repoIndex && !sameIndex(data, repoIndex)) notes.push('older than the kit source — reinstall');
   const detail = missing.length
     ? `${missing.length}/${entries.length} skills missing (${listNames(missing.map(([id]) => id))}) — reinstall`
@@ -347,7 +354,7 @@ function checkInstalledPlatforms(options) {
     const layout = layouts[key];
     checks.push(checkEntrypoints(layout, options.homeDir));
     checks.push(checkFramework(layout, referenceRootFor(layout, options)));
-    checks.push(checkVault(layout, repoIndex));
+    checks.push(checkVault(layout, repoIndex, options.homeDir));
     checks.push(checkInstallState(key, layout, options.homeDir));
   }
   return { installed, checks };

@@ -110,6 +110,14 @@ test('release config cannot publish to npm or cut an accidental 1.0.0', () => {
 
   const gitPlugin = plugins.find(([name]) => name === '@semantic-release/git');
   assert.ok(gitPlugin[1].assets.includes('package-lock.json'), 'release commit must include package-lock.json');
+
+  const pkg = readJson('package.json');
+  assert.equal(pkg.name, '@boomopen/workflow-kit');
+  assert.equal(pkg.repository.url, 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git');
+  assert.equal(pkg.homepage, 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro#readme');
+  assert.equal(pkg.bugs.url, 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/issues');
+  assert.equal(release.repositoryUrl, 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git');
+  assert.match(fs.readFileSync(path.join(REPO_ROOT, '.gitattributes'), 'utf8'), /^\* text=auto eol=lf$/m);
 });
 
 test('THIRD_PARTY_NOTICES.md is shipped and matches the vendored skills (M53)', () => {

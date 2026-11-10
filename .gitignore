@@ -34,8 +34,9 @@ test-boom/
 __pycache__/
 *.py[cod]
 
-# Workspace-level BoomOpen settings written by `boomopen settings --project`
+# Workspace-level BoomOpen settings and ephemeral conductor runs
 .boomopen.json
+.boomopen/conductor/
 
 # Logs
 *.log

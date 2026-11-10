@@ -174,6 +174,10 @@ test('custom line limits survive unrelated saves and invalid limits are rejected
     setSettingByKey('codingStandards.preset', 'strict', box.opts);
     cs = loadSettings(box.opts).codingStandards;
     assert.deepEqual([cs.softFileLines, cs.hardFileLines], [300, 400]);
+    assert.throws(
+      () => setSettingByKey('codingStandards.softFileLines', '550', box.opts),
+      /cannot exceed codingStandards\.hardFileLines/
+    );
   } finally {
     box.cleanup();
   }
@@ -335,6 +339,11 @@ test('settings CLI: help, unknown subcommands, read-only status (L15)', async ()
     assert.equal((await runSettingsCommand(['--get', 'engines.councilMembers'], opts)).value, 'cursor,copilot,claude');
     assert.equal((await runSettingsCommand(['--set', 'engines.councilMembers=claude,unknown'], opts)).action, 'error');
     assert.equal((await runSettingsCommand(['--set', 'engines.councilMembers=claude'], opts)).action, 'error');
+    assert.equal((await runSettingsCommand(['show'], opts)).action, 'status');
+    const badOpt = await runSettingsCommand(['reset', '--dry-run'], opts);
+    assert.equal(badOpt.action, 'error');
+    assert.equal(badOpt.exitCode, 1);
+    assert.equal((await runSettingsCommand(['ui', '--port=abc'], opts)).action, 'error');
   } finally {
     box.cleanup();
   }

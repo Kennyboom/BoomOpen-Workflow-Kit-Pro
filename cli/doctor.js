@@ -170,7 +170,14 @@ function runDoctor(options = {}) {
     ...(options.sourceOnly
       ? []
       : guarded('Installed platforms', () => installedPlatformChecks({ ...options, repoRoot, homeDir }, sourceCheckout))),
-    checkSettingsFiles({ homeDir, cwd: options.cwd }),
+    checkSettingsFiles({
+      homeDir,
+      cwd: options.cwd,
+      env: options.env,
+      platform: options.platform,
+      platforms: options.platforms,
+      sourceOnly: options.sourceOnly,
+    }),
     guarded('Conductor CLI engines', () => checkConductorEngines(options)),
   ].flat();
   const healthy = checks.every((c) => c.passed);

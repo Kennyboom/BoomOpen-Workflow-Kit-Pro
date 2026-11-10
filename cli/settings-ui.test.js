@@ -92,8 +92,18 @@ test('settings UI rejects cross-site, rebinding, wrong content type and tokenles
 
     const ok = await jsonPost(port, '/api/settings', settingsBody, { Origin: `http://127.0.0.1:${port}`, 'X-BoomOpen-Token': token });
     assert.equal(ok.status, 200);
+    assert.match(String(ok.headers['content-security-policy']), /default-src 'none'/);
     assert.equal(JSON.parse(ok.body).settings.preset, 'custom');
     assert.match(fs.readFileSync(claudeMd, 'utf8'), /verification.level = manual/);
+
+    const invertedLimits = await jsonPost(
+      port,
+      '/api/settings',
+      { scope: 'global', settings: { codingStandards: { softFileLines: 600, hardFileLines: 500 } } },
+      { Origin: `http://127.0.0.1:${port}`, 'X-BoomOpen-Token': token }
+    );
+    assert.equal(invertedLimits.status, 400);
+    assert.match(JSON.parse(invertedLimits.body).error, /cannot exceed/);
   });
 });
 
@@ -171,4 +181,9 @@ test('settings UI exposes line-limit numeric inputs, EN/VI I18N dictionary, and 
     assert.ok(I18N.vi.hints[key], `missing VI hint for ${key}`);
     assert.ok(I18N.vi.labels[key], `missing VI label for ${key}`);
   }
+  const viHintsBlob = JSON.stringify(I18N.vi.hints);
+  for (const staleEnum of ['fixed_small', 'fast_economy', 'quick_scan', 'socratic_3q', 'unit_and_lint', 'minimal_inline']) {
+    assert.ok(!viHintsBlob.includes(staleEnum), `VI hints must not mention stale pre-v5.5 enum "${staleEnum}"`);
+  }
+  assert.match(html, /const esc = \(s\) =>/);
 });

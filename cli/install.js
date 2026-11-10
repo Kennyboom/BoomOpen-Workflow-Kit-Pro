@@ -6,8 +6,8 @@
  * Claude Code and Codex.
  *
  * The kit is not published on npm. Install from a clone:
- *   git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
- *   cd BoomOpen-Workflow-Kit
+ *   git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+ *   cd BoomOpen-Workflow-Kit-Pro
  *   node cli/install.js install <tool>      (or: npm link, then boomopen install <tool>)
  *
  * Safety contract (see cli/manifest.js, cli/instruction-files.js, cli/codex-config.js):
@@ -73,9 +73,10 @@ const TOOLS = buildTools(HOME, ROOT);
 const TOOL_KEYS = ['cursor', 'copilot', 'antigravity', 'claude', 'codex'];
 const TOOL_ALIASES = { gemini: 'antigravity', 'claude-code': 'claude' };
 const EXIT_FAILURE = 1;
-const REPO_URL = 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git';
-
-const cliOptions = { registerHooks: false };
+const EXIT_USAGE = 2;
+const REPO_URL = 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git';
+const INSTALL_FLAGS = new Set(['--all', '--with-hooks', '--force', '-h', '--help', '-v', '--version']);
+const UNINSTALL_FLAGS = new Set(['--all', '--force', '-h', '--help', '-v', '--version']);
 
 // ============================================================================
 // Compatibility helpers (exported for tests and older callers)
@@ -227,7 +228,7 @@ function finishLedger(ledger, notes) {
  * registration is refreshed on reinstall); for Gemini CLI / Antigravity the exact manual
  * registration is printed.
  */
-function registerHooks(key, tool, notes) {
+function registerHooks(key, tool, notes, optInHooks = false) {
     const hookPath = path.join(tool.paths.frameworkPath, 'hooks', HOOK_SCRIPT_NAME);
     if (key === 'antigravity') {
         notes.push(`Guard:       opt-in hook copied to ${hookPath}; to enable it:`);
@@ -236,7 +237,7 @@ function registerHooks(key, tool, notes) {
     }
     if (key !== 'claude') return;
     const settingsPath = path.join(tool.paths.home, 'settings.json');
-    if (!cliOptions.registerHooks && !isClaudeHookRegistered(settingsPath)) {
+    if (!optInHooks && !isClaudeHookRegistered(settingsPath)) {
         notes.push('Guard:       opt-in hook not registered (run `boomopen install claude --with-hooks` to enable)');
         return;
     }
@@ -285,7 +286,7 @@ function printPaths(tool) {
 }
 
 /** Install the kit for one tool. @returns {number} files written */
-function installTool(key) {
+function installTool(key, options = {}) {
     const tool = TOOLS[key];
     const plan = buildPlan(key, tool, ROOT);
     resetProgress(estimateTotal(plan));
@@ -305,7 +306,7 @@ function installTool(key) {
         if (key === 'codex' && steps.mergeCodexConfigFile(tool.assets.configToml, path.join(tool.paths.home, 'config.toml'))) total++;
         if (key === 'antigravity') cleanupAntigravityLegacy(tool);
         finishLedger(ledger, notes);
-        registerHooks(key, tool, notes);
+        registerHooks(key, tool, notes, Boolean(options.registerHooks));
         syncSettings();
     }
     completeProgress();
@@ -445,7 +446,7 @@ Options:
 
 Install from source (the kit is not published on npm):
   git clone ${REPO_URL}
-  cd BoomOpen-Workflow-Kit
+  cd BoomOpen-Workflow-Kit-Pro
   node cli/install.js install claude      (or: npm link, then boomopen install claude)
 
 Examples:
@@ -509,7 +510,7 @@ async function promptToolSelection() {
     }
 }
 
-async function interactiveInstall() {
+async function interactiveInstall(toolOpts = {}) {
     if (!process.stdin.isTTY) {
         printUsage();
         warnLine('❌ No tool given and no interactive terminal: run `boomopen install <tool>` or `install --all`.');
@@ -519,8 +520,8 @@ async function interactiveInstall() {
     const choice = await promptToolSelection();
     const index = Number(choice);
     if (choice === '0') return printLine('\n❌ Installation cancelled.\n');
-    if (Number.isInteger(index) && index >= 1 && index <= TOOL_KEYS.length) return void installTool(TOOL_KEYS[index - 1]);
-    if (index === TOOL_KEYS.length + 1) return void runForAll(installTool, 'install');
+    if (Number.isInteger(index) && index >= 1 && index <= TOOL_KEYS.length) return void installTool(TOOL_KEYS[index - 1], toolOpts);
+    if (index === TOOL_KEYS.length + 1) return void runForAll((k) => installTool(k, toolOpts), 'install');
     warnLine(`\n❌ Invalid choice "${choice}". Please enter 0-${TOOL_KEYS.length + 1}.\n`);
     process.exitCode = EXIT_FAILURE;
     return undefined;
@@ -538,19 +539,34 @@ function runForAll(fn, operation) {
     printLine('═'.repeat(60) + '\n');
 }
 
-async function runToolCommand(command, target, flags) {
+async function runToolCommand(command, positional, flags) {
+    const allowedFlags = command === 'install' ? INSTALL_FLAGS : UNINSTALL_FLAGS;
+    const unknownFlags = [...flags].filter((flag) => !allowedFlags.has(flag));
+    if (unknownFlags.length > 0) {
+        warnLine(`❌ Unknown option for ${command}: ${unknownFlags.join(', ')}`);
+        printUsage();
+        process.exitCode = EXIT_USAGE;
+        return undefined;
+    }
+    if (positional.length > 1) {
+        warnLine(`❌ Unexpected extra argument "${positional[1]}". Pass one tool name or --all.`);
+        process.exitCode = EXIT_USAGE;
+        return undefined;
+    }
+    const target = positional[0];
     const problem = installedCopyProblem(ROOT, TOOLS);
     if (problem) {
         warnLine(`❌ Cannot ${command}: ${problem}.`);
         warnLine(`   Run it from a clone of the kit: git clone ${REPO_URL}`);
-        warnLine(`   then: cd BoomOpen-Workflow-Kit && node cli/install.js ${command} <tool>`);
+        warnLine(`   then: cd BoomOpen-Workflow-Kit-Pro && node cli/install.js ${command} <tool>`);
         process.exitCode = EXIT_FAILURE;
         return undefined;
     }
-    const fn = command === 'install' ? installTool : uninstallTool;
+    const toolOpts = { registerHooks: flags.has('--with-hooks') };
+    const fn = command === 'install' ? (key) => installTool(key, toolOpts) : uninstallTool;
     if (flags.has('--all') || target === 'all') return runForAll(fn, command);
     if (!target) {
-        if (command === 'install') return interactiveInstall();
+        if (command === 'install') return interactiveInstall(toolOpts);
         warnLine(`❌ Please specify a tool: ${TOOL_KEYS.join(', ')}, or --all`);
         process.exitCode = EXIT_FAILURE;
         return undefined;
@@ -565,11 +581,11 @@ async function runToolCommand(command, target, flags) {
     return undefined;
 }
 
-/** Split argv: the command, its positional arguments and flags (flags may appear anywhere). */
+/** Split argv: the command, its remaining arguments (including pre-command flags) and flags. */
 function parseArgs(argv) {
     const commandIndex = argv.findIndex((arg) => !arg.startsWith('-'));
     const command = commandIndex === -1 ? null : argv[commandIndex].toLowerCase();
-    const rest = commandIndex === -1 ? [] : argv.slice(commandIndex + 1);
+    const rest = commandIndex === -1 ? [] : argv.filter((_, idx) => idx !== commandIndex);
     const flags = new Set(argv.filter((arg) => arg.startsWith('-')).map((arg) => arg.toLowerCase()));
     const positional = rest.filter((arg) => !arg.startsWith('-')).map((arg) => arg.toLowerCase());
     return { command, rest, flags, positional };
@@ -581,8 +597,7 @@ async function main(argv = process.argv.slice(2)) {
     const isConduct = command === 'conduct' || command === 'conductor';
     // These subcommands parse their own options, including --help.
     const ownsHelp = isSettings || isConduct || command === 'doctor' || command === 'check' || command === 'ledger' || command === 'plan' || command === 'design' || command === 'research' || command === 'cook';
-    if (!isSettings && (flags.has('--version') || flags.has('-v'))) return printLine(KIT_VERSION);
-    if (flags.has('--with-hooks')) cliOptions.registerHooks = true;
+    if (!command && (flags.has('--version') || flags.has('-v'))) return printLine(KIT_VERSION);
 
     if (!command || command === 'help' || ((flags.has('--help') || flags.has('-h')) && !ownsHelp)) {
         printBanner();
@@ -590,7 +605,7 @@ async function main(argv = process.argv.slice(2)) {
     }
     if (command === 'install' || command === 'uninstall') {
         printBanner();
-        return runToolCommand(command, positional[0], flags);
+        return runToolCommand(command, positional, flags);
     }
     switch (command) {
         case 'list':
@@ -645,9 +660,11 @@ async function main(argv = process.argv.slice(2)) {
             return undefined;
         }
         case 'settings':
-        case 'config':
-            await runSettingsCommand(rest, { homeDir: HOME, cwd: settingsCwd(), repoRoot: ROOT });
+        case 'config': {
+            const res = await runSettingsCommand(rest, { homeDir: HOME, cwd: settingsCwd(), repoRoot: ROOT });
+            if (res && res.exitCode) process.exitCode = res.exitCode;
             return undefined;
+        }
         default:
             warnLine(`❌ Unknown command: ${command}`);
             printUsage();

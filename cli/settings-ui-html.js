@@ -2,8 +2,10 @@
 
 /**
  * Static HTML for the local settings Web UI. The per-launch session token is embedded so the page
- * can authenticate its own API calls; nothing else on the page is user-controlled.
+ * can authenticate its own API calls; dynamic values rendered via innerHTML pass through esc().
  */
+
+const { SETTING_DESCRIPTIONS } = require('./settings-schema.js');
 
 const CATEGORY_SCHEMA = [
   {
@@ -17,11 +19,7 @@ const CATEGORY_SCHEMA = [
         options: [1, 2, 3, 5, 10],
       },
       { key: 'execution.swarmScaling', label: 'Sub-Agent Swarm Scaling Strategy (1 → 2–3 → 4–6 → 8+)' },
-      {
-        key: 'execution.maxParallelSubagents',
-        label: 'Max Parallel Sub-Agents Per Wave',
-        options: [3, 6, 8, 12, 16],
-      },
+      { key: 'execution.maxParallelSubagents', label: 'Max Parallel Sub-Agents Per Wave', options: [3, 6, 8, 12, 16] },
       { key: 'workflows.defaultVariant', label: 'Default Slash Command Variant' },
       { key: 'workflows.naturalLanguageResearchTrigger', label: 'Natural-Language Research Trigger' },
     ],
@@ -41,20 +39,8 @@ const CATEGORY_SCHEMA = [
     badge: '📏 Pragmatic 2-Tier',
     fields: [
       { key: 'codingStandards.preset', label: '2-Tier Coding Standards Profile' },
-      {
-        key: 'codingStandards.softFileLines',
-        label: 'Soft File Length Target (Lines)',
-        type: 'number',
-        min: 1,
-        max: 100000,
-      },
-      {
-        key: 'codingStandards.hardFileLines',
-        label: 'Hard File Length Limit (Lines)',
-        type: 'number',
-        min: 1,
-        max: 100000,
-      },
+      { key: 'codingStandards.softFileLines', label: 'Soft File Length Target (Lines)', type: 'number', min: 1, max: 100000 },
+      { key: 'codingStandards.hardFileLines', label: 'Hard File Length Limit (Lines)', type: 'number', min: 1, max: 100000 },
       { key: 'verification.level', label: 'Verification & Testing Strictness' },
     ],
   },
@@ -80,8 +66,6 @@ const CATEGORY_SCHEMA = [
   },
 ];
 
-const { SETTING_DESCRIPTIONS } = require('./settings-schema.js');
-
 const I18N = {
   en: {
     title: '⚡ BOOMOPEN v5.5 — UNIFIED SETTINGS & CONTROL CENTER',
@@ -89,13 +73,15 @@ const I18N = {
     scopeProject: '📁 Project (./.boomopen.json)',
     resetBtn: '🔄 Reset Defaults',
     saveBtn: '💾 Save & Sync to All 5 Platforms',
+    saveProjectBtn: '💾 Save Project Overrides (./.boomopen.json)',
+    unsavedNotice: '✏️ Unsaved changes — click Save to apply',
     previewTitle: '⚡ Live AOT Injected Entrypoint Block Preview',
     previewBadge: '0ms Turn-1 Overhead',
     presets: [
-      { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Default v5.5)', desc: 'Mode A <= 2 known files; Proactive Sub-agent First on Turn 1 for > 2 files, unscoped exploration, or /cmd; NL Research → /research:team & /brainstorm:team.' },
-      { id: 'solo-fast', title: '🚀 Solo-Fast (Direct Mode A)', desc: 'Force Mode A Direct Execution (≤10 files), :fast variant, Relaxed 600/800 lines.' },
-      { id: 'deep-architect', title: '🧠 Deep-Architect (Strict Mode B)', desc: 'Force Mode B Multi-Agent Orchestrator, :hard variant, Strict 300/400 lines.' },
-      { id: 'adversarial-team', title: '🔺 Adversarial-Team (Golden Triangle)', desc: 'Force 3-Agent Golden Triangle :team on all workflows, Strict 300/400 lines.' },
+      { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Default v5.5)', desc: 'Mode A <= 2 known files; Proactive Sub-agent First on Turn 1 for > 2 files, unscoped exploration, or /cmd; 17-language NL workflow routing.' },
+      { id: 'solo-fast', title: '🚀 Solo-Fast (Direct Mode A)', desc: 'Force Mode A Direct Execution (≤10 files), conservative swarm (max 3), :fast variant, Relaxed 600/800 lines.' },
+      { id: 'deep-architect', title: '🧠 Deep-Architect (Strict Mode B)', desc: 'Force Mode B Multi-Agent Orchestrator (max 12), :hard variant, Strict 300/400 lines, council/cross_family routing.' },
+      { id: 'adversarial-team', title: '🔺 Adversarial-Team (Golden Triangle)', desc: 'Force Golden Triangle :team, hyper_swarm (max 12), Strict 300/400 lines, council/cross_family review.' },
     ],
     cats: [
       ['1. Orchestration & Execution Mode', '🚦 Gate & Dispatch'],
@@ -117,13 +103,15 @@ const I18N = {
     scopeProject: '📁 Dự án (./.boomopen.json)',
     resetBtn: '🔄 Khôi phục mặc định',
     saveBtn: '💾 Lưu & Đồng bộ 5 Nền tảng',
+    saveProjectBtn: '💾 Lưu Cấu hình Dự án (./.boomopen.json)',
+    unsavedNotice: '✏️ Có thay đổi chưa lưu — bấm Lưu để áp dụng',
     previewTitle: '⚡ Xem trước Khối Cấu hình AOT Nạp sẵn',
     previewBadge: '0ms Độ trễ Turn-1',
     presets: [
-      { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Mặc định v5.5)', desc: 'Mode A <= 2 file đã biết; Tự động gọi Sub-agent ngay Turn 1 khi > 2 file, khám phá codebase, hoặc gõ /cmd; Nghiên cứu tự nhiên → :team.' },
-      { id: 'solo-fast', title: '🚀 Solo-Fast (Trực tiếp Mode A)', desc: 'Ưu tiên Mode A thực thi trực tiếp (≤10 file), biến thể :fast, giới hạn 600/800 dòng.' },
-      { id: 'deep-architect', title: '🧠 Deep-Architect (Mode B Nghiêm ngặt)', desc: 'Bắt buộc Mode B điều phối đa tác tử, biến thể :hard, chuẩn 300/400 dòng.' },
-      { id: 'adversarial-team', title: '🔺 Adversarial-Team (Tam Giác Vàng)', desc: 'Kích hoạt 3-Agent Golden Triangle :team cho mọi quy trình, chuẩn 300/400 dòng.' },
+      { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Mặc định v5.5)', desc: 'Mode A <= 2 file đã biết; Tự động gọi Sub-agent ngay Turn 1 khi > 2 file, khám phá codebase, hoặc /cmd; Định tuyến tự nhiên 17 ngôn ngữ.' },
+      { id: 'solo-fast', title: '🚀 Solo-Fast (Trực tiếp Mode A)', desc: 'Ưu tiên Mode A trực tiếp (≤10 file), conservative (tối đa 3 sub-agent), biến thể :fast, giới hạn 600/800 dòng.' },
+      { id: 'deep-architect', title: '🧠 Deep-Architect (Mode B Nghiêm ngặt)', desc: 'Bắt buộc Mode B đa tác tử (tối đa 12), biến thể :hard, chuẩn 300/400 dòng, định tuyến council/cross_family.' },
+      { id: 'adversarial-team', title: '🔺 Adversarial-Team (Tam Giác Vàng)', desc: 'Kích hoạt Golden Triangle :team, hyper_swarm (tối đa 12), chuẩn 300/400 dòng, phản biện council/cross_family.' },
     ],
     cats: [
       ['1. Chế độ Điều phối & Thực thi', '🚦 Cổng & Phân luồng'],
@@ -138,7 +126,7 @@ const I18N = {
       'execution.swarmScaling': 'Chiến lược Co giãn Đàn Sub-Agent (1 → 2–3 → 4–6 → 8+)',
       'execution.maxParallelSubagents': 'Số Sub-Agent Song song Tối đa Mỗi Đợt',
       'workflows.defaultVariant': 'Biến thể Lệnh Slash Mặc định',
-      'workflows.naturalLanguageResearchTrigger': 'Kích hoạt Nghiên cứu bằng Ngôn ngữ Tự nhiên',
+      'workflows.naturalLanguageResearchTrigger': 'Kích hoạt Quy trình bằng Ngôn ngữ Tự nhiên',
       'models.subagentPolicy': 'Chính sách Model cho Sub-Agent',
       'research.depth': 'Độ sâu Nghiên cứu & Brainstorm',
       'clarification.style': 'Phong cách Hỏi làm rõ Socratic',
@@ -159,26 +147,26 @@ const I18N = {
     hints: {
       'execution.mode': 'auto = tự gọi sub-agent ở Turn 1 khi > N file hoặc khám phá; mode_a = trực tiếp; mode_b = đa agent; team = Tam Giác Vàng',
       'execution.modeAThresholdFiles': 'Số file đã biết tối đa cho Mode A (vượt ngưỡng sẽ phân mảnh sub-agent song song)',
-      'execution.swarmScaling': 'elastic = chia 1 → 2–3 → 4–6 → 8+ sub-agent (<= 3–4 file/agent); fixed_small = 2–3; max_parallel = tối đa',
-      'execution.maxParallelSubagents': 'Giới hạn trần số lượng sub-agent chạy song song trong một đợt điều phối',
-      'workflows.defaultVariant': 'Biến thể mặc định khi gõ lệnh /cmd không kèm hậu tố (:fast, :hard, :team)',
-      'workflows.naturalLanguageResearchTrigger': 'Tự động kích hoạt :team hoặc :hard khi yêu cầu nghiên cứu/lên kế hoạch bằng ngôn ngữ tự nhiên (17 ngôn ngữ)',
-      'models.subagentPolicy': 'quality_first = kế thừa model chất lượng cao của phiên; balanced = dùng flash cho việc phụ; fast_economy = tiết kiệm',
-      'research.depth': '5_lens_deep = 5 lăng kính + kiểm chứng đa nguồn; standard = tiêu chuẩn; quick_scan = quét nhanh',
-      'clarification.style': 'autonomous_first = tự trinh sát codebase trước khi hỏi; socratic_3q = hỏi tối đa 3 câu; minimal = hỏi tối thiểu',
-      'teams.maxDebateRounds': 'Số vòng tranh biện đối kháng tối đa giữa Tech Lead, Executor và Reviewer/Critic',
+      'execution.swarmScaling': 'elastic = chia 1 → 2–3 → 4–6 → 8+ sub-agent (<= 3–4 file/agent); hyper_swarm = chia nhỏ tối đa; conservative = giới hạn 2–3',
+      'execution.maxParallelSubagents': 'Giới hạn trần số lượng sub-agent chạy song song trong một đợt (3, 6, 8, 12, hoặc 16)',
+      'workflows.defaultVariant': 'Biến thể mặc định khi gõ lệnh /cmd không kèm hậu tố (auto, fast, hard, team, ask)',
+      'workflows.naturalLanguageResearchTrigger': 'Tự động định tuyến yêu cầu ngôn ngữ tự nhiên trên cả 17 ngôn ngữ (auto_team, auto_hard, ask_first, off)',
+      'models.subagentPolicy': 'quality_first = ưu tiên model chất lượng cao; strict_inherit = luôn kế thừa 100%; balanced_speed = dùng flash cho việc phụ',
+      'research.depth': '5_lens_deep = 5 lăng kính + kiểm chứng đa nguồn; standard = tiêu chuẩn; quick_brief = tóm tắt nhanh',
+      'clarification.style': 'autonomous_first = tự trinh sát codebase trước khi hỏi; interactive_ask = hỏi tương tác; zero_questions = tự quyết không hỏi',
+      'teams.maxDebateRounds': 'Số vòng tranh biện đối kháng tối đa giữa Tech Lead, Executor và Reviewer/Critic (1, 2, hoặc 3)',
       'codingStandards.preset': 'pragmatic (400/500 dòng), strict (300/400 dòng), hoặc relaxed (600/800 dòng)',
       'codingStandards.softFileLines': 'Số dòng khuyến nghị mỗi file trước khi cân nhắc tách module theo đúng trách nhiệm',
       'codingStandards.hardFileLines': 'Số dòng tối đa tuyệt đối mỗi file được kiểm tra bởi lệnh boomopen check',
-      'verification.level': 'strict_e2e = bắt buộc chạy test/build đến khi hết lỗi; unit_and_lint = unit test + lint; syntax_only = cú pháp',
-      'deliverables.routing': 'brain_artifacts = lưu vào vùng nhớ tạm UI (giữ sạch Git); workspace_reports = lưu ./reports/; minimal_inline = trả lời trực tiếp',
-      'language.response': 'auto = tự động khớp ngôn ngữ người dùng; vi = Tiếng Việt; en = Tiếng Anh',
-      'engines.researcher': 'Chọn nền tảng AI thực thi pha nghiên cứu (current, claude, codex, antigravity, cursor, copilot, council)',
-      'engines.planner': 'Chọn nền tảng AI thực thi pha thiết kế kiến trúc & lập kế hoạch',
-      'engines.coder': 'Chọn nền tảng AI thực thi pha viết code',
-      'engines.debugger': 'Chọn nền tảng AI gỡ lỗi (cross_family tự chọn model khác họ với coder để tránh điểm mù)',
+      'verification.level': 'strict_e2e = bắt buộc chạy test/build đến khi hết lỗi; fast_check = kiểm tra nhanh; manual = thủ công',
+      'deliverables.routing': 'brain_artifacts = lưu vào vùng nhớ tạm UI (giữ sạch Git); workspace_reports = lưu ./reports/; both = lưu cả hai nơi',
+      'language.response': 'auto = tự động khớp ngôn ngữ người dùng, hoặc chọn 1 trong 17 ngôn ngữ hỗ trợ (vi, en, zh-CN, zh-TW, ja, ko, es, fr, de, ...)',
+      'engines.researcher': 'Chọn nền tảng AI thực thi pha nghiên cứu (current, auto, council, antigravity, claude, codex, cursor, copilot)',
+      'engines.planner': 'Chọn nền tảng AI thực thi pha thiết kế kiến trúc & lập kế hoạch (current, auto, council, hoặc engine cụ thể)',
+      'engines.coder': 'Chọn nền tảng AI thực thi pha viết code (current, auto, hoặc engine cụ thể)',
+      'engines.debugger': 'Chọn nền tảng AI gỡ lỗi (cross_family tự chọn model khác họ với coder; hoặc current, auto, council)',
       'engines.reviewer': 'Chọn nền tảng AI chấm điểm & phản biện độc lập (hỗ trợ cross_family và council)',
-      'engines.councilMembers': 'Tổ hợp các nền tảng chạy song song khi kích hoạt chế độ hội đồng (/conduct:council)',
+      'engines.councilMembers': 'Tổ hợp các nền tảng chạy song song khi kích hoạt chế độ hội đồng (/conduct:council, hoặc all_installed)',
     },
   },
 };
@@ -261,7 +249,10 @@ function renderDashboardHtml(sessionToken = '') {
     const SCHEMA = ${schemaJson};
     const I18N = ${i18nJson};
     const TOKEN = ${tokenJson};
-    let state = { settings: {}, allowedEnums: {}, codingPresets: {}, installStatus: {}, scope: 'global', lang: 'en' };
+    const ESC_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ESC_MAP[c]);
+    let state = { settings: {}, allowedEnums: {}, codingPresets: {}, installStatus: {}, scope: 'global', lang: 'en', dirty: false };
+    let reqSeq = 0;
     const getVal = (obj, k) => k.split('.').reduce((a, p) => (a ? a[p] : undefined), obj);
     const setVal = (obj, k, v) => { const p = k.split('.'); let c = obj; for (let i = 0; i < p.length - 1; i++) c = c[p[i]] = c[p[i]] || {}; c[p[p.length - 1]] = v; };
     const toast = (text) => { document.getElementById('toast').textContent = text; };
@@ -283,6 +274,7 @@ function renderDashboardHtml(sessionToken = '') {
     function renderUI(data) {
       if (data) {
         state.settings = data.settings;
+        state.dirty = false;
         if (data.allowedEnums) state.allowedEnums = data.allowedEnums;
         if (data.codingPresets) state.codingPresets = data.codingPresets;
         if (data.installStatus) state.installStatus = data.installStatus;
@@ -294,34 +286,34 @@ function renderDashboardHtml(sessionToken = '') {
       document.getElementById('optGlobal').textContent = dict.scopeGlobal;
       document.getElementById('optProject').textContent = dict.scopeProject;
       document.getElementById('resetBtn').textContent = dict.resetBtn;
-      document.getElementById('saveBtn').textContent = dict.saveBtn;
+      document.getElementById('saveBtn').textContent = state.scope === 'project' ? dict.saveProjectBtn : dict.saveBtn;
       document.getElementById('previewTitle').textContent = dict.previewTitle;
       document.getElementById('previewBadge').textContent = dict.previewBadge;
       document.getElementById('langBtn').textContent = state.lang === 'vi' ? '🇻🇳 VI (Đổi sang EN)' : '🌐 EN (Switch to VI)';
       const synced = (data && data.syncReport && data.syncReport.platforms) || {};
-      document.getElementById('platforms').innerHTML = Object.entries(state.installStatus).map(([k, ok]) => \`<span class="pill \${ok ? 'ok' : ''}">\${ok ? '✅' : '⬚'} \${k}\${synced[k] ? ' · synced' : ''}</span>\`).join('');
+      document.getElementById('platforms').innerHTML = Object.entries(state.installStatus).map(([k, ok]) => \`<span class="pill \${ok ? 'ok' : ''}">\${ok ? '✅' : '⬚'} \${esc(k)}\${synced[k] ? ' · synced' : ''}</span>\`).join('');
       document.getElementById('presetCards').innerHTML = dict.presets.map(p => \`
-        <div class="preset-card \${state.settings.preset === p.id ? 'active' : ''}" data-preset="\${p.id}" role="button" tabindex="0" onclick="applyPresetClick('\${p.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();applyPresetClick('\${p.id}');}">
-          <h4>\${p.title}</h4><p>\${p.desc}</p>
+        <div class="preset-card \${state.settings.preset === p.id ? 'active' : ''}" data-preset="\${esc(p.id)}" role="button" tabindex="0" onclick="applyPresetClick('\${esc(p.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();applyPresetClick('\${esc(p.id)}');}">
+          <h4>\${esc(p.title)}</h4><p>\${esc(p.desc)}</p>
         </div>\`).join('');
       document.getElementById('categoriesGrid').innerHTML = SCHEMA.map((cat, idx) => {
         const [catTitle, catBadge] = (dict.cats && dict.cats[idx]) || [cat.title, cat.badge];
         return \`<div class="glass">
-          <div class="cat-header"><h3>\${catTitle}</h3><span class="pill">\${catBadge}</span></div>
+          <div class="cat-header"><h3>\${esc(catTitle)}</h3><span class="pill">\${esc(catBadge)}</span></div>
           \${cat.fields.map(f => {
-            const id = 'field-' + f.key;
+            const id = esc('field-' + f.key);
             const cur = String(getVal(state.settings, f.key) ?? '');
             const label = (dict.labels && dict.labels[f.key]) || f.label;
             const hint = (dict.hints && dict.hints[f.key]) || '';
             if (f.type === 'number') {
-              return \`<div class="field"><label for="\${id}">\${label}<code>\${f.key}</code>\${hint ? \`<span class="hint">\${hint}</span>\` : ''}</label>
-                <input id="\${id}" type="number" min="\${f.min || 1}" max="\${f.max || 100000}" data-key="\${f.key}" value="\${cur}" onchange="onFieldChange(this.dataset.key, this.value)" /></div>\`;
+              return \`<div class="field"><label for="\${id}">\${esc(label)}<code>\${esc(f.key)}</code>\${hint ? \`<span class="hint">\${esc(hint)}</span>\` : ''}</label>
+                <input id="\${id}" type="number" min="\${f.min || 1}" max="\${f.max || 100000}" data-key="\${esc(f.key)}" value="\${esc(cur)}" onchange="onFieldChange(this.dataset.key, this.value)" /></div>\`;
             }
             const baseOpts = state.allowedEnums[f.key] || f.options || [];
             const opts = baseOpts.map(String).includes(cur) || !cur ? baseOpts : [cur, ...baseOpts];
-            return \`<div class="field"><label for="\${id}">\${label}<code>\${f.key}</code>\${hint ? \`<span class="hint">\${hint}</span>\` : ''}</label>
-              <select id="\${id}" data-key="\${f.key}" onchange="onFieldChange(this.dataset.key, this.value)">
-                \${opts.map(o => \`<option value="\${o}" \${String(o) === cur ? 'selected' : ''}>\${o}</option>\`).join('')}
+            return \`<div class="field"><label for="\${id}">\${esc(label)}<code>\${esc(f.key)}</code>\${hint ? \`<span class="hint">\${esc(hint)}</span>\` : ''}</label>
+              <select id="\${id}" data-key="\${esc(f.key)}" onchange="onFieldChange(this.dataset.key, this.value)">
+                \${opts.map(o => \`<option value="\${esc(o)}" \${String(o) === cur ? 'selected' : ''}>\${esc(o)}</option>\`).join('')}
               </select></div>\`;
           }).join('')}
         </div>\`;
@@ -334,7 +326,8 @@ function renderDashboardHtml(sessionToken = '') {
       return (failed ? '⚠️ ' : '✅ ') + verb + where + ' (' + d.elapsedMs + 'ms)' + (failed ? ' — ' + failed + ' file(s) could not be synced' : '');
     }
     async function run(action, verb) {
-      try { const d = await action(); renderUI(d); toast(describeResult(d, verb)); } catch (err) { toast('❌ ' + err.message); }
+      const seq = ++reqSeq;
+      try { const d = await action(); if (seq !== reqSeq) return; renderUI(d); toast(describeResult(d, verb)); } catch (err) { if (seq === reqSeq) toast('❌ ' + err.message); }
     }
     async function fetchState() {
       await run(() => api('/api/settings?scope=' + encodeURIComponent(state.scope)), 'Loaded');
@@ -351,10 +344,12 @@ function renderDashboardHtml(sessionToken = '') {
         if (hardEl) hardEl.value = String(limits.hardFileLines);
       }
       state.settings.preset = 'custom';
+      state.dirty = true;
       syncPresetHighlight();
+      toast((I18N[state.lang] || I18N.en).unsavedNotice);
     };
     window.applyPresetClick = (preset) => run(() => api('/api/preset', { preset, scope: state.scope }), 'Applied ' + preset);
-    document.getElementById('langBtn').onclick = () => { state.lang = state.lang === 'en' ? 'vi' : 'en'; renderUI(); };
+    document.getElementById('langBtn').onclick = () => { state.lang = state.lang === 'en' ? 'vi' : 'en'; renderUI(); if (state.dirty) toast((I18N[state.lang] || I18N.en).unsavedNotice); };
     document.getElementById('scopeSelect').onchange = (e) => { state.scope = e.target.value; fetchState(); };
     document.getElementById('saveBtn').onclick = () => run(() => api('/api/settings', { settings: state.settings, scope: state.scope }), 'Saved');
     document.getElementById('resetBtn').onclick = () => run(() => api('/api/reset', { scope: state.scope }), 'Reset to defaults');

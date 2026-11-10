@@ -9,8 +9,8 @@ The kit is **not published on npm**. Do not install npm packages that claim to b
 Install from a clone of the repository:
 
 ```bash
-git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
-cd BoomOpen-Workflow-Kit
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+cd BoomOpen-Workflow-Kit-Pro
 node cli/install.js install claude        # one tool
 node cli/install.js install --all         # every supported tool
 

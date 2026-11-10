@@ -94,6 +94,7 @@ test('mergeCodexConfigText never redefines what the user already has', () => {
 
   const ownRole = mergeCodexConfigText(USER_CONFIGS.ownRole, TEMPLATE);
   assert.equal((ownRole.text.match(/^\[agents\.reviewer\]$/gm) || []).length, 1);
+  assert.equal((ownRole.text.match(/^\[agents\]$/gm) || []).length, 1, 'implicit [agents] still gets [agents] max_threads');
   assert.match(ownRole.notes.join('\n'), /reviewer/);
 
   const dottedOff = mergeCodexConfigText(USER_CONFIGS.dottedFeatureOff, TEMPLATE);

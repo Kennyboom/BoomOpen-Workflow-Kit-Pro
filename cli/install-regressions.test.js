@@ -193,6 +193,20 @@ test('the installed CLI copy runs check/settings/-v and refuses install and unin
       assert.match(refused.stderr, /installed copy/);
     }
     assert.equal(listFiles(path.join(home, '.claude')).length, before, 'nothing was deleted');
+
+    // Simulate macOS /var/folders -> /private/var/folders symlinked HOME: __dirname resolves realpath
+    // while HOME uses the symlink/junction path; installedCopyProblem must still detect the installed copy.
+    const aliasParent = tempDir('boomopen-reg-alias-');
+    const linkedHome = path.join(aliasParent, 'linked-home');
+    try {
+      fs.symlinkSync(home, linkedHome, process.platform === 'win32' ? 'junction' : 'dir');
+      const realFramework = fs.realpathSync.native(framework);
+      const refusedViaAlias = runCli(realFramework, linkedHome, ['install', 'claude']);
+      assert.equal(refusedViaAlias.status, 1, refusedViaAlias.stdout);
+      assert.match(refusedViaAlias.stderr, /installed copy/);
+    } finally {
+      removeDir(aliasParent);
+    }
   });
 });
 

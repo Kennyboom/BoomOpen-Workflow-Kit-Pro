@@ -58,12 +58,25 @@ function saveSettings(patch = {}, options = {}) {
   return { settings: loadSettings({ ...options, scope: undefined }), savedPath, scope, syncReport };
 }
 
+function assertValidLineLimitPair(nextSoft, nextHard) {
+  if (nextSoft > nextHard) {
+    throw new Error(
+      `Invalid line limits: codingStandards.softFileLines (${nextSoft}) cannot exceed codingStandards.hardFileLines (${nextHard})`
+    );
+  }
+}
+
 function setSettingByKey(dottedKey, rawValue, options = {}) {
   if (LINE_LIMIT_KEYS.includes(dottedKey)) {
     const coerced = coerceLineLimit(rawValue);
     if (coerced === undefined) {
       throw new Error(`Invalid value "${rawValue}" for ${dottedKey}. Allowed: integer ${MIN_LINE_LIMIT}..${MAX_LINE_LIMIT}`);
     }
+    const scope = resolveScope(options);
+    const currentCs = loadSettings({ ...options, scope: scope === 'project' ? undefined : 'global' }).codingStandards;
+    const nextSoft = dottedKey === 'codingStandards.softFileLines' ? coerced : currentCs.softFileLines;
+    const nextHard = dottedKey === 'codingStandards.hardFileLines' ? coerced : currentCs.hardFileLines;
+    assertValidLineLimitPair(nextSoft, nextHard);
     return saveSettings({ [dottedKey]: coerced }, options);
   }
   if (!isSettingKey(dottedKey)) {
@@ -142,7 +155,7 @@ Usage: boomopen settings <subcommand> [options]
        node cli/install.js settings <subcommand> [options]
 
 Subcommands:
-  status                  Show effective settings (read-only; default when no subcommand is given)
+  status                  Show effective settings (alias: show; default when no subcommand is given)
   get [key]               Print the effective value of one key (or all settings)
   set <key> <value>       Set one key (also: set key=value). "set preset <name>" applies that preset
   mode <mode>             Shortcut for: set execution.mode <mode>
@@ -158,7 +171,7 @@ Options:
   --port <n>              Web UI port (default ${DEFAULT_UI_PORT}; 0 = random free port)
   --no-open               Do not open a browser for the Web UI
 
-Keys: ${Object.keys(ALLOWED_ENUMS).join(', ')}
+Keys: ${ALL_STORABLE_KEYS.join(', ')}
 `;
 
 function parseSettingsArgs(args) {
@@ -171,14 +184,16 @@ function parseSettingsArgs(args) {
     else if (arg === '--no-open') flags.noOpen = true;
     else if (arg === '--ui') flags.ui = true;
     else if (arg === '--help' || arg === '-h') flags.help = true;
-    else if (['--get', '--set', '--preset', '--mode', '--reset', '--sync'].includes(arg)) {
+    else if (['--status', '--show', '--get', '--set', '--preset', '--mode', '--reset', '--sync'].includes(arg)) {
       const subCmd = arg.slice(2);
       if (!positional.includes(subCmd)) positional.unshift(subCmd);
-    } else if (arg === '--port') {
-      const raw = args[++i];
+    } else if (arg === '--port' || arg.startsWith('--port=')) {
+      const raw = arg === '--port' ? args[++i] : arg.slice('--port='.length);
       const port = Number(raw);
       if (!/^\d+$/.test(String(raw)) || port > MAX_PORT) throw new Error(`Invalid --port value "${raw}"`);
       flags.port = port;
+    } else if (arg.startsWith('-') && !(positional[0] === 'set' && positional.length === 2 && /^-\d/.test(arg))) {
+      throw new Error(`Unknown settings option "${arg}". Run "boomopen settings help" for usage.`);
     } else positional.push(arg);
   }
   return { flags, positional };
@@ -237,15 +252,18 @@ async function dispatchSettingsCommand(sub, positional, flags, options) {
 async function runSettingsCommand(args = [], options = {}) {
   try {
     const { flags, positional } = parseSettingsArgs(args);
-    const sub = (positional[0] || 'status').toLowerCase();
-    return await dispatchSettingsCommand(sub, positional, flags, options);
+    const rawSub = (positional[0] || (flags.ui ? 'ui' : 'status')).toLowerCase();
+    const sub = rawSub === 'show' ? 'status' : rawSub;
+    const res = await dispatchSettingsCommand(sub, positional, flags, options);
+    const failedSync = Boolean(res.syncReport && res.syncReport.failedFiles && res.syncReport.failedFiles.length > 0);
+    return { exitCode: failedSync ? 1 : 0, ...res };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     if (!options.silent) {
       console.error(`❌ ${message}`);
       process.exitCode = 1;
     }
-    return { action: 'error', error: message };
+    return { action: 'error', error: message, exitCode: 1 };
   }
 }
 

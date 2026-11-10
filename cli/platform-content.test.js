@@ -39,8 +39,8 @@ test('Codex command skills are generated from commands/*.md and up to date (L10,
     const skillDir = path.join(CODEX_SKILLS_DIR, `boomopen-workflow-kit-${name.slice(0, -3)}`);
     assert.ok(fs.existsSync(path.join(skillDir, 'SKILL.md')), `missing Codex skill for commands/${name}`);
     const yaml = fs.readFileSync(path.join(skillDir, 'agents', 'openai.yaml'), 'utf8');
-    assert.match(yaml, /^interface:\n {2}display_name: /m, `${name}: openai.yaml must nest keys under interface:`);
-    assert.match(yaml, /^policy:\n {2}allow_implicit_invocation: /m, `${name}: openai.yaml must nest keys under policy:`);
+    assert.match(yaml, /^interface:\r?\n {2}display_name: /m, `${name}: openai.yaml must nest keys under interface:`);
+    assert.match(yaml, /^policy:\r?\n {2}allow_implicit_invocation: /m, `${name}: openai.yaml must nest keys under policy:`);
   }
 });
 

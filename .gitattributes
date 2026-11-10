@@ -1,0 +1,16 @@
+# Normalize text files to LF across all platforms so scripts, shebangs, YAML, and JSON stay deterministic
+* text=auto eol=lf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.mp4 binary
+*.webm binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.ico binary
+*.pdf binary

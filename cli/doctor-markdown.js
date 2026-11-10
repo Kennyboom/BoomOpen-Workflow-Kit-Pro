@@ -34,6 +34,8 @@ const DOC_AUDITS = Object.freeze([
   { dir: 'agents/teams', label: 'agents/teams/**/*.md', recursive: true },
   { dir: 'i18n', label: 'i18n/README.*.md', recursive: false },
   { dir: 'skills', label: 'skills/**/SKILL.md', recursive: true, fileName: 'SKILL.md' },
+  { dir: 'documents', label: 'documents/**/*.md', recursive: true, optional: true },
+  { dir: '.', label: '*.md (root)', recursive: false, optional: true, skipLegacyOn: new Set(['CHANGELOG.md']) },
 ]);
 
 const LEGACY_REFERENCES = ['agent-assistant', 'code-assistants'];
@@ -93,30 +95,33 @@ function collectMarkdown(dirPath, recursive, fileName, prefix = '', accumulator 
 }
 
 /**
- * Audit one Markdown folder for its line limit, mojibake and legacy references.
+ * Audit one Markdown folder for its line limit (when configured), mojibake and legacy references.
  * @param {string} dirPath
- * @param {{ label: string, limit: number, recursive?: boolean, fileName?: string }} spec
- * @returns {{ name: string, passed: boolean, detail: string }}
+ * @param {{ label: string, limit?: number|null, recursive?: boolean, fileName?: string, optional?: boolean, skipLegacyOn?: Set<string> }} spec
+ * @returns {{ name: string, passed: boolean, detail: string }|null}
  */
 function auditMarkdownDir(dirPath, spec) {
-  const { label, limit } = spec;
-  if (!fs.existsSync(dirPath)) return { name: label, passed: false, detail: 'Directory missing' };
+  const { label, limit, skipLegacyOn } = spec;
+  if (!fs.existsSync(dirPath)) return spec.optional ? null : { name: label, passed: false, detail: 'Directory missing' };
   const files = collectMarkdown(dirPath, Boolean(spec.recursive), spec.fileName);
+  if (spec.optional && files.length === 0) return null;
   const issues = [];
   for (const file of files) {
     const text = readTextFile(file.fullPath);
     const lineCount = countLines(text);
-    if (lineCount > limit) issues.push(`${file.relName} (${lineCount} lines > ${limit})`);
+    if (limit && lineCount > limit) issues.push(`${file.relName} (${lineCount} lines > ${limit})`);
     const garbled = detectMojibake(text);
     if (garbled) issues.push(`${file.relName} (mojibake "${garbled}")`);
-    if (LEGACY_REFERENCES.some((ref) => text.includes(ref))) issues.push(`${file.relName} (legacy ref)`);
+    if (!(skipLegacyOn && skipLegacyOn.has(file.relName)) && LEGACY_REFERENCES.some((ref) => text.includes(ref))) {
+      issues.push(`${file.relName} (legacy ref)`);
+    }
   }
   const shown = issues.slice(0, MAX_ISSUES_SHOWN).join('; ');
   const more = issues.length > MAX_ISSUES_SHOWN ? ` (+${issues.length - MAX_ISSUES_SHOWN} more)` : '';
   return {
     name: label,
     passed: issues.length === 0,
-    detail: issues.length === 0 ? `${files.length} files OK (≤${limit} lines)` : shown + more,
+    detail: issues.length === 0 ? `${files.length} files OK${limit ? ` (≤${limit} lines)` : ''}` : shown + more,
   };
 }
 
@@ -126,11 +131,11 @@ function auditMarkdownDir(dirPath, spec) {
  */
 function auditKitMarkdown(repoRoot) {
   return DOC_AUDITS.map((audit) =>
-    auditMarkdownDir(path.join(repoRoot, ...audit.dir.split('/')), {
+    auditMarkdownDir(audit.dir === '.' ? repoRoot : path.join(repoRoot, ...audit.dir.split('/')), {
       ...audit,
-      limit: DOC_LINE_LIMITS[audit.dir],
+      limit: DOC_LINE_LIMITS[audit.dir] ?? null,
     })
-  );
+  ).filter(Boolean);
 }
 
 module.exports = {

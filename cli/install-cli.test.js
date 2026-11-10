@@ -77,19 +77,34 @@ test('CLI flags, exit codes and machine-readable output', () => {
 
     const help = runCli(kitRoot, home, ['--help']);
     assert.equal(help.status, 0);
-    assert.match(help.stdout, /git clone https:\/\/github\.com\/Kennyboom\/BoomOpen-Workflow-Kit\.git/);
+    assert.match(help.stdout, /git clone https:\/\/github\.com\/Kennyboom\/BoomOpen-Workflow-Kit-Pro\.git/);
     assert.match(help.stdout, /boomopen <command>/);
     assert.doesNotMatch(help.stdout, /npx|npm install -g/);
 
     for (const args of [['frobnicate'], ['install', 'bogus-tool'], ['uninstall'], ['uninstall', 'bogus-tool'], ['install']]) {
       assert.equal(runCli(kitRoot, home, args).status, 1, `boomopen ${args.join(' ')} must fail`);
     }
-    assert.equal(fs.existsSync(path.join(home, '.claude')), false, 'a non-interactive `install` writes nothing');
+    for (const args of [['install', 'claude', '--with-hook'], ['uninstall', '--all', '--dry-run'], ['install', 'claude', 'cursor']]) {
+      assert.equal(runCli(kitRoot, home, args).status, 2, `boomopen ${args.join(' ')} must reject invalid options with exit 2`);
+    }
+    assert.equal(fs.existsSync(path.join(home, '.claude')), false, 'a non-interactive or rejected `install` writes nothing');
 
     const settings = runCli(kitRoot, home, ['settings', 'get', '--json']);
     assert.equal(settings.status, 0, settings.stderr);
     assert.doesNotThrow(() => JSON.parse(settings.stdout), 'settings get --json prints pure JSON (no banner)');
+    assert.equal(runCli(kitRoot, home, ['settings', 'show']).status, 0, 'settings show aliases status');
     assert.equal(runCli(kitRoot, home, ['settings', 'set', 'no.such.key', 'x']).status, 1);
+
+    // Pre-command flags (e.g. boomopen -p settings ...) must be preserved and forwarded to subcommands
+    const preFlag = spawnSync(process.execPath, [path.join(kitRoot, 'cli', 'install.js'), '-p', 'settings', 'set', 'execution.mode', 'team'], {
+      cwd: home,
+      env: { ...process.env, HOME: home, USERPROFILE: home, APPDATA: path.join(home, 'AppData', 'Roaming'), LOCALAPPDATA: path.join(home, 'AppData', 'Local'), XDG_CONFIG_HOME: path.join(home, '.config') },
+      encoding: 'utf8',
+    });
+    assert.equal(preFlag.status, 0, preFlag.stderr);
+    assert.ok(fs.existsSync(path.join(home, '.boomopen.json')), '-p before settings writes workspace .boomopen.json');
+    assert.equal(fs.existsSync(path.join(home, '.boomopen', 'settings.json')), false, '-p before settings does not write global');
+    fs.rmSync(path.join(home, '.boomopen.json'), { force: true });
 
     const notInstalled = runCli(kitRoot, home, ['uninstall', 'cursor']);
     assert.equal(notInstalled.status, 0);
