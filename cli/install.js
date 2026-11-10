@@ -250,10 +250,14 @@ function registerHooks(key, tool, notes, optInHooks = false) {
     }
 }
 
-function syncSettings() {
+function syncSettings(platforms = null) {
     try {
         // null = global settings only, so a workspace ./.boomopen.json never leaks into global entry files.
-        syncSettingsToInstalledPlatforms(null, { homeDir: HOME });
+        const opts = platforms ? { homeDir: HOME, platforms } : { homeDir: HOME };
+        const report = syncSettingsToInstalledPlatforms(null, opts);
+        for (const item of (report && report.failedFiles) || []) {
+            logError('settings-sync', item.file, new Error(item.error));
+        }
     } catch (error) {
         logError('settings-sync', path.join(HOME, '.boomopen'), error);
     }
@@ -272,11 +276,22 @@ function cleanupAntigravityLegacy(tool) {
     }
     const legacySkill = path.join(tool.paths.skills, 'agent-assistant');
     const looksLikeKit = ['SKILL.md', 'rules', 'agents'].every((name) => fs.existsSync(path.join(legacySkill, name)));
-    if (!looksLikeKit) return;
-    try {
-        fs.rmSync(legacySkill, { recursive: true, force: true });
-    } catch (error) {
-        logError('legacy-skill', legacySkill, error);
+    if (looksLikeKit) {
+        try {
+            fs.rmSync(legacySkill, { recursive: true, force: true });
+        } catch (error) {
+            logError('legacy-skill', legacySkill, error);
+        }
+    }
+    const libraryDir = `${tool.paths.skills}_library`;
+    for (const name of ['boomopen-workflow-kit', 'bwf-auto-save', 'bwf-session-restore']) {
+        const orphan = path.join(libraryDir, name);
+        if (!fs.existsSync(orphan)) continue;
+        try {
+            fs.rmSync(orphan, { recursive: true, force: true });
+        } catch (error) {
+            logError('legacy-library', orphan, error);
+        }
     }
 }
 
@@ -307,7 +322,7 @@ function installTool(key, options = {}) {
         if (key === 'antigravity') cleanupAntigravityLegacy(tool);
         finishLedger(ledger, notes);
         registerHooks(key, tool, notes, Boolean(options.registerHooks));
-        syncSettings();
+        syncSettings([key]);
     }
     completeProgress();
     printSummary(tool.name, 'install', notes);

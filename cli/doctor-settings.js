@@ -130,7 +130,9 @@ function findUnsyncedEntryFiles(globalSettings, options = {}) {
 function checkSettingsFiles(options = {}) {
   try {
     const { globalPath, projectPath } = getSettingsPaths(options);
-    const globalResult = inspectSettingsFile(globalPath, DEFAULT_SETTINGS);
+    const globalResult = options.sourceOnly
+      ? { settings: DEFAULT_SETTINGS, problems: [], present: false }
+      : inspectSettingsFile(globalPath, DEFAULT_SETTINGS);
     const projectResult = inspectSettingsFile(projectPath, globalResult.settings);
     const active = resolvePresetLabel(projectResult.settings);
     const fileProblems = [...globalResult.problems, ...projectResult.problems];

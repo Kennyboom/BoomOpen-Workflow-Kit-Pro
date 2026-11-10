@@ -255,7 +255,7 @@ function cwdChange(words) {
 
 const unixRecursive = (args) => args.some((a) => a === '--recursive' || /^-[A-Za-z]*[rR][A-Za-z]*$/.test(a));
 const cmdRecursive = (args) => args.some((a) => CMD_SLASH_FLAGS.test(a) && CMD_RECURSIVE_S.test(a));
-const psRecursive = (args) => args.some((a) => /^-r(?:e(?:c(?:u(?:r(?:s(?:e)?)?)?)?)?)?$/i.test(a)) || cmdRecursive(args);
+const psRecursive = (args) => args.some((a) => /^-r(?:e(?:c(?:u(?:r(?:s(?:e)?)?)?)?)?)?(?::(?:\$?true|1))?$/i.test(a)) || cmdRecursive(args);
 const positional = (args, stripSlash = false) =>
   args.filter((a) => !a.startsWith('-') && !(stripSlash && CMD_SLASH_FLAGS.test(a)) && !/^-{1,2}$/.test(a));
 

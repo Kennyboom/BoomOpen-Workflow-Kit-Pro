@@ -291,3 +291,28 @@ test('symlinked shared and instruction files keep their link and get the user co
     assert.equal(read(mdTarget), '# Mine\n');
   });
 });
+
+test('doctor --source-only skips corrupt host ~/.boomopen/settings.json and Antigravity install prunes legacy library orphans', async () => {
+  const { checkSettingsFiles } = require('./doctor-settings.js');
+  const { pathToFileURL } = require('node:url');
+  const hookUrl = pathToFileURL(path.join(REPO_ROOT, 'platforms', 'antigravity', 'hooks', 'validate-tool-call.mjs')).href;
+  const { evaluateCommand } = await import(hookUrl);
+  assert.equal(evaluateCommand('Remove-Item C:\\ -Recurse:$true -Force').allowed, false);
+  assert.equal(evaluateCommand('Remove-Item C:\\ -r:1 -Force').allowed, false);
+
+  withSandbox((kit, home) => {
+    write(path.join(home, '.boomopen', 'settings.json'), '{broken-json');
+    assert.equal(checkSettingsFiles({ homeDir: home, cwd: kit, sourceOnly: false }).passed, false);
+    assert.equal(checkSettingsFiles({ homeDir: home, cwd: kit, sourceOnly: true }).passed, true);
+    fs.rmSync(path.join(home, '.boomopen', 'settings.json'), { force: true });
+
+    const agyLib = path.join(home, '.gemini', 'config', 'skills_library');
+    for (const orphan of ['boomopen-workflow-kit', 'bwf-auto-save', 'bwf-session-restore']) {
+      write(path.join(agyLib, orphan, 'SKILL.md'), 'legacy orphan');
+    }
+    ok(runCli(kit, home, ['install', 'antigravity']), 'install antigravity');
+    for (const orphan of ['boomopen-workflow-kit', 'bwf-auto-save', 'bwf-session-restore']) {
+      assert.equal(fs.existsSync(path.join(agyLib, orphan)), false, `${orphan} pruned from skills_library`);
+    }
+  });
+});

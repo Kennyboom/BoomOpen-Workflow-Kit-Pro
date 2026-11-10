@@ -344,6 +344,17 @@ test('settings CLI: help, unknown subcommands, read-only status (L15)', async ()
     assert.equal(badOpt.action, 'error');
     assert.equal(badOpt.exitCode, 1);
     assert.equal((await runSettingsCommand(['ui', '--port=abc'], opts)).action, 'error');
+
+    const codexMd = path.join(box.homeDir, '.codex', 'CODEX.md');
+    write(claudeMd, kitFile(PRESETS['solo-fast']));
+    write(codexMd, kitFile(PRESETS['solo-fast']));
+    const scopedSync = syncSettingsToInstalledPlatforms(PRESETS['deep-architect'], {
+      homeDir: box.homeDir,
+      platforms: ['claude'],
+    });
+    assert.deepEqual(scopedSync.updatedFiles, [claudeMd]);
+    assert.match(fs.readFileSync(claudeMd, 'utf8'), /`deep-architect`/);
+    assert.match(fs.readFileSync(codexMd, 'utf8'), /`solo-fast`/);
   } finally {
     box.cleanup();
   }

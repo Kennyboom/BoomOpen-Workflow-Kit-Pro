@@ -229,7 +229,12 @@ function syncSettingsToInstalledPlatforms(settings, options = {}) {
     installed: detectInstalledPlatforms(homeDir),
     elapsedMs: 0,
   };
-  for (const [platform, fileList] of Object.entries(getSyncTargets(homeDir, options))) {
+  const targetsByPlatform = getSyncTargets(homeDir, options);
+  const wanted = Array.isArray(options.platforms) && options.platforms.length > 0
+    ? options.platforms.filter((p) => Object.hasOwn(targetsByPlatform, p))
+    : Object.keys(targetsByPlatform);
+  for (const platform of wanted) {
+    const fileList = targetsByPlatform[platform] || [];
     let anySynced = false;
     for (const filePath of fileList) {
       const result = syncOneFile(filePath, active, homeDir);

@@ -23,8 +23,8 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         node: [18, 20, 22]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
       # The CLI and its tests use only Node built-ins, so no `npm ci` is needed here.
@@ -54,8 +54,8 @@ jobs:
     name: Python and shell syntax (helpers and skills vault)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           # Oldest Python the helper scripts support.
           python-version: '3.10'
@@ -66,6 +66,12 @@ jobs:
           find scripts skills skills_library -name '*.py' ! -path '*/assets/template.py' -print0             | xargs -0 python -B -c 'import sys; [compile(open(f, encoding="utf-8").read(), f, "exec") for f in sys.argv[1:]]'
       - name: Shell syntax
         run: find scripts skills skills_library -name '*.sh' -print0 | xargs -0 -n1 bash -n
+      - name: Run zero-dependency static audit scripts
+        run: |
+          python skills/frontend-design/scripts/ux_audit.py ./web/src
+          python skills/frontend-design/scripts/accessibility_checker.py ./web
+          python skills/seo-fundamentals/scripts/seo_checker.py ./web
+          python skills/security-auditor/scripts/security_scan.py ./web --skip-deps
       - name: Third-party notices are current
         run: node .github/scripts/third-party-notices.js --check
 
@@ -82,8 +88,8 @@ jobs:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
           cache: npm
@@ -103,8 +109,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
       # Packs the tarball (no lifecycle scripts, nothing is published), extracts it,
