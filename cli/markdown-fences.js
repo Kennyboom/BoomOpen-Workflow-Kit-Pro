@@ -39,7 +39,7 @@ function stripOutsideBacktickParens(raw) {
 }
 
 function parseFenceOpen(line) {
-  const m = /^[ \t]{0,3}(`{3,}|~{3,})([^\r\n]*)$/.exec(line);
+  const m = /^[ \t]*(`{3,}|~{3,})([^\r\n]*)$/.exec(line);
   if (!m) return null;
   const ch = m[1][0];
   const info = m[2].trim();
@@ -48,7 +48,7 @@ function parseFenceOpen(line) {
 }
 
 function isFenceClose(line, fence) {
-  const m = /^[ \t]{0,3}(`{3,}|~{3,})[ \t]*$/.exec(line);
+  const m = /^[ \t]*(`{3,}|~{3,})[ \t]*$/.exec(line);
   return Boolean(m && m[1][0] === fence.char && m[1].length >= fence.len);
 }
 
@@ -128,7 +128,7 @@ function extractFencedBlocks(markdown) {
     const opened = parseFenceOpen(line);
     if (!opened) continue;
     const lang = opened.info.split(/\s+/)[0].toLowerCase();
-    if (lang === 'carousel' && opened.len >= 4) containerFence = opened;
+    if (opened.len >= 4 && (!lang || /^(?:carousel|markdown|md)$/.test(lang))) containerFence = opened;
     else { activeFence = { ...opened, lang }; buf = []; }
   }
   return blocks;

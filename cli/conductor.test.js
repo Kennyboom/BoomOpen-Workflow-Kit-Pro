@@ -358,6 +358,18 @@ test('regressions S1-BUG-01, S1-BUG-02, S1-BUG-06 & S1-BUG-11: Windows .cmd spac
     // S1-BUG-06: Strict CLI option validation
     assert.equal(await runConductorCli(['probe', '--unknown-flag'], { cwd: root, silent: true }), 2);
     assert.equal(await runConductorCli(['dispatch', '--prompt', 'ok', '--output', '--json'], { cwd: root, silent: true }), 2);
+
+    // V3-CLI-01: verifyAndRestoreReadOnlySnapshot handles file-replaced-by-dir (no EISDIR) and prunes empty rogue dirs
+    fs.rmSync(path.join(contractsDir, 'api.ts'));
+    fs.mkdirSync(path.join(contractsDir, 'api.ts', 'sub'), { recursive: true });
+    fs.writeFileSync(path.join(contractsDir, 'api.ts', 'sub', 'x.txt'), 'collision', 'utf8');
+    fs.mkdirSync(path.join(contractsDir, 'empty-rogue', 'deep'), { recursive: true });
+    const v3Guard = verifyAndRestoreReadOnlySnapshot(root, snap);
+    assert.equal(v3Guard.restored, true);
+    assert.ok(fs.lstatSync(path.join(contractsDir, 'api.ts')).isFile());
+    assert.equal(fs.readFileSync(path.join(contractsDir, 'api.ts'), 'utf8'), 'export const SAFE = 1;\n');
+    assert.ok(!fs.existsSync(path.join(contractsDir, 'empty-rogue')));
+    assert.ok(v3Guard.violations.includes('contracts/empty-rogue') || v3Guard.violations.includes('contracts/empty-rogue/deep'));
   } finally {
     removeDir(root);
   }

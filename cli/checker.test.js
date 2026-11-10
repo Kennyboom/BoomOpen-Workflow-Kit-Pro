@@ -294,3 +294,39 @@ test('regressions S1-BUG-03, S1-BUG-09 & S1-BUG-10: TSX generics, postfix !/++ d
     assert.equal(active.hardFileLines, 800);
   });
 });
+
+test('regressions V3-CLI-02 & V3-CLI-06: generic JSX <Select<User> />, variadic tuple [...any], and regex after if (...)', () => {
+  // V3-CLI-02: generic JSX <Select<User> label="ok" /> followed by <Select>...</Select> must NOT swallow code in between
+  const genericJsx = [
+    'export const a = <Select<User> label="ok" />;',
+    'export const hiddenAnyBetweenSelects: any = 123;',
+    'export const b = <Select><span>hi</span></Select>;',
+  ].join('\n');
+  const genRes = inspectSourceFile('/p/src/Gen.tsx', '/p', genericJsx, undefined, { projectRoot: '/p' });
+  assert.equal(genRes.violations.length, 1);
+  assert.match(genRes.violations[0], /Gen\.tsx:2: explicit 'any'/);
+
+  // V3-CLI-02: generic arrow function <Item>(x: Item) => Item when <Item>...</Item> also exists in same TSX file
+  const genericArrowCollision = [
+    'export const id = <Item>(x: Item): Item => x;',
+    'export const badAfterArrow: any = 1;',
+    'export const list = <Item><span>row</span></Item>;',
+  ].join('\n');
+  const arrowRes = inspectSourceFile('/p/src/Item.tsx', '/p', genericArrowCollision, undefined, { projectRoot: '/p' });
+  assert.equal(arrowRes.violations.length, 1);
+  assert.match(arrowRes.violations[0], /Item\.tsx:2: explicit 'any'/);
+
+  // V3-CLI-06: variadic tuple `[string, ...any]` and `[...any[]]` must be flagged as explicit any
+  assert.equal(inspectSourceFile('/p/src/t.ts', '/p', 'export type V1 = [string, ...any];\n').violations.length, 1);
+  assert.equal(inspectSourceFile('/p/src/t.ts', '/p', 'export type V2 = [...any[]];\n').violations.length, 1);
+
+  // V3-CLI-06: regex literal immediately after `if (...)` / `while (...)` must be stripped as regex, not code/comment
+  const regexAfterIf = [
+    'export function check(u: string): boolean {',
+    '  if (u.trim()) return /a: any|https?:\\/\\//.test(u);',
+    '  if (u) /a: any/.test(u);',
+    '  return false;',
+    '}',
+  ].join('\n');
+  assert.deepEqual(inspectSourceFile('/p/src/url.ts', '/p', regexAfterIf).violations, []);
+});

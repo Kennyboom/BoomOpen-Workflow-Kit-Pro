@@ -191,17 +191,26 @@ function hashBuffer(buf) {
   return crypto.createHash('sha256').update(buf).digest('hex');
 }
 
-function walkDirFiles(rootDir, prefix = '', map = new Map()) {
+function walkDirTree(rootDir, prefix = '', files = new Map(), dirs = new Set()) {
   for (const entry of fs.readdirSync(rootDir, { withFileTypes: true })) {
     const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
     const abs = path.join(rootDir, entry.name);
-    if (entry.isDirectory()) walkDirFiles(abs, rel, map);
-    else if (entry.isFile()) {
+    if (entry.isDirectory()) {
+      dirs.add(rel);
+      walkDirTree(abs, rel, files, dirs);
+    } else if (entry.isFile()) {
       const buffer = fs.readFileSync(abs);
-      map.set(rel, { absPath: abs, sha256: hashBuffer(buffer), buffer });
+      files.set(rel, { absPath: abs, sha256: hashBuffer(buffer), buffer });
     }
   }
-  return map;
+  return { files, dirs };
+}
+
+function ensureFileTargetReady(absPath) {
+  if (fs.existsSync(absPath) && !fs.lstatSync(absPath).isFile()) {
+    fs.rmSync(absPath, { recursive: true, force: true });
+  }
+  fs.mkdirSync(path.dirname(absPath), { recursive: true });
 }
 
 function captureReadOnlySnapshot(cwd, relPaths = []) {
@@ -218,7 +227,8 @@ function captureReadOnlySnapshot(cwd, relPaths = []) {
       }
       if (stat.isDirectory()) {
         const normRel = relPath.replace(/\\/g, '/').replace(/\/+$/, '');
-        snapshot.push({ kind: 'dir', relPath: normRel, absPath, existed: true, files: walkDirFiles(absPath) });
+        const { files, dirs } = walkDirTree(absPath);
+        snapshot.push({ kind: 'dir', relPath: normRel, absPath, existed: true, files, existingDirs: dirs });
         continue;
       }
     }
@@ -229,40 +239,44 @@ function captureReadOnlySnapshot(cwd, relPaths = []) {
 
 function verifyAndRestoreReadOnlySnapshot(_cwd, snapshot = []) {
   const violations = [];
+  const pushViolation = (v) => { if (!violations.includes(v)) violations.push(v); };
   for (const entry of snapshot) {
     if (entry.kind === 'dir') {
-      if (!fs.existsSync(entry.absPath) || !fs.statSync(entry.absPath).isDirectory()) {
-        fs.rmSync(entry.absPath, { force: true });
+      if (!fs.existsSync(entry.absPath) || !fs.lstatSync(entry.absPath).isDirectory()) {
+        fs.rmSync(entry.absPath, { recursive: true, force: true });
         fs.mkdirSync(entry.absPath, { recursive: true });
       }
-      const current = walkDirFiles(entry.absPath);
-      for (const [rel, cur] of current.entries()) {
-        if (!entry.files.has(rel)) { fs.rmSync(cur.absPath, { force: true }); violations.push(`${entry.relPath}/${rel}`); }
+      const current = walkDirTree(entry.absPath);
+      for (const [rel, cur] of current.files.entries()) {
+        if (!entry.files.has(rel)) { fs.rmSync(cur.absPath, { force: true }); pushViolation(`${entry.relPath}/${rel}`); }
       }
+      const existingDirs = entry.existingDirs instanceof Set ? entry.existingDirs : new Set(entry.existingDirs || []);
+      const rogueDirs = [...current.dirs].filter((d) => !existingDirs.has(d)).sort((a, b) => b.length - a.length);
+      for (const relDir of rogueDirs) {
+        fs.rmSync(path.join(entry.absPath, relDir), { recursive: true, force: true });
+        pushViolation(`${entry.relPath}/${relDir}`);
+      }
+      for (const relDir of existingDirs) fs.mkdirSync(path.join(entry.absPath, relDir), { recursive: true });
       for (const [rel, saved] of entry.files.entries()) {
-        const cur = current.get(rel);
-        if (!cur || cur.sha256 !== saved.sha256) {
-          fs.mkdirSync(path.dirname(saved.absPath), { recursive: true });
+        const cur = current.files.get(rel);
+        if (!cur || cur.sha256 !== saved.sha256 || !fs.existsSync(saved.absPath) || !fs.lstatSync(saved.absPath).isFile()) {
+          ensureFileTargetReady(saved.absPath);
           fs.writeFileSync(saved.absPath, saved.buffer);
-          violations.push(`${entry.relPath}/${rel}`);
+          pushViolation(`${entry.relPath}/${rel}`);
         }
       }
       continue;
     }
     if (entry.existed) {
-      const existsFile = fs.existsSync(entry.absPath) && fs.statSync(entry.absPath).isFile();
-      if (!existsFile) {
-        if (fs.existsSync(entry.absPath)) fs.rmSync(entry.absPath, { recursive: true, force: true });
-        fs.mkdirSync(path.dirname(entry.absPath), { recursive: true });
+      const existsFile = fs.existsSync(entry.absPath) && fs.lstatSync(entry.absPath).isFile();
+      if (!existsFile || hashBuffer(fs.readFileSync(entry.absPath)) !== entry.sha256) {
+        ensureFileTargetReady(entry.absPath);
         fs.writeFileSync(entry.absPath, entry.buffer);
-        violations.push(entry.relPath);
-      } else if (hashBuffer(fs.readFileSync(entry.absPath)) !== entry.sha256) {
-        fs.writeFileSync(entry.absPath, entry.buffer);
-        violations.push(entry.relPath);
+        pushViolation(entry.relPath);
       }
     } else if (fs.existsSync(entry.absPath)) {
       fs.rmSync(entry.absPath, { recursive: true, force: true });
-      violations.push(entry.relPath);
+      pushViolation(entry.relPath);
     }
   }
   return { restored: violations.length > 0, violations };

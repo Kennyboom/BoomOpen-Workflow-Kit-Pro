@@ -253,13 +253,16 @@ function verifyWaveExecution(planOrPath, options = {}) {
   const allowedFiles = [...new Set(selected.flatMap((s) => [...s.ownedFiles, ...s.testFiles]))];
   const { list: rawChanged, fromGit } = resolveChangedFilesForWave(cwd, options, g1);
   const roSource = shardKey && fromGit ? selected.flatMap((s) => s.strictReadOnlyFiles || s.readOnlyFiles) : selected.flatMap((s) => s.readOnlyFiles);
-  const readOnlyPool = [...new Set(roSource)].filter((ro) => !allowedFiles.some((own) => pathsMatchOrInside(ro, own)));
+  const readOnlyPool = [...new Set(roSource)].filter((ro) => !allowedFiles.some((own) => normPath(ro).toLowerCase() === normPath(own).toLowerCase()));
   const siblingPool = shardKey && fromGit ? [...new Set(selected.flatMap((s) => s.siblingFiles || []))] : [];
+  const isCarvedOutByOwned = (ch, ro) => allowedFiles.some(
+    (own) => pathsMatchOrInside(ch, own) && normPath(own).toLowerCase().startsWith(`${normPath(ro).toLowerCase()}/`)
+  );
 
   if (rawChanged) {
     for (const ch of rawChanged.map(normPath).filter(Boolean)) {
       if (ch.startsWith('.boomopen/')) continue;
-      if (readOnlyPool.some((ro) => pathsMatchOrInside(ch, ro))) g1.push(`[COOK-G1] Read-only file mutated during wave: "${ch}".`);
+      if (readOnlyPool.some((ro) => pathsMatchOrInside(ch, ro) && !isCarvedOutByOwned(ch, ro))) g1.push(`[COOK-G1] Read-only file mutated during wave: "${ch}".`);
       else if (siblingPool.some((sib) => pathsMatchOrInside(ch, sib))) continue;
       else if (!TRANSIENT_DOC_RE.test(path.basename(ch)) && !allowedFiles.some((own) => pathsMatchOrInside(ch, own))) {
         g1.push(`[COOK-G1] Unauthorized file modified outside wave OWNED_FILES: "${ch}".`);

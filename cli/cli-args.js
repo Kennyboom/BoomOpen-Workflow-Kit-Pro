@@ -33,6 +33,7 @@ function parseSubcommandArgs(argv = [], spec = {}) {
     ? spec.allowDashValueFlags
     : new Set(spec.allowDashValueFlags || []);
   const knownFlags = new Set([...Object.keys(boolMap), ...Object.keys(valMap)]);
+  const seenValueKeys = new Set();
   const positional = [];
 
   for (let i = 0; i < argv.length; i++) {
@@ -68,7 +69,8 @@ function parseSubcommandArgs(argv = [], spec = {}) {
           return { flags, positional, error: `Option "${flagName}" requires a value (got flag "${strVal}").` };
         }
       }
-      flags[key] = strVal;
+      flags[key] = seenValueKeys.has(key) && flags[key] ? `${flags[key]},${strVal}` : strVal;
+      seenValueKeys.add(key);
       continue;
     }
 

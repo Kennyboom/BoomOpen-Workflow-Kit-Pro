@@ -142,12 +142,13 @@ function findExplicitAny(code) {
     const after = code.slice(match.index + 3, match.index + 3 + LOOK_AROUND_CHARS).replace(/^\s+/, '');
     const prevChar = before[before.length - 1];
     const prevWord = (before.match(/[A-Za-z_$][\w$]*$/) || [''])[0];
-    const isMember = prevChar === '.' || prevChar === '#' || before.endsWith('...');
+    const isRestType = /(?:[\[,]\s*)\.\.\.$/.test(before);
+    const isMember = (prevChar === '.' || prevChar === '#' || before.endsWith('...')) && !isRestType;
     const isConditionalBranch = prevChar === '?' && after.startsWith(':');
     const isKeyOrValue = after.startsWith(':') || after.startsWith('(') || after.startsWith('?:')
       || after.startsWith('.') || after.startsWith('?.');
     const typePosition =
-      ANY_PREFIX_CHARS.has(prevChar) || ANY_PREFIX_WORDS.has(prevWord) || before.endsWith('=>');
+      isRestType || ANY_PREFIX_CHARS.has(prevChar) || ANY_PREFIX_WORDS.has(prevWord) || before.endsWith('=>');
     if (!isMember && (isConditionalBranch || (typePosition && !isKeyOrValue))) {
       return lineNumberAt(code, match.index);
     }

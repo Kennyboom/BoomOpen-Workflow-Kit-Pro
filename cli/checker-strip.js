@@ -11,7 +11,7 @@ const REGEX_PREFIX_CHARS = new Set(['(', ',', '=', ':', '[', '!', '&', '|', '?',
 const JSX_PREFIX_CHARS = new Set(['(', ',', '=', ':', '[', '!', '&', '|', '?', '{', '}', ';', '>']);
 const EXPRESSION_KEYWORDS = new Set([
   'return', 'typeof', 'instanceof', 'in', 'of', 'new', 'delete', 'void', 'throw',
-  'case', 'do', 'else', 'yield', 'await', 'default',
+  'case', 'do', 'else', 'yield', 'await', 'default', 'cond)',
 ]);
 const IDENT_START = /[A-Za-z_$]/;
 const IDENT_PART = /[A-Za-z0-9_$]/;
@@ -125,15 +125,18 @@ function stripNonCode(source, options = {}) {
     const nameEnd = readTagName(i);
     const tagName = source.slice(i, nameEnd);
     i = nameEnd;
-    if (source[i] === '>' && !hasClosingJsxTag(tagName, i + 1)) {
+    if (source[i] === '>' && (!hasClosingJsxTag(tagName, i + 1) || /^\s*\([^)]*\)\s*(?::[^=;]+)?=>/.test(source.slice(i + 1, i + 120)))) {
       // Unconstrained TS generic parameter such as `<T>(value: T) => T` — not a JSX element.
       return i + 1;
     }
+    let typeDepth = 0;
     while (i < n) {
       const ch = source[i];
       if (ch === '"' || ch === "'") { i = scanQuoted(i, ch); continue; }
       if (ch === '{') { i = scanCode(i + 1, true); continue; }
-      if (ch === '/' && source[i + 1] === '>') return i + 2;
+      if (ch === '<') { typeDepth++; i++; continue; }
+      if (ch === '>' && typeDepth > 0) { typeDepth--; i++; continue; }
+      if (ch === '/' && source[i + 1] === '>' && typeDepth === 0) return i + 2;
       if (ch === '>') return hasClosingJsxTag(tagName, i + 1) ? scanJsxChildren(i + 1) : i + 1;
       i++;
     }
@@ -171,6 +174,7 @@ function stripNonCode(source, options = {}) {
   function scanCode(start, untilBrace) {
     let i = start;
     let depth = 0;
+    let condParenDepth = 0;
     while (i < n) {
       const ch = source[i];
       const next = source[i + 1];
@@ -223,6 +227,18 @@ function stripNonCode(source, options = {}) {
       if (ch === '}') {
         if (depth === 0 && untilBrace) { prev = '}'; return i + 1; }
         depth--;
+      }
+      if (ch === '(') {
+        if (condParenDepth > 0 || prev === 'if' || prev === 'while' || prev === 'for') condParenDepth++;
+        prev = '(';
+        i++;
+        continue;
+      }
+      if (ch === ')' && condParenDepth > 0) {
+        condParenDepth--;
+        prev = condParenDepth === 0 ? 'cond)' : ')';
+        i++;
+        continue;
       }
       prev = /[0-9]/.test(ch) ? 'num' : ch;
       i++;

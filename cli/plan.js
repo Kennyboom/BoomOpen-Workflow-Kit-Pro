@@ -2,24 +2,19 @@
 
 /**
  * Deterministic Plan Parser, 5-Gate Validator & Plan-to-Ledger Compiler (`boomopen plan`).
- * Enforces PLAN-G1..G5 across all 17 supported languages and compiles `PLAN-{task}.md`
- * into `.boomopen/project-ledger.json`.
+ * Enforces PLAN-G1..G5 across all 17 supported languages and compiles `PLAN-{task}.md` into `.boomopen/project-ledger.json`.
  */
 
 const fs = require('node:fs');
 const path = require('node:path');
-
 const { EXIT_OK, EXIT_FAIL, EXIT_USAGE, parseSubcommandArgs } = require('./cli-args.js');
 const { KIT_VERSION } = require('./doctor-version.js');
 const { hashFileSha256, resolvePaths, saveLedgerFile, writeProgressFile, detectPhaseCycle } = require('./ledger.js');
 const { countLines, stripBom, readCleanText, stripOutsideBacktickParens, parseFenceOpen, isFenceClose } = require('./markdown-fences.js');
 
-const DEFAULT_MAX_FILES_PER_SHARD = 4;
-const SOFT_PLAN_LINES = 400;
-const HARD_PLAN_LINES = 500;
+const [DEFAULT_MAX_FILES_PER_SHARD, SOFT_PLAN_LINES, HARD_PLAN_LINES] = [4, 400, 500];
 const VAGUE_VERIFY_RE = /^(?:manual(?:\s+check|\s+test|\s+verification)?|verify\s+manually|check\s+manually|kiểm\s+tra\s+thủ\s+công|none|n\/a|tbd|later|-|—)$/iu;
 const NONE_TOKEN_RE = /^(?:none(?:\s*\(.*\))?|n\/a|không(?:\s+có)?|all\s+files\s+outside\b.*|mọi\s+(?:tệp|file)\s+ngoài\b.*|—|-)$/iu;
-
 const PHASE_KEYWORD_RE = /^(#{2,3})\s+(?:[^\p{L}\p{N}\n]*\s*)?(?:\d+[.)]\s*)?(?:[^\p{L}\p{N}\n]*\s*)?(Phase|Wave|Stage|Giai\s+đoạn|Đợt|阶段|波次|フェーズ|ウェーブ|단계|웨이브|Fase|Ola|Étape|Vague)\s+([A-Za-z0-9_-]+)\s*(?:[:—–-]\s*([^\n(]*))?(.*)$/iu;
 const TASK_HEADING_RE = /^(#{3,4})\s+(?:[^\p{L}\p{N}[\n]*\s*)?(?:\[[ xX]\]\s*)?(?:\*\*)?(?:(?:Task|Nhiệm\s+vụ|Công\s+việc|任务|タスク|작업|Tarea|Tâche|Aufgabe)\s+([A-Za-z0-9._-]+)|([A-Za-z0-9._-]+)(?=\s*[([]\s*REQ-\d+))(?:\*\*)?(?:\s*\(([^)]+)\)|\s*\[([^\]]+)\])?\s*(?:[:—–-]\s*(.*))?$/iu;
 const TASK_BULLET_RE = /^\s*[-*]\s+(?:\[[ xX]\]\s+)?\*\*(?:Task|Nhiệm\s+vụ|Công\s+việc|任务|タスク|작업|Tarea|Tâche|Aufgabe)\s+([A-Za-z0-9._-]+)(?:\s*\(([^)]+)\)|\s*\[([^\]]+)\])?\*\*\s*(?:[:—–-]\s*(.*))?$/iu;
@@ -208,11 +203,33 @@ function pathsCollide(pathA, pathB) {
   return Boolean(a && b) && (a === b || a.startsWith(`${b}/`) || b.startsWith(`${a}/`));
 }
 
+function roConflictsWithOwned(owned, ro) {
+  const [o, r] = [normalizeRelPath(owned).toLowerCase(), normalizeRelPath(ro).toLowerCase()];
+  return Boolean(o && r) && (o === r || r.startsWith(`${o}/`));
+}
+
+function taskDependsOn(tA, tB) {
+  const deps = tA.dependsOn || [];
+  return deps.includes(String(tB.reqId || '').toUpperCase()) || (Boolean(tB.taskId) && deps.includes(String(tB.taskId).toUpperCase()));
+}
+
+function detectTaskCycle(tasks = []) {
+  const alias = new Map();
+  for (const t of tasks) {
+    const id = String(t.reqId || '').toUpperCase();
+    if (id) alias.set(id, id);
+    if (t.taskId) alias.set(String(t.taskId).toUpperCase(), id);
+  }
+  return detectPhaseCycle(tasks.map((t) => ({
+    phase_id: String(t.reqId || '').toUpperCase(),
+    depends_on: (t.dependsOn || []).map((d) => alias.get(String(d).toUpperCase())).filter(Boolean),
+  })));
+}
+
 function isParallelPhase(phase, phaseTasks) {
   if (phase.parallelizable === true) return true;
   if (phase.parallelizable === false || phaseTasks.length < 2) return false;
-  const agents = new Set(phaseTasks.map((t) => t.agent).filter(Boolean));
-  return agents.size >= 2 || phaseTasks.some((t) => t.agent.includes('#'));
+  return new Set(phaseTasks.map((t) => t.agent).filter(Boolean)).size >= 2 || phaseTasks.some((t) => t.agent.includes('#'));
 }
 
 function validatePlan(parsedOrMarkdown, options = {}) {
@@ -251,7 +268,7 @@ function validatePlan(parsedOrMarkdown, options = {}) {
       gates['PLAN-G2'].push(`[PLAN-G2] Task ${t.reqId} (${t.agent || 'unassigned'}) owns ${t.ownedFiles.length} files (exceeds <= ${maxFiles} OWNED_FILES per shard).`);
     }
     for (const owned of t.ownedFiles) {
-      if (t.readOnlyFiles.some((ro) => pathsCollide(owned, ro))) {
+      if (t.readOnlyFiles.some((ro) => roConflictsWithOwned(owned, ro))) {
         gates['PLAN-G3'].push(`[PLAN-G3] Task ${t.reqId} lists "${owned}" in both OWNED_FILES and READ_ONLY_FILES.`);
       }
     }
@@ -263,12 +280,11 @@ function validatePlan(parsedOrMarkdown, options = {}) {
     for (let i = 0; i < phaseTasks.length; i++) {
       for (let j = i + 1; j < phaseTasks.length; j++) {
         const [tA, tB] = [phaseTasks[i], phaseTasks[j]];
-        if (tA.dependsOn.includes(tB.reqId.toUpperCase()) || tB.dependsOn.includes(tA.reqId.toUpperCase())) continue;
+        const [ab, ba] = [taskDependsOn(tA, tB), taskDependsOn(tB, tA)];
+        if ((ab || ba) && !(ab && ba)) continue;
         for (const fA of tA.ownedFiles) {
           for (const fB of tB.ownedFiles) {
-            if (pathsCollide(fA, fB)) {
-              gates['PLAN-G3'].push(`[PLAN-G3] File lock collision in parallel phase ${phase.phase_id}: "${fA}" (${tA.reqId}) collides with "${fB}" (${tB.reqId}).`);
-            }
+            if (pathsCollide(fA, fB)) gates['PLAN-G3'].push(`[PLAN-G3] File lock collision in parallel phase ${phase.phase_id}: "${fA}" (${tA.reqId}) collides with "${fB}" (${tB.reqId}).`);
           }
         }
       }
@@ -277,12 +293,9 @@ function validatePlan(parsedOrMarkdown, options = {}) {
 
   const phases = plan?.phases || [];
   const phaseIds = new Set(phases.map((p) => p.phase_id));
-  for (const p of phases) {
-    for (const dep of p.dependsOn || []) if (!phaseIds.has(dep)) gates['PLAN-G4'].push(`[PLAN-G4] Phase "${p.phase_id}" depends on unknown phase "${dep}".`);
-  }
-  if (detectPhaseCycle(phases.map((p) => ({ phase_id: p.phase_id, depends_on: p.dependsOn || [] })))) {
-    gates['PLAN-G4'].push('[PLAN-G4] Circular dependency detected in plan phase/wave DAG.');
-  }
+  for (const p of phases) for (const dep of p.dependsOn || []) if (!phaseIds.has(dep)) gates['PLAN-G4'].push(`[PLAN-G4] Phase "${p.phase_id}" depends on unknown phase "${dep}".`);
+  if (detectPhaseCycle(phases.map((p) => ({ phase_id: p.phase_id, depends_on: p.dependsOn || [] })))) gates['PLAN-G4'].push('[PLAN-G4] Circular dependency detected in plan phase/wave DAG.');
+  if (detectTaskCycle(plan?.tasks || [])) gates['PLAN-G4'].push('[PLAN-G4] Circular task dependency detected in plan tasks.');
 
   const definedAcs = plan?.acceptanceCriteria || [];
   if (definedAcs.length > 0) {
@@ -293,7 +306,6 @@ function validatePlan(parsedOrMarkdown, options = {}) {
     if (plan.lineCount > HARD_PLAN_LINES) gates['PLAN-G5'].push(`[PLAN-G5] Plan is ${plan.lineCount} lines (exceeds cohesive single-file limit of ${HARD_PLAN_LINES} lines).`);
     else if (plan.lineCount > SOFT_PLAN_LINES) warnings.push(`[PLAN-G5] Plan is ${plan.lineCount} lines (exceeds soft target of ${SOFT_PLAN_LINES} lines).`);
   }
-
   const errors = Object.values(gates).flat();
   return { valid: errors.length === 0, errors, warnings, gates, plan };
 }
@@ -307,11 +319,9 @@ function compilePlanToLedger(planFilePath, options = {}) {
   const plan = parsePlanMarkdown(rawMarkdown, relPlanPath);
   const validation = validatePlan(plan, options);
   if (!validation.valid && !options.force) throw new Error(`Plan validation failed (${validation.errors.length} errors):\n${validation.errors.join('\n')}`);
-
   const paths = resolvePaths(cwd, options.file);
   fs.mkdirSync(path.dirname(paths.contractPath), { recursive: true });
   fs.writeFileSync(paths.contractPath, `# 🤝 SHARED_CONTRACT — ${plan.title}\n\n${plan.sharedContract || `> Locked contract compiled from ${relPlanPath}.`}\n`, 'utf8');
-
   const usedReqIds = new Set();
   const features = plan.tasks.map((t, idx) => {
     let reqId = /^REQ-\d+$/i.test(t.reqId) ? t.reqId.toUpperCase() : `REQ-${String(101 + idx)}`;
@@ -325,16 +335,13 @@ function compilePlanToLedger(planFilePath, options = {}) {
       owned_files: t.ownedFiles, read_only_files: t.readOnlyFiles, test_files: testFiles, verification_cmd: t.verifyCmd, evidence: null,
     };
   });
-
   const phases = plan.phases.map((p) => ({
     phase_id: p.phase_id, title: p.title, status: 'pending', depends_on: p.dependsOn || [],
     parallelizable: Boolean(p.parallelizable), doc_slices: [`${relPlanPath}#L${p.startLine}-L${p.endLine}`],
   }));
-
   const projectName = options.name || plan.title || path.basename(cwd);
   const ledger = {
-    version: KIT_VERSION, schema_version: KIT_VERSION, project: projectName, project_name: projectName,
-    updated_at: new Date().toISOString(),
+    version: KIT_VERSION, schema_version: KIT_VERSION, project: projectName, project_name: projectName, updated_at: new Date().toISOString(),
     spec_documents: [{ path: relPlanPath, sha256: hashFileSha256(absPlanPath), lines: countLines(rawMarkdown) }],
     active_cursor: { current_phase_id: phases[0]?.phase_id || 'PHASE-1', baseline_passed_tests: 0 }, phases, features,
   };
@@ -362,8 +369,7 @@ function runPlanCli(argv = [], options = {}) {
     if (!options.silent) console.error(`❌ Unknown plan subcommand "${sub}"\n\n${PLAN_HELP}`);
     return EXIT_USAGE;
   }
-  const cwd = options.cwd || process.cwd();
-  const targetFile = positional[1];
+  const [cwd, targetFile] = [options.cwd || process.cwd(), positional[1]];
   if (!targetFile) { if (!options.silent) console.error(`❌ boomopen plan ${sub} requires a <plan.md> path.\n\n${PLAN_HELP}`); return EXIT_USAGE; }
   const abs = path.resolve(cwd, targetFile);
   if (!fs.existsSync(abs)) { if (!options.silent) console.error(`❌ boomopen plan: Plan file not found: ${targetFile}`); return EXIT_USAGE; }
@@ -380,10 +386,7 @@ function runPlanCli(argv = [], options = {}) {
     }
     const { ledger, paths } = compilePlanToLedger(targetFile, { cwd, file: flags.file, name: flags.name });
     if (!options.silent) {
-      const msg = flags.json
-        ? JSON.stringify({ ok: true, ledgerPath: paths.ledgerPath, phases: ledger.phases.length, features: ledger.features.length }, null, 2)
-        : `✅ Compiled ${targetFile} -> ${paths.ledgerPath} (${ledger.phases.length} phases, ${ledger.features.length} REQs)`;
-      console.log(msg);
+      console.log(flags.json ? JSON.stringify({ ok: true, ledgerPath: paths.ledgerPath, phases: ledger.phases.length, features: ledger.features.length }, null, 2) : `✅ Compiled ${targetFile} -> ${paths.ledgerPath} (${ledger.phases.length} phases, ${ledger.features.length} REQs)`);
     }
     return EXIT_OK;
   } catch (err) {

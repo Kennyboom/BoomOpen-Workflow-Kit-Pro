@@ -181,6 +181,7 @@ function parseResearchMarkdown(markdown, options = {}) {
   const { citations, anchors } = extractCitationsAndAnchors(raw);
   const confidenceTags = extractConfidenceTags(raw, frontmatter);
   const unfenced = stripMarkdownFences(bodyText);
+  const proseOnly = unfenced.replace(/`[^`\r\n]+`/g, '');
 
   const hasConstraints = Boolean(findMatchingSectionText(sections, CONSTRAINTS_HEADING_RE)) || CONSTRAINTS_BULLET_RE.test(unfenced);
   const risksSection = findMatchingSectionText(sections, RISKS_HEADING_RE);
@@ -189,8 +190,8 @@ function parseResearchMarkdown(markdown, options = {}) {
     || sections.find((s) => /\b(?:HANDOFF_BRIEF|RESEARCH_HANDOFF)\b/.test(s.body))?.body
     || '';
   const unfilledPlaceholders = [...new Set([
-    ...collectMatches(unfenced, TEMPLATE_PLACEHOLDER_RE, (m) => m[0].trim()),
-    ...collectMatches(unfenced, DEFERRED_MARKER_RE, (m) => m[0].trim()),
+    ...collectMatches(proseOnly, TEMPLATE_PLACEHOLDER_RE, (m) => m[0].trim()),
+    ...collectMatches(proseOnly, DEFERRED_MARKER_RE, (m) => m[0].trim()),
   ])];
 
   return {
