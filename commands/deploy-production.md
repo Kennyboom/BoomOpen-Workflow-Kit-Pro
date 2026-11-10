@@ -45,7 +45,7 @@ execution-mode: execute
 Dispatch all 3 production safety tracks simultaneously on Turn 1 via `invoke_subagent(TypeName: "self", Model: "inherit")`:
 1. **`devops-engineer#1..k` (`agents/devops-engineer.md`)**:
    - Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` and production build verification.
-   - Validate production environment configuration, monitoring/alerting hooks, backward-compatible expand/contract database migrations (`accidental-data-loss-prevention`), and record the exact current live release SHA/version for instant rollback.
+   - Validate production environment configuration, monitoring/alerting hooks, backward-compatible expand/contract database migrations (`skills_library/deployment-procedures/SKILL.md` & `skills/database-design/SKILL.md` — **STOP-AND-VERIFY** consent gate), and record the exact current live release SHA/version for instant rollback.
 2. **`security-engineer` (`agents/security-engineer.md`)**:
    - Load `security-auditor` skill; verify zero critical/high dependency CVEs, production secret isolation, auth/RBAC/CORS/CSP headers, and rate-limiting protections.
 3. **`tester` (`agents/tester.md`)**:

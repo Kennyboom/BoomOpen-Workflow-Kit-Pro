@@ -3,10 +3,10 @@
   <p><strong>ระบบปฏิบัติการ AI อัจฉริยะแบบผสมผสาน (Smart-Hybrid) ข้ามแพลตฟอร์ม — 21 เอเจนต์ผู้เชี่ยวชาญ, 18 ทีมสามเหลี่ยมทองคำ และคลังทักษะ 1,460+ รายการแบบเรียกใช้ตามต้องการ</strong></p>
 
   <p>
-    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
+    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
     <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
-    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
+    <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
     <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
   </p>
@@ -22,11 +22,11 @@
 ## 🎬 วิดีโอเปิดตัวทางการ (Full HD 1080p)
 
 <div align="center">
-  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
+  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
     <img src="../assets/media/poster_en.png" alt="รับชมวิดีโอเปิดตัวทางการของ BoomOpen Workflow Kit v5.5 (Full HD 1080p)" width="92%" />
   </a>
   <p>
-    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>คลิกที่นี่เพื่อรับชม / สตรีมวิดีโอเปิดตัวทางการความละเอียด Full HD 1080p (MP4 พร้อมเสียงพากย์สตูดิโอ)</b></a>
+    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>คลิกที่นี่เพื่อรับชม / สตรีมวิดีโอเปิดตัวทางการความละเอียด Full HD 1080p (MP4 พร้อมเสียงพากย์สตูดิโอ)</b></a>
   </p>
 </div>
 
@@ -36,9 +36,9 @@
 
 **BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** คือระบบปฏิบัติการแบบหลายเอเจนต์ (Multi-Agent) โอเพนซอร์สที่เปลี่ยนผู้ช่วยเขียนโค้ด AI เดี่ยวๆ ให้กลายเป็นองค์กรวิศวกรรมซอฟต์แวร์ที่ทำงานประสานกันประกอบด้วย **เอเจนต์ผู้เชี่ยวชาญ 21 บทบาท (Specialist Agents)**, **ทีมตรวจสอบถ่วงดุลสามเหลี่ยมทองคำ 18 ทีม (Golden Triangle Teams)**, **ทักษะหลัก 22 รายการ (Core Skills)** และ **คลังทักษะเฉพาะทางกว่า 1,440 รายการ (`skills_library`)**
 
-แตกต่างจากเทมเพลตคำสั่งแบบตายตัวหรือเฟรมเวิร์กขนาดใหญ่ที่ทำให้เกิดความหน่วง (Cold-Start) ในทุกคำถามง่ายๆ BoomOpen v5.5 ได้เปิดตัว **ประตูคัดกรองความซับซ้อนอัจฉริยะ 2 โหมด (2-Mode Smart Complexity Threshold Gate)**:
-- **⚡ โหมด A — ประมวลผลโดยตรง (Cold-Start 0 วินาที)**: คำถาม-คำตอบทั่วไป (Q&A), การอธิบายโค้ด, การแก้บั๊กในโดเมนเดียว หรือการแก้ไขที่ชัดเจนซึ่งกระทบไฟล์ **≤ 2 ไฟล์** (และไม่ได้เรียกคำสั่ง `/cmd`) จะถูกดำเนินการ ทดสอบ และตรวจสอบ **โดยตรง** โดยเอเจนต์หลัก พร้อมบังคับใช้ **มาตรฐานการเขียนโค้ดเชิงปฏิบัติ 2 ระดับ (Pragmatic 2-Tier Coding Standards)** และ **การทดสอบและแก้ไขบั๊กอย่างต่อเนื่อง**
-- **🎻 โหมด B — การประสานงาน Multi-Agent อย่างเคร่งครัด**: ฟีเจอร์ที่ซับซ้อน (**> 2 ไฟล์** หรือ **≥ 2 โดเมน**) หรือการเรียกใช้คำสั่ง `/cmd` จะเปิดใช้งานโหมด Orchestrator เต็มรูปแบบ พร้อม **การกระจายงานขนานแบบ DAG (Parallel Fan-Out)**, **การจ่ายงานตรงจากแผนสู่วิศวกร (Direct Plan-to-Executor Dispatch)**, **การล็อกสิทธิ์ไฟล์ตามสัญญา (`SHARED_CONTRACT` + `OWNED_FILES`)** และ **การนำซับเอเจนต์ที่พร้อมใช้งานกลับมาใช้ซ้ำ (`send_message`)**
+แตกต่างจากเทมเพลตแบบตายตัวหรือเฟรมเวิร์กขนาดใหญ่ที่ทำให้เกิดความหน่วงและเปลืองบริบทในทุกรอบ BoomOpen v5.5 ผสาน **ประตูเรียกใช้ซับเอเจนต์เชิงรุกตั้งแต่เทิร์นที่ 1 (Proactive Sub-agent First Gate)**, **การนำทางคำสั่งภาษาธรรมชาติ 17 ภาษา**, **การแบ่งส่วนฝูงเอเจนต์แบบยืดหยุ่น 4 ระดับ (`role#shard`)**, **ระบบขับเคลื่อนโปรเจกต์อัตโนมัติหลายเซสชัน (`/autopilot`)** และ **ตัวควบคุมข้ามเอนจิน (`/conduct`)**:
+- **🚀 ซับเอเจนต์ขนานตั้งแต่เทิร์นที่ 1 และการประสานงานโหมด B**: การสำรวจโค้ดที่ยังไม่ระบุไฟล์ชัดเจน (`> 2` ไฟล์), ฟีเจอร์หลายโดเมน (`≥ 2` โดเมน), คำขอเวิร์กโฟลว์ด้วยภาษาธรรมชาติใน **ทั้ง 17 ภาษาที่รองรับ** หรือการเรียก `/cmd` จะเปิดซับเอเจนต์แบบแบ่งส่วนขนานทันทีในเทิร์นที่ 1 (`role#shard`, ไม่เกิน `3–4 OWNED_FILES`/shard) พร้อม **DAG Parallel Fan-Out**, **การจ่ายงานตรงจากแผนสู่วิศวกร**, **การล็อกไฟล์ตามสัญญา (`SHARED_CONTRACT` + `OWNED_FILES`)**, **การนำเซสชันอุ่นกลับมาใช้ซ้ำ (`role#shard -> conversationId` ผ่าน `send_message`)** รวมถึง `/autopilot` (`boomopen ledger`) และสภาหลายเอนจิน `/conduct` (`boomopen conduct`)
+- **⚡ โหมด A — ประมวลผลตรงระดับไมโครเมื่อทราบไฟล์เป้าหมาย (Cold-Start 0 วินาที)**: คำถามทั่วไป (Q&A), การอธิบายโค้ด และการแก้ไขเล็กน้อยที่ **ทราบไฟล์เป้าหมายชัดเจน `≤ 2` ไฟล์ตั้งแต่เทิร์นที่ 1** (ไม่ต้องสำรวจเพิ่ม และไม่มี `/cmd`) จะถูกดำเนินการและตรวจสอบ **โดยตรง** ภายใต้ **มาตรฐานการเขียนโค้ดเชิงปฏิบัติ 2 ระดับ** และ **การทดสอบและแก้ไขบั๊กอย่างต่อเนื่อง**
 
 - **📚 คลังทักษะขนาดใหญ่ 1,462 รายการโดยไม่เปลืองบริบท (Zero Context Bloat)**: ผสาน **22 ทักษะหลัก (`skills/`)** และ **1,440 ทักษะเฉพาะทาง (`skills_library/`)** ที่คอมไพล์ล่วงหน้าไว้ใน `matrix-skills/compact-index.json` เพื่อการค้นหาแบบ 2 ขั้นตอน `O(1)` ช่วยให้ AI มีความเชี่ยวชาญทันทีทั้ง Backend, Frontend, Mobile, Game Dev (Unity/Unreal/Godot), AI/ML, BigQuery/Data, Cloud/DevOps และความปลอดภัย OWASP โดยไม่ทำให้หน้าต่างพรอมต์เต็ม
 
@@ -74,15 +74,15 @@ flowchart TD
 2. **📏 มาตรฐานการเขียนโค้ดเชิงปฏิบัติ 2 ระดับ (ป้องกันการหั่นไฟล์แบบไร้เหตุผล)**:
    - **ระดับที่ 1 — กฎคุณภาพและความปลอดภัยที่เข้มงวด (Zero Tolerance)**: หนึ่งไฟล์หรือฟังก์ชันรับผิดชอบหนึ่งหน้าที่ (Single Responsibility), **ห้ามใช้ `any` โดยเด็ดขาด**, **ห้ามทิ้ง `console.log` ดีบักไว้ในโค้ด Production**, ต้องมี `try/catch` และจัดการชนิดข้อผิดพลาดที่ขอบเขต async/API, ค่าคงที่ใช้ `SCREAMING_SNAKE_CASE`, DRY (`≥ 3`) และจัดเรียง import ให้สะอาด
    - **ระดับที่ 2 — แนวทางโครงสร้างที่ยืดหยุ่น (เน้นความสอดคล้อง)**: ไฟล์ที่ทำงานหน้าที่เดียวอย่างสมบูรณ์มีเป้าหมายที่ `~200–350 บรรทัด` และยืดหยุ่นได้ถึง `~400–450 บรรทัด` (บังคับแยกเฉพาะเมื่อเกิน `>500 บรรทัด` หรือปนหลายโดเมน; ยกเว้นไฟล์ Test, Types/Schema และเอกสาร) ฟังก์ชันลอจิก `~20–40 บรรทัด` (`~40–80 บรรทัด` สำหรับ UI/Handler)
-3. **🎯 จ่ายงานตรงจากแผนสู่ผู้ปฏิบัติ & นำซับเอเจนต์ที่อุ่นอยู่กลับมาใช้ซ้ำ (`send_message`)**:
-   - เมื่อมี `PLAN-{feature}.md` แล้ว Orchestrator จะจ่ายงาน **โดยตรง** ไปยังวิศวกรประจำโดเมน (`backend-engineer`, `frontend-engineer`, `database-architect` ฯลฯ) โดยไม่ต้องผ่าน `tech-lead` ซ้ำซ้อน
-   - ซับเอเจนต์ที่เปิดใช้งานอยู่จะถูกบันทึกไว้ใน **ทะเบียนเซสชันที่ใช้งานอยู่ (`Role → conversationId`)** และเรียกใช้ซ้ำผ่าน `send_message` ด้วย **เวลาเริ่มต้น 0 วินาที** และ **รักษาบริบทของไฟล์ไว้ได้ 100%**
+3. **🎯 การแบ่งส่วนฝูงเอเจนต์ยืดหยุ่น 4 ระดับ (`role#shard`), จ่ายงานตรงจากแผน & ใช้ซ้ำเซสชันอุ่น (`send_message`)**:
+   - เมื่อมี `PLAN-{feature}.md` แล้ว Orchestrator จะจ่ายงาน **โดยตรง** ไปยังชาร์ดของวิศวกรประจำโดเมน (`backend-engineer#shard-1`, `frontend-engineer#shard-2`, `database-architect#shard-1` ชาร์ดละ `<= 3–4 OWNED_FILES`) โดยไม่ต้องผ่าน `tech-lead` ซ้ำซ้อน
+   - ซับเอเจนต์ที่ทำงานอยู่จะถูกบันทึกใน **ทะเบียนเซสชันตามชาร์ด (`role#shard → conversationId`)** และเรียกใช้ซ้ำผ่าน `send_message` ด้วย **เวลาเริ่มต้น 0 วินาที** และ **รักษาบริบทไฟล์ไว้ 100%**
 4. **🤝 การทำงานขนานโดยยึดสัญญาเป็นหลัก (`SHARED_CONTRACT` + `OWNED_FILES`)**:
    - แผนงานข้ามโดเมนจะล็อก API endpoints, โครงสร้าง DTO และแบ่งสิทธิ์การเขียนไฟล์อย่างชัดเจน (`OWNED_FILES` เทียบกับ `READ_ONLY_FILES`) ก่อนสั่งรันวิศวกรพร้อมกัน เพื่อป้องกันการเขียนทับไฟล์โดยสมบูรณ์
 5. **🔍 การวิเคราะห์รากเหง้าของปัญหาด้วย 5-Whys (SPIE v3.0) & Git Tree สะอาด 100%**:
    - `debugger` วิเคราะห์บั๊กผ่านสมมติฐานอย่างน้อย 3 ข้อและห่วงโซ่สาเหตุ **5-Whys** (`ทำไมที่ 1 อาการเริ่มต้น` → `ทำไมที่ 5 รากเหง้าเชิงระบบ`) ไฟล์รายงานชั่วคราว (`PLAN`, `DEBUG`, `TEST`, `REVIEW`, `MAILBOX`) จะถูกบันทึกไว้ที่ `<appDataDir>\brain\<conversation-id>\` เพื่อให้ Git working tree สะอาด 100%
 6. **🩺 เครื่องมือวินิจฉัย CLI ในตัว (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check` & `doctor`) & ดัชนีทักษะความเร็ว O(1)**:
-   - `npm run doctor` ตรวจสอบทั้ง 5 แพลตฟอร์ม, 21 เอเจนต์, 72 ไฟล์ทีม, 84 ไฟล์คำสั่ง (`79` เวิร์กโฟลว์ + `5` ใน `_ref/`) และ `matrix-skills/compact-index.json` (`1,462` ทักษะ) ส่วน `boomopen check <dir>` ตรวจเฉพาะกฎที่ตรวจด้วยเครื่องได้: ความยาวไฟล์, `any` แบบระบุชัดใน TypeScript และ `console.log` ที่หลงเหลือ ส่วนมาตรฐานอื่นเป็นคำสั่งสำหรับเอเจนต์ นอกจากนี้ `boomopen research`, `boomopen design`, `boomopen plan`, `boomopen cook`, `boomopen ledger` และ `boomopen conduct` ยังช่วยคอมไพล์สัญญา ชุดส่งมอบงานแต่ละรอบ และสภาหลายเอนจิน
+   - `npm run doctor` ตรวจสอบทั้ง 5 แพลตฟอร์ม, 21 เอเจนต์, 72 ไฟล์ทีม, 84 ไฟล์คำสั่ง (`79` เวิร์กโฟลว์ + `5` ใน `_ref/`) และ `matrix-skills/compact-index.json` (`1,462` ทักษะ) `boomopen check <dir> [--strict-phase --no-stubs]` ตรวจสอบความยาวไฟล์, `any` แบบระบุชัดใน TypeScript, `console.log` ที่หลงเหลือ, คอมเมนต์ `TODO`/`FIXME` ที่ค้างไว้, โค้ดจำลองที่ว่างเปล่า (stubs) และการโกงผลทดสอบ นอกจากนี้ `boomopen research`, `boomopen design`, `boomopen plan`, `boomopen cook`, `boomopen ledger` และ `boomopen conduct` ยังช่วยคอมไพล์สัญญา ชุดส่งมอบงานแต่ละรอบ และสภาหลายเอนจิน
 
 ---
 
@@ -104,8 +104,8 @@ flowchart TD
 
 ```bash
 # 1. โคลนรีพอสิทอรี
-git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
-cd BoomOpen-Workflow-Kit
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+cd BoomOpen-Workflow-Kit-Pro
 
 # 2. ติดตั้งสำหรับผู้ช่วย AI ของคุณ (เลือกหนึ่งรายการ หรือ --all สำหรับทั้งหมด)
 npm run install:antigravity   # Google Antigravity 2.0 (Gemini)
@@ -121,7 +121,7 @@ npm link
 boomopen research validate path/to/RESEARCH.md
 boomopen design validate path/to/DESIGN.md
 boomopen plan validate path/to/PLAN.md
-boomopen cook preflight --plan path/to/PLAN.md
+boomopen cook preflight path/to/PLAN.md
 boomopen check path/to/your/project --strict-phase --no-stubs
 boomopen ledger status
 boomopen conduct probe
@@ -164,7 +164,7 @@ boomopen settings set execution.mode mode_a --project
 boomopen settings reset
 ```
 
-> `--project` จะเขียน `./.boomopen.json` ในโฟลเดอร์ที่คุณรันคำสั่งเสมอ จึงต้องรันภายในโปรเจกต์ของคุณ ไม่ใช่ในโฟลเดอร์ที่โคลนชุดเครื่องมือ หากไม่ได้ใช้ `npm link` ให้แทน `boomopen` ด้วย `node /path/to/BoomOpen-Workflow-Kit/cli/install.js`
+> `--project` จะเขียน `./.boomopen.json` ในโฟลเดอร์ที่คุณรันคำสั่งเสมอ จึงต้องรันภายในโปรเจกต์ของคุณ ไม่ใช่ในโฟลเดอร์ที่โคลนชุดเครื่องมือ หากไม่ได้ใช้ `npm link` ให้แทน `boomopen` ด้วย `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`
 
 ---
 
@@ -206,6 +206,8 @@ boomopen settings reset
 
 ---
 
+<a id="skills"></a>
+
 ## 📚 คลังทักษะ 1,460+ รายการ (22 ทักษะหลัก + 1,440 ทักษะไลบรารี)
 
 BoomOpen มาพร้อมกับหนึ่งในระบบนิเวศทักษะวิศวกรรมซอฟต์แวร์ที่ใหญ่ที่สุดในโอเพนซอร์ส ออกแบบให้ **ใช้โทเค็นขณะว่างเป็น 0** ผ่าน **การค้นหาทักษะแบบก้าวหน้า 2 ขั้นตอน O(1)** (`<skills>` → `matrix-skills/compact-index.json` → โหลดเฉพาะไฟล์ `SKILL.md` ที่ต้องการ):
@@ -224,8 +226,8 @@ BoomOpen มาพร้อมกับหนึ่งในระบบนิ�
 ## 📂 โครงสร้างรีพอสิทอรี
 
 ```text
-BoomOpen-Workflow-Kit/
-├── agents/                  # คำนิยามเอเจนต์ผู้เชี่ยวชาญ 21 บทบาท + 18 ทีมสามเหลี่ยมทองคำ (54 ไฟล์บทบาท)
+BoomOpen-Workflow-Kit-Pro/
+├── agents/                  # คำนิยามเอเจนต์ผู้เชี่ยวชาญ 21 บทบาท + 18 ทีมสามเหลี่ยมทองคำ (54 ไฟล์บทบาท + 18 _team.md รวม 72 ไฟล์)
 ├── cli/                     # ตัวติดตั้ง (install.js), Doctor (doctor.js), Checker (checker.js), Settings (settings.js), research.js, design.js, plan.js, cook.js, Ledger (ledger.js) และ Conductor (conductor.js)
 ├── commands/                # เวิร์กโฟลว์คำสั่ง Slash 79 รายการ (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 โปรโตคอล _ref/ (84 ไฟล์)
 ├── documents/               # เอกสารสถาปัตยกรรม โดเมน โครงสร้างโค้ด และมาตรฐานการเขียนโค้ดแบบ 2 ระดับ

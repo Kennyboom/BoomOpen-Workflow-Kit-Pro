@@ -46,16 +46,17 @@ Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js plan validate "<
 |:----:|-----------------|----------------------------------|
 | **`PLAN-G1`** | **6-Block Schema & 5-Field Task Completeness** | Missing `User Request`, `Acceptance Criteria`, `SHARED_CONTRACT`, `Wave N`, or `Risks & Rollback`; or any task missing `Agent`, `Acceptance`, `OWNED_FILES`, `READ_ONLY_FILES`, `Test Files`, or `Verify`. |
 | **`PLAN-G2`** | **Cognitive Load Sharding (`<= 3–4 OWNED_FILES`)** | Any `role#shard` task owns `> 4` implementation files (causes sub-agent context degradation & hollow stubs). |
-| **`PLAN-G3`** | **Zero Parallel File-Lock Collisions** | Two tasks in the same parallel Wave (`Parallelizable: Yes`) share an exact path or directory/glob prefix in `OWNED_FILES` (e.g., both touch `src/index.ts`). |
+| **`PLAN-G3`** | **Zero File-Lock Collisions** | Intra-task `OWNED_FILES` vs `READ_ONLY_FILES` overlap OR two tasks in the same parallel Wave (`Parallelizable: Yes`) sharing an exact path or directory/glob prefix in `OWNED_FILES`. |
 | **`PLAN-G4`** | **Valid DAG Waves & Parallelism Optimization** | Circular `Depends On` edges, unknown canonical agent in `role#shard`, OR unnecessary sequential `DB -> Backend -> Frontend` chaining when `SHARED_CONTRACT` permits parallel Wave 1 execution. |
-| **`PLAN-G5`** | **Single-File Cohesion & `RequestFeedback: true`** | `PLAN-{task}.md` was shattered into a folder at 150 lines instead of kept as **1 cohesive file (`<= 500` lines)** with `ArtifactMetadata.RequestFeedback: true`. |
+| **`PLAN-G5`** | **100% `AC1..N` / `REQ-101..N` Traceability** | Any Acceptance Criterion (`AC1..N`) or requirement ID is orphaned (`0` tasks referencing it) instead of achieving `100%` task traceability. |
 
-### Dimension 2: Compilable `SHARED_CONTRACT` Code-Block Fidelity (Zero Interface Drift)
+### Dimension 2: Compilable `SHARED_CONTRACT` & Single-File Cohesion (`<= 500` Lines)
 | # | Check | Evidence Required |
 |:-:|-------|-------------------|
 | 2.1 | `## 🤝 Shared Interface Contracts (SHARED_CONTRACT)` contains **fenced code blocks** (`ts`, `sql`, `json`, `yaml`) — not vague prose bullets | Verify literal TypeScript DTOs, Zod schemas, SQL DDL, and route signatures are copy-pasteable |
 | 2.2 | Zero field-name or type mismatch between Backend shards (`backend-engineer#*`) and Frontend shards (`frontend-engineer#*`) | Cross-check property names (`camelCase` vs `snake_case`), HTTP status codes, and error envelopes |
 | 2.3 | All `READ_ONLY_FILES` referenced by tasks actually exist on disk (per `SCOUT-{task}.md`) or are created in a prior sequential Wave | Verify against workspace filesystem / `SCOUT-{task}.md` |
+| 2.4 | Single-File Cohesion & Proceed UI: `PLAN-{task}.md` is **1 cohesive file (`<= 500` lines)** with `ArtifactMetadata.RequestFeedback: true` (never folder-split at 150 lines) | Verify line count `<= 500` and `RequestFeedback: true` |
 
 ### Dimension 3: 100% Requirement Traceability (`REQ-ID` → `Task` → `AC`) & `>= 5` Edge Cases
 | # | Check | Evidence Required |

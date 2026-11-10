@@ -3,7 +3,7 @@ name: BoomOpen Workflow Kit
 description: Smart-Hybrid Multi-Agent Orchestrator (v5.5) — Pragmatic 2-Tier Coding Standards, 2-Mode Gate, DAG Parallel Fan-Out, Direct Plan Dispatch & Warm Sub-agent Reuse.
 priority: 1000
 compliance: STRICT
-commands: [cook, fix, plan, debug, test, review, docs, design, deploy, report, research, brainstorm, ask, code, autopilot, conduct, orchestrate, save, recap, settings]
+commands: [architect, ask, auto, autopilot, brainstorm, code, conduct, cook, debug, deep-audit, deploy, design, docs, fix, init, next, orchestrate, performance, plan, preview, recap, refactor, report, research, review, rollback, save, security-audit, settings, status, test, ui-ux-pro-max]
 handoffs:
   - label: "🚀 Cook"
     prompt: "/cook:hard "
@@ -87,8 +87,8 @@ ARTIFACTS = <appDataDir>\brain\<conversation-id>\
 
 ### 🛠️ Deterministic CLI Compilers & Gates (`node <CLI> <cmd>` or `boomopen <cmd>`)
 - **`research <validate|brief>`**: Validate `RESEARCH-*` / `BRAINSTORM-*` (`--mode brainstorm`, `RES-G1..G4`) & compile `HANDOFF_BRIEF`.
-- **`design <validate|contract>`**: Validate 6-Block `DESIGN-*` (`DES-G1..G5`) & compile `DESIGN_CONTRACT` (`@theme` CSS + TypeScript props).
-- **`plan <validate|compile>`**: Validate `PLAN-*` (`G1..G5`, `≤ 4 OWNED_FILES`/shard) & compile `.boomopen/project-ledger.json`.
+- **`design <validate|contract>`**: Validate 6-Block `DESIGN-*` (`DESIGN-G1..G4`) & compile `DESIGN_CONTRACT` (`@theme` CSS + TypeScript props).
+- **`plan <validate|compile>`**: Validate `PLAN-*` (`PLAN-G1..G5`, `≤ 4 OWNED_FILES`/shard) & compile `.boomopen/project-ledger.json`.
 - **`cook <state|packets|verify-wave|preflight>`**: Detect artifacts, compile 5-Field Wave Handoff Packets, & enforce `OWNED_FILES` / `READ_ONLY_FILES` + `--strict-phase --no-stubs`.
 - **`ledger` | `conduct <probe|dispatch|council|status>` | `check --strict-phase --no-stubs` | `settings` | `doctor`**: DAG ledger, 6-task Multi-Engine Council (`research|brainstorm|plan|design|review|debug`), 2-Tier code gate, settings, & health check.
 

@@ -49,7 +49,7 @@ Launch parallel `TypeName: "self"`, `Model: "inherit"` shards with `package.json
 | Parallel Shard | Disjoint `OWNED_FILES` (`≤ 3–4` Files) | Responsibility |
 |----------------|----------------------------------------|----------------|
 | **`frontend-engineer#shell` / `backend-engineer#core`** | `src/types/index.ts`, `src/constants/index.ts`, `src/services/health.ts` (+ entry route/view) | Clean typed skeleton (`0` explicit `any`, `0` debug `console.log`, structured logger/health check) + `tests/health.test.ts` |
-| **`technical-writer#docs`** | `docs/BRIEF.md`, `README.md` | Concise Project Brief (`What`, `Why`, `Who`, `Tech Stack`, `MVP Scope`, `Explicit Non-Goals`) + quickstart `README.md` |
+| **`docs-manager#docs`** | `docs/BRIEF.md`, `README.md` | Concise Project Brief (`What`, `Why`, `Who`, `Tech Stack`, `MVP Scope`, `Explicit Non-Goals`) + quickstart `README.md` |
 
 ```text
 <project-name>/

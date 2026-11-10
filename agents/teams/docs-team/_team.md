@@ -1,6 +1,7 @@
 ---
 name: docs-team
 team: docs-team
+description: "3-Wave Source-Grounded Documentation Elastic Golden Diamond Team (v5.5) — parallel codebase truth scouting, disjoint section/doc sharding (<= 3-4 OWNED_FILES/shard), valid Mermaid diagrams, and zero-drift symbol/link verification"
 summary: "3-Wave Source-Grounded Documentation Elastic Golden Diamond Team (v5.5) — parallel codebase truth scouting, disjoint section/doc sharding (<= 3-4 OWNED_FILES/shard), valid Mermaid diagrams, and zero-drift symbol/link verification"
 version: 5.5.0
 pattern: elastic-golden-diamond

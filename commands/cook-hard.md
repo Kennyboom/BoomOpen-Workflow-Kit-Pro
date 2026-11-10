@@ -79,7 +79,7 @@ Spawn `planner` (`agents/planner.md`, `TypeName: "self"`, `Model: "inherit"`) to
      ```
    - Dispatch Wave 1 shards (`database-architect#schema`, `backend-engineer#contracts`, `frontend-engineer#tokens-primitives`) in parallel (`TypeName: "self"`, `Model: "inherit"`), record `role#shard -> conversationId`, and gate completion:
      ```bash
-     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify
      ```
 2. **Wave 2 — Parallel Feature Shards (`100%` Concurrent Backend + Frontend)**:
    - Generate Wave 2 packets (automatically locking Wave 1 contracts/tokens and sibling shards' `OWNED_FILES` into `READ_ONLY_FILES`):
@@ -88,7 +88,7 @@ Spawn `planner` (`agents/planner.md`, `TypeName: "self"`, `Model: "inherit"`) to
      ```
    - Dispatch `backend-engineer#api-1..k`, `frontend-engineer#screen-1..k`, and `mobile-engineer#1..k` **in parallel in the same turn**, then gate completion (routing any failures via warm `send_message`, max 3 rounds):
      ```bash
-     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --run-verify
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --git --run-verify
      ```
 
 ---

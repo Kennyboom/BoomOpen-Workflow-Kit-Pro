@@ -108,7 +108,7 @@ category: {execution|planning|validation|research|debugging|orchestration}
 ```markdown
 ## ⛔ Constraints
 
-- âŒ {What NOT to do}
+- ❌ {What NOT to do}
 - ✅ {What TO do}
 ```
 
@@ -124,18 +124,18 @@ category: {execution|planning|validation|research|debugging|orchestration}
 
 ## LINE LIMITS
 
-| Section           | Max Lines |
-| ----------------- | --------- |
-| Frontmatter       | 12        |
-| Cognitive Anchor  | 5         |
-| Identity          | 15        |
-| Skills            | 10        |
-| Thinking Protocol | 60        |
-| Constraints       | 20        |
-| Output Format     | 30        |
-| **TOTAL**         | ~150      |
+| Section           | Target Lines |
+| ----------------- | ------------ |
+| Frontmatter       | ~12          |
+| Cognitive Anchor  | ~5           |
+| Identity          | ~15          |
+| Skills            | ~10          |
+| Thinking Protocol | ~60–110      |
+| Constraints       | ~20–30       |
+| Output Format     | ~30–60       |
+| **TARGET / HARD** | **~120–250 (Hard budget: ≤ 450 lines enforced by `boomopen doctor`)** |
 
-**TARGET**: Each agent file should be ~120-150 lines.
+**TARGET**: Keep each agent file cohesive around ~120–250 lines (`boomopen doctor` enforces a hard ceiling of `≤ 450` lines for `agents/*.md` and `agents/teams/**/*.md`).
 
 ---
 
@@ -242,7 +242,7 @@ Before coding: input/output, errors, happy path, edge cases, testing.
 
 ## ⛔ Constraints
 
-| âŒ NEVER | ✅ ALWAYS |
+| ❌ NEVER | ✅ ALWAYS |
 |----------|----------|
 | Skip error handling | Validate all external input |
 | Hardcode secrets | Use environment variables |
@@ -271,11 +271,11 @@ Before coding: input/output, errors, happy path, edge cases, testing.
 
 ## ANTI-PATTERNS
 
-âŒ Hardcoded skill lists (use Matrix)
-âŒ Verbose explanations (use tables)
-âŒ Duplicate content from rules (reference instead)
-âŒ Skills section with detailed explanations (Matrix handles this)
-âŒ "Thinking Protocol" copied verbatim (customize per agent)
+❌ Hardcoded skill lists (use Matrix)
+❌ Verbose explanations (use tables)
+❌ Duplicate content from rules (reference instead)
+❌ Skills section with detailed explanations (Matrix handles this)
+❌ "Thinking Protocol" copied verbatim (customize per agent)
 
 ✅ Profile declaration in frontmatter
 ✅ Tables for quick reference

@@ -17,7 +17,7 @@ execution-mode: execute
 
 1. **Turn-1 0-Turn Sub-agent Dispatch (`Stabilize First, RCA Second`)**: Launch `devops-engineer#1..k` **immediately on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")` with the **5-Field Handoff Packet** (plus `security-engineer` in parallel if a security incident or credential leak triggered the rollback). Record `role#shard -> conversationId` for warm `send_message` reuse across rollback and verification, then dispatch `tester` + `debugger` in parallel once rollback executes (Tier 2 `EMBODY` from `~/.{TOOL}/skills/boomopen-workflow-kit/agents/{role}.md` ONLY on logged system tool failure).
 2. **Data-Loss Guardrail & Deterministic CLI Gate**:
-   - Enforce `accidental-data-loss-prevention`: NEVER run destructive database `DROP`/`TRUNCATE` down-migrations without explicit user confirmation via `ask_question`; prefer traffic/artifact rollback over backward-compatible schemas.
+   - Enforce `skills_library/deployment-procedures/SKILL.md` (**MANDATORY STOP-AND-VERIFY** consent gate + `hooks/validate-tool-call.mjs`): NEVER run destructive database `DROP`/`TRUNCATE` down-migrations without explicit user confirmation via `ask_question`; prefer traffic/artifact rollback over backward-compatible schemas.
    - Whenever rolling forward a local Git revert commit, gate repository integrity with:
      ```bash
      node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs

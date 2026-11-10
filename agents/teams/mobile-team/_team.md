@@ -1,6 +1,7 @@
 ---
 name: mobile-team
 team: mobile-team
+description: "3-Wave Contract-First Elastic Golden Diamond Mobile Team (v5.5) — Approved-Plan/Design Fast-Forward, Wave 1 tokens/navigation/offline contract lock, Wave 2 parallel 5-State mobile screen shards (<= 3-4 OWNED_FILES/shard), and Wave 3 mobile_audit.py + 60fps ergonomics gate"
 summary: "3-Wave Contract-First Elastic Golden Diamond Mobile Team (v5.5) — Approved-Plan/Design Fast-Forward, Wave 1 tokens/navigation/offline contract lock, Wave 2 parallel 5-State mobile screen shards (<= 3-4 OWNED_FILES/shard), and Wave 3 mobile_audit.py + 60fps ergonomics gate"
 version: 5.5.0
 pattern: elastic-golden-diamond
@@ -48,8 +49,8 @@ flowchart TD
     G0{"PLAN + DESIGN Validated?<br/>(boomopen cook state)"}
     G0 -->|"Yes (design contract + cook packets)"| W1
     G0 -->|"No (Ad-hoc /code:team)"| S0["Scope, Navigation & Token Lock<br/>mobile-team-techlead + scouter#mobile<br/>Locks SHARED_CONTRACT & disjoint OWNED_FILES"]
-    S0 --> W1["💎 Wave 1: Mobile Theme Tokens, Navigation Graph & Offline Sync Lock<br/>• mobile-engineer#tokens-nav (Theme/safe-area tokens, typed route params, UI kit)<br/>• mobile-engineer#offline-contracts (Local DB/SQLite schema, sync queue, API DTOs)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 1 --run-verify"]
-    W1 --> W2["💎 Wave 2: Parallel Feature Screen & Native-Module Shards (<= 3-4 OWNED_FILES/shard)<br/>• mobile-engineer#screen-1..k (5-State Mobile UI, 44pt/48dp targets, gestures)<br/>• mobile-engineer#native-bridge (Permissions, biometrics, push, deep links)<br/>Wave 1 theme, router & sync contracts locked in READ_ONLY_FILES<br/>Gate: boomopen cook verify-wave <plan.md> --wave 2 --run-verify"]
+    S0 --> W1["💎 Wave 1: Mobile Theme Tokens, Navigation Graph & Offline Sync Lock<br/>• mobile-engineer#tokens-nav (Theme/safe-area tokens, typed route params, UI kit)<br/>• mobile-engineer#offline-contracts (Local DB/SQLite schema, sync queue, API DTOs)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 1 --git --run-verify"]
+    W1 --> W2["💎 Wave 2: Parallel Feature Screen & Native-Module Shards (<= 3-4 OWNED_FILES/shard)<br/>• mobile-engineer#screen-1..k (5-State Mobile UI, 44pt/48dp targets, gestures)<br/>• mobile-engineer#sync-native (Permissions, biometrics, push, deep links)<br/>Wave 1 theme, router & sync contracts locked in READ_ONLY_FILES<br/>Gate: boomopen cook verify-wave <plan.md> --wave 2 --git --run-verify"]
     W2 --> W3["💎 Wave 3: HIG/M3 Ergonomics, Offline/Battery & Code Quality Audit<br/>• mobile-team-reviewer + tester#mobile (+ Optional Cross-Engine Critic)<br/>Runs: mobile_audit.py + boomopen check <dir> --strict-phase --no-stubs"]
     W3 -->|"🔴 BLOCKER / 🟡 REVISE (<= 3 warm send_message rounds)"| W2
     W3 -->|"✅ COOK-G1..G4 PASS + CONSENSUS"| OUT["Release Verified Mobile Deliverable"]
@@ -62,24 +63,24 @@ flowchart TD
 | **W1** | `mobile-engineer#tokens-nav` | `src/theme/tokens.ts`, `src/navigation/types.ts` | `DESIGN-{feature}.md` |
 | **W1** | `mobile-engineer#offline-contracts` | `src/storage/schema.ts`, `src/sync/contracts.ts` | `PLAN-{feature}.md` |
 | **W2** | `mobile-engineer#screen-1..k` | `src/screens/*`, `src/features/*/hooks.ts` | Wave 1 `tokens-nav` + `offline-contracts` |
-| **W2** | `mobile-engineer#native-bridge` | `src/native/*.ts`, `src/permissions/*.ts` | Wave 1 `tokens-nav` + `offline-contracts` |
+| **W2** | `mobile-engineer#sync-native` | `src/native/*.ts`, `src/permissions/*.ts` | Wave 1 `tokens-nav` + `offline-contracts` |
 | **W3** | `mobile-team-reviewer` + `tester#mobile` | `tests/mobile/*.test.tsx` (`tester` only) | All `src/**` files |
 
 - **Scoped Warm Session Reuse**: Record `mobile-engineer#<shard> -> conversationId` and route review fixes via `send_message` (max 3 rounds; Round 3 escalates to `mobile-team-techlead`).
-- **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<mobile diff & DESIGN_CONTRACT>"` (`boomopen conduct dispatch --role reviewer --engine cross_family`).
+- **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<mobile diff & DESIGN_CONTRACT>"`.
 
 ---
 
 ## 🔍 4 Deterministic Post-Wave Gates (`COOK-G1..G4`)
 
-Every wave MUST pass `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`:
+Every wave MUST pass `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`:
 
 | Gate ID | Gate Dimension | Deterministic CLI & Reviewer Enforcement |
 |:-------:|:---------------|:-----------------------------------------|
-| **`COOK-G1`** | **Disjoint `OWNED_FILES` & Router Lock** | `<= 4` files per `role#shard`; `0` unauthorized edits to Wave 1 theme/router `READ_ONLY_FILES`. |
-| **`COOK-G2`** | **`SHARED_CONTRACT`, 5-State & Anti-Stub** | Typed navigation/DTO compliance + 5-State Mobile UI (`Default`, `Loading`, `Empty`, `Error/Offline`, `Disabled`); `boomopen check <dir> --strict-phase --no-stubs` passes. |
-| **`COOK-G3`** | **Wave `--run-verify` & `mobile_audit.py`** | Typecheck/build/widget tests exit `0` + `python ~/.{TOOL}/skills/mobile-design/scripts/mobile_audit.py <dir>` passes (`44pt`/`48dp` targets, safe-area insets, virtualized lists). |
-| **`COOK-G4`** | **RTM Traceability & Consensus Stamp** | `100%` of Wave `REQ-xxx` / `AC` verified, `mobile-team-reviewer` posts `APPROVAL`, and `mobile-team-techlead` stamps `✅ CONSENSUS`. |
+| **`COOK-G1`** | **Disjoint `OWNED_FILES` & Router Lock** | `<= 4` files per `role#shard`; `0` unauthorized mutations to Wave 1 theme/router `READ_ONLY_FILES` (`--git`). |
+| **`COOK-G2`** | **Deliverables Present & Non-Empty** | All expected Wave `<N>` mobile screen, native-module, storage, and test files exist on disk and are non-empty (`> 0` bytes). |
+| **`COOK-G3`** | **`SHARED_CONTRACT`, 5-State & Anti-Stub** | Typed navigation/DTO compliance + 5-State Mobile UI (`Default`, `Loading`, `Empty`, `Error/Offline`, `Disabled`); `boomopen check <dir> --strict-phase --no-stubs` clean. |
+| **`COOK-G4`** | **Wave `--run-verify`, `mobile_audit.py` & Consensus** | Typecheck/build/widget tests + `python ~/.{TOOL}/skills/mobile-design/scripts/mobile_audit.py <dir>` exit `0`, `100%` `REQ-xxx`/`AC` verified, Reviewer `APPROVAL`, and `✅ CONSENSUS`. |
 
 ---
 
@@ -104,7 +105,7 @@ Every shard spawned via `invoke_subagent(TypeName: "self", Model: "inherit")` re
 
 ### Hard Release Blockers (`mobile-team-techlead` MUST Reject Release If Any Fail)
 - [ ] Any `mobile-engineer#<shard>` touched `> 4 OWNED_FILES` or mutated locked Wave 1 navigation/theme contracts (`COOK-G1`).
-- [ ] Any screen omits offline/error handling, safe-area insets, or `>= 44x44pt` (iOS) / `>= 48x48dp` (Android) touch targets (`COOK-G2`).
-- [ ] Unvirtualized long lists, uncleaned native listeners, or `mobile_audit.py` / `boomopen check --strict-phase --no-stubs` failures remain (`COOK-G3`).
-- [ ] `cook verify-wave --run-verify` exited non-zero on build, typecheck, or mobile test suites.
+- [ ] Expected screen/module deliverables are missing/empty (`COOK-G2`) or omit offline/error handling, safe-area insets, or `>= 44x44pt` (iOS) / `>= 48x48dp` (Android) touch targets (`COOK-G3`).
+- [ ] Unvirtualized long lists, uncleaned native listeners, or `mobile_audit.py` / `boomopen check --strict-phase --no-stubs` failures remain (`COOK-G3`/`COOK-G4`).
+- [ ] `cook verify-wave "<plan.md>" --wave <W> --git --run-verify` exited non-zero on build, typecheck, or mobile test suites.
 - [ ] `MAILBOX-{date}.md` lacks `mobile-team-reviewer` `APPROVAL` and `✅ CONSENSUS` (`COOK-G4`).

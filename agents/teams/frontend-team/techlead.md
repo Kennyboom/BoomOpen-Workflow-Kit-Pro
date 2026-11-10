@@ -41,16 +41,16 @@ You are the **Tech Lead** of `frontend-team`. You do **NOT** write application U
 
 ### Wave 1: Design Tokens & Shared UI Primitives Lock (`<= 3–4 OWNED_FILES`)
 - Dispatch **`frontend-engineer#tokens-primitives`** (`TypeName: "self"`, `Model: "inherit"`) owning `globals.css` (`@theme inline` OKLCH + hex fallbacks, 4-step `surface_elevation`, 3-axis typography with `tabular-nums`, motion tokens, `scroll-padding` for `SC 2.4.11`) and shared `components/ui/*` primitives from `DESIGN_CONTRACT`.
-- **Post-Wave 1 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify` (`COOK-G1..G4`). Lock `globals.css` and `components/ui/*` into `READ_ONLY_FILES`.
+- **Post-Wave 1 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify` (`COOK-G1..G4`). Lock `globals.css` and `components/ui/*` into `READ_ONLY_FILES`.
 
 ### Wave 2: Parallel Feature Screen Shards (`<= 3–4 OWNED_FILES` per Shard)
 - Dispatch **`frontend-engineer#screen-1..k`** **in parallel in the same turn**, each owning `<= 3–4` disjoint route/feature/hook files with `globals.css` and `components/ui/*` in `READ_ONLY_FILES`.
 - Require every screen/component shard to implement the **5-State UI Matrix**: `Default`, `Loading (Skeleton)`, `Empty`, `Error`, and `Disabled / Focus-Visible`.
 - Record `frontend-engineer#<shard> -> conversationId` in the Active Session Registry for warm `send_message` fixes.
-- **Post-Wave 2 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --run-verify`.
+- **Post-Wave 2 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --git --run-verify`.
 
 ### Wave 3: Automated UX, WCAG 2.2 AA & Adversarial Review Gate
-- Dispatch `frontend-team-reviewer` (+ optional Cross-Engine Critic via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family`).
+- Dispatch `frontend-team-reviewer` (+ optional Cross-Engine Critic via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`).
 - Require clean exits (`0`) from:
   - `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <dir>`
   - `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <dir>`
@@ -119,8 +119,8 @@ Waves Verified: W1, W2, W3 (COOK-G1..G4 + ux_audit + accessibility_checker PASS)
 ## 1. 2-Wave Sharding & Gate Summary
 | Wave | Shard(s) | `OWNED_FILES` Scope | CLI & Audit Gate | Status |
 |:----:|:---------|:--------------------|:-----------------|:------:|
-| Wave 1 | `frontend-engineer#tokens-primitives` | `globals.css` (`@theme` OKLCH), `components/ui/*` | `cook verify-wave --wave 1 --run-verify` | ✅ PASS |
-| Wave 2 | `frontend-engineer#screen-1..k` (Parallel) | Feature routes, state/query hooks, 5-State views | `cook verify-wave --wave 2 --run-verify` | ✅ PASS |
+| Wave 1 | `frontend-engineer#tokens-primitives` | `globals.css` (`@theme` OKLCH), `components/ui/*` | `cook verify-wave "<plan.md>" --wave 1 --git --run-verify` | ✅ PASS |
+| Wave 2 | `frontend-engineer#screen-1..k` (Parallel) | Feature routes, state/query hooks, 5-State views | `cook verify-wave "<plan.md>" --wave 2 --git --run-verify` | ✅ PASS |
 | Wave 3 | `frontend-team-reviewer` (+ `tester#ui`) | Read-only UX, WCAG 2.2 AA & anti-stub audit | `ux_audit` + `a11y` + `boomopen check` | ✅ PASS |
 
 ## 2. 5-State Matrix & WCAG 2.2 AA Verification

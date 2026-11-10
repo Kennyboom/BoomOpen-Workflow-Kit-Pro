@@ -1,6 +1,7 @@
 ---
 name: database-team
 team: database-team
+description: "3-Wave Expand-Contract Elastic Golden Diamond Database Team (v5.5) — Approved-Plan Fast-Forward, Wave 1 core DDL & expand migrations, Wave 2 parallel RLS/indexes/repository shards (<= 3-4 OWNED_FILES/shard), and Wave 3 schema_validator.py + reversibility audit"
 summary: "3-Wave Expand-Contract Elastic Golden Diamond Database Team (v5.5) — Approved-Plan Fast-Forward, Wave 1 core DDL & expand migrations, Wave 2 parallel RLS/indexes/repository shards (<= 3-4 OWNED_FILES/shard), and Wave 3 schema_validator.py + reversibility audit"
 version: 5.5.0
 pattern: elastic-golden-diamond
@@ -27,7 +28,7 @@ deliverables:
 ## ⚡ Mandatory Skills & Rules for All Database Team Shards
 
 Every member of `database-team` (`TypeName: "self"`, `Model: "inherit"`) **MUST** enforce:
-1. `skills/database-design/SKILL.md`, `skills/accidental-data-loss-prevention/SKILL.md`, & `skills/clean-code/SKILL.md` — 3NF/workload-aware normalization, reversible expand-contract DDL, STOP-AND-VERIFY consent before destructive SQL (`DROP`/`TRUNCATE`), and Pragmatic 2-Tier code standards.
+1. `skills/database-design/SKILL.md` & `skills/clean-code/SKILL.md` — 3NF/workload-aware normalization, reversible expand-contract DDL, **MANDATORY STOP-AND-VERIFY** consent gate (`hooks/validate-tool-call.mjs`) before destructive SQL (`DROP`/`TRUNCATE`), and Pragmatic 2-Tier code standards.
 2. `skills_library/supabase-rls-edge-realtime/SKILL.md`, `skills_library/drizzle-neon-turso-edge/SKILL.md`, & `skills_library/cloudflare-d1-r2-durable-objects/SKILL.md`.
 3. `rules/TEAMS.md` & `commands/_ref/golden-triangle-protocol.md` — Disjoint `OWNED_FILES` (`<= 3–4` files/shard), Append-Only Mailbox (`MAILBOX-{date}.md`), and Warm Session Reuse (`send_message`).
 
@@ -47,8 +48,8 @@ flowchart TD
     G0{"PLAN-{feature}.md Validated?<br/>(boomopen cook state)"}
     G0 -->|"Yes (boomopen cook packets)"| W1
     G0 -->|"No (Ad-hoc /code:team)"| S0["Schema Scope & Migration Lock<br/>database-team-techlead + scouter#db<br/>Locks table/ORM SHARED_CONTRACT & sequence"]
-    S0 --> W1["💎 Wave 1: Base Schema, Enums & Expand-Phase DDL Lock<br/>• database-architect#schema (Tables, PK/FK constraints, reversible up/down DDL,<br/>exported Drizzle/Prisma/SQL types; <= 3-4 OWNED_FILES)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 1 --run-verify"]
-    W1 --> W2["💎 Wave 2: Parallel Indexes, RLS Policies & Query Shards (<= 3-4 OWNED_FILES/shard)<br/>• database-architect#rls-security (Tenant isolation & RLS policies)<br/>• database-architect#indexes-queries (Composite indexes, views, typed repos)<br/>• database-architect#seed-backfill (Idempotent seed & batch backfill scripts)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 2 --run-verify"]
+    S0 --> W1["💎 Wave 1: Base Schema, Enums & Expand-Phase DDL Lock<br/>• database-architect#schema (Tables, PK/FK constraints, reversible up/down DDL,<br/>exported Drizzle/Prisma/SQL types; <= 3-4 OWNED_FILES)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 1 --git --run-verify"]
+    W1 --> W2["💎 Wave 2: Parallel Indexes, RLS Policies & Query Shards (<= 3-4 OWNED_FILES/shard)<br/>• database-architect#rls-security (Tenant isolation & RLS policies)<br/>• database-architect#indexes-queries (Composite indexes, views, typed repos)<br/>• database-architect#seed-backfill (Idempotent seed & batch backfill scripts)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 2 --git --run-verify"]
     W2 --> W3["💎 Wave 3: Migration Safety, EXPLAIN Plan & Schema Audit<br/>• database-team-reviewer + tester#db (+ Optional Cross-Engine Critic)<br/>Runs: schema_validator.py + boomopen check <dir> --strict-phase --no-stubs"]
     W3 -->|"🔴 BLOCKER / 🟡 REVISE (<= 3 warm send_message rounds)"| W2
     W3 -->|"✅ COOK-G1..G4 PASS + CONSENSUS"| OUT["Release Verified Database Deliverable"]
@@ -65,20 +66,20 @@ flowchart TD
 | **W3** | `database-team-reviewer` + `tester#db` | `tests/db/*.test.ts` (`tester` only) | All `db/**` files |
 
 - **Scoped Warm Session Reuse**: Track `database-architect#<shard> -> conversationId` and route findings via `send_message` (max 3 rounds; Round 3 escalates to `database-team-techlead`).
-- **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<DDL diff & query plans>"` (`boomopen conduct dispatch --role reviewer --engine cross_family`).
+- **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<DDL diff & query plans>"`.
 
 ---
 
 ## 🔍 4 Deterministic Post-Wave Gates (`COOK-G1..G4`)
 
-Every wave MUST pass `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`:
+Every wave MUST pass `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`:
 
 | Gate ID | Gate Dimension | Deterministic CLI & Reviewer Enforcement |
 |:-------:|:---------------|:-----------------------------------------|
-| **`COOK-G1`** | **Disjoint `OWNED_FILES` & Migration Lock** | `<= 4` files per `role#shard`; monotonic migration ordering and `0` unauthorized edits to `READ_ONLY_FILES`. |
-| **`COOK-G2`** | **`SHARED_CONTRACT` & Zero-Stub Hygiene** | ORM/SQL types match `SHARED_CONTRACT`; `boomopen check <dir> --strict-phase --no-stubs` passes with `0` stubs/TODOs and `0` unconsented destructive DDL. |
-| **`COOK-G3`** | **Wave `--run-verify` & `schema_validator.py`** | Up/down migration dry-run & query tests exit `0` + `python ~/.{TOOL}/skills/database-design/scripts/schema_validator.py <dir>` passes + FK/WHERE indexes verified. |
-| **`COOK-G4`** | **RTM Traceability & Consensus Stamp** | `100%` of Wave `REQ-xxx` / `AC` verified, `database-team-reviewer` posts `APPROVAL`, and `database-team-techlead` stamps `✅ CONSENSUS`. |
+| **`COOK-G1`** | **Disjoint `OWNED_FILES` & Migration Lock** | `<= 4` files per `role#shard`; monotonic migration ordering and `0` unauthorized mutations to `READ_ONLY_FILES` (`--git`). |
+| **`COOK-G2`** | **Deliverables Present & Non-Empty** | All expected Wave `<N>` schema, migration (`UP`/`DOWN`), and test files exist on disk and are non-empty (`> 0` bytes). |
+| **`COOK-G3`** | **`SHARED_CONTRACT` & Zero-Stub Hygiene** | ORM/SQL types match `SHARED_CONTRACT`; `boomopen check <dir> --strict-phase --no-stubs` passes with `0` stubs/TODOs and `0` unconsented destructive DDL. |
+| **`COOK-G4`** | **Wave `--run-verify`, `schema_validator.py` & Consensus** | Up/down migration dry-run & query tests + `python ~/.{TOOL}/skills/database-design/scripts/schema_validator.py <dir>` exit `0`, FK/WHERE indexes verified, Reviewer `APPROVAL`, and `✅ CONSENSUS`. |
 
 ---
 
@@ -103,7 +104,7 @@ Every shard spawned via `invoke_subagent(TypeName: "self", Model: "inherit")` re
 
 ### Hard Release Blockers (`database-team-techlead` MUST Reject Release If Any Fail)
 - [ ] Any `database-architect#<shard>` touched `> 4 OWNED_FILES` or created conflicting migration sequence numbers (`COOK-G1`).
-- [ ] Destructive DDL (`DROP TABLE`/`COLUMN`, `TRUNCATE`) was introduced without expand-contract phasing and explicit user consent (`COOK-G2`).
-- [ ] Foreign keys or hot `WHERE`/`JOIN`/`ORDER BY` columns lack supporting indexes or `EXPLAIN` verification (`COOK-G3`).
-- [ ] `cook verify-wave --run-verify`, `schema_validator.py`, or `boomopen check --strict-phase --no-stubs` exited non-zero.
+- [ ] Expected schema/migration deliverables are missing/empty (`COOK-G2`) or destructive DDL (`DROP TABLE`/`COLUMN`, `TRUNCATE`) was introduced without expand-contract phasing and explicit user consent (`COOK-G3`).
+- [ ] Foreign keys or hot `WHERE`/`JOIN`/`ORDER BY` columns lack supporting indexes or `EXPLAIN` verification (`COOK-G4`).
+- [ ] `cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, `schema_validator.py`, or `boomopen check --strict-phase --no-stubs` exited non-zero.
 - [ ] `MAILBOX-{date}.md` lacks `database-team-reviewer` `APPROVAL` and `✅ CONSENSUS` (`COOK-G4`).

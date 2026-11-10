@@ -3,10 +3,10 @@
   <p><strong>نظام تشغيل القوى العاملة الذكية Smart-Hybrid متعدد المنصات — 21 وكيلاً متخصصاً، 18 فريق المثلث الذهبي وخزينة تضم +1,460 مهارة عند الطلب</strong></p>
 
   <p>
-    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
+    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
     <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
-    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
+    <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
     <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
   </p>
@@ -22,11 +22,11 @@
 ## 🎬 العرض الرسمي للإطلاق (Full HD 1080p)
 
 <div align="center">
-  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
+  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
     <img src="../assets/media/poster_en.png" alt="مشاهدة العرض الرسمي لإطلاق BoomOpen Workflow Kit v5.5 (Full HD 1080p)" width="92%" />
   </a>
   <p>
-    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>اضغط هنا لمشاهدة / تشغيل العرض الرسمي بدقة Full HD 1080p (ملف MP4 مع تعليق صوتي احترافي)</b></a>
+    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>اضغط هنا لمشاهدة / تشغيل العرض الرسمي بدقة Full HD 1080p (ملف MP4 مع تعليق صوتي احترافي)</b></a>
   </p>
 </div>
 
@@ -36,9 +36,9 @@
 
 **BoomOpen Workflow Kit v5.5 (الإصدار الموحد متعدد المنصات والهجين الذكي)** هو نظام تشغيل مفتوح المصدر متعدد الوكلاء (Multi-Agent) يحوّل مساعد البرمجة الفردي بالذكاء الاصطناعي إلى منظمة هندسية متكاملة تضم **21 وكيلاً متخصصاً (Specialist Agents)**، و**18 فريقاً تنافسياً بنموذج المثلث الذهبي (Golden Triangle Teams)**، و**22 مهارة أساسية (Core Skills)**، وأكثر من **1,440 مهارة مكتبية متخصصة (`skills_library`)**.
 
-على عكس القوالب الجامدة أو الأطر الثقيلة التي تسبب تأخيراً في التشغيل البارد مع كل سؤال بسيط، يقدم BoomOpen v5.5 **بوابة عتبة التعقيد الذكية ثنائية الوضع (2-Mode Smart Complexity Threshold Gate)**:
-- **⚡ الوضع A — التنفيذ المباشر (0 ثانية تشغيل بارد)**: الأسئلة والأجوبة السريعة، شرح الكود، إصلاح الأخطاء في نطاق واحد، أو التعديلات الواضحة التي تلمس **ملفان أو أقل** (دون أمر `/cmd`) يتم تنفيذها واختبارها والتحقق منها **مباشرة** بواسطة الوكيل الأساسي مع تطبيق **معايير البرمجة العملية ذات المستويين** و**الاختبار وإصلاح الأخطاء المستمر**.
-- **🎻 الوضع B — التنسيق الصارم للوكلاء المتعددين**: الميزات المعقدة (**أكثر من ملفين** أو **مجالين فأكثر**) أو أوامر `/cmd` الصريحة تفعّل وضع المنسق الصارم مع **التفريع المتوازي DAG**، و**الإرسال المباشر من الخطة إلى المنفذ**، و**أقفال ملكية الملفات القائمة على العقود (`SHARED_CONTRACT` + `OWNED_FILES`)**، و**إعادة استخدام الجلسات النشطة للوكلاء الفرعيين (`send_message`)**.
+على عكس القوالب الجامدة أو الأطر الثقيلة التي تسبب تأخيراً وتضخماً في السياق مع كل جولة، يجمع BoomOpen v5.5 بين **بوابة أولوية الوكلاء الفرعيين منذ الجولة 1 (Proactive Sub-agent First Gate)**، و**التوجيه الطبيعي بـ 17 لغة**، و**تقسيم الأسراب المرن رباعي المستويات (`role#shard`)**، و**التشغيل الذاتي متعدد الجلسات (`/autopilot`)**، و**موجه المحركات المتعددة (`/conduct`)**:
+- **🚀 وكلاء فرعيون متوازيون منذ الجولة 1 وتنسيق الوضع B**: استكشاف الكود غير المحدد (`> 2` ملفات)، والميزات متعددة المجالات (`≥ 2` مجالات)، ونوايا سير العمل باللغة الطبيعية عبر **جميع اللغات الـ 17 المدعومة**، أو أوامر `/cmd` الصريحة تُطلق فوراً شظايا متوازية (`role#shard`، بحد أقصى `3–4 OWNED_FILES` لكل شظية) مع **التفريع المتوازي DAG**، و**الإرسال المباشر من الخطة إلى المنفذ**، و**أقفال العقود (`SHARED_CONTRACT` + `OWNED_FILES`)**، و**إعادة الاستخدام الدافئ (`role#shard -> conversationId` عبر `send_message`)**، بالإضافة إلى دفتر `/autopilot` (`boomopen ledger`) ومجالس المحركات المتعددة `/conduct` (`boomopen conduct`).
+- **⚡ الوضع A — التنفيذ الدقيق للملفات المعروفة مسبقاً (0 ثانية تشغيل بارد)**: الأسئلة والأجوبة البسيطة، وشرح الكود، والتعديلات الصغيرة عندما تكون **الملفات المستهدفة (`≤ 2`) معروفة مسبقاً منذ الجولة 1** (بدون استكشاف وبدون `/cmd`) تُنفَّذ وتُختبَر وتُتحقَّق **مباشرة** مع فرض **معايير البرمجة العملية ذات المستويين** و**الاختبار وإصلاح الأخطاء المستمر**.
 
 - **📚 خزينة ضخمة تضم 1,462 مهارة بدون تضخم السياق (Zero Context Bloat)**: تجمع بين **22 مهارة أساسية (`skills/`)** و**1,440 مهارة تخصصية (`skills_library/`)** مُجمَّعة مسبقاً في `matrix-skills/compact-index.json` للبحث الفوري `O(1)` من خطوتين — مما يمنح الذكاء الاصطناعي إتقاناً فورياً في الواجهات الخلفية والأمامية، تطبيقات الجوال، محركات الألعاب (Unity/Unreal/Godot)، الذكاء الاصطناعي والبيانات (BigQuery)، السحابة/DevOps وأمن OWASP دون استهلاك نافذة السياق.
 
@@ -74,15 +74,15 @@ flowchart TD
 2. **📏 معايير البرمجة العملية ذات المستويين (منع التجزئة الميكانيكية للملفات)**:
    - **المستوى 1 — قواعد صارمة للجودة والأمان (عدم تسامح مطلق)**: المسؤولية الواحدة (Single Responsibility)، **منع `any` الصريح تماماً**، **منع ترك `console.log` للتصحيح** في كود الإنتاج، إلزامية `try/catch` مع معالجة الأخطاء المحددة بالأنواع عند حدود async/API، الثوابت بصيغة `SCREAMING_SNAKE_CASE`، مبدأ DRY (`≥ 3`)، وترتيب عبارات الاستيراد.
    - **المستوى 2 — إرشادات هيكلية مرنة (الترابط أولاً)**: يستهدف الملف المترابط `~200–350 سطراً` مع سقف مرن يصل إلى `~400–450 سطراً` (التقسيم الإجباري فقط عند تجاوز `500 سطر` أو خلط عدة مجالات؛ وتُستثنى ملفات الاختبارات والأنواع والوثائق). الدوال المنطقية `~20–40 سطراً` (ودوال واجهة المستخدم/المعالجات `~40–80 سطراً`).
-3. **🎯 الإرسال المباشر من الخطة للمنفذ وإعادة استخدام الوكلاء النشطين (`send_message`)**:
-   - بمجرد إنشاء `PLAN-{feature}.md`، يرسل المنسق المهام **مباشرة** إلى مهندسي المجال (`backend-engineer`، `frontend-engineer`، `database-architect`، إلخ) دون قفزة وسيطة زائدة عبر `tech-lead`.
-   - يتم تسجيل الوكلاء الفرعيين النشطين في **سجل الجلسات النشطة (`Role → conversationId`)** وإعادة استخدامهم عبر `send_message` بزمن بدء **0 ثانية** مع **الاحتفاظ الكامل (100%) بسياق الملفات**.
+3. **🎯 تقسيم الأسراب المرن رباعي المستويات (`role#shard`) والإرسال المباشر وإعادة الاستخدام الدافئ (`send_message`)**:
+   - بمجرد إنشاء `PLAN-{feature}.md`، يرسل المنسق المهام **مباشرة** إلى شظايا مهندسي المجال (`backend-engineer#shard-1`، `frontend-engineer#shard-2`، `database-architect#shard-1`، بحد أقصى `3–4 OWNED_FILES` لكل شظية) دون قفزة وسيطة زائدة عبر `tech-lead`.
+   - يتم تتبع الوكلاء الفرعيين النشطين في **سجل جلسات مقسّم (`role#shard → conversationId`)** وإعادة استخدامهم عبر `send_message` بزمن بدء **0 ثانية** مع **الاحتفاظ الكامل (100%) بسياق الملفات**.
 4. **🤝 التنفيذ المتوازي القائم على العقود (`SHARED_CONTRACT` + `OWNED_FILES`)**:
    - تقفل الخطط متعددة المجالات نقاط نهاية API ومخططات DTO وملكية الكتابة الحصرية للملفات (`OWNED_FILES` مقابل `READ_ONLY_FILES`) قبل إطلاق المهندسين بالتوازي، مما يقضي تماماً على تعارضات الكتابة.
 5. **🔍 تشخيص السبب الجذري 5-Whys (SPIE v3.0) وشجرة Git نظيفة 100%**:
    - يتتبع `debugger` كل خطأ عبر 3 فرضيات مرتبة وسلسلة سببية **5-Whys** (`لماذا 1 العرض المباشر` ← `لماذا 5 السبب الجذري النظامي`). تُحفظ جميع المخرجات المؤقتة (`PLAN`، `DEBUG`، `TEST`، `REVIEW`، `MAILBOX`) في `<appDataDir>\brain\<conversation-id>\` للحفاظ على نظافة شجرة عمل Git بنسبة 100%.
 6. **🩺 أدوات تشخيص CLI مدمجة (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check` & `doctor`) وفهرس مهارات بسرعة O(1)**:
-   - يتحقق `npm run doctor` من حزم المنصات الخمس، و21 وكيلاً، و72 ملف فريق، و84 ملف أوامر (`79` مسار عمل + `5` في `_ref/`)، وملف `matrix-skills/compact-index.json` (`1,462` مهارة مفهرسة). ويفحص `boomopen check <dir>` القواعد القابلة للفحص الآلي فقط: طول الملفات، و`any` الصريح في TypeScript، و`console.log` المتبقي؛ أما بقية المعايير فهي تعليمات للوكلاء. كما توفّر أوامر `boomopen research` و`boomopen design` و`boomopen plan` و`boomopen cook` و`boomopen ledger` و`boomopen conduct` ترجمة العقود وحزم التسليم المرحلية ومجالس المحركات المتعددة.
+   - يتحقق `npm run doctor` من حزم المنصات الخمس، و21 وكيلاً، و72 ملف فريق، و84 ملف أوامر (`79` مسار عمل + `5` في `_ref/`)، وملف `matrix-skills/compact-index.json` (`1,462` مهارة مفهرسة). يفحص `boomopen check <dir> [--strict-phase --no-stubs]` طول الملفات، و`any` الصريح في TypeScript، و`console.log` المتبقي، وتعليقات `TODO`/`FIXME` المؤجلة، والدوال الفارغة (Stubs)، والتلاعب بالاختبارات. كما توفّر أوامر `boomopen research` و`boomopen design` و`boomopen plan` و`boomopen cook` و`boomopen ledger` و`boomopen conduct` ترجمة العقود وحزم التسليم المرحلية ومجالس المحركات المتعددة.
 
 ---
 
@@ -104,8 +104,8 @@ flowchart TD
 
 ```bash
 # 1. استنساخ المستودع
-git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
-cd BoomOpen-Workflow-Kit
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+cd BoomOpen-Workflow-Kit-Pro
 
 # 2. التثبيت لمساعد البرمجة الخاص بك (اختر واحداً أو --all للجميع)
 npm run install:antigravity   # Google Antigravity 2.0 (Gemini)
@@ -121,7 +121,7 @@ npm link
 boomopen research validate path/to/RESEARCH.md
 boomopen design validate path/to/DESIGN.md
 boomopen plan validate path/to/PLAN.md
-boomopen cook preflight --plan path/to/PLAN.md
+boomopen cook preflight path/to/PLAN.md
 boomopen check path/to/your/project --strict-phase --no-stubs
 boomopen ledger status
 boomopen conduct probe
@@ -164,7 +164,7 @@ boomopen settings set execution.mode mode_a --project
 boomopen settings reset
 ```
 
-> يكتب `--project` الملف `./.boomopen.json` دائماً في المجلد الذي تشغّل منه الأمر، لذا شغّله داخل مشروعك وليس داخل نسخة الحزمة. بدون `npm link` استبدل `boomopen` بـ `node /path/to/BoomOpen-Workflow-Kit/cli/install.js`.
+> يكتب `--project` الملف `./.boomopen.json` دائماً في المجلد الذي تشغّل منه الأمر، لذا شغّله داخل مشروعك وليس داخل نسخة الحزمة. بدون `npm link` استبدل `boomopen` بـ `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`.
 
 ---
 
@@ -206,6 +206,8 @@ boomopen settings reset
 
 ---
 
+<a id="skills"></a>
+
 ## 📚 خزينة +1,460 مهارة (22 مهارة أساسية + 1,440 مهارة مكتبية)
 
 يأتي BoomOpen مزوداً بواحدة من أكبر منظومات المهارات الهندسية في المصادر المفتوحة، والمصممة لاستهلاك **0 توكن في وضع الخمول** عبر **الاستعلام التدريجي O(1) من خطوتين** (`<skills>` ← `matrix-skills/compact-index.json` ← تحميل ملف `SKILL.md` المطلوب فقط عند الطلب):
@@ -224,8 +226,8 @@ boomopen settings reset
 ## 📂 هيكل المستودع
 
 ```text
-BoomOpen-Workflow-Kit/
-├── agents/                  # 21 تعريفاً للوكلاء المتخصصين + 18 فريقاً للمثلث الذهبي (54 ملف دور)
+BoomOpen-Workflow-Kit-Pro/
+├── agents/                  # 21 تعريفاً للوكلاء المتخصصين + 18 فريقاً للمثلث الذهبي (54 ملف دور + 18 _team.md، 72 ملفاً)
 ├── cli/                     # أداة التثبيت (install.js)، الطبيب (doctor.js)، الفاحص (checker.js)، الإعدادات (settings.js), research.js, design.js, plan.js, cook.js، السجل (ledger.js) والمنسق (conductor.js)
 ├── commands/                # 79 مسار عمل لأوامر Slash (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 بروتوكولات _ref/ (84 ملفاً)
 ├── documents/               # وثائق ثنائية المستوى للبنية المعمارية والمجال وقاعدة الكود والمعايير

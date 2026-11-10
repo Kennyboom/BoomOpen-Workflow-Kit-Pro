@@ -1,6 +1,7 @@
 ---
 name: frontend-team
 team: frontend-team
+description: "3-Wave Design-Contract-First Elastic Golden Diamond Frontend Team (v5.5) — Approved-Plan/Design Fast-Forward, Wave 1 OKLCH tokens & UI primitives lock, Wave 2 parallel 5-State screen shards (<= 3-4 OWNED_FILES/shard), and Wave 3 UX + WCAG 2.2 AA audit"
 summary: "3-Wave Design-Contract-First Elastic Golden Diamond Frontend Team (v5.5) — Approved-Plan/Design Fast-Forward, Wave 1 OKLCH tokens & UI primitives lock, Wave 2 parallel 5-State screen shards (<= 3-4 OWNED_FILES/shard), and Wave 3 UX + WCAG 2.2 AA audit"
 version: 5.5.0
 pattern: elastic-golden-diamond
@@ -48,8 +49,8 @@ flowchart TD
     G0{"PLAN + DESIGN Validated?<br/>(boomopen cook state)"}
     G0 -->|"Yes (design contract + cook packets)"| W1
     G0 -->|"No (Ad-hoc /code:team)"| S0["Scope & DESIGN_CONTRACT Lock<br/>frontend-team-techlead + scouter#ui<br/>Locks tokens, Props & disjoint OWNED_FILES"]
-    S0 --> W1["💎 Wave 1: Design Tokens & Shared UI Primitives Lock<br/>• frontend-engineer#tokens-primitives (<= 3-4 OWNED_FILES:<br/>globals.css @theme inline OKLCH, elevation, components/ui/*)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 1 --run-verify"]
-    W1 --> W2["💎 Wave 2: Parallel Feature Screen Shards (<= 3-4 OWNED_FILES/shard)<br/>• frontend-engineer#screen-1..k (Pages, state hooks, 5-State UI Matrix)<br/>globals.css & components/ui/* locked in READ_ONLY_FILES!<br/>Gate: boomopen cook verify-wave <plan.md> --wave 2 --run-verify"]
+    S0 --> W1["💎 Wave 1: Design Tokens & Shared UI Primitives Lock<br/>• frontend-engineer#tokens-primitives (<= 3-4 OWNED_FILES:<br/>globals.css @theme inline OKLCH, elevation, components/ui/*)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 1 --git --run-verify"]
+    W1 --> W2["💎 Wave 2: Parallel Feature Screen Shards (<= 3-4 OWNED_FILES/shard)<br/>• frontend-engineer#screen-1..k (Pages, state hooks, 5-State UI Matrix)<br/>globals.css & components/ui/* locked in READ_ONLY_FILES!<br/>Gate: boomopen cook verify-wave <plan.md> --wave 2 --git --run-verify"]
     W2 --> W3["💎 Wave 3: Visual Craft, WCAG 2.2 AA & Code Quality Audit<br/>• frontend-team-reviewer + tester#ui (+ Optional Cross-Engine Critic)<br/>Runs: ux_audit.py + accessibility_checker.py<br/>+ boomopen check <dir> --strict-phase --no-stubs"]
     W3 -->|"🔴 BLOCKER / 🟡 REVISE (<= 3 warm send_message rounds)"| W2
     W3 -->|"✅ COOK-G1..G4 PASS + CONSENSUS"| OUT["Release Verified Frontend Deliverable"]
@@ -64,20 +65,20 @@ flowchart TD
 | **W3** | `frontend-team-reviewer` + `tester#ui` | `tests/ui/*.spec.tsx` (`tester` only) | All `app/**`, `components/**`, `features/**` |
 
 - **Mandatory 5-State UI Matrix**: Every screen/component MUST implement `Default`, `Loading (Skeleton)`, `Empty`, `Error`, and `Disabled / Focus-Visible`.
-- **Warm Session Reuse & Cross-Engine Critic**: Route fixes to `frontend-engineer#<shard>` via `send_message` (max 3 rounds); optionally invoke `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<UI diff & DESIGN_CONTRACT>"` (`boomopen conduct dispatch --role reviewer --engine cross_family`).
+- **Warm Session Reuse & Cross-Engine Critic**: Route fixes to `frontend-engineer#<shard>` via `send_message` (max 3 rounds); optionally invoke `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<UI diff & DESIGN_CONTRACT>"`.
 
 ---
 
 ## 🔍 4 Deterministic Post-Wave Gates (`COOK-G1..G4`)
 
-Every wave MUST pass `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`:
+Every wave MUST pass `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`:
 
 | Gate ID | Gate Dimension | Deterministic CLI & Reviewer Enforcement |
 |:-------:|:---------------|:-----------------------------------------|
-| **`COOK-G1`** | **Disjoint `OWNED_FILES` & Token Lock** | `<= 4` files per `role#shard`; `0` Wave 2 edits to `globals.css` or `READ_ONLY_FILES`. |
-| **`COOK-G2`** | **`DESIGN_CONTRACT`, 5-State & Anti-Stub** | Exact `@theme` OKLCH tokens + 5-State UI coverage; `boomopen check <dir> --strict-phase --no-stubs` reports `0` stubs/TODOs, `0` `any`, `0` `console.log`. |
-| **`COOK-G3`** | **Wave `--run-verify` + UX/A11y Scripts** | Typecheck/build/component tests exit `0` + `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <dir>` + `accessibility_checker.py <dir>` pass WCAG 2.2 AA. |
-| **`COOK-G4`** | **RTM Traceability & Consensus Stamp** | `100%` of Wave `REQ-xxx` / `AC` verified, `frontend-team-reviewer` posts `APPROVAL`, and `frontend-team-techlead` stamps `✅ CONSENSUS`. |
+| **`COOK-G1`** | **Disjoint `OWNED_FILES` & Token Lock** | `<= 4` files per `role#shard`; `0` Wave 2 mutations to `globals.css` or `READ_ONLY_FILES` (`--git`). |
+| **`COOK-G2`** | **Deliverables Present & Non-Empty** | All expected Wave `<N>` UI component, screen, hook, and test files exist on disk and are non-empty (`> 0` bytes). |
+| **`COOK-G3`** | **`DESIGN_CONTRACT`, 5-State & Anti-Stub** | Exact `@theme` OKLCH tokens + 5-State UI coverage; `boomopen check <dir> --strict-phase --no-stubs` reports `0` stubs/TODOs, `0` `any`, `0` `console.log`. |
+| **`COOK-G4`** | **Wave `--run-verify`, UX/A11y & Consensus** | Typecheck/build/component tests + `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <dir>` + `accessibility_checker.py <dir>` exit `0`, `100%` `REQ-xxx`/`AC` verified, Reviewer `APPROVAL`, and `✅ CONSENSUS`. |
 
 ---
 
@@ -102,7 +103,7 @@ Every shard spawned via `invoke_subagent(TypeName: "self", Model: "inherit")` re
 
 ### Hard Release Blockers (`frontend-team-techlead` MUST Reject Release If Any Fail)
 - [ ] Any Wave 2 screen shard modified `globals.css` / `components/ui/*` or exceeded `4 OWNED_FILES` (`COOK-G1` failure).
-- [ ] Any component/screen omits `Default`, `Loading`, `Empty`, `Error`, or `Disabled / Focus-Visible` states (`COOK-G2`).
-- [ ] `ux_audit.py`, `accessibility_checker.py`, `cook verify-wave --run-verify`, or `boomopen check --strict-phase --no-stubs` exited non-zero (`COOK-G3`).
+- [ ] Any expected UI file is missing/empty (`COOK-G2`) or omits `Default`, `Loading`, `Empty`, `Error`, or `Disabled / Focus-Visible` states (`COOK-G3`).
+- [ ] `ux_audit.py`, `accessibility_checker.py`, `cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, or `boomopen check --strict-phase --no-stubs` exited non-zero (`COOK-G3`/`COOK-G4`).
 - [ ] Any interactive element violates WCAG 2.2 AA (`24x24px` web / `44x44pt` mobile targets, `SC 2.4.11` focus, `4.5:1` contrast).
 - [ ] `MAILBOX-{date}.md` lacks `frontend-team-reviewer` `APPROVAL` and `✅ CONSENSUS` (`COOK-G4`).

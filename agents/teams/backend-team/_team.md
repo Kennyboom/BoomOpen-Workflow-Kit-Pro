@@ -1,6 +1,7 @@
 ---
 name: backend-team
 team: backend-team
+description: "3-Wave Contract-First Elastic Golden Diamond Backend Team (v5.5) — Approved-Plan Fast-Forward, Wave 1 schema/DTO contract lock, Wave 2 parallel service/API shards (<= 3-4 OWNED_FILES/shard), and Wave 3 OWASP + api_validator.py verification"
 summary: "3-Wave Contract-First Elastic Golden Diamond Backend Team (v5.5) — Approved-Plan Fast-Forward, Wave 1 schema/DTO contract lock, Wave 2 parallel service/API shards (<= 3-4 OWNED_FILES/shard), and Wave 3 OWASP + api_validator.py verification"
 version: 5.5.0
 pattern: elastic-golden-diamond
@@ -47,8 +48,8 @@ flowchart TD
     G0{"PLAN-{feature}.md Validated?<br/>(boomopen cook state)"}
     G0 -->|"Yes (boomopen cook packets)"| W1
     G0 -->|"No (Ad-hoc /code:team)"| S0["Scope & API Contract Lock<br/>backend-team-techlead + scouter#api<br/>Locks SHARED_CONTRACT & disjoint OWNED_FILES"]
-    S0 --> W1["💎 Wave 1: Data Layer, Auth Guards & DTO Contract Lock<br/>• database-architect#schema / backend-engineer#data (Schema, repos)<br/>• backend-engineer#contracts (Zod/OpenAPI DTOs, error envelopes, auth middleware)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 1 --run-verify"]
-    W1 --> W2["💎 Wave 2: Parallel Domain Service & Endpoint Shards (<= 3-4 OWNED_FILES/shard)<br/>• backend-engineer#api-1..k (Routes, handlers, RBAC, pagination)<br/>• backend-engineer#workers-1..k (Queues, webhooks, integrations)<br/>Wave 1 contracts & middleware locked in READ_ONLY_FILES<br/>Gate: boomopen cook verify-wave <plan.md> --wave 2 --run-verify"]
+    S0 --> W1["💎 Wave 1: Data Layer, Auth Guards & DTO Contract Lock<br/>• database-architect#schema / backend-engineer#data (Schema, repos)<br/>• backend-engineer#contracts (Zod/OpenAPI DTOs, error envelopes, auth middleware)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 1 --git --run-verify"]
+    W1 --> W2["💎 Wave 2: Parallel Domain Service & Endpoint Shards (<= 3-4 OWNED_FILES/shard)<br/>• backend-engineer#api-1..k (Routes, handlers, RBAC, pagination)<br/>• backend-engineer#workers-1..k (Queues, webhooks, integrations)<br/>Wave 1 contracts & middleware locked in READ_ONLY_FILES<br/>Gate: boomopen cook verify-wave <plan.md> --wave 2 --git --run-verify"]
     W2 --> W3["💎 Wave 3: OWASP Security, Performance & API Contract Audit<br/>• backend-team-reviewer + tester#api (+ Optional Cross-Engine Critic)<br/>Runs: api_validator.py + boomopen check <dir> --strict-phase --no-stubs"]
     W3 -->|"🔴 BLOCKER / 🟡 REVISE (<= 3 warm send_message rounds)"| W2
     W3 -->|"✅ COOK-G1..G4 PASS + CONSENSUS"| OUT["Release Verified Backend Deliverable"]
@@ -65,20 +66,20 @@ flowchart TD
 | **W3** | `backend-team-reviewer` + `tester#api` | `tests/api/*.test.ts` (`tester` only) | All `src/**` files |
 
 - **Scoped Warm Session Reuse**: Track `backend-engineer#<shard> -> conversationId` and send targeted fixes via `send_message` (max 3 rounds; Round 3 escalates strictly to `backend-team-techlead`).
-- **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<wave diff & API contract>"` (`boomopen conduct dispatch --role reviewer --engine cross_family`).
+- **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<wave diff & API contract>"`.
 
 ---
 
 ## 🔍 4 Deterministic Post-Wave Gates (`COOK-G1..G4`)
 
-Every wave MUST pass `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`:
+Every wave MUST pass `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`:
 
 | Gate ID | Gate Dimension | Deterministic CLI & Reviewer Enforcement |
 |:-------:|:---------------|:-----------------------------------------|
-| **`COOK-G1`** | **Disjoint `OWNED_FILES` & Write-Lock** | All Wave `<N>` `OWNED_FILES` exist, `<= 4` files per `role#shard`, and `0` edits to `READ_ONLY_FILES`. |
-| **`COOK-G2`** | **`SHARED_CONTRACT` & Zero-Stub Hygiene** | Exact DTO/status-code/error-envelope compliance; `boomopen check <dir> --strict-phase --no-stubs` passes with `0` stubs/TODOs, `0` `any`, and structured logging only. |
-| **`COOK-G3`** | **Wave `--run-verify` & `api_validator.py`** | Build/typecheck/unit+integration tests exit `0` + `python ~/.{TOOL}/skills/api-patterns/scripts/api_validator.py <dir>` passes + zero SQLi/N+1/authz gaps. |
-| **`COOK-G4`** | **RTM Traceability & Consensus Stamp** | `100%` of Wave `REQ-xxx` / `AC` items verified, `backend-team-reviewer` posts `APPROVAL`, and `backend-team-techlead` stamps `✅ CONSENSUS`. |
+| **`COOK-G1`** | **Disjoint `OWNED_FILES` & Write-Lock** | `<= 4` files per `role#shard`; `0` mutations to `READ_ONLY_FILES` or unauthorized files (`--git`). |
+| **`COOK-G2`** | **Deliverables Present & Non-Empty** | All expected Wave `<N>` `OWNED_FILES` and `Test Files` exist on disk and are non-empty (`> 0` bytes). |
+| **`COOK-G3`** | **`SHARED_CONTRACT` & Zero-Stub Hygiene** | Exact DTO/status-code/error-envelope compliance + `boomopen check <dir> --strict-phase --no-stubs` clean (`<= 500` lines, `0` stubs/TODOs, `0` `any`, structured logging only). |
+| **`COOK-G4`** | **Wave `--run-verify`, `api_validator.py` & Consensus** | Shard `Verify` build/typecheck/tests + `python ~/.{TOOL}/skills/api-patterns/scripts/api_validator.py <dir>` exit `0`, `100%` `REQ-xxx`/`AC` verified, Reviewer `APPROVAL`, and `✅ CONSENSUS`. |
 
 ---
 
@@ -103,7 +104,7 @@ Every shard spawned via `invoke_subagent(TypeName: "self", Model: "inherit")` re
 
 ### Hard Release Blockers (`backend-team-techlead` MUST Reject Release If Any Fail)
 - [ ] Any `backend-engineer#<shard>` touched `> 4 OWNED_FILES` or mutated locked `READ_ONLY_FILES` (`COOK-G1` failure).
-- [ ] Any endpoint lacks boundary validation, parameterized SQL, resource-level authz, or standardized error envelopes (`COOK-G2`).
-- [ ] `boomopen cook verify-wave --run-verify`, `api_validator.py`, or `boomopen check <dir> --strict-phase --no-stubs` exited non-zero (`COOK-G3`).
+- [ ] Any expected deliverable is missing/empty (`COOK-G2`) or lacks boundary validation, parameterized SQL, resource-level authz, or standardized error envelopes (`COOK-G3`).
+- [ ] `boomopen cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, `api_validator.py`, or `boomopen check <dir> --strict-phase --no-stubs` exited non-zero (`COOK-G3`/`COOK-G4`).
 - [ ] Unresolved Round 3 disputes were routed anywhere other than `backend-team-techlead`.
 - [ ] `MAILBOX-{date}.md` lacks `backend-team-reviewer` `APPROVAL` and `✅ CONSENSUS` (`COOK-G4`).

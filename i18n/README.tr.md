@@ -3,10 +3,10 @@
   <p><strong>Çok Platformlu Smart-Hybrid Yapay Zeka İş Gücü İS — 21 Uzman Ajan, 18 Altın Üçgen Ekibi ve 1.460+ İsteğe Bağlı Yetenek Kasası</strong></p>
 
   <p>
-    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
+    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
     <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
-    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
+    <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
     <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
   </p>
@@ -22,11 +22,11 @@
 ## 🎬 Resmi Lansman Fragmanı (Full HD 1080p)
 
 <div align="center">
-  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
+  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
     <img src="../assets/media/poster_en.png" alt="BoomOpen Workflow Kit v5.5 Resmi Lansman Fragmanını İzleyin (Full HD 1080p)" width="92%" />
   </a>
   <p>
-    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Full HD 1080p Resmi Lansman Fragmanını izlemek / oynatmak için buraya tıklayın (Stüdyo seslendirmeli MP4)</b></a>
+    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Full HD 1080p Resmi Lansman Fragmanını izlemek / oynatmak için buraya tıklayın (Stüdyo seslendirmeli MP4)</b></a>
   </p>
 </div>
 
@@ -36,9 +36,9 @@
 
 **BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)**, tek bir yapay zeka kodlama asistanını **21 uzman ajan (Specialist Agents)**, **18 çapraz denetimli Altın Üçgen ekibi (Golden Triangle Teams)**, **22 temel yetenek (Core Skills)** ve **1.440’dan fazla niş kütüphane yeteneğinden (`skills_library`)** oluşan koordine bir mühendislik organizasyonuna dönüştüren açık kaynaklı bir çoklu ajan işletim sistemidir.
 
-Her basit soruda soğuk başlatma gecikmesine yol açan hantal ajan sarmalayıcılarının aksine, BoomOpen v5.5 **2 Modlu Akıllı Karmaşıklık Eşik Kapısını (2-Mode Smart Complexity Threshold Gate)** sunar:
-- **⚡ Mod A — Doğrudan Yürütme (0 sn Soğuk Başlatma)**: Basit soru-cevaplar (Q&A), kod açıklamaları, tek alanlı hata düzeltmeleri veya **≤ 2 dosyaya** dokunan net değişiklikler (`/cmd` komutu olmadan), **Pragmatik 2 Katmanlı Kodlama Standartları** ve **Kalıcı Test ve Hata Düzeltme** kuralları uygulanarak ana ajan tarafından **doğrudan** yürütülür, test edilir ve doğrulanır.
-- **🎻 Mod B — Katı Çoklu Ajan Orkestrasyonu**: Karmaşık özellikler (**> 2 dosya** veya **≥ 2 alan**) ya da açık `/cmd` iş akışı komutları; **DAG Paralel Dağıtım (Parallel Fan-Out)**, **Plandan Uygulayıcıya Doğrudan Görevlendirme**, **Sözleşme Öncelikli Dosya Kilitleri (`SHARED_CONTRACT` + `OWNED_FILES`)** ve **Sıcak Alt Ajan Yeniden Kullanımı (`send_message`)** özelliklerine sahip katı Orkestratör modunu etkinleştirir.
+Her turda soğuk başlatma gecikmesine ve bağlam şişkinliğine yol açan hantal sarmalayıcıların aksine BoomOpen v5.5; **1. Tur Proaktif Alt Ajan Öncelik Kapısı**, **17 Dilde Doğal Dil İş Akışı Yönlendirmesi**, **4 Katmanlı Dinamik Elastik Sürü Parçalama (`role#shard`)**, **Çok Oturumlu Proje Otopilotu (`/autopilot`)** ve **Çapraz Motor Orkestra Şefini (`/conduct`)** birleştirir:
+- **🚀 1. Tur Paralel Alt Ajanlar ve Katı Mod B Orkestrasyonu**: Kapsamı belirsiz kod keşfi (`> 2` dosya), çok alanlı özellikler (`≥ 2` alan), **desteklenen 17 dilin tamamında** doğal dil iş akışı istekleri veya açık `/cmd` komutları; **DAG Paralel Dağıtım**, **Plandan Uygulayıcıya Doğrudan Görevlendirme**, **Sözleşme Öncelikli Dosya Kilitleri (`SHARED_CONTRACT` + `OWNED_FILES`)** ve **Kapsamlı Sıcak Yeniden Kullanım (`role#shard -> conversationId` / `send_message`)** ile 1. turda paralel alt ajan parçalarını (`role#shard`, parça başına `<= 3–4 OWNED_FILES`) başlatır; ayrıca `/autopilot` (`boomopen ledger`) ve `/conduct` (`boomopen conduct`) konseylerini çalıştırır.
+- **⚡ Mod A — Bilinen Hedef Mikro-Doğrudan Yürütme (0 sn Soğuk Başlatma)**: Basit soru-cevaplar, kod açıklamaları ve **tam `≤ 2` hedef dosyanın 1. turda zaten bilindiği** küçük düzenlemeler (0 keşif, `/cmd` yok), **Pragmatik 2 Katmanlı Kodlama Standartları** ve **Kalıcı Test ve Hata Düzeltme** kurallarıyla **doğrudan** yürütülür ve doğrulanır.
 
 - **📚 Sıfır Bağlam Şişkinliği ile 1.462 Devasa Yetenek Kasası**: `matrix-skills/compact-index.json` içinde önceden derlenmiş **22 Çekirdek Yetenek (`skills/`)** ve **1.440 Niş Kütüphane Yeteneği (`skills_library/`)** ile 2 adımlı `O(1)` arama sunar — istem penceresini kirletmeden Backend, Frontend, Mobil, Oyun Geliştirme (Unity/Unreal/Godot), AI/ML, BigQuery/Veri, Bulut/DevOps ve OWASP Siber Güvenlik alanlarında anında uzmanlık sağlar.
 
@@ -74,15 +74,15 @@ flowchart TD
 2. **📏 Pragmatik 2 Katmanlı Kodlama Standartları (Parçalanmayı Önleme)**:
    - **Katman 1 — Katı Kalite ve Güvenlik Kuralları (Sıfır Tolerans)**: Tek Sorumluluk İlkesi (Single Responsibility), **açık `any` kullanımına KESİNLİKLE İZİN VERİLMEZ**, **üretim kodunda unutulmuş debug `console.log` yasaktır**, async/API sınırlarında `try/catch` + tipli hata yönetimi zorunludur, sabitler `SCREAMING_SNAKE_CASE` olmalıdır, DRY (`≥ 3`) ve temiz sıralanmış importlar.
    - **Katman 2 — Esnek Yapısal Yönergeler (Mekanik Satır Bölme Yerine Bütünlük)**: Bütünlüklü dosyalar `~200–350 satır` hedefler ve `~400–450 satır` esnek üst sınıra sahiptir (yalnızca `>500 satırı` aşan veya birden fazla alanı karıştıran dosyalar bölünür; test, tip ve dokümanlar muaftır). Mantık fonksiyonları `~20–40 satır` (UI/Handler `~40–80 satır`).
-3. **🎯 Plandan Uygulayıcıya Doğrudan Görevlendirme ve Sıcak Alt Ajan Yeniden Kullanımı (`send_message`)**:
-   - `PLAN-{feature}.md` oluşturulduktan sonra Orkestratör, gereksiz bir `tech-lead` ara adımına ihtiyaç duymadan görevleri **doğrudan** alan mühendislerine (`backend-engineer`, `frontend-engineer`, `database-architect` vb.) iletir.
-   - Aktif alt ajanlar **Aktif Oturum Kayıt Defterine (`Role → conversationId`)** kaydedilir ve `send_message` aracılığıyla **0 sn soğuk başlatma** ve **%100 korunan dosya bağlamıyla** yeniden kullanılır.
+3. **🎯 4 Katmanlı Dinamik Elastik Sürü Parçalama (`role#shard`), Doğrudan Plan Görevlendirme ve Sıcak Yeniden Kullanım (`send_message`)**:
+   - `PLAN-{feature}.md` oluşturulduktan sonra Orkestratör, gereksiz bir `tech-lead` ara adımına ihtiyaç duymadan görevleri **doğrudan** alan mühendisi parçalarına (`backend-engineer#shard-1`, `frontend-engineer#shard-2`, `database-architect#shard-1`, her biri `<= 3–4 OWNED_FILES`) iletir.
+   - Aktif alt ajanlar **Kapsamlı Oturum Kayıt Defterine (`role#shard → conversationId`)** kaydedilir ve `send_message` aracılığıyla **0 sn soğuk başlatma** ve **%100 korunan dosya bağlamıyla** yeniden kullanılır.
 4. **🤝 Sözleşme Öncelikli Paralel Görevlendirme (`SHARED_CONTRACT` + `OWNED_FILES`)**:
    - Çok alanlı planlar, paralel mühendisleri başlatmadan önce API uç noktalarını, DTO şemalarını ve özel dosya yazma sahipliğini (`OWNED_FILES` ve `READ_ONLY_FILES`) kilitleyerek yazma çakışmalarını tamamen ortadan kaldırır.
 5. **🔍 5-Whys (SPIE v3.0) Kök Neden Hata Ayıklama ve %100 Temiz Git Ağacı**:
    - `debugger`, her hatayı en az 3 derecelendirilmiş hipotez ve **5-Whys nedensellik zinciri** (`Neden 1 Belirti` → `Neden 5 Sistemik Kök Neden`) üzerinden izler. Geçici çıktılar (`PLAN`, `DEBUG`, `TEST`, `REVIEW`, `MAILBOX`) öncelikle `<appDataDir>\brain\<conversation-id>\` dizinine yazılarak Git çalışma ağacı %100 temiz tutulur.
 6. **🩺 Yerleşik CLI Tanılama (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check` & `doctor`) ve O(1) Yetenek İndeksi**:
-   - `npm run doctor` tüm 5 platform paketini, 21 ajanı, 72 ekip dosyasını, 84 komut dosyasını (`79` iş akışı + `5` `_ref/`) ve `matrix-skills/compact-index.json` (`1.462` yetenek) dosyasını doğrular. `boomopen check <dir>` yalnızca otomatik denetlenebilen kuralları denetler: dosya uzunluğu, TypeScript'te açık `any` ve unutulmuş `console.log`; diğer standartlar ajanlara yönelik talimatlardır. Ayrıca `boomopen research`, `boomopen design`, `boomopen plan`, `boomopen cook`, `boomopen ledger` ve `boomopen conduct` sözleşme derleme, dalga devir paketleri ve çoklu motor konseylerini çalıştırır.
+   - `npm run doctor` tüm 5 platform paketini, 21 ajanı, 72 ekip dosyasını, 84 komut dosyasını (`79` iş akışı + `5` `_ref/`) ve `matrix-skills/compact-index.json` (`1.462` yetenek) dosyasını doğrular. `boomopen check <dir> [--strict-phase --no-stubs]` dosya uzunluğunu, TypeScript'te açık `any` kullanımını, unutulmuş `console.log` çağrılarını, ertelenmiş `TODO`/`FIXME` yorumlarını, içi boş taslakları (stubs) ve test hilelerini denetler. Ayrıca `boomopen research`, `boomopen design`, `boomopen plan`, `boomopen cook`, `boomopen ledger` ve `boomopen conduct` sözleşme derleme, dalga devir paketleri ve çoklu motor konseylerini çalıştırır.
 
 ---
 
@@ -104,8 +104,8 @@ flowchart TD
 
 ```bash
 # 1. Depoyu klonlayın
-git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
-cd BoomOpen-Workflow-Kit
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+cd BoomOpen-Workflow-Kit-Pro
 
 # 2. Yapay zeka kodlama asistanınız için kurun (birini seçin veya --all)
 npm run install:antigravity   # Google Antigravity 2.0 (Gemini)
@@ -121,7 +121,7 @@ npm link
 boomopen research validate path/to/RESEARCH.md
 boomopen design validate path/to/DESIGN.md
 boomopen plan validate path/to/PLAN.md
-boomopen cook preflight --plan path/to/PLAN.md
+boomopen cook preflight path/to/PLAN.md
 boomopen check path/to/your/project --strict-phase --no-stubs
 boomopen ledger status
 boomopen conduct probe
@@ -164,7 +164,7 @@ boomopen settings set execution.mode mode_a --project
 boomopen settings reset
 ```
 
-> `--project`, `./.boomopen.json` dosyasını her zaman komutu çalıştırdığınız klasöre yazar; bu yüzden onu kit klonunda değil, kendi projenizde çalıştırın. `npm link` kullanmıyorsanız `boomopen` yerine `node /path/to/BoomOpen-Workflow-Kit/cli/install.js` yazın.
+> `--project`, `./.boomopen.json` dosyasını her zaman komutu çalıştırdığınız klasöre yazar; bu yüzden onu kit klonunda değil, kendi projenizde çalıştırın. `npm link` kullanmıyorsanız `boomopen` yerine `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js` yazın.
 
 ---
 
@@ -206,6 +206,8 @@ boomopen settings reset
 
 ---
 
+<a id="skills"></a>
+
 ## 📚 1.460+ Yetenek Kasası (22 Çekirdek + 1.440 Kütüphane Yeteneği)
 
 BoomOpen, **2 Adımlı O(1) Aşamalı Yetenek Çözümlemesi** (`<skills>` → `matrix-skills/compact-index.json` → yalnızca gereken `SKILL.md` dosyasını yükleme) sayesinde **boşta 0 token maliyeti** sunan en büyük açık kaynaklı mühendislik yetenek ekosistemlerinden birine sahiptir:
@@ -224,8 +226,8 @@ BoomOpen, **2 Adımlı O(1) Aşamalı Yetenek Çözümlemesi** (`<skills>` → `
 ## 📂 Depo Yapısı
 
 ```text
-BoomOpen-Workflow-Kit/
-├── agents/                  # 21 Uzman Ajan tanımı + 18 Altın Üçgen Ekibi (54 rol dosyası)
+BoomOpen-Workflow-Kit-Pro/
+├── agents/                  # 21 Uzman Ajan tanımı + 18 Altın Üçgen Ekibi (54 rol dosyası + 18 _team.md, 72 dosya)
 ├── cli/                     # Kurucu (install.js), Doctor (doctor.js), Checker (checker.js), Settings (settings.js), research.js, design.js, plan.js, cook.js, Ledger (ledger.js) ve Conductor (conductor.js)
 ├── commands/                # 79 Slash komutu iş akışı (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 _ref/ protokolü (84 dosya)
 ├── documents/               # 2 katmanlı Mimari, Alan, Kaynak Kod ve Kodlama Standartları dokümantasyonu

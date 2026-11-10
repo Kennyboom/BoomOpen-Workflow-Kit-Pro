@@ -1,23 +1,29 @@
-# Smart Skill Orchestration Mechanism — Technical Blueprint
+# Smart Skill Orchestration Mechanism (`HSOL v5.5`) — Technical Blueprint
 
-> **Version**: 1.1  
-> **Author**: Senior AI System Architect  
-> **Date**: 2026-01-30  
-> **Status**: Production-Ready Design
+> **Product & Version**: `BoomOpen Workflow Kit v5.5.0` (`@boomopen/workflow-kit` `5.5.0` — Multi-Platform Unified & Smart-Hybrid Edition / `HSOL v5.5`)
+> **Author**: AI System Architecture Team
+> **Last Updated**: 2026-11-10
+> **Status**: Production-Verified Architecture (`1,462` Indexed Skills = `22` Core + `1,440` Library)
+> **Canonical Repository**: `https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro`
 
 ---
 
 ## Executive Summary
 
-This blueprint addresses the **Scalability Paradox** in AI agent skill management: the tension between maintaining a stable, low-latency static skill library (`~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/`) and the need for dynamic, on-demand skill discovery via the **find-skills** skill. 
+This blueprint defines the **Hybrid Skill Orchestration Layer (`HSOL v5.5`)** in `BoomOpen Workflow Kit v5.5.0`, solving both the **Scalability Paradox** and the **Context-Window Bloat Paradox** in multi-agent AI engineering:
 
-The solution is a **Hybrid Skill Orchestration Layer** (HSOL) that:
-1. Preserves the reliability of matrix-skills as the primary execution tier
-2. Introduces intelligent decision logic for dynamic skill acquisition via find-skills
-3. Enables autonomous skill evolution without manual maintenance burden
-4. Ensures consistency through versioned skill registries and conflict resolution
+1. **Zero-Bloat 2-Tier Local Skill Vault (`1,462` Unique Skills)**:
+   - **Tier 1 — `22` Pre-Loaded Core Skills (`skills/`, installed to `{SKILLS_PATH}/`)** (+ root [`SKILL.md`](../SKILL.md)): Always visible in the agent's `<skills>` system prompt (`0ms` lookup).
+   - **Tier 2 — `1,440` Dormant On-Demand Library Skills (`skills_library/`, installed to `{LIBRARY_PATH}/`)**: Specialized domain skills (such as [`skills_library/ab-test-setup/SKILL.md`](../skills_library/ab-test-setup/SKILL.md), `better-auth-typescript`, `tailwind-v4-shadcn-ui`, `owasp-llm-agent-security-2025`) remain dormant on disk (`0` idle prompt tokens) until needed.
+2. **2-Step `O(1)` Progressive Skill Resolution via `compact-index.json` & `skill-seeker`**:
+   - Step 1 checks `<skills>` (`22` Core Skills).
+   - Step 2 queries [`matrix-skills/compact-index.json`](../matrix-skills/compact-index.json) — deterministically compiled by `boomopen doctor --rebuild-index` ([`cli/doctor-index.js`](../cli/doctor-index.js)) from `1,476` domain entries (`14` multi-domain) across `19` `matrix-skills/*.yaml` files — via [`skills/skill-seeker/SKILL.md`](../skills/skill-seeker/SKILL.md) and loads at most `1–3` exact `SKILL.md` files per task or Mode B sub-agent shard.
+3. **Conditional External Ecosystem Discovery (`npx skills find` / `npx skills add`)**:
+   - Triggered only on `:hard` and `:team` workflow variants when best local fitness `< 0.8`, tracking community-installed skills with SHA-256 checksums, trust progression, and governance states in [`matrix-skills/_dynamic.yaml`](../matrix-skills/_dynamic.yaml).
+4. **Deterministic CLI Verification & Warm Auto-Repair**:
+   - Paired with `12` zero-dependency `boomopen` CLI subcommands ([`cli/install.js`](../cli/install.js)) that enforce artifact gates (`research`, `design`, `plan`, `cook`, `check --strict-phase --no-stubs`, `ledger`, `conduct`, `doctor`) and route diagnostics back to warm `role#shard` sub-agents.
 
-**Key Integration:** The `find-skills` skill (`{SKILLS_PATH}/find-skills/SKILL.md`) provides the dynamic discovery interface via `npx skills find` and `npx skills add` commands. Browse at https://skills.sh/
+**Key Runtime Specifications**: [`rules/SKILLS.md`](../rules/SKILLS.md) · [`skills/skill-seeker/SKILL.md`](../skills/skill-seeker/SKILL.md) · [`matrix-skills/_index.yaml`](../matrix-skills/_index.yaml) · [`matrix-skills/_dynamic.yaml`](../matrix-skills/_dynamic.yaml) · [`HSOL-ASSESSMENT.md`](./HSOL-ASSESSMENT.md) · External catalog: https://skills.sh/
 
 ---
 
@@ -25,143 +31,155 @@ The solution is a **Hybrid Skill Orchestration Layer** (HSOL) that:
 
 1. [Problem Analysis](#1-problem-analysis)
 2. [First-Principles Architecture](#2-first-principles-architecture)
-3. [Hybrid Synergy Model](#3-hybrid-synergy-model)
+3. [Hybrid Synergy Model (`HSOL v5.5`)](#3-hybrid-synergy-model-hsol-v55)
 4. [Intelligent Decision Logic](#4-intelligent-decision-logic)
 5. [Autonomous Evolution Framework](#5-autonomous-evolution-framework)
 6. [Consistency & Versioning Strategy](#6-consistency--versioning-strategy)
 7. [Production-Grade Edge Cases](#7-production-grade-edge-cases)
-8. [Implementation Roadmap](#8-implementation-roadmap)
+8. [Implementation Architecture (`v5.5.0`)](#8-implementation-architecture-v550)
 9. [System Integration](#9-system-integration)
 
 ---
 
-## Prerequisites
+## Prerequisites & 5-Platform Path Mapping
 
-Before HSOL can function, the **find-skills** skill must exist at `{SKILLS_PATH}/find-skills/SKILL.md`, where **{SKILLS_PATH}** is the skills path for the **tool the user is currently using** (e.g. Cursor: `~/.cursor/skills/`, Copilot: `~/.copilot/skills/`, Codex: `~/.codex/skills/`, Antigravity: `~/.gemini/config/skills/`). All verify and install actions apply **only to the current tool**; do not verify or install for all tools unless the user explicitly runs `install --all`.
+`BoomOpen Workflow Kit v5.5.0` uses a **source-only repository distribution model** (`npmPublish: false` in `.releaserc.json`). When installed for a target AI coding platform, the CLI provisions `{SKILLS_PATH}` (`22` Core Skills including `skill-seeker`), `{LIBRARY_PATH}` (`1,440` on-demand Library Skills), and `{FRAMEWORK_PATH}` (`matrix-skills/compact-index.json`, `rules/`, `commands/`, `agents/`, `cli/`):
 
-**Installation (current tool only, skip confirmation when using npx):**
+| Platform (`<tool>`) | Global Entrypoints | `{SKILLS_PATH}` (`22` Core) | `{LIBRARY_PATH}` (`1,440` Library) | `{FRAMEWORK_PATH}` |
+|---------------------|--------------------|-----------------------------|------------------------------------|--------------------|
+| **`antigravity`** (Gemini) | `~/.gemini/GEMINI.md`, `~/.gemini/agents/AntigravityGlobal.agent.md` | `~/.gemini/config/skills/` | `~/.gemini/config/skills_library/` | `~/.gemini/config/skills/boomopen-workflow-kit/` |
+| **`claude`** (Claude Code) | `~/.claude/CLAUDE.md`, `~/.claude/AGENT.md` | `~/.claude/skills/` | `~/.claude/skills_library/` | `~/.claude/skills/boomopen-workflow-kit/` |
+| **`codex`** (OpenAI Codex) | `~/.codex/CODEX.md`, `~/.codex/AGENTS.md`, `~/.codex/AGENT.md` | `~/.codex/skills/` (+ `79` `boomopen-workflow-kit-*` cmd skills) | `~/.codex/skills_library/` | `~/.codex/skills/boomopen-workflow-kit/` |
+| **`cursor`** (Cursor IDE) | `~/.cursor/CURSOR.md`, `~/.cursor/AGENT.md`, `~/.cursor/rules/boomopen-workflow-kit.mdc` | `~/.cursor/skills/` | `~/.cursor/skills_library/` | `~/.cursor/skills/boomopen-workflow-kit/` |
+| **`copilot`** (GitHub Copilot) | `~/.copilot/COPILOT.md`, `~/.copilot/AGENT.md`, `<VSCodeUser>/prompts/boomopen-workflow-kit.agent.md` | `~/.copilot/skills/` | `~/.copilot/skills_library/` | `~/.copilot/skills/boomopen-workflow-kit/` |
+
+> **Path Shorthand Convention**: Throughout this blueprint, `{TOOL_BASE}` denotes `~/.gemini/config` on Antigravity and `~/.{claude|codex|cursor|copilot}` on the other `4` platforms, so `{SKILLS_PATH}` = `{TOOL_BASE}/skills/`, `{LIBRARY_PATH}` = `{TOOL_BASE}/skills_library/`, and `{FRAMEWORK_PATH}` = `{TOOL_BASE}/skills/boomopen-workflow-kit/`. All install/verify operations target **only the active platform** unless `--all` is explicitly requested.
+
+**Installation (from source checkout, scoped to the current tool):**
 
 ```bash
-# Option 1: Automatic when user installs boomopen-workflow-kit for a tool
-# User runs: npm run install:cursor (or install:copilot, install:antigravity, install:codex)
-# The CLI copies skills/ (including find-skills) to that tool's path only.
+# 1. Clone the canonical repository and install for your active AI platform
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+cd BoomOpen-Workflow-Kit-Pro
+node cli/install.js install <cursor|copilot|antigravity|claude|codex> [--with-hooks]
 
-# Option 2: Manual copy to CURRENT TOOL's path only
-# For Cursor:
-cp -r skills/find-skills ~/.cursor/skills/
-# For Copilot:
-cp -r skills/find-skills ~/.copilot/skills/
-# For Codex:
-cp -r skills/find-skills ~/.codex/skills/
-# For Antigravity:
-cp -r skills/find-skills ~/.gemini/config/skills/
-# Do not copy to all tools unless the user explicitly wants that.
+# Optional: link the `boomopen` CLI binary globally from your local checkout
+npm link
+boomopen list
 
-# Option 3: Install from Vercel ecosystem (-g -y = global, skip confirmation)
-# Installs to current environment's global path only.
-npx skills add vercel-labs/skills@find-skills -g -y
+# Optional external community skill installation (current environment only, skip prompt)
+npx skills add <owner/repo@skill> -g -y
 ```
 
-**Verification (current tool only):**
+**Verification (read-only health audit & compact-index check):**
+
 ```bash
-# Check at the current tool's SKILLS_PATH (resolve from context)
-ls "{SKILLS_PATH}/find-skills/SKILL.md"
-# Examples: ~/.cursor/skills/find-skills/SKILL.md (Cursor)
-#           ~/.copilot/skills/find-skills/SKILL.md (Copilot)
+# Verify kit source, installed platform layout, compact-index.json (1,462 skills), and settings
+node cli/install.js doctor --platform <cursor|copilot|antigravity|claude|codex>
+
+# Rebuild matrix-skills/compact-index.json after editing any matrix-skills/*.yaml file
+node cli/install.js doctor --rebuild-index
+
+# Confirm skill-seeker and compact-index.json in the active platform path
+ls "{SKILLS_PATH}/skill-seeker/SKILL.md"
+ls "{FRAMEWORK_PATH}/matrix-skills/compact-index.json"
 ```
 
 ---
 
 ## 1. Problem Analysis
 
-### 1.1 Current State Assessment
+### 1.1 Dual-Layer State Assessment
 
-**Static Layer (`~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/`):**
+**Local Curated Layer (`{FRAMEWORK_PATH}/matrix-skills/compact-index.json` + `skills/` + `skills_library/`):**
+
 ```
-Strengths:
-├── Low latency (< 1ms skill resolution)
-├── Predictable behavior (deterministic mapping)
-├── Offline-capable (no network dependency)
-├── Type-safe (YAML schema validation)
-└── Agent-profile inheritance model
-
-Weaknesses:
-├── Manual update cycle (labor-intensive)
-├── Skill obsolescence risk (stale skills)
-├── Discovery gap (unknown capabilities)
-├── Scaling limit (~1400 skills practical ceiling)
-└── No feedback loop for skill quality
-```
-
-**Dynamic Layer (`find-skills` skill):**
-```
-Location: {SKILLS_PATH}/find-skills/SKILL.md
-Browse: https://skills.sh/
-
-Commands:
-├── npx skills find [query]     → Search for skills
-├── npx skills add <pkg> -g -y  → Install globally  
-├── npx skills check            → Check for updates
-└── npx skills update           → Update all skills
+Architecture (v5.5.0):
+├── 22 Pre-Loaded Core Skills in {SKILLS_PATH}/ (0ms <skills> visibility)
+├── 1,440 Dormant Library Skills in {LIBRARY_PATH}/ (0 idle context tokens)
+├── 19 Domain YAML Registries ({FRAMEWORK_PATH}/matrix-skills/*.yaml, 1,476 entries)
+├── Pre-Compiled O(1) Index (compact-index.json, 1,462 unique skills, < 5ms lookup)
+└── 21 Specialist Agent Inheritance Profiles in matrix-skills/_index.yaml
 
 Strengths:
-├── Infinite skill pool (community ecosystem)
-├── Real-time discovery (always current)
-├── Domain experts contribute directly
-├── Reduces "Capability Gap" perception
-└── Supports skill versioning/updates
+├── Sub-5ms O(1) resolution without crawling 19 YAML files
+├── Zero context-window bloat (loads <= 1-3 matched SKILL.md files per shard)
+├── 100% offline-capable & deterministic (verified by `boomopen doctor`)
+├── SHA-256 manifest-protected installation (~/.boomopen/manifests/<tool>.json)
+└── Direct Handoff Packet skill pointer injection for parallel sub-agents
 
-Weaknesses:
-├── Network latency (100-500ms per search)
-├── Availability risk (network dependency)
-├── Quality uncertainty (untested skills)
-├── Integration friction (install + configure)
-└── Security surface (untrusted code)
+Residual Limits Without Dynamic Layer:
+├── Cutting-edge vendor SDKs released after the latest kit checkout may not exist locally
+├── Niche proprietary/internal team workflows require extensible skill registration
+└── Static priority scores alone do not capture project-specific runtime telemetry
+```
 
-When to Trigger:
-├── User asks "how do I do X" (might exist as skill)
-├── User says "find a skill for X"
-├── Matrix fitness < 0.75 (capability gap)
-└── Enhancement mode enabled
+**Dynamic External Discovery Layer (`npx skills` CLI + `_dynamic.yaml`):**
+
+```
+Local Resolver:  {SKILLS_PATH}/skill-seeker/SKILL.md (Step 1-2 local O(1) lookup)
+External Browse: https://skills.sh/ (Step 3 conditional external fallback)
+
+External CLI Commands:
+├── npx skills find [query]              → Search community skill ecosystem
+├── npx skills add <owner/repo@skill> -g -y → Install globally for current environment
+├── npx skills check                     → Check installed dynamic skills for updates
+└── npx skills update                    → Update installed dynamic skills
+
+Strengths:
+├── Unbounded ecosystem coverage for newly released SDKs/APIs
+├── Real-time community discovery when local fitness < 0.8 on :hard / :team
+├── Domain experts publish specialized skills directly
+└── Versioned & checksum-tracked in {FRAMEWORK_PATH}/matrix-skills/_dynamic.yaml
+
+Risks Managed by HSOL Governance:
+├── Network latency (100-500ms per external query; skipped on :fast)
+├── Offline availability risk (graceful fallback to 1,462 local skills)
+├── Quality variance (graduated trust 0.3 -> 0.5 -> 0.7 -> 1.0)
+└── Supply-chain surface (low-trust confirmation gate + SHA-256 checksums)
+
+When External Discovery Triggers:
+├── Task complexity is Complex AND workflow variant is :hard or :team
+├── Local 2-Step lookup (<skills> + compact-index.json) yields fitness < 0.8
+└── Or user explicitly requests searching/installing an external community skill
 ```
 
 ### 1.2 Core Tensions Identified
 
-| Tension | Static Priority | Dynamic Priority | Resolution Principle |
-|---------|-----------------|------------------|---------------------|
-| **Speed vs Coverage** | Sub-second | Comprehensive | Tiered fallback |
-| **Reliability vs Freshness** | Battle-tested | Cutting-edge | Trust scoring |
-| **Simplicity vs Flexibility** | Fixed profiles | Any request | Context-aware routing |
-| **Security vs Openness** | Vetted skills | Community skills | Sandboxed evaluation |
+| Tension | Curated Vault Priority | Dynamic Ecosystem Priority | `HSOL v5.5` Resolution Principle |
+|---------|------------------------|----------------------------|----------------------------------|
+| **Speed vs Coverage** | `< 5ms` `O(1)` `compact-index.json` | Unbounded community catalog | 2-Step local-first + `:hard`/`:team` fallback |
+| **Token Budget vs Depth** | `22` Core Skills in `<skills>` | `1,440` Library + external skills | Dormant `skills_library/` + `1–3` `SKILL.md` cap |
+| **Reliability vs Freshness** | `1,462` doctor-audited skills | Newly released SDK skills | Graduated trust scoring (`0.3 -> 1.0`) |
+| **Security vs Openness** | SHA-256 manifest-verified | Third-party Markdown specs | Confirmation gate + `_dynamic.yaml` governance |
 
-### 1.3 The Scalability Paradox — Root Cause
+### 1.3 The Scalability & Context Paradox — Root Cause
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    THE PARADOX CYCLE                             │
+│              THE SCALABILITY & CONTEXT PARADOX                  │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│   [More Skills Needed] ─────────────────────────────────────┐   │
+│   [More Domain Skills Added] ───────────────────────────────┐   │
 │          │                                                   │   │
 │          ▼                                                   │   │
-│   [Manual Addition to Matrix]                                │   │
+│   [Naively Pre-Loading All Skills Bloats System Prompt]      │   │
 │          │                                                   │   │
 │          ▼                                                   │   │
-│   [Increased Maintenance Debt] ──────────────────┐          │   │
-│          │                                        │          │   │
-│          ▼                                        ▼          │   │
-│   [Skills Become Stale] ◄──────────── [Update Fatigue]      │   │
+│   [Sequential YAML Crawling Burns Turn-1 Latency] ───┐      │   │
+│          │                                            │      │   │
+│          ▼                                            ▼      │   │
+│   [Skills Drift or Get Skipped] ◄─────── [Context Fatigue]  │   │
 │          │                                                   │   │
 │          ▼                                                   │   │
 │   [Capability Gaps Appear] ──────────────────────────────────┘  │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 
-ROOT CAUSE: No automated feedback loop between:
-  1. Skill usage patterns
-  2. Skill quality metrics
-  3. Skill currency status
-  4. Dynamic discovery results
+HSOL v5.5 SOLUTION:
+  1. Physical 2-Tier Split: 22 Core (`skills/`) vs 1,440 Dormant (`skills_library/`)
+  2. O(1) Pre-Compiled Map: `matrix-skills/compact-index.json` (`boomopen doctor --rebuild-index`)
+  3. Conditional Dynamic Loop: `npx skills find` + `_dynamic.yaml` trust/promotion lifecycle
 ```
 
 ---
@@ -170,133 +188,131 @@ ROOT CAUSE: No automated feedback loop between:
 
 ### 2.1 Design Axioms
 
-**Axiom 1: Skill Resolution is a Search Problem**
-> Every user request maps to a capability need. Skills are candidates. The system must rank and select the best match.
+**Axiom 1: Skill Resolution is an `O(1)` Index + Ranked Selection Problem**
+> Every complex engineering request maps to `1–3` high-signal domain capabilities. Pre-compiling `19` domain YAML matrices into `compact-index.json` eliminates sequential YAML parsing while preserving rich domain inheritance.
 
-**Axiom 2: Latency Budget is Finite**
-> User tolerance: < 2 seconds for initial response. Skill resolution must complete within 200ms for perceived instant response.
+**Axiom 2: Idle Context Budget & Turn-1 Latency Are Sacred**
+> Pre-loading `1,462` skills into `<skills>` would waste tens of thousands of tokens on every turn. Only `22` universal Core Skills live in `<skills>`; the `1,440` Library Skills consume `0` tokens until `skill-seeker` loads the exact `1–3` matched `SKILL.md` files in `< 5ms`.
 
 **Axiom 3: Trust is Earned, Not Assumed**
-> Matrix skills have earned trust through curation. Dynamic skills must prove themselves through evaluation.
+> Bundled Core and Library skills carry `trust = 1.0` (`boomopen doctor` audited). Dynamically installed external skills start at `trust = 0.3` and earn promotion through verified executions.
 
-**Axiom 4: The System Must Self-Correct**
-> Manual maintenance doesn't scale. The system must learn from usage patterns and self-optimize.
+**Axiom 4: Deterministic CLI Gates Close the Verification Loop**
+> Skill guidance must translate into verified artifacts. `boomopen` CLI validators (`research`, `design`, `plan`, `cook`, `check --strict-phase --no-stubs`) enforce contract compliance after skill-guided execution.
 
 ### 2.2 Architectural Layers
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          USER REQUEST                                        │
+│                    USER REQUEST / MULTILINGUAL INTENT                        │
+│              (17 Supported Languages + 32 Base Slash Commands)               │
 └─────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  LAYER 1: SEMANTIC INTENT CLASSIFIER                                         │
-│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                                        │
-│  • Extract capability requirements from natural language                     │
-│  • Map to skill domains and categories                                       │
-│  • Generate skill search vector                                              │
-│  • Estimate complexity and specificity                                       │
+│  LAYER 1: SEMANTIC INTENT & COMPLEXITY CLASSIFIER                            │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                           │
+│  • Route Simple tasks directly (`Simple -> Skipping` skill lookup)           │
+│  • Route Complex tasks into Mode B (`commands/{cmd}-{variant}.md`)           │
+│  • Extract target domains, specialist `role#shard`, and capability keywords  │
 └─────────────────────────────────────────────────────────────────────────────┘
                                     │
                     ┌───────────────┼───────────────┐
                     ▼               │               ▼
 ┌──────────────────────────┐       │       ┌──────────────────────────┐
-│  LAYER 2A: MATRIX LOOKUP │       │       │  LAYER 2B: DYNAMIC       │
-│  ━━━━━━━━━━━━━━━━━━━━━━  │       │       │  DISCOVERY (ASYNC)       │
-│  • Profile-based match   │       │       │  ━━━━━━━━━━━━━━━━━━━━━━  │
-│  • Priority scoring      │       │       │  • find-skills query     │
-│  • O(D×S) resolution     │       │       │  • Community search      │
-│  • Immediate return      │       │       │  • Speculative prefetch  │
-│  • LATENCY: < 10ms       │       │       │  • LATENCY: 100-500ms    │
+│  LAYER 2A: FAST 2-STEP   │       │       │  LAYER 2B: EXTERNAL      │
+│  LOCAL LOOKUP (SYNC)     │       │       │  DISCOVERY (:hard/:team) │
+│  ━━━━━━━━━━━━━━━━━━━━━━  │       │       │  ━━━━━━━━━━━━━━━━━━━━━━  │
+│  • Step 1: <skills> (22) │       │       │  • `npx skills find`     │
+│  • Step 2: compact-index │       │       │  • https://skills.sh/    │
+│    (1,462 O(1) map)      │       │       │  • `_dynamic.yaml` check │
+│  • Load 1-3 SKILL.md     │       │       │  • LATENCY: 100-500ms    │
+│  • LATENCY: < 5ms        │       │       │    (skipped on :fast)    │
 └──────────────────────────┘       │       └──────────────────────────┘
                     │               │               │
                     ▼               ▼               ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  LAYER 3: SKILL FITNESS EVALUATOR                                            │
 │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                                           │
-│  • Multi-factor scoring (coverage, freshness, trust, specificity)           │
-│  • Gap detection (matrix can't satisfy request)                             │
-│  • Superiority detection (dynamic skill outperforms matrix)                 │
-│  • Recommendation generation                                                 │
+│  • Multi-factor scoring (semantic 0.35, specificity 0.25, trust 0.20,        │
+│    freshness 0.10, success_rate 0.10)                                        │
+│  • Gap detection (`fitness < 0.75`) & superiority detection (`delta >= 0.15`)│
 └─────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  LAYER 4: ORCHESTRATION DECISION ENGINE                                      │
-│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                                        │
-│  Decision Matrix:                                                            │
+│  LAYER 4: ORCHESTRATION DECISION & HANDOFF PACKET COMPILER                   │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                  │
 │  ┌─────────────────┬────────────────┬───────────────────────────────────┐   │
-│  │ Matrix Score    │ Dynamic Score  │ Action                            │   │
+│  │ Local Fitness   │ Dynamic Score  │ Action                            │   │
 │  ├─────────────────┼────────────────┼───────────────────────────────────┤   │
-│  │ HIGH (≥0.8)     │ Any            │ Execute matrix skill              │   │
-│  │ MEDIUM (0.75-0.8)│ HIGH (≥0.9)    │ Suggest dynamic, execute matrix   │   │
-│  │ MEDIUM          │ MEDIUM         │ Execute matrix skill              │   │
-│  │ LOW (<0.75)     │ HIGH (≥0.8)    │ Prompt for dynamic installation   │   │
-│  │ LOW             │ LOW            │ Report capability gap             │   │
-│  │ NONE            │ HIGH           │ Install and execute dynamic       │   │
-│  │ NONE            │ NONE           │ Fallback to general capabilities  │   │
+│  │ HIGH (≥0.8)     │ Skipped / Any  │ Inject Core/Library SKILL.md      │   │
+│  │ MEDIUM (0.75-0.8)│ HIGH (≥0.9)    │ Execute local + suggest dynamic   │   │
+│  │ MEDIUM (0.75-0.8)│ < 0.9          │ Execute local skill               │   │
+│  │ LOW (<0.75)     │ HIGH (≥0.8)    │ Confirm & install dynamic (block) │   │
+│  │ LOW (<0.75)     │ LOW (<0.8)     │ Execute best local + report gap   │   │
+│  │ NONE            │ HIGH (≥0.7)    │ Confirm, install & execute        │   │
+│  │ NONE            │ NONE           │ Fallback to base capabilities     │   │
 │  └─────────────────┴────────────────┴───────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  LAYER 5: SKILL EXECUTION & FEEDBACK                                         │
-│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                                         │
-│  • Execute selected skill                                                    │
-│  • Capture execution metrics (success, latency, output quality)             │
-│  • Feed metrics to Autonomous Evolution system                               │
-│  • Update skill usage statistics                                             │
+│  LAYER 5: SHARD EXECUTION, CLI GATES & TELEMETRY FEEDBACK                    │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                   │
+│  • Inject exact `SKILL.md` pointers into 5-Field Shard Handoff Packets       │
+│  • Validate via `boomopen <research|design|plan|cook|check>` CLI gates       │
+│  • Update `_dynamic.yaml` execution counts, trust level, and promotion state │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 3. Hybrid Synergy Model
+## 3. Hybrid Synergy Model (`HSOL v5.5`)
 
 ### 3.1 Synergy Principles
 
-**Principle 1: Matrix-First, Dynamic-Enhanced**
-> Matrix skills execute immediately. Dynamic discovery runs in parallel as "enhancement check."
+**Principle 1: 2-Step Local-First (`<skills>` -> `compact-index.json`), Dynamic-Enhanced**
+> Local Core (`22`) and Library (`1,440`) skills resolve synchronously in `< 5ms` via [`skills/skill-seeker/SKILL.md`](../skills/skill-seeker/SKILL.md) and [`matrix-skills/compact-index.json`](../matrix-skills/compact-index.json). External discovery runs only when local coverage is below optimal (`< 0.8`).
 
-**Principle 2: Blocking vs Async Discovery**
-> **Blocking** (matrix fitness &lt; 0.75): Wait for discovery → install → re-inject → **then** execute. Purpose: new skill is **used for the current task** — best completion for this request. **Async** (fitness 0.75–0.8): Do not wait; execute with matrix; when discovery returns only surface recommendation for **next time**. Async does not improve accuracy for the current task.
+**Principle 2: Blocking vs Async External Discovery**
+> - **Blocking (`fitness < 0.75` on `:hard` / `:team`)**: Await external search -> confirm if low-trust task-critical -> install -> inject `SKILL.md` -> execute, ensuring the **current** task receives specialized guidance.
+> - **Async (`0.75 <= fitness < 0.8` on `:hard` / `:team`)**: Execute immediately with the matched local Core/Library skill; if external discovery finds a skill with superiority delta `>= 0.15`, surface a non-blocking recommendation for future sessions.
 
-**Principle 2b: Conditional Discovery (Variant + Fitness)**
-> Dynamic discovery (find-skills, steps 8–10) runs **only** when: (1) command variant is **`hard`** or **`team`** — **`fast`** skips discovery so fast stays fast; (2) best matrix fitness **&lt; 0.8** — if matrix already has a highly suitable skill (e.g. 9–10), skip discovery. So: fast flow → steps 1–7 + execute; hard/team + matrix sufficient → same; hard/team + matrix &lt; 0.8 → full flow including discovery.
+**Principle 2b: Variant-Aware Discovery Gate (`fast` vs `hard` / `team`)**
+> External CLI discovery (`npx skills find`) runs **only** when: (1) the resolved workflow variant is **`hard`** or **`team`** (`fast` always skips network discovery to stay instant), and (2) best local matrix fitness is **`< 0.8`**.
 
-**Principle 3: Graduated Trust**
-> Newly discovered skills start in "evaluation mode" with limited scope. Trust increases with successful executions.
+**Principle 3: Graduated Trust & Handoff Pointer Discipline**
+> Orchestrators resolve skill paths once during planning/dispatch and pass `1–3` exact `SKILL.md` paths in each sub-agent shard's **5-Field Handoff Packet** (`READ_ONLY_FILES` / Skill Pointers), preventing parallel shards from repeating searches.
 
-### 3.2 Execution Flow
+### 3.2 Execution Flow Example
 
 ```
-USER REQUEST: "Implement OAuth with Clerk"
+USER REQUEST (/cook:hard): "Implement OAuth + Passkeys with Clerk"
         │
         ▼
 ┌───────────────────────────────────────────────────────────────┐
-│ SEMANTIC INTENT CLASSIFIER                                     │
+│ SEMANTIC INTENT CLASSIFIER & SKILL-SEEKER                      │
 │                                                                │
 │ Extracted:                                                     │
-│   • Domain: authentication                                     │
-│   • Specificity: HIGH (Clerk is specific provider)            │
-│   • Capability: OAuth implementation                          │
-│   • Keywords: ["clerk", "oauth", "authentication"]            │
+│   • Domain: backend + security                                 │
+│   • Specificity: HIGH (Clerk-specific provider)                │
+│   • Variant: hard (external discovery eligible if < 0.8)       │
+│   • Keywords: ["clerk", "oauth", "passkeys", "authentication"] │
 └───────────────────────────────────────────────────────────────┘
         │
         ├──────────────────────────────────────┐
         │                                      │
-        ▼ (SYNC, <10ms)                       ▼ (ASYNC)
+        ▼ (SYNC, <5ms via compact-index.json)  ▼ (ASYNC on :hard/:team)
 ┌─────────────────────────┐         ┌─────────────────────────┐
-│ MATRIX LOOKUP           │         │ DYNAMIC DISCOVERY       │
+│ 2-STEP LOCAL LOOKUP     │         │ EXTERNAL DISCOVERY      │
 │                         │         │                         │
-│ Candidates:             │         │ Query: "clerk oauth     │
-│ • better-auth (0.75)    │         │         authentication" │
-│ • api-security (0.60)   │         │                         │
-│ • backend-dev (0.55)    │         │ [Searching...]          │
-│                         │         │                         │
-│ Best Match:             │         │                         │
-│ better-auth @ 0.75      │         │                         │
+│ Step 1 (<skills>):      │         │ Query: `npx skills find │
+│ • api-patterns (0.60)   │         │   "clerk oauth"`        │
+│ • security-auditor(0.62)│         │                         │
+│ Step 2 (compact-index): │         │ [Searching skills.sh]   │
+│ • better-auth-typescript│         │                         │
+│   @ 0.76 (Library)      │         │                         │
 └─────────────────────────┘         └─────────────────────────┘
         │                                      │
         │                                      │ (200-500ms later)
@@ -304,60 +320,43 @@ USER REQUEST: "Implement OAuth with Clerk"
         │                           ┌─────────────────────────┐
         │                           │ DISCOVERY RESULT        │
         │                           │                         │
-        │                           │ Found: clerk-auth-skill │
-        │                           │ Score: 0.95             │
+        │                           │ Found: clerk-auth       │
+        │                           │ Score: 0.94 (delta+0.18)│
         │                           │ Source: vercel-labs     │
-        │                           └─────────────────────────┘
+        └─────────────────────────┘
         │                                      │
         ▼                                      ▼
 ┌───────────────────────────────────────────────────────────────┐
-│ SKILL FITNESS EVALUATOR                                        │
+│ SKILL FITNESS EVALUATOR & ORCHESTRATION DECISION               │
 │                                                                │
-│ Matrix best: better-auth @ 0.75 (generic OAuth)               │
-│ Dynamic best: clerk-auth @ 0.95 (Clerk-specific)              │
+│ Local best: skills_library/better-auth-typescript @ 0.76       │
+│ External best: clerk-auth @ 0.94 (Clerk-specific, +0.18 >=0.15)│
 │                                                                │
-│ DECISION: Matrix skill is ADEQUATE but not OPTIMAL            │
-│           Dynamic skill is SUPERIOR for this specific request │
-└───────────────────────────────────────────────────────────────┘
-        │
-        ▼
-┌───────────────────────────────────────────────────────────────┐
-│ ORCHESTRATION DECISION                                         │
-│                                                                │
-│ Option A (IMMEDIATE): Execute better-auth now                 │
-│   → User gets working solution in < 1 second                  │
-│                                                                │
-│ Option B (ENHANCED): Suggest clerk-auth installation          │
-│   → "I found a Clerk-specific skill that may give better      │
-│      results. Install with: npx skills add clerk-auth-skill"  │
-│                                                                │
-│ SELECTED: Execute A, Surface B as recommendation              │
+│ SELECTED (0.75 <= 0.76 < 0.80 -> ASYNC ENHANCEMENT):           │
+│   1. Inject `skills_library/better-auth-typescript/SKILL.md`   │
+│      into `backend-engineer#auth` Handoff Packet immediately   │
+│   2. Surface non-blocking recommendation:                      │
+│      `npx skills add vercel-labs/skills@clerk-auth -g -y`      │
 └───────────────────────────────────────────────────────────────┘
 ```
 
 ### 3.3 Cognitive Load Management
 
-**Problem**: Agent must not be overwhelmed with skill decisions.
+**Problem**: Specialist sub-agents (`role#shard`) must focus cognitive budget on `<= 3–4 OWNED_FILES` rather than crawling `1,440` skill folders.
 
-**Solution**: Skill Orchestration Layer (SOL) handles all skill logic transparently.
+**Solution**: `HSOL v5.5` + `skill-seeker` centralizes lookup into `O(1)` index resolution:
 
 ```yaml
-orchestrator_perspective:
-  before_HSOL:
-    - "Which skill do I need?"
-    - "Is there a better skill available?"
-    - "Should I search for skills?"
-    - "How do I install new skills?"
-  
-  after_HSOL:
-    - "Execute task with injected skills"
-    - "(Recommendations surface automatically)"
-```
+subagent_shard_perspective:
+  without_HSOL:
+    - "Glob 1,440 folders in skills_library/ looking for matching skills"
+    - "Parse 19 matrix-skills/*.yaml files sequentially"
+    - "Wonder whether to search external registries mid-coding"
 
-The agent sees only:
-1. Injected skills (already resolved)
-2. Optional enhancement recommendations (non-blocking)
-3. Capability gap alerts (when no skill can satisfy request)
+  with_HSOL_v5_5:
+    - "Read the 1-3 exact SKILL.md paths pre-injected in 5-Field Handoff Packet"
+    - "Execute OWNED_FILES (<= 3-4 files) and pass `boomopen check --strict-phase --no-stubs`"
+```
 
 ---
 
@@ -365,181 +364,152 @@ The agent sees only:
 
 ### 4.1 Skill Fitness Scoring
 
-**Multi-Factor Fitness Model:**
+**Multi-Factor Fitness Model (`rules/SKILLS.md` & `matrix-skills/_index.yaml`):**
 
 ```
 SKILL_FITNESS = (
-    w₁ × SEMANTIC_MATCH +
-    w₂ × SPECIFICITY_SCORE +
-    w₃ × TRUST_LEVEL +
-    w₄ × FRESHNESS_SCORE +
-    w₅ × SUCCESS_RATE
-) / Σwᵢ
-
-where:
-  w₁ = 0.35 (semantic match is primary)
-  w₂ = 0.25 (specificity matters for specialized requests)
-  w₃ = 0.20 (trust prevents quality issues)
-  w₄ = 0.10 (freshness for evolving domains)
-  w₅ = 0.10 (historical success rate)
+    0.35 × SEMANTIC_MATCH +
+    0.25 × SPECIFICITY_SCORE +
+    0.20 × TRUST_LEVEL +
+    0.10 × FRESHNESS_SCORE +
+    0.10 × SUCCESS_RATE
+)
 ```
 
 **Factor Definitions:**
 
-| Factor | Matrix Skill Calculation | Dynamic Skill Calculation |
-|--------|--------------------------|---------------------------|
-| **SEMANTIC_MATCH** | Keyword overlap + domain alignment | Search relevance score |
-| **SPECIFICITY_SCORE** | Generic (0.5) to Specialized (1.0) | Query specificity alignment |
-| **TRUST_LEVEL** | 1.0 (pre-vetted) | 0.3 (new) → 1.0 (proven) |
-| **FRESHNESS_SCORE** | Last update recency | Always 1.0 (community-current) |
-| **SUCCESS_RATE** | Historical execution success | Community rating / reviews |
+| Factor | Weight | Curated Vault (`skills/` & `skills_library/`) | Dynamic Skill (`_dynamic.yaml` / External) |
+|--------|--------|-----------------------------------------------|--------------------------------------------|
+| **SEMANTIC_MATCH** | `0.35` | Keyword + `19`-domain inheritance alignment | Registry relevance & keyword match |
+| **SPECIFICITY_SCORE** | `0.25` | Category (`core`/`expert`/`specialized`/`utility`) & priority (`1–10`) | Provider/framework specificity alignment |
+| **TRUST_LEVEL** | `0.20` | `1.0` (curated & `boomopen doctor` verified) | `0.3` (`new`) -> `0.5` (`3` runs) -> `0.7` (`10` runs) -> `1.0` (`promoted`) |
+| **FRESHNESS_SCORE** | `0.10` | Kit release currency (`v5.5.0`) | `freshness.last_verified` (`stale_after_days: 90`) |
+| **SUCCESS_RATE** | `0.10` | Baseline validated (`1.0`) | `success_count / execution_count` |
 
 ### 4.2 Self-Correction Heuristics
 
-**Heuristic 1: Gap Detection**
+**Heuristic 1: Capability Gap Detection**
+
 ```python
-def detect_capability_gap(request, matrix_skills):
+def detect_capability_gap(request, compact_index, dynamic_manifest):
     """
-    Detect when matrix cannot adequately serve a request.
+    Detect when local Core (22) + Library (1,440) + installed dynamic skills
+    cannot adequately serve a Complex request.
     """
-    best_match = find_best_matrix_skill(request)
-    
-    # Gap conditions:
-    # 1. No skill found at all
+    best_match = find_best_local_skill(request, compact_index, dynamic_manifest)
+
     if best_match is None:
         return GapType.COMPLETE_GAP
-    
-    # 2. Best match is too generic
+
     if best_match.specificity < 0.4 and request.specificity > 0.7:
         return GapType.SPECIFICITY_GAP
-    
-    # 3. Best match is stale for evolving domain
-    if best_match.last_updated < (now - 180_days) and request.domain in FAST_EVOLVING_DOMAINS:
+
+    if best_match.days_since_verified > 90 and request.domain in FAST_EVOLVING_DOMAINS:
         return GapType.FRESHNESS_GAP
-    
-    # 4. Best match has low success rate
-    if best_match.success_rate < 0.6:
+
+    if best_match.success_rate is not None and best_match.success_rate < 0.6:
         return GapType.QUALITY_GAP
-    
+
     return GapType.NO_GAP
 ```
 
 **Heuristic 2: Superiority Detection**
+
 ```python
-def detect_superior_dynamic_skill(matrix_skill, dynamic_skill, request):
+def detect_superior_dynamic_skill(local_skill, dynamic_skill, request):
     """
-    Determine if dynamic skill meaningfully outperforms matrix skill.
+    Determine whether an external dynamic skill meaningfully outperforms
+    the best local Core/Library match (`superiority_delta = 0.15`).
     """
-    SUPERIORITY_THRESHOLD = 0.15  # 15% improvement required
-    
-    matrix_fitness = calculate_fitness(matrix_skill, request)
+    SUPERIORITY_THRESHOLD = 0.15
+
+    local_fitness = calculate_fitness(local_skill, request)
     dynamic_fitness = calculate_fitness(dynamic_skill, request)
-    
-    fitness_delta = dynamic_fitness - matrix_fitness
-    
-    # Superior if:
-    # 1. Significantly higher fitness
-    if fitness_delta >= SUPERIORITY_THRESHOLD:
+
+    if (dynamic_fitness - local_fitness) >= SUPERIORITY_THRESHOLD:
         return SuperiorityResult(
             is_superior=True,
             reason="HIGHER_FITNESS",
-            recommendation="Consider installing for better results"
+            recommendation="Install specialized external skill for higher precision",
         )
-    
-    # 2. Domain-specific when matrix is generic
-    if dynamic_skill.specificity > 0.8 and matrix_skill.specificity < 0.5:
+
+    if dynamic_skill.specificity > 0.8 and local_skill.specificity < 0.5:
         return SuperiorityResult(
             is_superior=True,
             reason="DOMAIN_SPECIFIC",
-            recommendation="Specialized skill available"
+            recommendation="Vendor-specific skill available",
         )
-    
+
     return SuperiorityResult(is_superior=False)
 ```
 
-**Heuristic 3: Automatic Promotion**
+**Heuristic 3: Automatic Matrix Promotion (`_index.yaml` & `_dynamic.yaml`)**
+
 ```python
 def evaluate_skill_for_promotion(dynamic_skill):
     """
-    Determine if a dynamic skill should be promoted to matrix-skills.
+    Determine if a validated dynamic skill in `_dynamic.yaml` qualifies for
+    automatic promotion (`automatic: true` in matrix-skills/_index.yaml).
     """
     PROMOTION_CRITERIA = {
-        'min_executions': 10,
-        'min_success_rate': 0.85,
-        'min_satisfaction': 0.8,  # User ratings
-        'max_age_days': 90,       # Must be actively used recently
+        "min_executions": 10,
+        "min_success_rate": 0.85,
+        "max_inactive_days": 30,
     }
-    
+
     if (
-        dynamic_skill.execution_count >= PROMOTION_CRITERIA['min_executions'] and
-        dynamic_skill.success_rate >= PROMOTION_CRITERIA['min_success_rate'] and
-        dynamic_skill.user_satisfaction >= PROMOTION_CRITERIA['min_satisfaction'] and
-        dynamic_skill.last_used_days_ago <= PROMOTION_CRITERIA['max_age_days']
+        dynamic_skill.support_state == "supported"
+        and dynamic_skill.execution_count >= PROMOTION_CRITERIA["min_executions"]
+        and dynamic_skill.success_rate >= PROMOTION_CRITERIA["min_success_rate"]
+        and dynamic_skill.inactive_days <= PROMOTION_CRITERIA["max_inactive_days"]
     ):
-        return PromotionRecommendation(
+        return PromotionAction(
             skill=dynamic_skill,
-            action="ADD_TO_MATRIX",
-            domain=infer_domain(dynamic_skill),
-            priority_score=calculate_priority(dynamic_skill)
+            action="PROMOTE_TO_MATRIX_AND_REBUILD_COMPACT_INDEX",
+            target_domain=dynamic_skill.domains[0],
+            rebuild_cmd="boomopen doctor --rebuild-index",
         )
-    
+
     return None
 ```
 
 ### 4.3 Decision Tree
 
 ```
-                        ┌─────────────────┐
-                        │ User Request    │
-                        │ Arrives         │
-                        └────────┬────────┘
-                                 │
-                                 ▼
-                    ┌────────────────────────┐
-                    │ Extract Skill          │
-                    │ Requirements           │
-                    └────────────┬───────────┘
-                                 │
-                                 ▼
-              ┌──────────────────────────────────┐
-              │ Matrix Lookup                     │
-              │ (returns best_match, fitness)    │
-              └──────────────────┬───────────────┘
-                                 │
-               ┌─────────────────┼─────────────────┐
-               │                 │                 │
-               ▼                 ▼                 ▼
-        ┌───────────┐     ┌───────────┐     ┌───────────┐
-        │ FITNESS   │     │ FITNESS   │     │ FITNESS   │
-        │ ≥ 0.8     │     │ 0.75-0.8  │     │ < 0.75    │
-        │ (HIGH)    │     │ (MEDIUM)  │     │ (LOW/NONE)│
-        └─────┬─────┘     └─────┬─────┘     └─────┬─────┘
-              │                 │                 │
-              ▼                 ▼                 ▼
-   ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
-   │ EXECUTE          │  │ EXECUTE +        │  │ TRIGGER DYNAMIC  │
-   │ Matrix Skill     │  │ Async Discovery  │  │ Discovery        │
-   │                  │  │ for Enhancement  │  │ (Blocking)       │
-   └──────────────────┘  └────────┬─────────┘  └────────┬─────────┘
-                                  │                     │
-                                  ▼                     ▼
-                       ┌──────────────────┐  ┌──────────────────┐
-                       │ Discovery Found  │  │ Discovery Result │
-                       │ Superior Skill?  │  │                  │
-                       └────────┬─────────┘  └────────┬─────────┘
-                                │                     │
-                      ┌─────────┴─────────┐          │
-                      ▼                   ▼          │
-               ┌───────────┐       ┌───────────┐    │
-               │ YES       │       │ NO        │    │
-               └─────┬─────┘       └─────┬─────┘    │
-                     │                   │          │
-                     ▼                   ▼          ▼
-          ┌──────────────────┐  ┌───────────┐  ┌──────────────────┐
-          │ SURFACE          │  │ Continue  │  │ PROMPT:          │
-          │ Recommendation   │  │ (no       │  │ "No matrix skill.│
-          │ for Future Use   │  │  change)  │  │  Install X?"     │
-          └──────────────────┘  └───────────┘  └──────────────────┘
+                        ┌─────────────────────────┐
+                        │ Complex Task Arrives    │
+                        │ (Mode B / Variant Set)  │
+                        └────────────┬────────────┘
+                                     │
+                                     ▼
+                    ┌────────────────────────────────┐
+                    │ 2-Step Local O(1) Lookup       │
+                    │ 1. <skills> (22 Core Skills)   │
+                    │ 2. compact-index.json (1,462)  │
+                    └────────────────┬───────────────┘
+                                     │
+                ┌────────────────────┼────────────────────┐
+                │                    │                    │
+                ▼                    ▼                    ▼
+         ┌─────────────┐      ┌─────────────┐      ┌─────────────┐
+         │ FITNESS     │      │ FITNESS     │      │ FITNESS     │
+         │ >= 0.8      │      │ 0.75 - 0.8  │      │ < 0.75      │
+         │ (HIGH)      │      │ (ADEQUATE)  │      │ (GAP)       │
+         └──────┬──────┘      └──────┬──────┘      └──────┬──────┘
+                │                    │                    │
+                ▼                    ▼                    ▼
+    ┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐
+    │ Load 1-3 SKILL.md │  │ Load Local Skill  │  │ If :hard / :team: │
+    │ from skills/ or   │  │ + Async External  │  │ Blocking External │
+    │ skills_library/   │  │ Check (:hard/team)│  │ Search (`npx`)    │
+    └───────────────────┘  └─────────┬─────────┘  └─────────┬─────────┘
+                                     │                      │
+                           ┌─────────┴─────────┐            ▼
+                           ▼                   ▼  ┌───────────────────┐
+                    ┌─────────────┐     ┌────────┐│ Confirm Low-Trust │
+                    │ Delta>=0.15 │     │ < 0.15 ││ -> Install `-g -y`│
+                    │ Suggest Cmd │     │ Silent ││ -> Register & Run │
+                    └─────────────┘     └────────┘└───────────────────┘
 ```
 
 ---
@@ -554,183 +524,136 @@ def evaluate_skill_for_promotion(dynamic_skill):
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│ EXECUTION    │ ──▶ │ TELEMETRY    │ ──▶ │ ANALYSIS     │ ──▶ │ ACTION       │
-│ LAYER        │     │ COLLECTOR    │     │ ENGINE       │     │ EXECUTOR     │
+│ SHARD        │ ──▶ │ CLI GATE &   │ ──▶ │ FITNESS &    │ ──▶ │ MATRIX &     │
+│ EXECUTION    │     │ TELEMETRY    │     │ GOVERNANCE   │     │ INDEX SYNC   │
 └──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘
        ▲                                                              │
-       │                                                              │
        └──────────────────────────────────────────────────────────────┘
-                              CONTINUOUS IMPROVEMENT
+                    `boomopen doctor --rebuild-index`
 
-EXECUTION LAYER captures:
-  • Skill used
-  • Execution time
-  • Success/failure
-  • User satisfaction (implicit: continued use, explicit: feedback)
-  • Request characteristics
-
-TELEMETRY COLLECTOR aggregates:
-  • Per-skill metrics
-  • Domain usage patterns
-  • Gap occurrence frequency
-  • Dynamic skill adoption rates
-
-ANALYSIS ENGINE computes:
-  • Skill health scores
-  • Promotion candidates
-  • Deprecation candidates
-  • Domain coverage gaps
-  • Trend detection
-
-ACTION EXECUTOR triggers:
-  • Matrix skill additions (auto-generated PR)
-  • Matrix skill deprecations (flag for review)
-  • Priority score adjustments
-  • Domain file reorganization
-  • Alert on quality degradation
+1. SHARD EXECUTION: Specialist agent (`role#shard`) executes using injected `SKILL.md`.
+2. CLI GATE & TELEMETRY: Deterministic validators (`boomopen check`, `plan`, `design`,
+   `research`, `cook`) record pass/fail outcomes and execution counts in `_dynamic.yaml`.
+3. FITNESS & GOVERNANCE: Evaluates trust progression (`0.3 -> 0.5 -> 0.7 -> 1.0`),
+   90-day freshness decay, and `supported | experimental | blocked` status.
+4. MATRIX & INDEX SYNC: Promoted skills append to `{FRAMEWORK_PATH}/matrix-skills/{domain}.yaml`
+   and regenerate `{FRAMEWORK_PATH}/matrix-skills/compact-index.json`.
 ```
 
-### 5.2 Skill Lifecycle States
+### 5.2 Skill Lifecycle States (`_index.yaml` & `_dynamic.yaml`)
 
 ```
-                    ┌─────────────────┐
-                    │   DISCOVERED    │
-                    │   (Dynamic)     │
-                    └────────┬────────┘
-                             │
-                    First successful execution
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │   EVALUATING    │
-                    │   (Probation)   │
-                    └────────┬────────┘
-                             │
-               ┌─────────────┼─────────────┐
-               │             │             │
-        Success > 85%   Abandoned    Failure > 30%
-               │             │             │
-               ▼             ▼             ▼
-      ┌─────────────┐ ┌───────────┐ ┌─────────────┐
-      │  VALIDATED  │ │  DORMANT  │ │  REJECTED   │
-      │  (Trusted)  │ │           │ │             │
-      └──────┬──────┘ └───────────┘ └─────────────┘
-             │
-    High usage + team approval
-             │
-             ▼
-      ┌─────────────┐
-      │  PROMOTED   │
-      │  (Matrix)   │
-      └──────┬──────┘
-             │
-    ┌────────┴────────┐
-    │                 │
-    ▼                 ▼
-┌──────────┐   ┌──────────────┐
-│  ACTIVE  │   │  DEPRECATED  │
-│  (Core)  │   │  (Phase out) │
-└──────────┘   └──────────────┘
+                    ┌──────────────────────┐
+                    │       NEW (0.3)      │
+                    │  (`_dynamic.yaml`)   │
+                    └──────────┬───────────┘
+                               │ 3 successful executions
+                               ▼
+                    ┌──────────────────────┐
+                    │   EVALUATING (0.5)   │
+                    │  (Probation Window)  │
+                    └──────────┬───────────┘
+                               │
+                ┌──────────────┼──────────────┐
+                │              │              │
+         10 runs, >=85%   >90d inactive   Validation/Security
+                │              │              Failure
+                ▼              ▼              ▼
+       ┌────────────────┐ ┌──────────┐ ┌────────────────┐
+       │ VALIDATED (0.7)│ │  STALE   │ │    BLOCKED     │
+       └────────┬───────┘ └──────────┘ │(rejected_skills│
+                │                      └────────────────┘
+      Auto-promotion criteria met
+      (>=10 runs, >=85%, <=30d inactive)
+                │
+                ▼
+       ┌────────────────┐
+       │ PROMOTED (1.0) │
+       │(`compact-index`)│
+       └────────────────┘
 ```
 
-### 5.3 Global Installation Protocol
-
-**Challenge**: When a dynamic skill is installed, it must be immediately available across the global environment.
-
-**Solution**: Tiered Installation Model
+### 5.3 Tiered Skill Placement Model
 
 ```yaml
-installation_tiers:
-  
-  tier_1_session_local:
-    scope: "Current session only"
-    persistence: "None (ephemeral)"
-    use_case: "Testing, one-off requests"
-    command: "npx skills add <skill>"
-    effect: |
-      Skill loaded into current agent context.
-      No file system changes.
-      Lost on session end.
+skill_placement_tiers:
 
-  tier_2_user_global:
-    scope: "All sessions for current user"
-    persistence: "User config directory"
-    use_case: "Personal productivity skills"
-    command: "npx skills add <skill> -g"
-    effect: |
-      Skill installed to ~/.{TOOL}/skills/{skill-id}/
-      Automatically loaded in future sessions.
-      User-specific, not shared with team.
+  tier_1_core_active:
+    location: "{SKILLS_PATH}/{skill-id}/SKILL.md"
+    repo_source: "skills/{skill-id}/SKILL.md"
+    count_in_v5_5_0: 22
+    visibility: "Always pre-listed in <skills> system context (0ms)"
+    examples:
+      - "skill-seeker"
+      - "intelligent-routing"
+      - "clean-code"
+      - "plan-writing"
+      - "design-spec"
+      - "deep-research"
 
-  tier_3_project_local:
-    scope: "All users working on project"
-    persistence: "Project repository"
-    use_case: "Project-specific skills"
-    command: "npx skills add <skill> --project"
-    effect: |
-      Skill reference added to project config.
-      Skill fetched on project clone/setup.
-      Version-locked for consistency.
+  tier_2_library_dormant:
+    location: "{LIBRARY_PATH}/{skill-id}/SKILL.md"
+    repo_source: "skills_library/{skill-id}/SKILL.md"
+    count_in_v5_5_0: 1440
+    visibility: "0 idle tokens; O(1) lookup via matrix-skills/compact-index.json"
+    examples:
+      - "ab-test-setup"
+      - "better-auth-typescript"
+      - "tailwind-v4-shadcn-ui"
+      - "owasp-llm-agent-security-2025"
+
+  tier_3_dynamic_user_global:
+    location: "{SKILLS_PATH}/{skill-id}/SKILL.md"
+    registry: "{FRAMEWORK_PATH}/matrix-skills/_dynamic.yaml"
+    command: "npx skills add <owner/repo@skill> -g -y"
+    visibility: "Tracked with SHA-256 checksum, owner, support_state, and trust_level"
 
   tier_4_matrix_promoted:
-    scope: "All agents, all projects"
-    persistence: "Matrix skill system"
-    use_case: "Battle-tested, widely useful skills"
-    process: |
-      1. When promotion criteria met (executions, success_rate, recency), skill is auto-promoted
-      2. System adds skill entry to ~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/{domain}.yaml (no promotion queue, no human review)
-      3. Write target: the GLOBAL tool path the main agent already reads from
-         (e.g. ~/.cursor/skills/boomopen-workflow-kit/matrix-skills/ for Cursor)
-      4. Same files the orchestrator loaded at session start — we update those on disk
-      5. Next resolution cycle (or cache invalidation / hot-reload) picks up the new skill
-         — no tool restart required; available to all agents on next request
+    location: "{FRAMEWORK_PATH}/matrix-skills/{domain}.yaml + compact-index.json"
+    rebuild_command: "node {FRAMEWORK_PATH}/cli/install.js doctor --rebuild-index"
+    effect: |
+      1. Appends validated entry to {domain}.yaml when min_executions >= 10 and success_rate >= 0.85
+      2. Recompiles compact-index.json in < 50ms
+      3. Immediately discoverable by skill-seeker on the next request without restarting the IDE/CLI
 ```
 
-### 5.4 Environment Synchronization
+### 5.4 Environment Synchronization Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ GLOBAL ENVIRONMENT SYNC                                          │
+│             DYNAMIC SKILL REGISTRATION & INDEX SYNC             │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  USER INSTALLS NEW SKILL                                        │
+│  AGENT OR USER RUNS `npx skills add <owner/repo@skill> -g -y`   │
 │         │                                                        │
 │         ▼                                                        │
-│  ┌──────────────────────────────────────────┐                   │
-│  │ 1. DOWNLOAD & VALIDATE                    │                   │
-│  │    • Fetch SKILL.md from source           │                   │
-│  │    • Validate schema compliance           │                   │
-│  │    • Check for conflicts with existing    │                   │
-│  └──────────────────┬───────────────────────┘                   │
-│                     │                                            │
-│                     ▼                                            │
-│  ┌──────────────────────────────────────────┐                   │
-│  │ 2. INSTALL TO PATH                        │                   │
-│  │    • ~/.{TOOL}/skills/{skill-id}/SKILL.md │                   │
-│  │    • Update skill manifest                │                   │
-│  └──────────────────┬───────────────────────┘                   │
-│                     │                                            │
-│                     ▼                                            │
-│  ┌──────────────────────────────────────────┐                   │
-│  │ 3. INVALIDATE CACHES                      │                   │
-│  │    • Clear skill resolution cache         │                   │
-│  │    • Signal active sessions to reload     │                   │
-│  └──────────────────┬───────────────────────┘                   │
-│                     │                                            │
-│                     ▼                                            │
-│  ┌──────────────────────────────────────────┐                   │
-│  │ 4. REGISTER IN DYNAMIC SKILL INDEX       │                   │
-│  │    • Add to ~/.{TOOL}/skills/_dynamic.yaml│                   │
-│  │    • Include metadata for resolution      │                   │
-│  └──────────────────┬───────────────────────┘                   │
-│                     │                                            │
-│                     ▼                                            │
-│  ┌──────────────────────────────────────────┐                   │
-│  │ 5. AVAILABLE FOR NEXT RESOLUTION CALL    │                   │
-│  │    • No session restart required          │                   │
-│  │    • Immediate use on next request        │                   │
-│  └──────────────────────────────────────────┘                   │
-│                                                                  │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │ 1. DOWNLOAD & VALIDATE                                   │   │
+│  │    • Fetch SKILL.md and verify YAML frontmatter          │   │
+│  │    • Compute SHA-256 checksum & check `rejected_skills`  │   │
+│  │    • Detect ID collisions against `compact-index.json`   │   │
+│  └────────────────────────────┬─────────────────────────────┘   │
+│                               │                                  │
+│                               ▼                                  │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │ 2. INSTALL TO ACTIVE PLATFORM                            │   │
+│  │    • Write `{SKILLS_PATH}/{skill-id}/SKILL.md`           │   │
+│  │    • Preserve user-created files outside kit manifest    │   │
+│  └────────────────────────────┬─────────────────────────────┘   │
+│                               │                                  │
+│                               ▼                                  │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │ 3. REGISTER IN `_dynamic.yaml`                           │   │
+│  │    • `{FRAMEWORK_PATH}/matrix-skills/_dynamic.yaml`      │   │
+│  │    • Record owner, checksum, support_state, freshness    │   │
+│  └────────────────────────────┬─────────────────────────────┘   │
+│                               │                                  │
+│                               ▼                                  │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │ 4. AVAILABLE IMMEDIATELY FOR CURRENT & NEXT SHARDS       │   │
+│  │    • Inject SKILL.md path directly into Handoff Packet   │   │
+│  │    • Zero session restart required                       │   │
+│  └──────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -740,520 +663,267 @@ installation_tiers:
 
 ### 6.1 Conflict Detection
 
-**Conflict Types:**
-
 | Conflict Type | Description | Resolution Strategy |
-|--------------|-------------|---------------------|
-| **ID Collision** | Dynamic skill has same ID as matrix skill | Prefix dynamic with `ext-` |
-| **Domain Overlap** | Dynamic skill claims same domain coverage | Matrix takes precedence unless dynamic is superior |
-| **Capability Duplication** | Both skills do the same thing | Fitness scoring determines winner |
-| **Version Incompatibility** | Skill requires newer agent version | Block installation, notify user |
+|---------------|-------------|---------------------|
+| **ID Collision** | Dynamic skill shares `skill_id` with one of the `1,462` curated skills | Curated skill keeps canonical ID; prefix dynamic skill with `ext-` |
+| **Multi-Domain Entry** | Curated skill appears in `2+` domain YAML files (`14` skills in `v5.5.0`) | `cli/doctor-index.js` deduplicates into `1` `compact-index.json` entry with `"domains": [...]` |
+| **Domain Overlap** | Dynamic skill claims same capability as a curated Core/Library skill | Curated skill wins unless dynamic fitness exceeds local by `>= 0.15` |
+| **Quarantined Skill** | Skill appears in `rejected_skills` with `block_reinstall: true` | Block installation and alert user |
 
-### 6.2 Versioning Model
+### 6.2 Versioning & Lock Model
 
 ```yaml
-# Matrix Skill Version Format
-skill_version:
-  format: "MAJOR.MINOR.PATCH"
-  example: "1.2.3"
-  
-  semantics:
-    MAJOR: "Breaking changes to skill interface"
-    MINOR: "New capabilities, backward compatible"
-    PATCH: "Bug fixes, no capability change"
+# Kit & Compact Index Version (Synchronized via cli/doctor-version.js)
+kit_index_version:
+  package_name: "@boomopen/workflow-kit"
+  version: "5.5.0"
+  compact_index_path: "matrix-skills/compact-index.json"
+  total_unique_skills: 1462     # 22 Core (skills/) + 1,440 Library (skills_library/)
+  total_domain_entries: 1476    # Across 19 domain *.yaml files (14 multi-domain)
 
-# Dynamic Skill Source Tracking
+# Dynamic External Skill Reference Format
 dynamic_skill_reference:
   format: "{source}/{owner}/{repo}@{skill}#{version}"
-  example: "github/vercel-labs/skills@clerk-auth#v1.2.0"
-  
-  components:
-    source: "github | npm | custom"
-    owner: "Repository owner"
-    repo: "Repository name"
-    skill: "Skill ID within repo"
-    version: "Pinned version or 'latest'"
+  example: "github/vercel-labs/skills@clerk-auth#v2.4.0"
 
-# Lock File for Project Consistency
-# File: ./skills.lock.yaml
+# Project-Level Reproducibility Lock (Optional)
 locked_skills:
-  matrix_version: "1.0"
+  kit_version: "5.5.0"
   dynamic_skills:
     - id: "clerk-auth"
       source: "github/vercel-labs/skills@clerk-auth"
-      version: "v1.2.0"
-      installed_at: "2026-01-30T12:00:00Z"
-      checksum: "sha256:abc123..."
+      version: "v2.4.0"
+      installed_at: "2026-11-10T00:00:00Z"
+      checksum: "sha256:9f86d081884c7d659a2feaa0c55ad015..."
 ```
 
 ### 6.3 Conflict Resolution Protocol
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ CONFLICT RESOLUTION PROTOCOL                                     │
+│                  CONFLICT RESOLUTION PROTOCOL                   │
 ├─────────────────────────────────────────────────────────────────┤
+│  STEP 1: DETECT CONFLICT                                        │
+│    • Check `skill_id` against `compact-index.json` (1,462 IDs)  │
+│    • Check `rejected_skills` in `matrix-skills/_dynamic.yaml`   │
 │                                                                  │
-│  STEP 1: DETECT CONFLICT TYPE                                   │
-│     ─────────────────────────                                    │
-│     • ID collision check                                         │
-│     • Domain overlap analysis                                    │
-│     • Capability fingerprint comparison                         │
+│  STEP 2: APPLY PRECEDENCE                                       │
+│    • Rule 1: Curated `skills/` & `skills_library/` retain IDs   │
+│    • Rule 2: Colliding external skills receive `ext-` prefix    │
+│    • Rule 3: Higher fitness (`delta >= 0.15`) wins capability   │
+│    • Rule 4: Explicit user instruction overrides automatic rank │
 │                                                                  │
-│  STEP 2: APPLY RESOLUTION RULES                                 │
-│     ─────────────────────────────                                │
-│     Rule 1: Matrix skills ALWAYS take their IDs                 │
-│     Rule 2: Dynamic skills get prefixed if collision            │
-│     Rule 3: Higher fitness wins for capability overlap          │
-│     Rule 4: User explicit preference overrides all              │
-│                                                                  │
-│  STEP 3: DOCUMENT RESOLUTION                                    │
-│     ─────────────────────────                                    │
-│     • Log conflict occurrence                                    │
-│     • Record resolution decision                                 │
-│     • Notify user if dynamic skill was renamed/shadowed         │
-│                                                                  │
-│  STEP 4: VALIDATE CONSISTENCY                                   │
-│     ───────────────────────────                                  │
-│     • Ensure no duplicate IDs in unified index                  │
-│     • Verify all agent profiles can still resolve               │
-│     • Check for orphaned skill references                       │
-│                                                                  │
+│  STEP 3: VERIFY INDEX INTEGRITY                                 │
+│    • Run `boomopen doctor` to confirm 0 missing skill paths,    │
+│      valid YAML indentation, and clean `compact-index.json`     │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 6.4 Unified Skill Index
+### 6.4 Unified Skill Index Data Structures
 
-**Runtime Data Structure:**
-
-```yaml
-# Unified Skill Index (in-memory structure)
-unified_skill_index:
-  version: "1.0"
-  generated_at: "2026-01-30T12:00:00Z"
-  
-  # Matrix skills (pre-loaded)
-  matrix_skills:
-    - skill_id: "better-auth"
-      source: "matrix"
-      domain: "backend"
-      priority: 8
-      trust_level: 1.0
-      path: "~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/backend.yaml"
-  
-  # Dynamic skills (user-installed)
-  dynamic_skills:
-    - skill_id: "clerk-auth"
-      source: "github/vercel-labs/skills"
-      domain: "backend"
-      priority: 7  # Starts lower than matrix
-      trust_level: 0.6  # Earned through usage
-      path: "~/.{TOOL}/skills/clerk-auth/SKILL.md"
-      version: "v1.2.0"
-  
-  # Resolution priority (matrix > dynamic by default)
-  resolution_order:
-    - source: "matrix"
-      weight: 1.0
-    - source: "dynamic"
-      weight: 0.9  # Slight preference for matrix
+```json
+{
+  "version": "5.5.0",
+  "totalSkills": 1462,
+  "skills": {
+    "skill-seeker": {
+      "domain": "tools",
+      "priority": 9,
+      "category": "core",
+      "path": "skills/skill-seeker/SKILL.md"
+    },
+    "ab-test-setup": {
+      "domain": "planning",
+      "priority": 7,
+      "category": "specialized",
+      "path": "skills_library/ab-test-setup/SKILL.md"
+    },
+    "better-auth-typescript": {
+      "domain": "backend",
+      "priority": 9,
+      "category": "expert",
+      "path": "skills_library/better-auth-typescript/SKILL.md",
+      "domains": ["backend", "security"]
+    }
+  }
+}
 ```
 
 ---
 
 ## 7. Production-Grade Edge Cases
 
-### 7.1 Network Failure Handling
+### 7.1 Network, Offline & Vendored Reference Handling
 
 ```yaml
-network_failure_scenarios:
+edge_case_resolutions:
 
-  scenario_1_discovery_timeout:
-    trigger: "find-skills search exceeds 5 second timeout"
-    impact: "Cannot retrieve dynamic skill candidates"
+  scenario_1_external_discovery_timeout_or_offline:
+    trigger: "External `npx skills find` exceeds 5,000ms timeout or network/CLI is unavailable"
+    impact: "Cannot query remote https://skills.sh/ registry"
     resolution:
-      immediate: "Proceed with matrix skills only"
-      notification: "Notify user that discovery was unavailable"
-      retry: "Queue background retry for later"
-    
-  scenario_2_installation_failure:
-    trigger: "Dynamic skill download fails mid-transfer"
-    impact: "Skill partially installed, corrupted state"
+      immediate: "Proceed immediately with the 1,462 offline skills in compact-index.json"
+      notification: "Surface concise note only when fitness < 0.75 capability gap remains"
+
+  scenario_2_vendored_library_upstream_paths:
+    trigger: "A skill in `skills_library/<id>/SKILL.md` references `.claude/skills/<id>/...` or unvendored `references/`"
+    impact: "Naive path lookup would fail on non-Claude platforms or missing optional files"
     resolution:
-      immediate: "Rollback partial installation"
-      cleanup: "Remove incomplete skill directory"
-      notification: "Notify user of failure with retry option"
-    
-  scenario_3_intermittent_connectivity:
-    trigger: "Network flaps during skill execution"
-    impact: "Skill that requires network may fail"
+      path_rewrite: "Resolve relative to `{LIBRARY_PATH}/<id>/...` per `rules/SKILLS.md`"
+      missing_asset_rule: "If optional `references/`, `scripts/`, or `assets/` were not vendored, state so and follow `SKILL.md` without inventing file contents"
+
+  scenario_3_partial_dynamic_install_failure:
+    trigger: "External skill download or schema validation fails mid-install"
     resolution:
-      detection: "Pre-flight check for network-dependent skills"
-      fallback: "Use local-only skill alternative if available"
-      caching: "Cache skill assets for offline resilience"
+      rollback: "Remove incomplete directory under `{SKILLS_PATH}/` and do not register in `_dynamic.yaml`"
+      fallback: "Continue execution with best local Core/Library match"
+
+  scenario_4_cli_gate_validation_failure:
+    trigger: "`boomopen <research|design|plan|cook|check>` exits non-zero after shard execution"
+    resolution:
+      auto_repair: "Route exact CLI diagnostic to warm `role#shard` (`send_message` by `conversationId`) under `rules/ERRORS.md` (`E5`/`E2`) and re-verify until exit `0`"
 ```
 
-### 7.2 Installation Failure Recovery
+### 7.2 Deterministic Index & Platform Integrity (`boomopen doctor`)
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ INSTALLATION FAILURE RECOVERY                                    │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  FAILURE TYPES:                                                  │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │ TYPE: DOWNLOAD_FAILURE                                   │    │
-│  │ Cause: Network error, invalid URL, auth required         │    │
-│  │ State: No files written                                  │    │
-│  │ Recovery: Retry with exponential backoff, then abort    │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │ TYPE: VALIDATION_FAILURE                                 │    │
-│  │ Cause: Invalid SKILL.md schema, missing required fields │    │
-│  │ State: File downloaded but not registered               │    │
-│  │ Recovery: Delete file, report error to user             │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │ TYPE: CONFLICT_FAILURE                                   │    │
-│  │ Cause: ID collision that cannot be auto-resolved        │    │
-│  │ State: Validation passed, conflict detected             │    │
-│  │ Recovery: Prompt user to choose resolution strategy     │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │ TYPE: REGISTRATION_FAILURE                               │    │
-│  │ Cause: Index write failed (disk full, permissions)      │    │
-│  │ State: Skill files exist but not indexed                │    │
-│  │ Recovery: Cleanup files, report system error            │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  RECOVERY PROTOCOL:                                              │
-│                                                                  │
-│  1. Detect failure type                                          │
-│  2. Execute type-specific rollback                               │
-│  3. Log failure for telemetry                                    │
-│  4. Notify user with actionable guidance                        │
-│  5. Offer retry option if transient failure                     │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-```
+Instead of fragile background file-watcher daemons, `BoomOpen Workflow Kit v5.5.0` uses deterministic on-demand index compilation and SHA-256 manifest verification:
 
-### 7.3 Environment Path Updates
+1. **Zero-Daemon Instant Availability**: `skill-seeker` reads `matrix-skills/compact-index.json` and `matrix-skills/_dynamic.yaml` directly on disk (`< 5ms`), so newly added skills require zero background daemons or IDE restarts.
+2. **Deterministic Rebuild (`boomopen doctor --rebuild-index`)**: Parses all `19` `matrix-skills/*.yaml` files via [`cli/doctor-index.js`](../cli/doctor-index.js), validates YAML sequence indentation, checks that all `1,462` `skills/` and `skills_library/` paths exist, and writes `matrix-skills/compact-index.json`.
+3. **Non-Destructive Uninstall & Upgrade (`~/.boomopen/manifests/<tool>.json`)**: Only kit-owned unchanged files are updated or removed; user-installed dynamic skills in `{SKILLS_PATH}/` are never deleted by `boomopen uninstall`.
 
-**Challenge**: Newly installed skills must be discoverable without session restart.
-
-**Solution**: Hot-Reload Mechanism
-
-```yaml
-hot_reload_mechanism:
-
-  trigger_events:
-    - skill_installed
-    - skill_updated
-    - skill_removed
-    - config_changed
-  
-  reload_sequence:
-    1. FILE_WATCH:
-       path: "~/.{TOOL}/skills/"
-       events: [create, modify, delete]
-       debounce: 500ms  # Prevent rapid-fire reloads
-    
-    2. INDEX_REBUILD:
-       action: "Rebuild unified skill index"
-       scope: "Changed domain only (incremental)"
-       duration: "< 50ms for single skill change"
-    
-    3. CACHE_INVALIDATE:
-       action: "Clear resolution cache for affected domains"
-       scope: "Targeted, not full cache flush"
-    
-    4. SESSION_NOTIFY:
-       action: "Signal active sessions"
-       method: "File-based IPC via lock file mtime"
-       response: "Sessions poll for changes on next resolution"
-    
-    5. VERIFICATION:
-       action: "Confirm skill accessible"
-       test: "Attempt resolution with new skill ID"
-```
-
-### 7.4 Security Considerations
+### 7.3 Security Model
 
 ```yaml
 security_model:
 
-  threat_1_malicious_skill:
-    vector: "Dynamic skill contains harmful instructions"
+  threat_1_malicious_prompt_instructions:
+    vector: "Untrusted community skill embeds unsafe shell or destructive SQL guidance"
     mitigation:
-      - "Skills are Markdown/YAML only (no executable code)"
-      - "Skill content is guidance, not direct execution"
-      - "Agent interprets skill, doesn't run it blindly"
-      - "Community reporting for malicious skills"
-    
-  threat_2_skill_impersonation:
-    vector: "Attacker creates skill with trusted name"
+      - "Low-trust (`0.3`) task-critical external installs require explicit user confirmation"
+      - "Claude/Antigravity opt-in `PreToolUse` hook (`--with-hooks` -> `validate-tool-call.mjs`)"
+      - "Strict `OWNED_FILES` & SHA-256 `READ_ONLY_FILES` enforcement (`boomopen cook verify-wave` & `boomopen conduct`)"
+
+  threat_2_supply_chain_tampering:
+    vector: "External skill mutates unexpectedly upstream"
     mitigation:
-      - "Source verification (GitHub org, npm scope)"
-      - "Checksum validation on download"
-      - "Warning on unofficial sources"
-    
-  threat_3_data_exfiltration:
-    vector: "Skill instructs agent to send data externally"
+      - "SHA-256 `checksum` and `owner` recorded in `matrix-skills/_dynamic.yaml`"
+      - "`support_state: blocked` and `rejected_skills` prevent re-installation"
+
+  threat_3_hollow_stubs_or_test_gaming:
+    vector: "Agent leaves `TODO`/`FIXME` placeholders or `.skip`/`.only` tests"
     mitigation:
-      - "Network operations require explicit user approval"
-      - "Sandboxed skill evaluation mode for new skills"
-      - "Audit logging of skill-triggered actions"
-    
-  trust_progression:
-    new_skill: 
-      trust_level: 0.3
-      restrictions:
-        - "Cannot suggest network operations"
-        - "Limited to read-only file access patterns"
-        - "User confirmation required for actions"
-    
-    validated_skill:
-      trust_level: 0.7
-      unlock_after: "5 successful executions"
-      restrictions:
-        - "Standard agent capabilities"
-        - "Still logged for audit"
-    
-    promoted_skill:
-      trust_level: 1.0
-      unlock_after: "Matrix inclusion (auto-promote when criteria met)"
-      restrictions:
-        - "None (same as native agent skills)"
+      - "`boomopen check --strict-phase --no-stubs` rejects hollow implementations and test gaming"
 ```
 
 ---
 
-## 8. Implementation Roadmap
+## 8. Implementation Architecture (`v5.5.0`)
 
-### 8.1 Phase Overview
+### 8.1 Shipped Subsystem Inventory
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                     IMPLEMENTATION PHASES                                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  PHASE 1: Foundation                                                         │
-│  ════════════════════                                                        │
-│  • Unified Skill Index data structure                                        │
-│  • Dynamic skill manifest (dynamic_skills.yaml)                              │
-│  • Hot-reload file watcher                                                   │
-│  • Basic conflict detection                                                  │
-│                                                                              │
-│  PHASE 2: Discovery Integration                                              │
-│  ══════════════════════════════                                              │
-│  • find-skills CLI wrapper                                                   │
-│  • Async discovery during matrix resolution                                  │
-│  • Fitness scoring engine                                                    │
-│  • Recommendation surfacing UI                                               │
-│                                                                              │
-│  PHASE 3: Intelligent Decisions                                              │
-│  ══════════════════════════════                                              │
-│  • Gap detection heuristics                                                  │
-│  • Superiority detection                                                     │
-│  • Decision tree implementation                                              │
-│  • User preference persistence                                               │
-│                                                                              │
-│  PHASE 4: Autonomous Evolution                                               │
-│  ═════════════════════════════                                               │
-│  • Telemetry collection                                                      │
-│  • Usage analytics engine                                                    │
-│  • Automatic promotion recommendations                                       │
-│  • Matrix update PR generation                                               │
-│                                                                              │
-│  PHASE 5: Production Hardening                                               │
-│  ═════════════════════════════                                               │
-│  • Network failure resilience                                                │
-│  • Security audit and hardening                                              │
-│  • Performance optimization                                                  │
-│  • Comprehensive testing                                                     │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Subsystem | Shipped Implementation in `BoomOpen-Workflow-Kit-Pro` (`v5.5.0`) | Verification Gate |
+|-----------|------------------------------------------------------------------|-------------------|
+| **Core & Library Vault** | `22` Core Skills (`skills/`) + `1,440` Library Skills (`skills_library/`) = **`1,462` unique skills** | `boomopen doctor --source-only` |
+| **Compact Skill Index** | [`matrix-skills/compact-index.json`](../matrix-skills/compact-index.json) + `19` domain `*.yaml` (`1,476` entries) + [`_index.yaml`](../matrix-skills/_index.yaml) + [`_dynamic.yaml`](../matrix-skills/_dynamic.yaml) | `cli/doctor-index.js` (`--rebuild-index`) |
+| **Runtime Skill Rules** | [`rules/SKILLS.md`](../rules/SKILLS.md) (`<= 300` lines) + [`skills/skill-seeker/SKILL.md`](../skills/skill-seeker/SKILL.md) | `cli/doctor-markdown.js` |
+| **Specialist Agents & Teams** | **`21` specialist agents** (`agents/*.md`) + **`18` Elastic Golden Diamond teams** (`agents/teams/*-team/` = `54` role files + `18` `_team.md` = `72` files) | `boomopen doctor` |
+| **Slash Commands** | **`32` base slash commands** across **`84` command files** (`79` flat `commands/*.md` + `5` `commands/_ref/*.md`) | `boomopen doctor` |
+| **Deterministic CLI (`12` cmds)** | [`cli/install.js`](../cli/install.js) + `39` modular `cli/*.js` files (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `ledger`, `conduct`) | `30` `node:test` suites (`npm test`) + GitHub Actions CI |
 
-### 8.2 Deliverables Per Phase
-
-| Phase | Key Deliverables |
-|-------|------------------|
-| **Phase 1** | `_dynamic.yaml`, `unified_skill_resolver.ts`, file watcher, conflict detector |
-| **Phase 2** | `discovery_client.ts`, `fitness_scorer.ts`, recommendation UI component |
-| **Phase 3** | `decision_engine.ts`, gap/superiority detectors, preference store |
-| **Phase 4** | `telemetry_collector.ts`, `analytics_engine.ts`, PR generator |
-| **Phase 5** | Resilience tests, security hardening, performance benchmarks |
-
-### 8.3 Success Criteria
+### 8.2 Verified Production Metrics (`v5.5.0`)
 
 ```yaml
-success_metrics:
-
-  scalability:
-    metric: "Skills manageable without proportional maintenance increase"
-    target: "Support 500+ skills with same maintenance effort as 100"
-    measurement: "Maintenance hours per skill per month"
-    
-  reliability:
-    metric: "Skill resolution success rate"
-    target: "> 99.9% resolution success"
-    measurement: "Failed resolutions / total resolutions"
-    
-  autonomy:
-    metric: "Skills auto-promoted vs manually added"
-    target: "> 50% of new matrix skills from auto-promotion"
-    measurement: "Auto-promoted skills / total new skills (monthly)"
-    
-  latency:
-    metric: "Skill resolution time"
-    target: "< 50ms for matrix, < 500ms for dynamic discovery"
-    measurement: "P95 resolution latency"
-    
-  user_satisfaction:
-    metric: "Skill relevance ratings"
-    target: "> 4.2/5.0 average rating"
-    measurement: "Post-execution skill relevance survey"
+verified_production_metrics:
+  indexed_skills: 1462            # 22 pre-loaded Core + 1,440 dormant Library skills
+  domain_yaml_registries: 19      # 1,476 total domain mappings (14 multi-domain)
+  local_lookup_latency: "< 5ms"   # O(1) JSON lookup in matrix-skills/compact-index.json
+  idle_library_token_overhead: 0  # Dormant skills_library/ never injected until matched
+  per_shard_skill_injection: "1-3 SKILL.md files max"
+  automated_test_suites: 30       # 29 cli/*.test.js + web/build/kit-stats.test.mjs
+  cross_os_ci_matrix: "Ubuntu, Windows, macOS x Node 18, 20, 22"
 ```
 
 ---
 
 ## 9. System Integration
 
-### 9.1 Integration with Existing Components
+### 9.1 Integration Across Kit Components
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                   SMART SKILL ORCHESTRATION INTEGRATION                      │
+│                HSOL v5.5 INTEGRATION ACROSS BOOMOPEN v5.5.0                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  ORCHESTRATOR                                                                │
-│  ════════════                                                                │
-│  Integration Point: Skill Resolution call                                    │
-│  Change: Call HSOL instead of direct matrix lookup                          │
+│  6 ROOT ENTRYPOINTS (`<= 250` lines each)                                    │
+│  ════════════════════════════════════════                                    │
+│  `GEMINI.md`, `CLAUDE.md`, `CODEX.md`, `COPILOT.md`, `CURSOR.md`, `AGENT.md` │
+│  • Route 17 languages & 32 slash commands into Mode B without Turn-1 crawl   │
+│  • Point Mode B skill resolution on demand to `rules/SKILLS.md`              │
 │                                                                              │
-│    BEFORE: resolve_skills(agent_profile) → matrix_skills[]                  │
-│    AFTER:  resolve_skills(agent_profile, request) → unified_skills[]        │
+│  ─────────────────────────────────────────────────────────────────────────   │
 │                                                                              │
-│  ─────────────────────────────────────────────────────────────────────────  │
+│  `rules/SKILLS.md` & `skills/skill-seeker/SKILL.md`                          │
+│  ══════════════════════════════════════════════════                          │
+│  • Enforce 2-Step O(1) Lookup: `<skills>` (22) -> `compact-index.json`       │
+│    (1,462) -> read `1-3` matched `SKILL.md` files from `skills_library/`     │
+│  • Inject resolved `SKILL.md` paths into 5-Field Shard Handoff Packets       │
 │                                                                              │
-│  AGENT FILES                                                                 │
-│  ═══════════                                                                 │
-│  Integration Point: Skills section                                           │
-│  Change: Add dynamic skill awareness                                         │
+│  ─────────────────────────────────────────────────────────────────────────   │
 │                                                                              │
-│    ## ⚡ Skills                                                              │
-│    > **MATRIX DISCOVERY**: Auto-injected from matrix-skills/                │
-│    > **DYNAMIC ENHANCEMENT**: Additional skills may be suggested            │
-│    > Profile: `{profile}` | Domains: `{domains}`                            │
+│  21 SPECIALIST AGENTS (`agents/*.md`) & 18 ELASTIC TEAMS (`72` files)        │
+│  ════════════════════════════════════════════════════════════════════        │
+│  • Every specialist profile in `matrix-skills/_index.yaml` maps domain       │
+│    inheritance (`backend`, `frontend`, `security`, `ai-ml`, `mcp`, etc.)     │
+│  • Elastic Golden Diamond scales from `1-1-1` (`<= 4` files) up to           │
+│    `1 Tech Lead + 1..6 Parallel Shard Executors + 1..3 Parallel Critics`     │
+│    (`<= 3-4 OWNED_FILES` per shard)                                          │
 │                                                                              │
-│  ─────────────────────────────────────────────────────────────────────────  │
+│  ─────────────────────────────────────────────────────────────────────────   │
 │                                                                              │
-│  SKILL.md                                                          │
-│  ══════════════════                                                          │
-│  Integration Point: Resolution Algorithm                                     │
-│  Change: Add Step 7 (Dynamic Enhancement Check)                             │
-│                                                                              │
-│    Step 6: Return Skill Set (existing)                                      │
-│    Step 7: Async Dynamic Discovery (NEW)                                    │
-│            → Query find-skills with request keywords                        │
-│            → Compare fitness scores                                          │
-│            → Surface recommendations if superior                            │
-│                                                                              │
-│  ─────────────────────────────────────────────────────────────────────────  │
-│                                                                              │
-│  _index.yaml                                                                 │
-│  ═══════════                                                                 │
-│  Integration Point: Skill registry                                           │
-│  Change: Add dynamic skill registry section                                  │
-│                                                                              │
-│    dynamic_registry:                                                         │
-│      enabled: true                                                           │
-│      manifest_path: "_dynamic.yaml"                                         │
-│      discovery_endpoint: "npx skills find"                                  │
-│      cache_ttl: 3600  # seconds                                             │
-│                                                                              │
-│  ─────────────────────────────────────────────────────────────────────────  │
-│                                                                              │
-│  EXECUTION-PROTOCOL.md                                                       │
-│  ═════════════════════                                                       │
-│  Integration Point: Phase execution                                          │
-│  Change: Add skill enhancement checkpoint                                    │
-│                                                                              │
-│    STEP 2.5: SKILL ENHANCEMENT CHECK                                        │
-│    If HSOL recommends superior skill:                                       │
-│      → Surface recommendation to user                                       │
-│      → "A specialized skill for {domain} is available..."                   │
-│      → Continue with current skills unless user installs                    │
+│  12 `boomopen` CLI SUBCOMMANDS (`cli/install.js`)                            │
+│  ════════════════════════════════════════════════                            │
+│  • `install` / `uninstall` / `list` / `settings` (`--ui` port `4567`)        │
+│  • `doctor [--rebuild-index]` — compiles & audits `compact-index.json`       │
+│  • `research` / `design` / `plan` / `cook` / `check` / `ledger` / `conduct`  │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 9.2 New Files Required
+### 9.2 Canonical Repository Layout (`BoomOpen-Workflow-Kit-Pro`)
 
 ```
-boomopen-workflow-kit/
-├── matrix-skills/
-│   ├── _index.yaml          # ← Add dynamic_registry section
-│   ├── _dynamic.yaml        # ← NEW: Dynamic skill manifest
-│   └── {domain}.yaml        # Existing domain files
-│
+BoomOpen-Workflow-Kit-Pro/
+├── GEMINI.md, CLAUDE.md, CODEX.md, COPILOT.md, CURSOR.md, AGENT.md, SKILL.md
+├── platforms/
+│   └── {antigravity,claude,codex,copilot,cursor}/   # 5 unified platform bundles
 ├── rules/
-│   ├── SKILL.md   # ← Update with HSOL integration
-│   └── ...
-│
-├── lib/                     # ← NEW: Shared libraries
-│   ├── skill-resolver/
-│   │   ├── unified-index.ts
-│   │   ├── fitness-scorer.ts
-│   │   ├── discovery-client.ts
-│   │   └── conflict-resolver.ts
-│   │
-│   ├── telemetry/
-│   │   ├── collector.ts
-│   │   └── analytics.ts
-│   │
-│   └── evolution/
-│       ├── promotion-engine.ts
-│       └── pr-generator.ts
-│
+│   └── {CORE,PHASES,AGENTS,TEAMS,SKILLS,ERRORS,REFERENCE}.md  # 7 rules (<=300L)
+├── commands/
+│   ├── {cmd}.md & {cmd}-{variant}.md                # 79 flat command specs
+│   └── _ref/*.md                                    # 5 shared protocol refs (84 total)
+├── agents/
+│   ├── *.md                                         # 21 specialist agents (<=450L)
+│   └── teams/*-team/                                # 18 teams (54 roles + 18 _team.md = 72)
+├── skills/
+│   ├── skill-seeker/SKILL.md                        # Core 2-Step O(1) resolver
+│   └── ...                                          # 22 pre-loaded Core Skills
+├── skills_library/
+│   ├── ab-test-setup/SKILL.md                       # Dormant on-demand Library Skills
+│   └── ...                                          # 1,440 Library Skills total
+├── matrix-skills/
+│   ├── compact-index.json                           # Pre-compiled O(1) index (1,462 skills)
+│   ├── _index.yaml                                  # 19 domains + 21 agent profiles + HSOL
+│   ├── _dynamic.yaml                                # Dynamic external skill manifest
+│   └── {domain}.yaml                                # 19 domain YAML registries
+├── cli/
+│   ├── install.js                                   # `boomopen` CLI entry (12 subcommands)
+│   ├── doctor.js & doctor-index.js                  # Health audit & compact-index builder
+│   └── *.js / *.test.js                             # 39 CLI modules + 29 CLI test suites
+├── scripts/                                         # 7 Python verification/session helpers
 └── documents/
-    └── SMART-SKILL-ORCHESTRATION-BLUEPRINT.md  # This document
-```
-
-### 9.3 Migration Path
-
-```yaml
-migration_strategy:
-
-  stage_1_parallel_operation:
-    description: "Run HSOL alongside existing system"
-    approach:
-      - "HSOL runs in shadow mode"
-      - "Logs recommendations but doesn't affect execution"
-      - "Compare HSOL decisions with actual usage"
-    
-  stage_2_soft_launch:
-    description: "Enable HSOL recommendations"
-    approach:
-      - "HSOL recommendations shown to users"
-      - "Users can opt-in to install recommended skills"
-      - "Track adoption rate and feedback"
-    
-  stage_3_default_enabled:
-    description: "HSOL becomes primary resolver"
-    approach:
-      - "All skill resolution goes through HSOL"
-      - "Matrix-first with dynamic enhancement"
-      - "Automatic promotion pipeline active"
-    
-  rollback_plan:
-    trigger: "Critical failure or regression"
-    action: "Disable HSOL, revert to direct matrix resolution"
-    data_preservation: "All telemetry and dynamic skills preserved"
+    ├── HSOL-ASSESSMENT.md
+    └── SMART-SKILL-ORCHESTRATION-BLUEPRINT.md       # This blueprint
 ```
 
 ---
@@ -1262,81 +932,88 @@ migration_strategy:
 
 | Term | Definition |
 |------|------------|
-| **HSOL** | Hybrid Skill Orchestration Layer — the core system designed in this blueprint |
-| **Matrix Skills** | Pre-curated skills in `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/*.yaml` |
-| **Dynamic Skills** | Skills discovered/installed via `find-skills` CLI |
-| **Skill Fitness** | Computed score representing how well a skill matches a request |
-| **Gap Detection** | Identifying when matrix skills cannot satisfy a request |
-| **Skill Promotion** | Process of elevating a validated dynamic skill to matrix-skills |
+| **`HSOL v5.5`** | Hybrid Skill Orchestration Layer combining `22` Core Skills, `1,440` Library Skills (`compact-index.json`), and conditional external discovery |
+| **Core Skills (`22`)** | Universal skills in `{SKILLS_PATH}/` (`skills/`) pre-loaded into `<skills>` at turn start |
+| **Library Skills (`1,440`)** | Specialized skills in `{LIBRARY_PATH}/` (`skills_library/`) kept dormant until loaded on demand via `skill-seeker` |
+| **`compact-index.json`** | Pre-compiled `O(1)` JSON lookup map (`1,462` unique skills) built by `boomopen doctor --rebuild-index` |
+| **`skill-seeker`** | Core skill (`skills/skill-seeker/SKILL.md`) executing the mandatory 2-Step `O(1)` lookup protocol |
+| **Dynamic Skills** | External community skills discovered via `npx skills find`, installed with `npx skills add <pkg> -g -y`, and tracked in `matrix-skills/_dynamic.yaml` |
+| **Skill Fitness** | Weighted score (`0.35` semantic + `0.25` specificity + `0.20` trust + `0.10` freshness + `0.10` success) |
 
 ---
 
 ## Appendix B: Decision Matrix Quick Reference
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│              SKILL SELECTION QUICK REFERENCE                     │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  MATRIX FITNESS │ DYNAMIC FITNESS │ ACTION                      │
-│  ───────────────┼─────────────────┼──────────────────────────   │
-│       ≥ 0.8     │      Any        │ Execute matrix              │
-│       0.75-0.8  │      ≥ 0.9      │ Execute matrix + suggest    │
-│       0.75-0.8  │      < 0.9      │ Execute matrix              │
-│       < 0.75    │      ≥ 0.8      │ Prompt to install dynamic   │
-│       < 0.75    │      < 0.8      │ Report capability gap       │
-│       None      │      ≥ 0.7      │ Install and execute dynamic │
-│       None      │      None       │ Use general capabilities    │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│               HSOL v5.5 SKILL SELECTION QUICK REFERENCE              │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  TASK / VARIANT     │ LOCAL FITNESS │ EXTERNAL   │ ACTION            │
+│  ───────────────────┼───────────────┼────────────┼─────────────────  │
+│  Simple             │      N/A      │  Skipped   │ Base knowledge    │
+│  Any `:fast`        │      Any      │  Skipped   │ Execute local     │
+│  `:hard` / `:team`  │    >= 0.80    │  Skipped   │ Execute local     │
+│  `:hard` / `:team`  │  0.75 - 0.80  │ Delta>=0.15│ Local + suggest   │
+│  `:hard` / `:team`  │  0.75 - 0.80  │ Delta<0.15 │ Execute local     │
+│  `:hard` / `:team`  │    < 0.75     │  >= 0.80   │ Confirm & install │
+│  `:hard` / `:team`  │    < 0.75     │  < 0.80    │ Local + gap note  │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Appendix C: File Templates
+## Appendix C: Canonical Schema Templates
 
-### C.1 _dynamic.yaml Template
+### C.1 `matrix-skills/_dynamic.yaml` Entry Schema
 
 ```yaml
-# Dynamic Skill Manifest
-# Auto-managed by HSOL — updated when agents run npx skills add ... -g -y
+# Dynamic Skill Manifest ({FRAMEWORK_PATH}/matrix-skills/_dynamic.yaml)
+# Auto-managed by HSOL v5.5 when orchestrator runs `npx skills add <skill> -g -y`
 
-version: "1.1"
-last_updated: "2026-01-30T12:00:00Z"
+schema_version: 1
+last_updated: "2026-11-10T00:00:00Z"
 
-skills: []
-  # Entries added automatically on skill installation
-  # Format:
-  # - skill_id: "clerk-auth"
-  #   source: "github/vercel-labs/skills@clerk-auth"
-  #   version: "v1.2.0"
-  #   installed_at: "2026-01-30T12:00:00Z"
-  #   checksum: "sha256:abc123..."
-  #   trust_level: 0.3
-  #   execution_count: 0
-  #   success_rate: null
-  #   domains: ["backend", "security"]
+skills:
+  - skill_id: "clerk-auth"
+    source: "github/vercel-labs/skills@clerk-auth"
+    version: "v2.4.0"
+    installed_at: "2026-11-10T00:00:00Z"
+    installed_by: "system"
+    owner: "identity-platform"
+    checksum: "sha256:9f86d081884c7d659a2feaa0c55ad015..."
+    support_state: "experimental"
+    promotion_state: "new"
+    freshness:
+      last_verified: "2026-11-10T00:00:00Z"
+      stale_after_days: 90
+    domains: ["backend", "security"]
+    keywords: ["clerk", "authentication", "oauth", "passkeys"]
+    trust_level: 0.3
+    execution_count: 0
+    success_count: 0
+    failure_count: 0
+    last_execution: null
 ```
 
-### C.2 Skill Telemetry Schema
+### C.2 Skill Execution Telemetry Schema
 
 ```yaml
-# Skill Execution Telemetry Entry
 telemetry_entry:
-  timestamp: "2026-01-30T12:00:00Z"
-  skill_id: "better-auth"
-  source: "matrix"  # or "dynamic"
-  agent_id: "backend-engineer"
-  request_hash: "sha256:xyz..."  # Anonymized request fingerprint
-  execution_time_ms: 150
-  success: true
-  user_satisfaction: null  # Populated if feedback provided
+  timestamp: "2026-11-10T00:00:00Z"
+  skill_id: "better-auth-typescript"
+  source: "skills_library"   # "skills" | "skills_library" | "dynamic"
+  agent_shard: "backend-engineer#auth"
+  request_hash: "sha256:xyz..."
+  lookup_latency_ms: 3
+  cli_gate_passed: true
   gap_detected: false
-  dynamic_alternative_suggested: null
+  dynamic_alternative_suggested: "github/vercel-labs/skills@clerk-auth"
 ```
 
 ---
 
 **Document End**
 
-*This blueprint provides the architectural foundation for implementing the Smart Skill Orchestration Mechanism. All recommendations are based on first-principles analysis and production-grade considerations.*
+*This blueprint documents the production `HSOL v5.5` architecture in `BoomOpen Workflow Kit v5.5.0` (`@boomopen/workflow-kit`).*

@@ -45,7 +45,7 @@ You are the **Epistemic & Adversarial Critic (`research-team-reviewer`, `base-ag
    - `"<library/tech> breaking changes OR deprecated OR migration guide 2025 2026"`
    - `"<library/tech> CVE OR GHSA OR memory leak OR production outage OR bottleneck"`
    - `"<tech A> vs <tech B> benchmark p95 latency OR switched from OR post-mortem"`
-3. **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, merge independent verification from `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family`.
+3. **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, merge independent verification from `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`.
 
 ---
 

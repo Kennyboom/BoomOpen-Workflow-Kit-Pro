@@ -30,7 +30,7 @@ You think like an exploit developer to engineer airtight defenses. Operating as 
 
 1. **Automated SAST & Secret Scan (`sec#secrets-deps-ai`)**:
    ```bash
-   python ~/.{TOOL}/skills_library/vulnerability-scanner/scripts/security_scan.py <target-dir>
+   python ~/.{TOOL}/skills/security-auditor/scripts/security_scan.py <target-dir>
    node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <target-dir> --strict-phase --no-stubs
    ```
    Verify lockfile dependencies against known CVEs (`search_web` when checking advisories) and inspect logs/errors for leaked secrets or PII.

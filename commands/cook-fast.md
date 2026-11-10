@@ -62,7 +62,7 @@ execution-mode: execute
 3. **Mandatory Deterministic Verification (Iterative Self-Healing Until Green)**:
    - If `PLAN-{feature}.md` exists, verify the wave:
      ```bash
-     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify
      ```
    - Run project build/typecheck, unit/integration tests, and strict code check:
      ```bash

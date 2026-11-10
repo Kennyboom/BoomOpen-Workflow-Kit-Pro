@@ -39,10 +39,10 @@ execution-mode: execute
      - **Error & Auth Envelopes**: Typed error codes, HTTP `400/401/403/404/422` shapes, and MSW v2 external boundary mocks (`skills/testing-patterns/SKILL.md`).
 2. **Execute Real Suite & Zero-Stub Hygiene Gates (Mandatory)**:
    ```bash
-   python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <project-or-test-dir>
+   python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <project-root> [--coverage]
    node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <test-dir> --strict-phase --no-stubs
    ```
-   *(If E2E applies, also run `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py <url-or-dir>`.)*
+   *(If E2E applies, also run `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py --suite <project-root>` or `playwright_runner.py <http-url> [--a11y] [--screenshot]`.)*
    - Fix any test-only syntax/import/mock bugs iteratively until test code passes `boomopen check --strict-phase --no-stubs` with `0` `.skip`/`.only`/`.todo` markers.
 3. **Write Cohesive `TEST-{scope}.md` & Stop**:
    - Record the `AC -> Test File:Line` traceability table, exact command exit codes/pass counts, and any uncovered `[APP_DEFECT]` stack traces (`RequestFeedback: true` if defects exist → 1-click **"Proceed"** to `/fix:fast`; `RequestFeedback: false` if `100%` green).

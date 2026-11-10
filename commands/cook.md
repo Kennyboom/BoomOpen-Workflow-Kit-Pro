@@ -22,9 +22,9 @@ execution-mode: router
    - **2. `DESIGN-{feature}.md` exists (no `PLAN` yet)** → **Fast-Forward to Planning**: Extract `DESIGN_CONTRACT` via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design contract "<design-path>"` and invoke `planner` directly.
    - **3. `SCOUT-*.md` or `RESEARCH-*.md` exists** → **Fast-Forward past Discovery**: Reuse prior discovery artifacts without re-spawning `scouter` or `researcher`.
 3. **🌊 3-Wave Contract-First Execution & Deterministic CLI Gates (`boomopen cook`)**:
-   - **Wave 1 (Foundation, Schema & Shared Primitives Lock)**: `database-architect#schema` + `backend-engineer#contracts` + `frontend-engineer#tokens-primitives` → gate with `boomopen cook verify-wave "<plan-path>" --wave 1 --run-verify`.
-   - **Wave 2 (Parallel Feature Shards `<= 3–4` files/shard)**: `backend-engineer#api-1..k` + `frontend-engineer#screen-1..k` (+ `mobile-engineer#1..k`) concurrently in 1 turn (`READ_ONLY_FILES` auto-computed via `boomopen cook packets --wave 2`) → gate with `boomopen cook verify-wave "<plan-path>" --wave 2 --run-verify`.
-   - **Wave 3 (Parallel Cross-Stack Verification & Adversarial Review)**: Parallel `tester` + `reviewer` (+ `security-engineer` or Cross-Engine `boomopen conduct dispatch --role reviewer --engine cross_family`), portable `python` UI audits (`ux_audit.py` + `accessibility_checker.py`), and `boomopen check <dir> --strict-phase --no-stubs`.
+   - **Wave 1 (Foundation, Schema & Shared Primitives Lock)**: `database-architect#schema` + `backend-engineer#contracts` + `frontend-engineer#tokens-primitives` → gate with `boomopen cook verify-wave "<plan-path>" --wave 1 --git --run-verify`.
+   - **Wave 2 (Parallel Feature Shards `<= 3–4` files/shard)**: `backend-engineer#api-1..k` + `frontend-engineer#screen-1..k` (+ `mobile-engineer#1..k`) concurrently in 1 turn (`READ_ONLY_FILES` auto-computed via `boomopen cook packets "<plan-path>" --wave 2`) → gate with `boomopen cook verify-wave "<plan-path>" --wave 2 --git --run-verify`.
+   - **Wave 3 (Parallel Cross-Stack Verification & Adversarial Review)**: Parallel `tester` + `reviewer` (+ `security-engineer` or Cross-Engine `boomopen conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`), portable `python` UI audits (`ux_audit.py` + `accessibility_checker.py`), and `boomopen check <dir> --strict-phase --no-stubs`.
 
 ---
 

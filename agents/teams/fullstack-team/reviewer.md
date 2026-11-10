@@ -42,13 +42,13 @@ You audit **Wave 1** foundation contracts (`database-architect#schema`, `backend
 ## 🛠️ MANDATORY DETERMINISTIC CLI & SCRIPT GATES (`COOK-G1..G4`)
 
 Before issuing `APPROVAL` (`PASS`) for any wave or final deliverable, execute and cite outputs from:
-1. **Wave Gate (`COOK-G1..G4`)**: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify` — verifies disjoint `OWNED_FILES` (`<= 4`/shard), `0` `READ_ONLY_FILES` mutations, passing wave `Verify` commands, and `REQ-xxx` / `AC` coverage.
+1. **Wave Gate (`COOK-G1..G4`)**: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify` — verifies disjoint `OWNED_FILES` (`<= 4`/shard), `0` `READ_ONLY_FILES` mutations, passing wave `Verify` commands, and `REQ-xxx` / `AC` coverage.
 2. **Pragmatic 2-Tier & Anti-Stub Gate**: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` — enforces `0` TODO/FIXME/placeholder stubs, `0` explicit `any`, `0` stray `console.log`, and cohesive file sizing.
 3. **Backend API Validator**: `python ~/.{TOOL}/skills/api-patterns/scripts/api_validator.py <dir>`.
 4. **Frontend UX & WCAG 2.2 AA Validators**:
    - `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <dir>`
    - `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <dir>`
-5. **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, merge independent findings from `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family`.
+5. **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, merge independent findings from `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`.
 
 ---
 
@@ -76,7 +76,7 @@ Before issuing `APPROVAL` (`PASS`) for any wave or final deliverable, execute an
 
 | # | Severity | Gate / Dim | File:Line | Finding | Required Action |
 |---|----------|------------|-----------|---------|-----------------|
-| F1 | 🔴 BLOCKER | D1 / COOK-G2 | `server/orders.ts:54` | Returns `{ msg }` instead of Wave 1 `ApiErrorEnvelope` | Return `ApiErrorEnvelope` (`409`) |
+| F1 | 🔴 BLOCKER | D1 / COOK-G3 | `server/orders.ts:54` | Returns `{ msg }` instead of Wave 1 `ApiErrorEnvelope` | Return `ApiErrorEnvelope` (`409`) |
 | F2 | 🔴 BLOCKER | D2 / D4 | `app/OrdersPage.tsx:91` | Missing `Empty` + `Error` states; icon button `18x18px` | Add 5-State views & `min-h-6 min-w-6` (`24px`) |
 
 ### CLI Gate Output Summary
@@ -97,7 +97,7 @@ Before issuing `APPROVAL` (`PASS`) for any wave or final deliverable, execute an
 
 ```text
 □ Did I read every changed file in the shard's `OWNED_FILES` line by line and verify `0` `READ_ONLY_FILES` edits?
-□ Did I run `boomopen cook verify-wave --run-verify` and `boomopen check <dir> --strict-phase --no-stubs`?
+□ Did I run `boomopen cook verify-wave "<plan.md>" --wave <W> --git --run-verify` and `boomopen check <dir> --strict-phase --no-stubs`?
 □ Did I run `api_validator.py`, `ux_audit.py`, and `accessibility_checker.py` across the touched directories?
 □ Did I audit all 6 dimensions (Contract, 5-State Seam, OWASP, WCAG 2.2 AA, Performance, Code Quality)?
 □ Is every 🔴 BLOCKER backed by exact `file:line` evidence and routed to the owning `{role#shard}` via `send_message`?

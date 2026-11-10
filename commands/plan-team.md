@@ -7,7 +7,7 @@ execution-mode: execute
 
 # /plan:team — 2-Stage Elastic Golden Diamond & Multi-Engine Council Planning
 
-> **MISSION**: Maximum-assurance technical planning through a **2-Stage Adversarial Elastic Golden Diamond** (`1 Tech Lead + Parallel Discovery/Planning Shards + Parallel Specialist Critics`) plus optional **Multi-Engine Council (`boomopen conduct council --task plan`)** and **Deterministic CLI Ledger Compilation (`boomopen plan validate --sync-ledger`)**.
+> **MISSION**: Maximum-assurance technical planning through a **2-Stage Adversarial Elastic Golden Diamond** (`1 Tech Lead + Parallel Discovery/Planning Shards + Parallel Specialist Critics`) plus optional **Multi-Engine Council (`boomopen conduct council --task plan --prompt "<plan-context>"`)** and **Deterministic CLI Ledger Compilation (`boomopen plan validate --sync-ledger`)**.
 > **⛔ NO code writing — plan deliverables only.**
 
 <task>$ARGUMENTS</task>
@@ -31,7 +31,7 @@ execution-mode: execute
 
 | Stage / Artifact | Path (`<appDataDir>\brain\<conversation-id>\`) | `ArtifactMetadata` Setting |
 |------------------|------------------------------------------------|----------------------------|
-| **Stage 1 Discovery** | `SCOUT-{task}.md` + `RESEARCH-{task}.md` (+ `COUNCIL-PLAN-{task}.md` if council enabled) | `UserFacing: true, RequestFeedback: false` *(No premature "Proceed" button)* |
+| **Stage 1 Discovery** | `SCOUT-{task}.md` + `RESEARCH-{task}.md` (+ `COUNCIL-PLAN-{task}.md` if council enabled) | `UserFacing: false, RequestFeedback: false` *(Internal discovery context — no premature "Proceed" button)* |
 | **Stage 2 Master Plan** | **`PLAN-{task}.md`** *(Single cohesive file `<= 500` lines with embedded ADRs + QA Traceability Stamp)* | **`UserFacing: true, RequestFeedback: true`** *(Renders native 1-click **"Proceed"** button!)* |
 | **Stage 2 Auto-Ledger** | `.boomopen/project-ledger.json` + `.boomopen/contracts/SHARED_CONTRACT.md` + `.boomopen/ROADMAP-PROGRESS.md` | Generated automatically via `boomopen plan validate <plan-path> --sync-ledger` |
 | **Inter-Agent Log** | `MAILBOX-{date}.md` | `UserFacing: false, RequestFeedback: false` |
@@ -52,7 +52,7 @@ execution-mode: execute
 | Governance Pillar | Agent Shard(s) (`TypeName: "self"`, `Model: "inherit"`) | Stage 1 Mission |
 |-------------------|---------------------------------------------------------|-----------------|
 | **Lead Pillar (`[1]`)** | `tech-lead#1` | Decompose scope into codebase modules, requirement vectors, and architecture questions; post `TASK_BRIEF` to `MAILBOX-{date}.md`. |
-| **Executor Pillar (`[2..6 Parallel Shards]`)** | • `scouter#1..k` (`≤ 3–4` modules/shard)<br>• `researcher#1..k` (`1` deep vector/shard)<br>• `business-analyst#req`<br>• *(Optional)* `boomopen conduct council --task plan` | • **`scouter#1..k`**: Map codebase architecture, `./documents/`, exact file paths (`OWNED_FILES`, `READ_ONLY_FILES`, `Test Files`), and **Blast-Radius Caller Scan**.<br>• **`researcher#1..k`**: Evaluate patterns, `1,462` skills, benchmarks, security/perf trade-offs, and draft ADR options.<br>• **`business-analyst#req`**: Extract explicit + implicit CRUD entities, user stories, `AC1..N`, and `≥ 5` edge cases. |
+| **Executor Pillar (`[2..6 Parallel Shards]`)** | • `scouter#1..k` (`≤ 3–4` modules/shard)<br>• `researcher#1..k` (`1` deep vector/shard)<br>• `business-analyst#req`<br>• *(Optional)* `boomopen conduct council --task plan --prompt "<plan-context>"` | • **`scouter#1..k`**: Map codebase architecture, `./documents/`, exact file paths (`OWNED_FILES`, `READ_ONLY_FILES`, `Test Files`), and **Blast-Radius Caller Scan**.<br>• **`researcher#1..k`**: Evaluate patterns, `1,462` skills, benchmarks, security/perf trade-offs, and draft ADR options.<br>• **`business-analyst#req`**: Extract explicit + implicit CRUD entities, user stories, `AC1..N`, and `≥ 5` edge cases. |
 | **Critic Pillar (`[1..2 Parallel Critics]`)** | • `brainstormer#critic` (Blind-Spot Hunter)<br>• `reviewer#feasibility` (Anti-Overengineering) | Challenge every shard submission: hunt missed requirements, unstated assumptions, over-engineering, or unverified codebase claims (max 2 warm `send_message` rounds). |
 
 **Stage 1 Deliverables**: `SCOUT-{task}.md` + `RESEARCH-{task}.md` (+ `COUNCIL-PLAN-{task}.md` if council ran), all with `RequestFeedback: false`.

@@ -3,10 +3,10 @@
   <p><strong>Sistem Operasi Workforce AI Smart-Hybrid Multi-Platform — 21 Agen Spesialis, 18 Tim Golden Triangle &amp; Gudang 1.460+ Skill Sesuai Permintaan</strong></p>
 
   <p>
-    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
+    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
     <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
-    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
+    <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
     <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
   </p>
@@ -22,11 +22,11 @@
 ## 🎬 Trailer Peluncuran Resmi (Full HD 1080p)
 
 <div align="center">
-  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
+  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
     <img src="../assets/media/poster_en.png" alt="Tonton Trailer Peluncuran Resmi BoomOpen Workflow Kit v5.5 (Full HD 1080p)" width="92%" />
   </a>
   <p>
-    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Klik di sini untuk menonton / streaming Trailer Peluncuran Resmi Full HD 1080p (MP4 dengan sulih suara studio)</b></a>
+    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Klik di sini untuk menonton / streaming Trailer Peluncuran Resmi Full HD 1080p (MP4 dengan sulih suara studio)</b></a>
   </p>
 </div>
 
@@ -36,9 +36,9 @@
 
 **BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** adalah sistem operasi multi-agen sumber terbuka (open-source) yang mengubah satu asisten coding AI menjadi organisasi rekayasa perangkat lunak terkoordinasi yang terdiri dari **21 agen spesialis**, **18 tim adversarial Golden Triangle**, **22 keahlian inti (Core Skills)**, dan **1.440 keahlian pustaka khusus (`skills_library`)**.
 
-Tidak seperti template prompt tunggal yang kaku atau wrapper agen berat yang menimbulkan latensi cold-start pada setiap pertanyaan sederhana, BoomOpen v5.5 menghadirkan **Gerbang Ambang Kompleksitas Cerdas 2-Mode (2-Mode Smart Complexity Threshold Gate)**:
-- **⚡ Mode A — Eksekusi Langsung (0d Cold-Start)**: Tanya jawab (Q&A) sederhana, penjelasan kode, perbaikan bug satu domain, atau perubahan jelas yang menyentuh **≤ 2 file** (tanpa perintah `/cmd`) dieksekusi, diuji, dan diverifikasi **secara langsung** oleh agen utama sambil menerapkan **Standar Pengkodean Pragmatis 2-Tingkat** serta **Pengujian & Perbaikan Bug Persisten**.
-- **🎻 Mode B — Orkestrasi Multi-Agen Ketat**: Fitur kompleks (**> 2 file** atau **≥ 2 domain**) atau pemanggilan perintah `/cmd` eksplisit mengaktifkan mode Orkestrator ketat dengan **DAG Parallel Fan-Out**, **Direct Plan-to-Executor Dispatch**, **Kunci Kepemilikan File Berbasis Kontrak (`SHARED_CONTRACT` + `OWNED_FILES`)**, dan **Penggunaan Ulang Sub-agen Hangat (`send_message`)**.
+Tidak seperti template prompt kaku atau wrapper agen berat yang menambah latensi di setiap giliran, BoomOpen v5.5 menggabungkan **Proactive Sub-agent First Gate**, **Perutean Bahasa Alami 17 Bahasa**, **Sharding Kawanan Elastis Dinamis 4-Tingkat (`role#shard`)**, **Autopilot Proyek Multi-Sesi (`/autopilot`)**, dan **Konduktor Lintas-Engine (`/conduct`)**:
+- **🚀 Sub-agen Paralel Giliran-1 & Orkestrasi Mode B**: Eksplorasi codebase terbuka (`> 2` file), fitur lintas domain (`≥ 2` domain), maksud alur kerja bahasa alami di **ke-17 bahasa yang didukung**, atau perintah `/cmd` eksplisit langsung meluncurkan shard sub-agen paralel pada Giliran 1 (`role#shard`, `<= 3–4 OWNED_FILES`/shard) dengan **DAG Parallel Fan-Out**, **Direct Plan-to-Executor Dispatch**, **Kunci Kontrak (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Penggunaan Ulang Sub-agen Hangat (`role#shard -> conversationId` via `send_message`)**, serta `/autopilot` (`boomopen ledger`) dan dewan multi-engine `/conduct` (`boomopen conduct`).
+- **⚡ Mode A — Eksekusi Mikro-Langsung Target Diketahui (0d Cold-Start)**: Tanya jawab sederhana, penjelasan kode, dan edit mikro ketika **tepat `≤ 2` file target sudah diketahui pada Giliran 1** (0 eksplorasi, tanpa `/cmd`) dieksekusi, diuji, dan diverifikasi **secara langsung** dengan **Standar Pengkodean Pragmatis 2-Tingkat** serta **Pengujian & Perbaikan Bug Persisten**.
 
 - **📚 Gudang 1.462 Skill Masif Tanpa Pembengkakan Konteks (Zero Context Bloat)**: Menggabungkan **22 Core Skills (`skills/`)** dan **1.440 Niche Library Skills (`skills_library/`)** yang telah dikompilasi ke `matrix-skills/compact-index.json` untuk pencarian `O(1)` 2 langkah — memberikan penguasaan instan di Backend, Frontend, Mobile, Game Dev (Unity/Unreal/Godot), AI/ML, BigQuery/Data, Cloud/DevOps, dan Keamanan OWASP tanpa memenuhi jendela prompt.
 
@@ -74,15 +74,15 @@ flowchart TD
 2. **📏 Standar Pengkodean Pragmatis 2-Tingkat (Anti-Fragmentasi)**:
    - **Tingkat 1 — Aturan Kualitas & Keamanan Ketat (Toleransi Nol)**: Tanggung Jawab Tunggal (Single Responsibility), **DILARANG `any` eksplisit**, **DILARANG meninggalkan `console.log` debug** di kode produksi, wajib `try/catch` + penanganan error bertipe pada batas async/API, konstanta `SCREAMING_SNAKE_CASE`, DRY (`≥ 3`), dan import yang rapi.
    - **Tingkat 2 — Panduan Struktural Fleksibel (Kohesi di Atas Pemotongan Baris Mekanis)**: File kohesif menargetkan `~200–350 baris` dengan batas lunak `~400–450 baris` (pemisahan wajib hanya jika `>500 baris` atau mencampur banyak domain; file test, tipe/skema, dan dokumen dikecualikan). Fungsi logika `~20–40 baris` (`~40–80 baris` untuk UI/Handler).
-3. **🎯 Distribusi Langsung Rencana ke Pelaksana & Penggunaan Ulang Sub-agen Hangat (`send_message`)**:
-   - Setelah `PLAN-{feature}.md` tersedia, Orkestrator mengirimkan tugas **secara langsung** ke engineer domain (`backend-engineer`, `frontend-engineer`, `database-architect`, dll.) tanpa lompatan perantara `tech-lead` yang berlebihan.
-   - Sub-agen aktif dicatat dalam **Registri Sesi Aktif (`Role → conversationId`)** dan digunakan kembali melalui `send_message` dengan **latensi cold-start 0 detik** serta **100% konteks file tetap terjaga**.
+3. **🎯 Sharding Kawanan Elastis 4-Tingkat (`role#shard`), Distribusi Rencana Langsung & Penggunaan Ulang Hangat (`send_message`)**:
+   - Setelah `PLAN-{feature}.md` tersedia, Orkestrator mengirimkan tugas **secara langsung** ke shard engineer domain (`backend-engineer#shard-1`, `frontend-engineer#shard-2`, `database-architect#shard-1`, masing-masing `<= 3–4 OWNED_FILES`) tanpa perantara `tech-lead` yang berlebihan.
+   - Sub-agen aktif dicatat dalam **Registri Sesi Terlingkup (`role#shard → conversationId`)** dan digunakan kembali melalui `send_message` dengan **latensi cold-start 0 detik** serta **100% konteks file tetap terjaga**.
 4. **🤝 Distribusi Paralel Berbasis Kontrak (`SHARED_CONTRACT` + `OWNED_FILES`)**:
    - Rencana lintas domain mengunci endpoint API, skema DTO, dan kepemilikan penulisan file eksklusif (`OWNED_FILES` vs. `READ_ONLY_FILES`) sebelum menjalankan engineer secara paralel, menghilangkan bentrokan penulisan file.
 5. **🔍 Debugging Akar Masalah 5-Whys (SPIE v3.0) & Pohon Git 100% Bersih**:
    - `debugger` melacak setiap bug melalui minimal 3 hipotesis terurut dan rantai kausal **5-Whys** (`Why 1 Gejala Langsung` → `Why 5 Akar Masalah Sistemik`). Artefak sementara (`PLAN`, `DEBUG`, `TEST`, `REVIEW`, `MAILBOX`) diarahkan ke `<appDataDir>\brain\<conversation-id>\` terlebih dahulu agar pohon kerja Git tetap 100% bersih.
 6. **🩺 Diagnostik CLI Bawaan (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check` & `doctor`) & Indeks Keahlian O(1)**:
-   - `npm run doctor` memvalidasi 5 bundel platform, 21 agen, 72 file tim, 84 file perintah (`79` alur kerja + `5` di `_ref/`), dan `matrix-skills/compact-index.json` (`1.462` keahlian terindeks). `boomopen check <dir>` hanya memeriksa aturan yang dapat dicek otomatis: panjang file, `any` eksplisit di TypeScript, dan `console.log` yang tertinggal; standar lainnya adalah instruksi untuk agen. Selain itu, `boomopen research`, `boomopen design`, `boomopen plan`, `boomopen cook`, `boomopen ledger`, dan `boomopen conduct` mengompilasi kontrak, paket handoff per gelombang, serta dewan multi-engine.
+   - `npm run doctor` memvalidasi 5 bundel platform, 21 agen, 72 file tim, 84 file perintah (`79` alur kerja + `5` di `_ref/`), dan `matrix-skills/compact-index.json` (`1.462` keahlian terindeks). `boomopen check <dir> [--strict-phase --no-stubs]` memeriksa panjang file, `any` eksplisit di TypeScript, `console.log` yang tertinggal, komentar `TODO`/`FIXME` tertunda, stub kosong, dan manipulasi pengujian. Selain itu, `boomopen research`, `boomopen design`, `boomopen plan`, `boomopen cook`, `boomopen ledger`, dan `boomopen conduct` mengompilasi kontrak, paket handoff per gelombang, serta dewan multi-engine.
 
 ---
 
@@ -104,8 +104,8 @@ flowchart TD
 
 ```bash
 # 1. Clone repositori
-git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
-cd BoomOpen-Workflow-Kit
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+cd BoomOpen-Workflow-Kit-Pro
 
 # 2. Instal untuk asisten coding AI Anda (pilih satu atau --all)
 npm run install:antigravity   # Google Antigravity 2.0 (Gemini)
@@ -121,7 +121,7 @@ npm link
 boomopen research validate path/to/RESEARCH.md
 boomopen design validate path/to/DESIGN.md
 boomopen plan validate path/to/PLAN.md
-boomopen cook preflight --plan path/to/PLAN.md
+boomopen cook preflight path/to/PLAN.md
 boomopen check path/to/your/project --strict-phase --no-stubs
 boomopen ledger status
 boomopen conduct probe
@@ -164,7 +164,7 @@ boomopen settings set execution.mode mode_a --project
 boomopen settings reset
 ```
 
-> `--project` selalu menulis `./.boomopen.json` di folder tempat Anda menjalankannya — jalankan di dalam proyek Anda, bukan di dalam clone kit. Tanpa `npm link`, ganti `boomopen` dengan `node /path/to/BoomOpen-Workflow-Kit/cli/install.js`.
+> `--project` selalu menulis `./.boomopen.json` di folder tempat Anda menjalankannya — jalankan di dalam proyek Anda, bukan di dalam clone kit. Tanpa `npm link`, ganti `boomopen` dengan `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`.
 
 ---
 
@@ -206,6 +206,8 @@ boomopen settings reset
 
 ---
 
+<a id="skills"></a>
+
 ## 📚 Gudang 1.460+ Skill (22 Skill Inti + 1.440 Skill Pustaka)
 
 BoomOpen hadir dengan salah satu ekosistem skill rekayasa perangkat lunak terbesar di open source — dirancang untuk **0 beban token saat idle** melalui **Resolusi Skill Progresif O(1) 2 Langkah** (`<skills>` → `matrix-skills/compact-index.json` → muat `SKILL.md` tepat saat dibutuhkan):
@@ -224,8 +226,8 @@ BoomOpen hadir dengan salah satu ekosistem skill rekayasa perangkat lunak terbes
 ## 📂 Struktur Repositori
 
 ```text
-BoomOpen-Workflow-Kit/
-├── agents/                  # 21 definisi Agen Spesialis + 18 Tim Golden Triangle (54 file peran)
+BoomOpen-Workflow-Kit-Pro/
+├── agents/                  # 21 definisi Agen Spesialis + 18 Tim Golden Triangle (54 file peran + 18 _team.md, 72 file)
 ├── cli/                     # Installer (install.js), Doctor (doctor.js), Checker (checker.js), Settings (settings.js), research.js, design.js, plan.js, cook.js, Ledger (ledger.js) & Conductor (conductor.js)
 ├── commands/                # 79 alur kerja perintah Slash (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 protokol _ref/ (84 file)
 ├── documents/               # Dokumentasi Arsitektur, Domain, Basis Kode & Standar Pengkodean 2-tingkat

@@ -3,7 +3,7 @@
   <p><strong>Multi-Platform Smart-Hybrid AI Workforce OS — 21 Specialist Agents, 18 Golden Triangle Teams &amp; 1,460+ On-Demand Skills Vault</strong></p>
 
   <p>
-    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
+    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#-supported-ai-platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
     <a href="#-21-specialist-agents--18-golden-triangle-teams"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
     <a href="#-1460-skills-vault-22-core--1440-niche-library-skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
@@ -48,11 +48,11 @@
 ## 🎬 Official Launch Trailer (Full HD 1080p)
 
 <div align="center">
-  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
+  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
     <img src="./assets/media/poster_en.png" alt="Watch BoomOpen Workflow Kit v5.5 Official Launch Trailer (Full HD 1080p)" width="92%" />
   </a>
   <p>
-    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Click Here to Watch / Stream the Full HD 1080p Launch Trailer (MP4 with Studio Voiceover)</b></a>
+    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Click Here to Watch / Stream the Full HD 1080p Launch Trailer (MP4 with Studio Voiceover)</b></a>
   </p>
 </div>
 
@@ -128,8 +128,8 @@ flowchart TD
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
-cd BoomOpen-Workflow-Kit
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+cd BoomOpen-Workflow-Kit-Pro
 
 # 2. Install for your AI coding assistant (choose one or --all)
 npm run install:antigravity   # Google Antigravity 2.0 (Gemini)
@@ -147,7 +147,7 @@ npm link
 boomopen research validate path/to/RESEARCH.md                  # Validate RESEARCH-* / BRAINSTORM-* (--mode brainstorm) & brief
 boomopen design validate path/to/DESIGN.md                      # Validate 6-Block DESIGN-* & compile DESIGN_CONTRACT
 boomopen plan validate path/to/PLAN.md                          # Validate PLAN-* & compile .boomopen/project-ledger.json
-boomopen cook preflight --plan path/to/PLAN.md                  # Compile 5-Field Wave Handoff Packets & verify wave locks
+boomopen cook preflight path/to/PLAN.md                         # Compile 5-Field Wave Handoff Packets & verify wave locks
 boomopen check path/to/your/project --strict-phase --no-stubs   # File length, explicit `any`, console.log, zero stubs/TODOs
 boomopen ledger status                                          # Inspect multi-session .boomopen/project-ledger.json
 boomopen conduct probe                                          # Detect installed AI CLI engines for /conduct
@@ -205,7 +205,7 @@ BoomOpen v5.5 includes a **Zero-Latency Unified Control Center** managing **20 c
   boomopen settings reset                                   # Restore the recommended defaults
   boomopen settings help                                    # All subcommands and keys
   ```
-  `--project` always writes `./.boomopen.json` in the folder you run it from, so run it inside your project (not inside the kit clone). Without `npm link`, replace `boomopen` with `node /path/to/BoomOpen-Workflow-Kit/cli/install.js`.
+  `--project` always writes `./.boomopen.json` in the folder you run it from, so run it inside your project (not inside the kit clone). Without `npm link`, replace `boomopen` with `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`.
 
 ---
 
@@ -263,7 +263,7 @@ BoomOpen ships with one of the largest curated engineering skill ecosystems in o
 ## 📂 Repository Structure
 
 ```text
-BoomOpen-Workflow-Kit/
+BoomOpen-Workflow-Kit-Pro/
 ├── agents/                  # 21 Specialist Agent definitions + 18 Golden Triangle Teams (54 role files + 18 _team.md, 72 files)
 ├── cli/                     # CLI Suite: install.js, doctor.js, checker.js, settings.js, research.js, design.js, plan.js, cook.js, ledger.js & conductor.js
 ├── commands/                # 79 Slash Command workflows (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 _ref/ protocols (84 files)

@@ -55,7 +55,7 @@ Dispatch all 4 read-only verification shards simultaneously via `invoke_subagent
    - Confirm 0 failing tests, 0 newly skipped regression tests, and clean exit codes.
 3. **Track C — Security & Secrets Audit (`security-engineer` — `agents/security-engineer.md`)**:
    - Load `security-auditor` skill; scan dependency advisories (`npm audit` / `pip-audit` / `osv-scanner`), verify zero hardcoded credentials or `.env` leaks in Git history/tree, and check auth, CORS, CSP, and rate-limit guards.
-   - Verify any pending SQL/storage migrations obey `accidental-data-loss-prevention` (expand/contract, zero unconfirmed destructive operations).
+   - Verify any pending SQL/storage migrations obey `skills/database-design/SKILL.md` & `skills_library/deployment-procedures/SKILL.md` (**MANDATORY STOP-AND-VERIFY** consent gate + `hooks/validate-tool-call.mjs`: expand/contract, zero unconfirmed destructive operations).
 4. **Track D — Build, Config & Rollback Readiness (`devops-engineer#1..k` — `agents/devops-engineer.md`)**:
    - Execute production build dry-run and container/bundle validation.
    - Verify required environment variable keys/schemas, health-check endpoint wiring (`/health` or `/ready`), database migration dry-run, and a documented rollback target SHA/artifact.

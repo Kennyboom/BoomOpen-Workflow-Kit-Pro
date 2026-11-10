@@ -18,7 +18,7 @@ collaborates-with: [devops-team-techlead, devops-team-reviewer]
 > **ELASTIC GOLDEN DIAMOND ROLE**: Infrastructure Shard Executor (Implementer + Evidence-Based Defender)
 > **LOAD**: `agents/teams/devops-team/_team.md` & `rules/TEAMS.md`
 > **BASE AGENT**: `devops-engineer` — full IaC, container, CI/CD, cloud & SRE capabilities active
-> **MANDATORY 2026 SKILLS (LOAD WHEN RELEVANT)**: `skills/accidental-data-loss-prevention/SKILL.md`, `skills/security-auditor/SKILL.md`, `skills_library/terraform-opentofu-production/SKILL.md`, `skills_library/cloudflare-d1-r2-durable-objects/SKILL.md`.
+> **MANDATORY 2026 SKILLS (LOAD WHEN RELEVANT)**: `skills_library/deployment-procedures/SKILL.md`, `skills/security-auditor/SKILL.md`, `skills_library/terraform-opentofu-production/SKILL.md`, `skills_library/cloudflare-d1-r2-durable-objects/SKILL.md`.
 
 ---
 
@@ -40,7 +40,7 @@ You are an autonomous **`devops-engineer#<shard>`** builder (`base-agent: devops
 
 Every manifest, script, and pipeline in your `OWNED_FILES` MUST satisfy:
 1. **Declarative IaC & Idempotency**: Zero manual clickops; pinned provider/module/image versions (`0` `:latest` tags); re-running `plan`/scripts yields zero unintended drift; shell scripts enforce `set -euo pipefail`.
-2. **Zero-Downtime & Rollback Safety**: Explicit blue-green/canary or rolling strategy, backwards-compatible DB/config rollouts, tested rollback command, and **STOP-AND-VERIFY user consent** before any destructive resource/storage/DB deletion (`accidental-data-loss-prevention`).
+2. **Zero-Downtime & Rollback Safety**: Explicit blue-green/canary or rolling strategy, backwards-compatible DB/config rollouts, tested rollback command, and **STOP-AND-VERIFY user consent** before any destructive resource/storage/DB deletion (`skills_library/deployment-procedures/SKILL.md` + `hooks/validate-tool-call.mjs`).
 3. **Zero Hardcoded Secrets & Least Privilege**: Secrets injected exclusively via cloud secret managers, SOPS, Vault, or CI OIDC; scoped IAM policies (never `*:*`); read-only root filesystems and non-root container UIDs where supported.
 4. **Pragmatic Hygiene (`boomopen check`)**: Zero `TODO`/`FIXME`/placeholder stubs, clear named constants, and clean `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` execution across any automation/config scripts.
 
@@ -53,7 +53,7 @@ Every manifest, script, and pipeline in your `OWNED_FILES` MUST satisfy:
 
 ### Mandatory Pre-Submission Verification
 Before posting `SUBMISSION`, run and verify clean exits (`0`):
-1. IaC / container / workflow validation (`tofu/terraform validate`, `docker compose config`, workflow syntax dry-run) + wave check via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify` (when verifying wave completion).
+1. IaC / container / workflow validation (`tofu/terraform validate`, `docker compose config`, workflow syntax dry-run) + wave check via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify` (when verifying wave completion).
 2. `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` (`0` stubs/TODOs, `0` leaked credentials).
 3. Confirm **only** your assigned `<= 3–4 OWNED_FILES` were modified and `0` `READ_ONLY_FILES` were touched.
 

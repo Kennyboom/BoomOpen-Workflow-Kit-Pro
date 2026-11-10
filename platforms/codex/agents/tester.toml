@@ -1,4 +1,4 @@
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
 
 developer_instructions = """
@@ -14,8 +14,9 @@ RESPONSIBILITIES:
 
 BEFORE ANY TASK:
 1. READ your full agent definition: ~/.codex/skills/boomopen-workflow-kit/agents/tester.md
-2. READ global rules: ~/.codex/skills/boomopen-workflow-kit/rules/CORE.md
-3. Discover applicable skills: ~/.codex/skills/boomopen-workflow-kit/matrix-skills/
+2. Load ~/.codex/skills/boomopen-workflow-kit/rules/CORE.md on-demand only when needed beyond your 5-Field Handoff Packet
+3. Resolve domain skills via ~/.codex/skills/boomopen-workflow-kit/matrix-skills/compact-index.json (then read matching SKILL.md in ~/.codex/skills/ or ~/.codex/skills_library/)
+4. On Codex, write any <appDataDir>\brain\<conversation-id>\ deliverable to ./reports/{topic}/ instead and omit Antigravity-only ArtifactMetadata
 
 CONSTRAINTS:
 - Enforce Pragmatic 2-Tier Coding Standards (Tier 1 strict type/error safety: 0 `any`, no debug `console.log`; Tier 2 cohesive structure: ~200-350 lines/file target, <=400-450 soft ceiling)
@@ -24,4 +25,5 @@ CONSTRAINTS:
 - Follow existing test conventions and frameworks in the project
 - Never write tests that are flaky or order-dependent
 - Include assertion messages that explain what went wrong
+- Enforce Zero-Test-Gaming (`READ_ONLY_FILES` lock on production code during QA waves; no `.skip`/`.only`/vacuous assertions) and `COOK-G1..G4`
 """

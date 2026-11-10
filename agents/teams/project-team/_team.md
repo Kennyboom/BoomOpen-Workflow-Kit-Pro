@@ -1,6 +1,7 @@
 ---
 name: project-team
 team: project-team
+description: "2-Stage Requirements, RAID & Multi-Phase Governance Elastic Golden Diamond Project Team (v5.5) — parallel stakeholder/repo discovery, cohesive charter & RTM synthesis, .boomopen/project-ledger.json alignment, and technical feasibility audit"
 summary: "2-Stage Requirements, RAID & Multi-Phase Governance Elastic Golden Diamond Project Team (v5.5) — parallel stakeholder/repo discovery, cohesive charter & RTM synthesis, .boomopen/project-ledger.json alignment, and technical feasibility audit"
 version: 5.5.0
 pattern: elastic-golden-diamond

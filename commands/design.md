@@ -56,8 +56,8 @@ When the user asks for UI/UX design specifications, design tokens, wireframes, o
 > 3. **Optional Live Interactive HTML Prototype (`generative_ui` Skill) & Bespoke Visuals (`image-generator`)**:
 >    - Use the built-in `generative_ui` skill to write a self-contained interactive prototype `<appDataDir>\brain\<conversation-id>\DESIGN-PREVIEW-{request}.html` (`https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js`, interactive 5-state switcher, `< 500px` no-`100vh` rule for inline `<agent-embed>`).
 >    - When custom hero art, empty-state illustrations, or brand textures are needed, spawn `invoke_subagent(TypeName: "image-generator", Role: "UI Visual Asset Generator", Model: "inherit", Prompt: ...)` instead of using broken external placeholder URLs.
-> 4. **Optional Multi-Engine Design Council (`boomopen conduct council --task design`)**:
->    - When multi-platform design synthesis is requested (or `engines.designer = "council"`), run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task design --prompt "<request>"`.
+> 4. **Optional Multi-Engine Design Council (`boomopen conduct council --task design --prompt "<design-context>"`)**:
+>    - When multi-platform design synthesis is requested (or `engines.planner = "council"`), run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task design --prompt "<request>"`.
 > 5. **Deterministic 4-Gate CLI Validation & Contract Extraction (`boomopen design`)**:
 >    - Every design workflow MUST validate its output before completion via:
 >      `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design validate "<design-path>"` (`DESIGN-G1..G4`: YAML/OKLCH tokens, 5-State matrix, WCAG 2.2 AA & Anti-Slop, and fenced `DESIGN_CONTRACT` CSS `@theme` + TypeScript Props).

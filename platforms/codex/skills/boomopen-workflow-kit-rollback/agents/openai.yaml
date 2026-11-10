@@ -1,6 +1,6 @@
 interface:
   display_name: "/rollback"
   short_description: "Emergency recovery when things break. Rollback code, deployments, or database changes with severity-based protocols."
-  brand_color: "#6366F1"
+  brand_color: "#EF4444"
 policy:
   allow_implicit_invocation: true

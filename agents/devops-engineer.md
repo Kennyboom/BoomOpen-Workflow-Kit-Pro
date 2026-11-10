@@ -36,7 +36,7 @@ category: execution
 > **MATRIX DISCOVERY**: Skills auto-injected from domain files in `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/`
 > Profile: `devops:execution` | Domains: `devops`, `security`, `cloud`
 > **MANDATORY 2026 SKILLS (LOAD WHEN RELEVANT)**:
-> - `skills/accidental-data-loss-prevention/SKILL.md` — **MANDATORY** before any destructive cloud/storage/infra command
+> - `skills_library/deployment-procedures/SKILL.md` — Zero-downtime rollouts, rollback runbooks, and **MANDATORY STOP-AND-VERIFY** consent gate (`hooks/validate-tool-call.mjs`) before any destructive cloud/storage/infra command
 > - `skills/security-auditor/SKILL.md` — OIDC workload identity, least-privilege IAM, secret scanning, container hardening
 > - `skills_library/terraform-opentofu-production/SKILL.md` — Terraform 1.9+ / OpenTofu 1.8+ remote state, OIDC CI/CD, `check` blocks
 > - `skills_library/cloudflare-d1-r2-durable-objects/SKILL.md` — Cloudflare Workers edge runtime, D1, R2, Queues, Durable Objects
@@ -90,7 +90,7 @@ Plus applicable infra validators (`terraform validate`, `docker compose config -
 
 | ❌ NEVER | ✅ ALWAYS |
 | -------- | --------- |
-| Deploy or destroy cloud resources without rollback & user consent | Follow `accidental-data-loss-prevention` and verify rollback commands first |
+| Deploy or destroy cloud resources without rollback & user consent | Follow `skills_library/deployment-procedures/SKILL.md` (**STOP-AND-VERIFY** consent gate) and verify rollback commands first |
 | Hardcode secrets, API keys, or plaintext credentials in repo files | Use `.env.example` placeholders, typed env schemas, and OIDC / secret managers |
 | Modify files outside your shard's `<= 3–4 OWNED_FILES` | Enforce strict `OWNED_FILES` / `READ_ONLY_FILES` shard isolation |
 | Ship unvalidated YAML/Dockerfile/Terraform or `TODO` placeholders | Run syntax/config dry-runs and `boomopen check --strict-phase --no-stubs` |
@@ -124,6 +124,6 @@ Plus applicable infra validators (`terraform validate`, `docker compose config -
 | Condition | Action |
 | --------- | ------ |
 | Production change without verified rollback or user approval | STOP → Author rollback plan and request explicit user confirmation |
-| Destructive cloud/storage/DB resource deletion | STOP → Trigger `accidental-data-loss-prevention` confirmation |
+| Destructive cloud/storage/DB resource deletion | STOP → Trigger **STOP-AND-VERIFY** destructive-operation user confirmation |
 | Hardcoded secret or overly permissive `*` IAM policy detected | STOP → Remediate with `security-engineer` before proceeding |
 | `< 95%` confidence for production rollout | STOP → Escalate to `tech-lead` |

@@ -35,7 +35,7 @@ execution-mode: execute
 
 1. **Fast-Forward Check (`cook state`) & Planner Dispatch**:
    - Check `<appDataDir>\brain\<conversation-id>\` via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook state --artifact-dir "<appDataDir>/brain/<conversation-id>"`. If an approved `PLAN-{feature}.md` already exists, skip straight to Step 3!
-   - If `engines.planner = "council"`, run `conduct council --task plan --output "<appDataDir>/brain/<conversation-id>/COUNCIL-<feature>.md"`.
+   - If `engines.planner = "council"`, run `conduct council --task plan --prompt "<feature>" --output "<appDataDir>/brain/<conversation-id>/COUNCIL-<feature>.md"`.
    - Otherwise, dispatch `engines.planner` (or 0-turn `invoke_subagent` `planner` fallback):
      ```bash
      node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role planner --engine <engines.planner> --prompt "<task>" --output "<appDataDir>/brain/<conversation-id>/PLAN-<feature>.md"
@@ -62,7 +62,7 @@ execution-mode: execute
    - **SHA-256 `READ_ONLY_FILES` Guard & 3-Tier Quota Failover**: `conduct dispatch` snapshots `READ_ONLY_FILES` before execution, automatically fails over across installed engines on HTTP 429/quota errors, and restores any unauthorized mutation byte-for-byte.
 3. **Deterministic Post-Wave & Strict-Phase Gates**:
    ```bash
-   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<appDataDir>/brain/<conversation-id>/PLAN-<feature>.md" --wave <n> --run-verify
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<appDataDir>/brain/<conversation-id>/PLAN-<feature>.md" --wave <n> --git --run-verify
    node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs
    ```
 

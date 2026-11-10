@@ -56,10 +56,10 @@ Dispatch disjoint `tester#<layer>` shards in parallel (`TypeName: "self"`, `Mode
 Execute real verification scripts end-to-end (routing any test-code syntax/flake fixes back to warm `tester#<shard>` via `send_message`):
 
 ```bash
-python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <project-or-test-dir>
+python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <project-root> [--coverage]
 node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <test-dir> --strict-phase --no-stubs
 ```
-*(Also run `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py <url-or-dir>` when E2E tests exist, and `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <ui-dir>` when UI files are in scope.)*
+*(Also run `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py --suite <project-root>` or `playwright_runner.py <http-url> [--a11y] [--screenshot]` when E2E tests exist, and `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <ui-dir>` when UI files are in scope.)*
 
 Synthesize **1 cohesive `<appDataDir>\brain\<conversation-id>\TEST-{scope}.md` (`<= 500` lines)**:
 1. **Executive Gate Verdict & Coverage Summary** (`Pass/Fail` counts per pyramid layer, coverage %, `QA-G1..G4` status).

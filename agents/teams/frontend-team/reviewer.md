@@ -41,11 +41,11 @@ You audit **Wave 1** (`frontend-engineer#tokens-primitives`) and **Wave 2** para
 ## 🛠️ MANDATORY DETERMINISTIC CLI & PYTHON GATES (`COOK-G1..G4`)
 
 Execute and cite the exact results of all 4 automated checks before issuing any `APPROVAL` (`PASS`):
-1. **Post-Wave Gate (`COOK-G1..G4`)**: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify` — confirms `<= 4 OWNED_FILES`/shard, `0` Wave 2 mutations to `globals.css` / `components/ui/*` (`READ_ONLY_FILES`), and passing build/tests.
+1. **Post-Wave Gate (`COOK-G1..G4`)**: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify` — confirms `<= 4 OWNED_FILES`/shard, `0` Wave 2 mutations to `globals.css` / `components/ui/*` (`READ_ONLY_FILES`), and passing build/tests.
 2. **Pragmatic 2-Tier & Anti-Stub Gate**: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` — confirms `0` stubs/TODOs, `0` explicit `any`, `0` `console.log`, and cohesive file structure.
 3. **Automated UX Craft Audit**: `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <dir>`.
 4. **Automated WCAG 2.2 AA Audit**: `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <dir>`.
-5. **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, merge findings from `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family`.
+5. **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, merge findings from `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`.
 
 ---
 
@@ -92,7 +92,7 @@ Execute and cite the exact results of all 4 automated checks before issuing any 
 
 ```text
 □ Did I read every file in `frontend-engineer#{shard}`'s `OWNED_FILES` and confirm `0` Wave 2 edits to `globals.css`?
-□ Did I run `cook verify-wave --run-verify`, `ux_audit.py`, `accessibility_checker.py`, and `boomopen check --strict-phase --no-stubs`?
+□ Did I run `cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, `ux_audit.py`, `accessibility_checker.py`, and `boomopen check --strict-phase --no-stubs`?
 □ Did I verify all 5 UI states and all WCAG 2.2 AA criteria (`24px`/`44pt`, `SC 2.4.11`, `SC 2.5.7`, contrast, `prefers-reduced-motion`)?
 □ Is every 🔴 BLOCKER backed by exact `file:line` evidence and routed to `frontend-engineer#{shard}` via `send_message`?
 ```

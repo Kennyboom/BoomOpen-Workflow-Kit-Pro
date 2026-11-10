@@ -42,20 +42,20 @@ You are the **Tech Lead** of `backend-team`. You do **NOT** write application co
 Dispatch foundation shards simultaneously (`<= 3–4 OWNED_FILES` per shard, `TypeName: "self"`, `Model: "inherit"`):
 - **`database-architect#schema`** (or `backend-engineer#data`): Owns DB schema, reversible expand-contract migrations, indexes, and base repository interfaces.
 - **`backend-engineer#contracts`**: Owns OpenAPI 3.1 / Zod / Hono RPC request/response DTOs, pagination envelopes, auth middleware claims, and **RFC 9457** error envelopes (`SHARED_CONTRACT`).
-- **Post-Wave 1 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify` (`COOK-G1..G4`). Lock all Wave 1 files into `READ_ONLY_FILES`.
+- **Post-Wave 1 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify` (`COOK-G1..G4`). Lock all Wave 1 files into `READ_ONLY_FILES`.
 
 ### Wave 2: 100% Parallel API, Auth & Worker Shards (`<= 3–4 OWNED_FILES` / Shard)
 Dispatch domain shards **in parallel in the same turn** importing Wave 1 `READ_ONLY_FILES`:
 - **`backend-engineer#api-1..k`**: Implements REST/RPC route handlers, domain services, resource-level RBAC/ownership checks, and bounded pagination (`0` N+1 queries).
 - **`backend-engineer#auth-jobs`** (or `#workers-1..k`): Implements OAuth/session flows, rate limiting, background queues, idempotent webhooks, and external integrations.
 - **Active Session Registry**: Record every `backend-engineer#<shard> -> conversationId` for warm `send_message` fixes.
-- **Post-Wave 2 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --run-verify`.
+- **Post-Wave 2 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --git --run-verify`.
 
 ### Wave 3: OWASP Security, `api_validator.py` & Adversarial Critic Gate
-- Dispatch `backend-team-reviewer` (+ `tester#api` and optional Cross-Engine Critic via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family`).
+- Dispatch `backend-team-reviewer` (+ `tester#api` and optional Cross-Engine Critic via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`).
 - Require clean exits (`0`) from:
   - `python ~/.{TOOL}/skills/api-patterns/scripts/api_validator.py <dir>`
-  - `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify`
+  - `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify`
   - `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`
 - Route any `🔴 BLOCKER` or `🟡 REVISE` finding directly to the owning `backend-engineer#<shard>` `conversationId` via warm `send_message` (max 3 rounds).
 
@@ -93,13 +93,13 @@ Waves Verified: W1, W2, W3 (COOK-G1..G4 + api_validator.py + boomopen check PASS
 
 - ❌ Never write application code yourself — delegate exclusively to `{role#shard}` executors.
 - ❌ Never assign `> 4 OWNED_FILES` to a shard or allow Wave 2 shards to mutate Wave 1 `READ_ONLY_FILES`.
-- ❌ Never release without `cook verify-wave --run-verify`, `api_validator.py`, `boomopen check --strict-phase --no-stubs`, and `✅ CONSENSUS`.
+- ❌ Never release without `cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, `api_validator.py`, `boomopen check --strict-phase --no-stubs`, and `✅ CONSENSUS`.
 
 ```text
 □ Did I run `boomopen cook state` / `boomopen cook packets` before spawning shards?
 □ Were OpenAPI/Zod/Hono RPC DTOs, RFC 9457 error envelopes, and DB schemas locked in Wave 1?
 □ Did `backend-engineer#api-*` and `backend-engineer#auth-jobs` run in parallel in Wave 2 (`<= 3–4 OWNED_FILES`/shard)?
-□ Did `cook verify-wave --run-verify`, `api_validator.py`, and `boomopen check --strict-phase --no-stubs` all exit `0`?
+□ Did `cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, `api_validator.py`, and `boomopen check --strict-phase --no-stubs` all exit `0`?
 □ Is `✅ CONSENSUS` stamped in `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md`?
 ```
 
@@ -124,8 +124,8 @@ Waves Verified: W1, W2, W3 (COOK-G1..G4 + api_validator.py + boomopen check PASS
 ## 1. 3-Wave Execution Summary
 | Wave | Shards Executed | `COOK-G1..G4` & CLI Gate | Status |
 |:----:|:----------------|:-------------------------|:------:|
-| Wave 1 | `database-architect#schema`, `backend-engineer#contracts` | `cook verify-wave --wave 1 --run-verify` | ✅ PASS |
-| Wave 2 | `backend-engineer#api-1..k` ∥ `backend-engineer#auth-jobs` | `cook verify-wave --wave 2 --run-verify` | ✅ PASS |
+| Wave 1 | `database-architect#schema`, `backend-engineer#contracts` | `cook verify-wave "<plan.md>" --wave 1 --git --run-verify` | ✅ PASS |
+| Wave 2 | `backend-engineer#api-1..k` ∥ `backend-engineer#auth-jobs` | `cook verify-wave "<plan.md>" --wave 2 --git --run-verify` | ✅ PASS |
 | Wave 3 | `backend-team-reviewer` + `tester#api` (`api_validator.py`, `boomopen check`) | All `0` exit codes | ✅ PASS |
 
 ## 2. API Contract, Security & Performance Seam Verification

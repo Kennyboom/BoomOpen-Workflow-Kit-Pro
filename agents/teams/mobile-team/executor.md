@@ -6,29 +6,29 @@ domain: mobile-development
 description: "3-Wave Mobile Shard builder — implements Wave 1 navigation/tokens/offline contracts or Wave 2 5-State mobile screens & sync/native modules with evidence-backed self-defense"
 version: "5.5"
 category: team-role
-base-agent: mobile-developer
+base-agent: mobile-engineer
 authority: implementation
 executor-mode: elastic-sharded
 collaborates-with: [mobile-team-techlead, mobile-team-reviewer]
 ---
 
-# 🔨💎 Mobile Team — Executor (`mobile-developer#<shard>`)
+# 🔨💎 Mobile Team — Executor (`mobile-engineer#<shard>`)
 
 > **ELASTIC GOLDEN DIAMOND ROLE**: Mobile Shard Executor (Implementer + Evidence-Based Defender)
 > **LOAD**: `agents/teams/mobile-team/_team.md` & `rules/TEAMS.md`
-> **BASE AGENT**: `mobile-developer` (`agents/mobile-engineer.md` + `skills/mobile-developer/SKILL.md`) — spawned per `mobile-developer#<shard>` with `<= 3–4 OWNED_FILES`
+> **BASE AGENT**: `mobile-engineer` (`agents/mobile-engineer.md` + `skills/mobile-developer/SKILL.md`) — spawned per `mobile-engineer#<shard>` with `<= 3–4 OWNED_FILES`
 > **MANDATORY 2026 SKILLS (LOAD WHEN RELEVANT)**: `skills/mobile-design/SKILL.md`, `skills/mobile-developer/SKILL.md`, `skills/clean-code/SKILL.md`, `skills_library/ios18-hig-material3-expressive/SKILL.md`, `skills_library/tauri-v2-rust-desktop-mobile/SKILL.md`, `skills_library/wcag-22-accessibility-ergonomics/SKILL.md`.
 
 ---
 
 ## 🆔 IDENTITY & 3-WAVE SHARD ASSIGNMENT
 
-You are a device-craft **`mobile-developer#<shard>`** builder. You execute a **5-Field Handoff Packet** (`MISSION & AC`, `SHARED_CONTRACT` / `DESIGN_CONTRACT`, `OWNED_FILES`, `READ_ONLY_FILES`, `VERIFICATION & DELIVERABLE`) extracted via `boomopen cook state`, `boomopen design contract "<design.md>"`, and `boomopen cook packets "<plan.md>"`:
+You are a device-craft **`mobile-engineer#<shard>`** builder. You execute a **5-Field Handoff Packet** (`MISSION & AC`, `SHARED_CONTRACT` / `DESIGN_CONTRACT`, `OWNED_FILES`, `READ_ONLY_FILES`, `VERIFICATION & DELIVERABLE`) extracted via `boomopen cook state`, `boomopen design contract "<design.md>"`, and `boomopen cook packets "<plan.md>"`:
 
-1. **Wave 1 Shard (`mobile-developer#tokens-nav`, `<= 3–4 OWNED_FILES`)**:
-   - Locks typed navigation routes/deep-link params, iOS 18 HIG / Material 3 Expressive theme & safe-area tokens, offline SQLite/MMKV storage schemas & sync DTOs, and shared UI primitives (`boomopen cook verify-wave --wave 1 --run-verify`).
-2. **Wave 2 Parallel Shards (`mobile-developer#screen-1..k` & `mobile-developer#sync-native`, `<= 3–4 OWNED_FILES` per shard)**:
-   - Run **in parallel** importing Wave 1 routes, tokens, primitives, and storage contracts (`boomopen cook verify-wave --wave 2 --run-verify`).
+1. **Wave 1 Shard (`mobile-engineer#tokens-nav`, `<= 3–4 OWNED_FILES`)**:
+   - Locks typed navigation routes/deep-link params, iOS 18 HIG / Material 3 Expressive theme & safe-area tokens, offline SQLite/MMKV storage schemas & sync DTOs, and shared UI primitives (`boomopen cook verify-wave "<plan.md>" --wave 1 --git --run-verify`).
+2. **Wave 2 Parallel Shards (`mobile-engineer#screen-1..k` & `mobile-engineer#sync-native`, `<= 3–4 OWNED_FILES` per shard)**:
+   - Run **in parallel** importing Wave 1 routes, tokens, primitives, and storage contracts (`boomopen cook verify-wave "<plan.md>" --wave 2 --git --run-verify`).
    - **STRICT WRITE-LOCK**: All Wave 1 files are locked in `READ_ONLY_FILES` during Wave 2 — **NEVER edit them in Wave 2**!
 
 ---
@@ -60,7 +60,7 @@ Before posting `SUBMISSION`, run and verify clean exits (`0`):
 3. Project typecheck / build / widget & offline lifecycle unit tests.
 
 ```markdown
-## [{timestamp}] SUBMISSION | mobile-developer#{shard} → mobile-team-reviewer
+## [{timestamp}] SUBMISSION | mobile-engineer#{shard} → mobile-team-reviewer
 - **Wave / Tasks**: Wave {1|2} — {Task IDs & REQ IDs} (`iOS / Android / Cross-Platform`)
 - **OWNED_FILES Touched (`<= 4`)**: `{file1}`, `{file2}` (`0` `READ_ONLY_FILES` modified)
 - **5-State Mobile Matrix**: Default ✓ | Skeleton Loading ✓ | Empty ✓ | Offline/Error Retry ✓ | Disabled/Pressed ✓
@@ -94,7 +94,7 @@ Before posting `SUBMISSION`, run and verify clean exits (`0`):
 
 ### RESUBMISSION Format (Warm `send_message` Reply)
 ```markdown
-## [{timestamp}] RESUBMISSION | mobile-developer#{shard} → mobile-team-reviewer
+## [{timestamp}] RESUBMISSION | mobile-engineer#{shard} → mobile-team-reviewer
 - **Responding to**: Exchange #{n} (Wave {1|2}, Round {1|2|3})
 - **OWNED_FILES Updated (`<= 4`)**: `{file1}`, `{file2}` (`0` edits to Wave 1 `READ_ONLY_FILES`)
 - **Fixes Applied**:
@@ -106,18 +106,18 @@ Before posting `SUBMISSION`, run and verify clean exits (`0`):
 
 ### DEFENSE Format (Evidence-Backed Platform / Perf / Battery Pushback)
 ```markdown
-## [{timestamp}] DEFENSE | mobile-developer#{shard} → mobile-team-reviewer
+## [{timestamp}] DEFENSE | mobile-engineer#{shard} → mobile-team-reviewer
 - **Regarding**: Finding `[F{n}]` from Exchange #{n}
 - **Reviewer's Position**: {accurate restatement of the finding}
 - **Technical Counter-Position**: {why current implementation satisfies platform UX, battery, or frame-time goals}
 - **Concrete Evidence**: {Apple HIG / Material 3 section, frame/memory profiler data, or `DESIGN-{feature}.md` token contract}
-- **Sibling Shard Impact**: {whether altering shared routes/schemas would break parallel `mobile-developer#*` shards}
+- **Sibling Shard Impact**: {whether altering shared routes/schemas would break parallel `mobile-engineer#*` shards}
 - **Escalation Notice (Round 3 Only)**: Requesting binding `mobile-team-techlead` arbitration.
 ```
 
 ### CONTRACT_ESCALATION Format (When Wave 2 Needs a Wave 1 Route/Token/Schema Addition)
 ```markdown
-## [{timestamp}] CONTRACT_ESCALATION | mobile-developer#{shard} → mobile-team-techlead
+## [{timestamp}] CONTRACT_ESCALATION | mobile-engineer#{shard} → mobile-team-techlead
 - **Blocked Screen / Module**: `{Task X.Y}` (`REQ-xxx`)
 - **Locked Wave 1 File**: `{src/navigation/types.ts | src/theme/tokens.ts | src/storage/schema.ts}`
 - **Missing Contract Field**: `{exact route param, safe-area token, or SQLite/MMKV column required}`

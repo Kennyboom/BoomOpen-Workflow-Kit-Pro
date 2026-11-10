@@ -7,7 +7,7 @@ execution-mode: execute
 
 # /design:team — 2-Stage Elastic Golden Diamond UI/UX & Design System Development
 
-> **MISSION**: Maximum-assurance UI/UX design through a **2-Stage Adversarial Elastic Golden Diamond** (`agents/teams/design-team/_team.md`: `techlead` + `executor` + `reviewer`), combining empirical `ui-ux-pro-max` intelligence, optional Multi-Engine Design Council (`boomopen conduct council --task design`), interactive `generative_ui` HTML prototyping, and deterministic 4-Gate CLI validation (`boomopen design validate`).
+> **MISSION**: Maximum-assurance UI/UX design through a **2-Stage Adversarial Elastic Golden Diamond** (`agents/teams/design-team/_team.md`: `techlead` + `executor` + `reviewer`), combining empirical `ui-ux-pro-max` intelligence, optional Multi-Engine Design Council (`boomopen conduct council --task design --prompt "<design-context>"`), interactive `generative_ui` HTML prototyping, and deterministic 4-Gate CLI validation (`boomopen design validate`).
 > **⛔ NO APPLICATION SOURCE CODE — produce design specifications and preview artifacts only.**
 
 <request>$ARGUMENTS</request>
@@ -33,7 +33,7 @@ execution-mode: execute
 
 | Stage / Artifact | Path (`<appDataDir>\brain\<conversation-id>\`) | `ArtifactMetadata` Setting |
 |------------------|------------------------------------------------|----------------------------|
-| **Stage 1 Discovery** | `SCOUT-{request}.md` + `RESEARCH-{request}.md` (+ `COUNCIL-DESIGN-{request}.md` if council ran) | `UserFacing: true, RequestFeedback: false` *(No premature "Proceed" button)* |
+| **Stage 1 Discovery** | `SCOUT-{request}.md` + `RESEARCH-{request}.md` (+ `COUNCIL-DESIGN-{request}.md` if council ran) | `UserFacing: false, RequestFeedback: false` *(Internal discovery context — no premature "Proceed" button)* |
 | **Stage 2 Master Spec** | **`DESIGN-{request}.md`** *(Single cohesive 6-Block file `<= 500` lines)* | **`UserFacing: true, RequestFeedback: true`** *(Renders native 1-click **"Proceed"** button!)* |
 | **Stage 2 Live Prototype** | `DESIGN-PREVIEW-{request}.html` *(Optional interactive `generative_ui` prototype)* | `UserFacing: true, RequestFeedback: false` |
 | **Inter-Agent Log** | `MAILBOX-{date}.md` | `UserFacing: false, RequestFeedback: false` |
@@ -46,7 +46,7 @@ execution-mode: execute
 
 | Governance Pillar | Agent (`TypeName: "self"`, `Model: "inherit"`) | Stage 1 Mission |
 |-------------------|------------------------------------------------|-----------------|
-| **Parallel Discovery Shards** | • `scouter` (`agents/scouter.md`)<br>• `researcher` (`agents/researcher.md`)<br>• *(Optional)* `boomopen conduct council --task design` | • **`scouter`**: Audit existing CSS variables (`globals.css`, `@theme`), Tailwind config, component primitives, and routes (`SCOUT-{request}.md`, `RequestFeedback: false`).<br>• **`researcher`**: Run `python3 ~/.{TOOL}/skills_library/ui-ux-pro-max/scripts/search.py "<query>" --design-system -p "<Project>"` + extract JTBD user flows and UX anti-patterns (`RESEARCH-{request}.md`, `RequestFeedback: false`). |
+| **Parallel Discovery Shards** | • `scouter` (`agents/scouter.md`)<br>• `researcher` (`agents/researcher.md`)<br>• *(Optional)* `boomopen conduct council --task design --prompt "<design-context>"` | • **`scouter`**: Audit existing CSS variables (`globals.css`, `@theme`), Tailwind config, component primitives, and routes (`SCOUT-{request}.md`, `RequestFeedback: false`).<br>• **`researcher`**: Run `python3 ~/.{TOOL}/skills_library/ui-ux-pro-max/scripts/search.py "<query>" --design-system -p "<Project>"` + extract JTBD user flows and UX anti-patterns (`RESEARCH-{request}.md`, `RequestFeedback: false`). |
 | **Lead Pillar (`[1]`)** | `design-team-techlead` (`agents/teams/design-team/techlead.md`, `base-agent: designer`) | Read `SCOUT-{request}.md` + `RESEARCH-{request}.md` → lock the **Named Aesthetic Archetype**, **OKLCH + sRGB Hex Token Palette**, **3-Axis Typography**, and **Shared Task List** in `MAILBOX-{date}.md`. |
 
 ---

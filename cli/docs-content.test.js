@@ -8,6 +8,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { MAX_ENTRY_LINES, DOC_LINE_LIMITS } = require('./doctor.js');
+const { detectMojibake } = require('./doctor-markdown.js');
 const { SETTINGS_MARKER_START, SETTINGS_MARKER_END } = require('./settings.js');
 const { REPO_ROOT, countLines } = require('./sandbox.test-helper.js');
 
@@ -60,6 +61,42 @@ test(`platform entrypoints stay <= ${MAX_ENTRY_LINES} lines and carry the v5.5 c
       !content.includes('commands/{cmd}/{variant}.md') && !content.includes('commands/{cmd}/team.md'),
       `Expected ${relPath} not to contain legacy nested command paths`
     );
+    assert.ok(!content.includes('DES-G1..G5'), `Expected ${relPath} to use DESIGN-G1..G4 instead of stale DES-G1..G5`);
+  }
+  const identicalPairs = [
+    ['GEMINI.md', 'platforms/antigravity/GEMINI.md'],
+    ['CLAUDE.md', 'platforms/claude/CLAUDE.md'],
+    ['CODEX.md', 'platforms/codex/CODEX.md'],
+    ['CURSOR.md', 'platforms/cursor/.cursorrules'],
+  ];
+  for (const [rootEntry, platformEntry] of identicalPairs) {
+    assert.equal(
+      readRepo(rootEntry).replace(/\r\n/g, '\n'),
+      readRepo(platformEntry).replace(/\r\n/g, '\n'),
+      `Expected ${rootEntry} and ${platformEntry} to stay in sync`
+    );
+  }
+});
+
+test('root Markdown files and documents/**/*.md contain no mojibake or C1 control characters', () => {
+  const c1OrReplacement = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\uFFFD]/;
+  const rootMds = fs.readdirSync(REPO_ROOT)
+    .filter((name) => name.endsWith('.md'))
+    .map((name) => path.join(REPO_ROOT, name));
+  function walkDocs(dir) {
+    if (!fs.existsSync(dir)) return [];
+    return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) return walkDocs(full);
+      return entry.name.endsWith('.md') ? [full] : [];
+    });
+  }
+  for (const file of [...rootMds, ...walkDocs(path.join(REPO_ROOT, 'documents'))]) {
+    const rel = path.relative(REPO_ROOT, file);
+    const content = fs.readFileSync(file, 'utf8');
+    assert.ok(!c1OrReplacement.test(content), `${rel} contains control characters or U+FFFD`);
+    const garbled = detectMojibake(content);
+    assert.equal(garbled, null, `${rel} contains mojibake "${garbled}"`);
   }
 });
 

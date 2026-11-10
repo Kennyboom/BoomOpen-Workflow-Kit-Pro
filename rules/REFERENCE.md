@@ -116,12 +116,12 @@ Commands, agents and rules are written in the **Antigravity tool vocabulary** (t
 ## DELIVERABLE PATHS, CLI ENGINES & ORCHESTRATION LAWS (Quick Reference)
 
 ```yaml
-brain_artifact_default: <appDataDir>\brain\<conversation-id>\{TYPE}-{topic}.md    # Antigravity only (standalone RESEARCH, BRAINSTORM, DESIGN & PLAN with actionable next steps use RequestFeedback: true, single file <= 500 lines)
+brain_artifact_default: <appDataDir>\brain\<conversation-id>\{TYPE}-{topic}.md    # Antigravity only (standalone RESEARCH, BRAINSTORM, DESIGN, PLAN, DEBUG & defect-bearing TEST/REVIEW use RequestFeedback: true, single file <= 500 lines)
 design_live_preview:    <appDataDir>\brain\<conversation-id>\DESIGN-PREVIEW-{feature}.html  # Optional interactive HTML widget (generative_ui)
 other_platforms:        ./reports/{topic}/{TYPE}-{feature}.md                       # Claude Code, Codex, Copilot, Cursor
 docs_suite_workspace:   ./documents/knowledge-*/00-index.md
-research_cli_validator: boomopen research <validate|brief> <file.md> [--strict]     # Evidence/citation gate for RESEARCH & BRAINSTORM + compact downstream brief (< 50ms)
-design_cli_validator:   boomopen design <validate|contract> <design.md> [--strict]  # 4-Gate static design & DESIGN_CONTRACT validator (< 50ms)
+research_cli_validator: boomopen research <validate|brief> <file.md> [--mode research|brainstorm] [--json] # Evidence/citation gate for RESEARCH & BRAINSTORM + compact downstream brief (< 50ms)
+design_cli_validator:   boomopen design <validate|contract> <design.md> [--json]                           # 4-Gate static design & DESIGN_CONTRACT validator (< 50ms)
 plan_cli_validator:     boomopen plan <validate|compile> <plan.md> [--sync-ledger]  # 5-Gate static plan validator (< 50ms)
 cook_code_cli_engine:   boomopen cook <state|packets|verify-wave|preflight>         # 5-Stage Fast-Forward state, 5-Field Packet emitter & 3-Wave lock/anti-stub gate
 strict_quality_gate:    boomopen check <dir> --strict-phase --no-stubs              # Pragmatic 2-Tier quality, line limits & anti-stub/anti-skip verifier

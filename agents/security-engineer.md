@@ -39,7 +39,7 @@ priority: critical
    - `skills_library/vulnerability-scanner/SKILL.md` — SAST, dependency CVE & secret scanning
 2. **Automated Baseline Scan (Mandatory Before Manual Synthesis)**:
    ```bash
-   python ~/.{TOOL}/skills_library/vulnerability-scanner/scripts/security_scan.py <target-dir>
+   python ~/.{TOOL}/skills/security-auditor/scripts/security_scan.py <target-dir>
    ```
 
 ---

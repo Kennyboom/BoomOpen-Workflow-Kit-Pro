@@ -97,10 +97,11 @@ AGENTS    = ~/.{TOOL}/skills/boomopen-workflow-kit/agents/
 SKILLS    = ~/.{TOOL}/skills/
 LIBRARY   = ~/.{TOOL}/skills_library/
 RULES     = ~/.{TOOL}/skills/boomopen-workflow-kit/rules/
-ARTIFACTS = <appDataDir>\brain\<conversation-id>\ (Antigravity 2.0 default)
-REPORTS   = ./reports/{topic}/ (only for /docs or explicit repo export)
+ARTIFACTS = <appDataDir>\brain\<conversation-id>\ (Antigravity 2.0 default; maps to ./reports/{topic}/ on Claude Code, Codex, Cursor, Copilot)
+REPORTS   = ./reports/{topic}/ (non-Antigravity fallback, /docs, or explicit repo export)
 ```
 
+- **Cross-Platform Artifact & Metadata Fallback**: On non-Antigravity platforms (`Claude Code`, `OpenAI Codex`, `Cursor`, `GitHub Copilot`), `<appDataDir>\brain\<conversation-id>\` automatically maps to `./reports/{topic}/` and `ArtifactMetadata` is omitted on native file-write tools (`Write`, `apply_patch`, `editFiles`).
 - **Deterministic CLI Gates (`~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js`)**:
   - `boomopen research <validate|brief> <file.md>` — Evidence-gated `RESEARCH` / `BRAINSTORM` validator (citations, audit log, options) & compact downstream brief extractor.
   - `boomopen design <validate|contract> <design.md>` — 4-Gate `DESIGN` validator (`DESIGN-G1..G4`) & `DESIGN_CONTRACT` extractor.
@@ -144,6 +145,6 @@ REPORTS   = ./reports/{topic}/ (only for /docs or explicit repo export)
 
 | Agent Group | Antigravity 2.0 Brain Artifact Default | Workspace Path (Only on `/docs` or Explicit Export) |
 |-------------|----------------------------------------|-----------------------------------------------------|
-| brainstormer / researcher / scouter / council | `<appDataDir>\brain\<conversation-id>\{BRAINSTORM\|RESEARCH\|SCOUT\|COUNCIL}-{topic}.md` (**standalone `RESEARCH-{topic}.md` & `BRAINSTORM-{topic}.md` = 1 cohesive file `≤ 500` lines with `ArtifactMetadata.RequestFeedback: true` when proposing actionable next steps + validated via `boomopen research <validate\|brief>`**; `SCOUT`, `COUNCIL`, & per-shard `*-v{k}.md` notes use `UserFacing: false, RequestFeedback: false`) | `./reports/{topic}/{type_plural}/{TYPE}-{topic}.md` |
-| designer / planner / debugger / tester / reviewer | `<appDataDir>\brain\<conversation-id>\{DESIGN\|PLAN\|DEBUG\|TEST\|REVIEW}-{scope}.md` (**`PLAN-{scope}.md` & `DESIGN-{scope}.md` = 1 cohesive file `≤ 500` lines with `ArtifactMetadata.RequestFeedback: true` for 1-click "Proceed" button + validated via `boomopen plan validate` / `boomopen design <validate\|contract>` + optional `DESIGN-PREVIEW-{scope}.html`**; `DEBUG`/`TEST`/`REVIEW` use `RequestFeedback: false`) | `./reports/{topic}/{type_plural}/{TYPE}-{scope}.md` (and `./DESIGN.md`) |
+| brainstormer / researcher / scouter / council | `<appDataDir>\brain\<conversation-id>\{BRAINSTORM\|RESEARCH\|SCOUT\|COUNCIL}-{topic}.md` (**standalone `RESEARCH-{topic}.md` & `BRAINSTORM-{topic}.md` = 1 cohesive file `≤ 500` lines with `ArtifactMetadata.RequestFeedback: true` when proposing actionable next steps + validated via `boomopen research <validate\|brief>`**; `SCOUT`, internal `COUNCIL`, & per-shard `*-v{k}.md` / `*-s{k}.md` notes use `UserFacing: false, RequestFeedback: false`) | `./reports/{topic}/{type_plural}/{TYPE}-{topic}.md` |
+| designer / planner / debugger / tester / reviewer | `<appDataDir>\brain\<conversation-id>\{DESIGN\|PLAN\|DEBUG\|TEST\|REVIEW}-{scope}.md` (**`PLAN-{scope}.md` & `DESIGN-{scope}.md` = 1 cohesive file `≤ 500` lines with `ArtifactMetadata.RequestFeedback: true` for 1-click "Proceed" button + validated via `boomopen plan validate` / `boomopen design <validate\|contract>` + optional `DESIGN-PREVIEW-{scope}.html`**; standalone `DEBUG` and defect-bearing `TEST`/`REVIEW` may set `RequestFeedback: true`; clean `TEST`/`REVIEW` & auto-continuing `/cook` stages use `RequestFeedback: false`) | `./reports/{topic}/{type_plural}/{TYPE}-{scope}.md` (and `./DESIGN.md`) |
 | reporter / business-analyst / perf | `<appDataDir>\brain\<conversation-id>\{REPORT\|REQ\|PERF}-{scope}.md` (`RequestFeedback: false`) | `./reports/{topic}/{general\|requirements\|performance}/{TYPE}-{scope}.md` |

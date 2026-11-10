@@ -44,17 +44,17 @@ Dispatch foundation shards simultaneously (`<= 3–4 OWNED_FILES` per shard, `Ty
 - **`database-architect#schema`**: Owns DB schema, enums, indexes, and reversible expand-contract migrations.
 - **`backend-engineer#contracts`**: Owns shared DTOs, Zod/OpenAPI/Hono RPC schemas, pagination types, and standardized error envelopes.
 - **`frontend-engineer#tokens-primitives`**: Owns `globals.css` (`@theme inline` OKLCH tokens, surface elevation, motion tokens) and shared `components/ui/*` primitives from `DESIGN_CONTRACT`.
-- **Post-Wave 1 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify` (`COOK-G1..G4`). Once green, lock all Wave 1 files into `READ_ONLY_FILES`.
+- **Post-Wave 1 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify` (`COOK-G1..G4`). Once green, lock all Wave 1 files into `READ_ONLY_FILES`.
 
 ### Wave 2: 100% Parallel Feature Shards (`<= 3–4 OWNED_FILES` per Shard)
 Dispatch Backend and Frontend feature shards **in parallel in the same turn**:
 - **`backend-engineer#api-1..k`**: Implements route handlers, domain services, auth/RBAC guards, and DB queries importing Wave 1 contracts (`READ_ONLY_FILES`).
 - **`frontend-engineer#screen-1..k`**: Implements feature pages, server/client state hooks, optimistic mutations, and the **5-State UI Matrix** (`Default`, `Loading`, `Empty`, `Error`, `Disabled/Focus-Visible`) importing Wave 1 DTOs, `globals.css`, and UI primitives (`READ_ONLY_FILES`).
 - **Active Session Registry**: Record every `role#shard -> conversationId` for targeted warm `send_message` fixes.
-- **Post-Wave 2 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --run-verify`.
+- **Post-Wave 2 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --git --run-verify`.
 
 ### Wave 3: Parallel Cross-Stack Verification, Critic Audit & Warm Fixes
-- Dispatch `fullstack-team-reviewer` (+ `tester#e2e` and optional Cross-Engine Critic via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family`).
+- Dispatch `fullstack-team-reviewer` (+ `tester#e2e` and optional Cross-Engine Critic via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`).
 - Require clean passes from:
   - `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`
   - `python ~/.{TOOL}/skills/api-patterns/scripts/api_validator.py <dir>`
@@ -98,7 +98,7 @@ Waves Verified: W1, W2, W3 (COOK-G1..G4 PASS) | Disputes Resolved: {count}
 - ❌ Never implement application code yourself — delegate exclusively to `{role#shard}` executors.
 - ❌ Never serialize Wave 2 Frontend behind Wave 2 Backend — enforce Wave 1 contract lock + Wave 2 parallel execution.
 - ❌ Never assign `> 4 OWNED_FILES` to a single shard or allow overlapping `OWNED_FILES` in the same wave.
-- ❌ Never release without `boomopen cook verify-wave --run-verify`, `boomopen check --strict-phase --no-stubs`, and `✅ CONSENSUS`.
+- ❌ Never release without `boomopen cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, `boomopen check --strict-phase --no-stubs`, and `✅ CONSENSUS`.
 
 ```text
 □ Did I run `boomopen cook state` / `boomopen cook packets` before spawning shards?
@@ -129,8 +129,8 @@ Waves Verified: W1, W2, W3 (COOK-G1..G4 PASS) | Disputes Resolved: {count}
 ## 1. 3-Wave Execution Summary
 | Wave | Shards Executed | `COOK-G1..G4` Gate | Status |
 |:----:|:----------------|:-------------------|:------:|
-| Wave 1 | `database-architect#schema`, `backend-engineer#contracts`, `frontend-engineer#tokens-primitives` | `cook verify-wave --wave 1 --run-verify` | ✅ PASS |
-| Wave 2 | `backend-engineer#api-1..k` ∥ `frontend-engineer#screen-1..k` (100% Parallel) | `cook verify-wave --wave 2 --run-verify` | ✅ PASS |
+| Wave 1 | `database-architect#schema`, `backend-engineer#contracts`, `frontend-engineer#tokens-primitives` | `cook verify-wave "<plan.md>" --wave 1 --git --run-verify` | ✅ PASS |
+| Wave 2 | `backend-engineer#api-1..k` ∥ `frontend-engineer#screen-1..k` (100% Parallel) | `cook verify-wave "<plan.md>" --wave 2 --git --run-verify` | ✅ PASS |
 | Wave 3 | `fullstack-team-reviewer` + `tester#e2e` (`api_validator`, `ux_audit`, `a11y`, `boomopen check`) | All `0` exit codes | ✅ PASS |
 
 ## 2. Cross-Stack Seam Verification

@@ -14,8 +14,9 @@ RESPONSIBILITIES:
 
 BEFORE ANY TASK:
 1. READ your full agent definition: ~/.codex/skills/boomopen-workflow-kit/agents/debugger.md
-2. READ global rules: ~/.codex/skills/boomopen-workflow-kit/rules/CORE.md
-3. Discover applicable skills: ~/.codex/skills/boomopen-workflow-kit/matrix-skills/
+2. Load ~/.codex/skills/boomopen-workflow-kit/rules/CORE.md on-demand only when needed beyond your 5-Field Handoff Packet
+3. Resolve domain skills via ~/.codex/skills/boomopen-workflow-kit/matrix-skills/compact-index.json (then read matching SKILL.md in ~/.codex/skills/ or ~/.codex/skills_library/)
+4. On Codex, write any <appDataDir>\brain\<conversation-id>\ deliverable to ./reports/{topic}/ instead and omit Antigravity-only ArtifactMetadata
 
 CONSTRAINTS:
 - Enforce Pragmatic 2-Tier Coding Standards (Tier 1 strict type/error safety: 0 `any`, no debug `console.log`; Tier 2 cohesive structure: ~200-350 lines/file target, <=400-450 soft ceiling)
@@ -24,4 +25,5 @@ CONSTRAINTS:
 - Never apply shotgun fixes — one hypothesis at a time
 - Include a regression test with every fix
 - Document root cause and resolution for future reference
+- Enforce 3-Stage SPIE v3.0 5-Whys causal root-cause analysis and deterministic gates `DBG-G1..G4` (reproducer evidence, >= 3 ranked hypotheses, minimal root-cause fix, and regression test verification)
 """

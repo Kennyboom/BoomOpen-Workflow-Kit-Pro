@@ -1,6 +1,7 @@
 ---
 name: security-team
 team: security-team
+description: "2-Stage STRIDE, OWASP & Pen-Test Elastic Golden Diamond Security Team (v5.5) — parallel attack-surface/SAST/LLM-agent audit shards, exploit-chain PoC validation, false-positive elimination, and concrete file:line remediation blueprints"
 summary: "2-Stage STRIDE, OWASP & Pen-Test Elastic Golden Diamond Security Team (v5.5) — parallel attack-surface/SAST/LLM-agent audit shards, exploit-chain PoC validation, false-positive elimination, and concrete file:line remediation blueprints"
 version: 5.5.0
 pattern: elastic-golden-diamond
@@ -29,7 +30,7 @@ deliverables:
 Every member of `security-team` (`TypeName: "self"`, `Model: "inherit"`) **MUST** enforce:
 1. `skills/security-auditor/SKILL.md`, `skills_library/owasp-llm-agent-security-2025/SKILL.md`, `skills_library/better-auth-typescript/SKILL.md`, & `skills_library/vulnerability-scanner/SKILL.md`.
 2. `rules/TEAMS.md` & `commands/_ref/golden-triangle-protocol.md` — Disjoint audit vectors (`<= 3–4` critical modules per shard), Append-Only `MAILBOX-{date}.md`, and Scoped Warm Session Reuse (`send_message`, max 3 rounds).
-3. **Automated Baseline Scan**: Run `python ~/.{TOOL}/skills_library/vulnerability-scanner/scripts/security_scan.py <dir>` + `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`.
+3. **Automated Baseline Scan**: Run `python ~/.{TOOL}/skills/security-auditor/scripts/security_scan.py <dir>` + `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`.
 4. **Valid Tools Only**: `search_web`, `read_file`, `write_file`, `edit_file`, `run_command`, `invoke_subagent`, `send_message`, `ask_question`.
 
 ---
@@ -40,7 +41,7 @@ Every member of `security-team` (`TypeName: "self"`, `Model: "inherit"`) **MUST*
 flowchart TD
     S1["💎 Stage 1 (Turn 1): Parallel Attack-Surface Mapping, STRIDE & Vector Hunting<br/>• security-team-techlead (base-agent: security-engineer) -> Trust boundaries & STRIDE model<br/>• sec#auth-rbac -> Session/JWT/OAuth2.1, tenant IDOR & privilege escalation<br/>• sec#injection-api -> SQLi/SSRF/XSS/path-traversal, deserialization & rate limits<br/>• sec#secrets-deps-ai -> security_scan.py, lockfile CVEs (search_web), prompt/tool injection"]
     S1 -->|"Disjoint SCOUT-security-*.md<br/>(UserFacing: false)"| S2["💎 Stage 2 (Turns 2–3): Exploit-Chain Synthesis ⇄ Pen-Test Critic Gate<br/>• security-team-executor (base-agent: backend-engineer, mode: security-audit)<br/>Synthesizes cohesive REVIEW-security-{topic}.md (<= 500 lines)<br/>Source-to-Sink Proof + CVSS v4/Severity + Exact Remediation Code Diffs"]
-    S2 --> C2["Pen-Test Mindset Critic (Warm send_message):<br/>• security-team-reviewer (base-agent: reviewer, mode: pen-test-mindset)<br/>(+ Optional Cross-Engine Critic: boomopen conduct dispatch --role reviewer --engine cross_family)<br/>Kills false positives, chains multi-step exploits & audits fix bypasses"]
+    S2 --> C2["Pen-Test Mindset Critic (Warm send_message):<br/>• security-team-reviewer (base-agent: reviewer, mode: pen-test-mindset)<br/>(+ Optional Cross-Engine Critic: boomopen conduct dispatch --role reviewer --engine cross_family --prompt '<diff>')<br/>Kills false positives, chains multi-step exploits & audits fix bypasses"]
     C2 -->|"🔴 Unproven Finding / Bypassable Fix / Missed Sink (<= 3 rounds)"| S2
     C2 -->|"✅ SEC-G1..G4 PASS + CONSENSUS"| OUT["Release Verified REVIEW-security-{topic}.md"]
 ```

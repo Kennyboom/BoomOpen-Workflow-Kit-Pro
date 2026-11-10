@@ -3,10 +3,10 @@
   <p><strong>मल्टी-प्लेटफ़ॉर्म स्मार्ट-हाइब्रिड AI वर्कफ़ोर्स OS — 21 विशेषज्ञ एजेंट, 18 गोल्डन ट्रायंगल टीमें और 1,460+ ऑन-डिमांड स्किल्स वॉल्ट</strong></p>
 
   <p>
-    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
+    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
     <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
-    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
+    <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
     <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
   </p>
@@ -22,11 +22,11 @@
 ## 🎬 आधिकारिक लॉन्च ट्रेलर (Full HD 1080p)
 
 <div align="center">
-  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
+  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
     <img src="../assets/media/poster_en.png" alt="BoomOpen Workflow Kit v5.5 आधिकारिक लॉन्च ट्रेलर देखें (Full HD 1080p)" width="92%" />
   </a>
   <p>
-    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Full HD 1080p आधिकारिक लॉन्च ट्रेलर देखने / स्ट्रीम करने के लिए यहाँ क्लिक करें (स्टूडियो वॉयसओवर के साथ MP4)</b></a>
+    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Full HD 1080p आधिकारिक लॉन्च ट्रेलर देखने / स्ट्रीम करने के लिए यहाँ क्लिक करें (स्टूडियो वॉयसओवर के साथ MP4)</b></a>
   </p>
 </div>
 
@@ -36,9 +36,9 @@
 
 **BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** एक ओपन-सोर्स मल्टी-एजेंट ऑपरेटिंग सिस्टम है जो एक सिंगल AI कोडिंग असिस्टेंट को **21 विशेषज्ञ एजेंटों (Specialist Agents)**, **18 गोल्डन ट्रायंगल टीमों (Golden Triangle Teams)**, **22 कोर स्किल्स (Core Skills)** और **1,440 विशिष्ट लाइब्रेरी स्किल्स (`skills_library`)** के एक समन्वित इंजीनियरिंग संगठन में बदल देता है।
 
-हर छोटे सवाल पर कोल्ड-स्टार्ट विलंब पैदा करने वाले भारी-भरकम एजेंट रैपर्स के विपरीत, BoomOpen v5.5 **2-मोड स्मार्ट कॉम्प्लेक्सिटी थ्रेशोल्ड गेट (2-Mode Smart Complexity Threshold Gate)** प्रस्तुत करता है:
-- **⚡ Mode A — प्रत्यक्ष निष्पादन (0 सेकंड कोल्ड-स्टार्ट)**: सामान्य प्रश्नोत्तर (Q&A), कोड व्याख्या, सिंगल-डोमेन बग फिक्स, या **≤ 2 फ़ाइलों** (बिना `/cmd` कमांड) को छूने वाले स्पष्ट बदलाव मुख्य एजेंट द्वारा **सीधे** निष्पादित, परीक्षित और सत्यापित किए जाते हैं, जिसमें **व्यावहारिक 2-स्तरीय कोडिंग मानक (Pragmatic 2-Tier Coding Standards)** और **सतत परीक्षण एवं बग निवारण** लागू होते हैं।
-- **🎻 Mode B — सख्त मल्टी-एजेंट ऑर्केस्ट्रेशन**: जटिल फ़ीचर्स (**> 2 फ़ाइलें** या **≥ 2 डोमेन**) या स्पष्ट `/cmd` वर्कफ़्लो कमांड **DAG समानांतर फैन-आउट**, **प्लान-टू-एग्जीक्यूटर डायरेक्ट डिस्पैच**, **अनुबंध-प्रथम फ़ाइल लॉक (`SHARED_CONTRACT` + `OWNED_FILES`)** और **वॉर्म सब-एजेंट रीयूज़ (`send_message`)** के साथ सख्त ऑर्केस्ट्रेटर मोड सक्रिय करते हैं।
+हर सवाल पर कोल्ड-स्टार्ट विलंब और कॉन्टेक्स्ट ब्लोट पैदा करने वाले भारी रैपर्स के विपरीत, BoomOpen v5.5 **प्रोएक्टिव सब-एजेंट फ़र्स्ट गेट**, **17-भाषा नेचुरल-लैंग्वेज वर्कफ़्लो रूटिंग**, **4-स्तरीय डायनेमिक इलास्टिक स्वार्म शार्डिंग (`role#shard`)**, **मल्टी-सेशन प्रोजेक्ट ऑटोपायलट (`/autopilot`)** और **क्रॉस-इंजन कंडक्टर (`/conduct`)** को जोड़ता है:
+- **🚀 टर्न-1 समानांतर सब-एजेंट और Mode B ऑर्केस्ट्रेशन**: अनस्कोप्ड कोडबेस खोज (`> 2` फ़ाइलें), मल्टी-डोमेन फ़ीचर्स (`≥ 2` डोमेन), **सभी 17 समर्थित भाषाओं** में प्राकृतिक-भाषा वर्कफ़्लो अनुरोध या स्पष्ट `/cmd` कमांड तुरंत टर्न 1 पर समानांतर सब-एजेंट शार्ड्स (`role#shard`, प्रति शार्ड `<= 3–4 OWNED_FILES`) लॉन्च करते हैं — **DAG समानांतर फैन-आउट**, **प्लान-टू-एग्जीक्यूटर डायरेक्ट डिस्पैच**, **अनुबंध-प्रथम फ़ाइल लॉक (`SHARED_CONTRACT` + `OWNED_FILES`)**, **स्कोप्ड वॉर्म रीयूज़ (`role#shard -> conversationId` `send_message` द्वारा)**, `/autopilot` (`boomopen ledger`) और `/conduct` (`boomopen conduct`) के साथ।
+- **⚡ Mode A — ज्ञात-लक्ष्य माइक्रो-डायरेक्ट (0 सेकंड कोल्ड-स्टार्ट)**: सरल Q&A, कोड व्याख्या और ऐसे सूक्ष्म बदलाव जहाँ **सटीक `≤ 2` लक्ष्य फ़ाइलें टर्न 1 पर पहले से ज्ञात हों** (0 खोज, कोई `/cmd` नहीं), **व्यावहारिक 2-स्तरीय कोडिंग मानकों** और **सतत परीक्षण एवं बग निवारण** के साथ **सीधे** निष्पादित व सत्यापित किए जाते हैं।
 
 - **📚 ज़ीरो कॉन्टेक्स्ट ब्लोट के साथ 1,462 विशाल स्किल्स वॉल्ट**: इसमें **22 कोर स्किल्स (`skills/`)** और **1,440 विशिष्ट लाइब्रेरी स्किल्स (`skills_library/`)** शामिल हैं, जिन्हें `matrix-skills/compact-index.json` में प्री-कम्पाइल किया गया है ताकि `O(1)` 2-चरणीय लुकअप से प्रॉम्प्ट विंडो को भरे बिना Backend, Frontend, Mobile, Game Dev (Unity/Unreal/Godot), AI/ML, BigQuery/Data, Cloud/DevOps और OWASP सुरक्षा में तुरंत महारत मिल सके।
 
@@ -74,15 +74,15 @@ flowchart TD
 2. **📏 व्यावहारिक 2-स्तरीय कोडिंग मानक (Pragmatic 2-Tier Coding Standards — एंटी-फ्रैगमेंटेशन)**:
    - **स्तर 1 — सख्त गुणवत्ता और सुरक्षा नियम (शून्य सहनशीलता)**: एकल उत्तरदायित्व (Single Responsibility), **स्पष्ट `any` पूरी तरह वर्जित**, **प्रोडक्शन कोड में डीबग `console.log` छोड़ना वर्जित**, async/API सीमाओं पर `try/catch` + टाइप्ड एरर हैंडलिंग अनिवार्य, `SCREAMING_SNAKE_CASE` स्थिरांक, DRY (`≥ 3`), और साफ-सुथरे क्रमबद्ध इम्पोर्ट्स।
    - **स्तर 2 — लचीले संरचनात्मक दिशानिर्देश (सामंजस्य सर्वोपरि)**: एकल जिम्मेदारी वाली फ़ाइलों का लक्ष्य `~200–350 पंक्तियाँ` और लचीली सीमा `~400–450 पंक्तियाँ` है (केवल `>500 पंक्तियों` या कई डोमेन मिलने पर ही विभाजन अनिवार्य; टेस्ट, टाइप्स और डॉक्स मुक्त हैं)। लॉजिक फ़ंक्शन `~20–40 पंक्तियाँ` (UI/हैंडलर `~40–80 पंक्तियाँ`)।
-3. **🎯 प्लान-टू-एग्जीक्यूटर डायरेक्ट डिस्पैच और वॉर्म सब-एजेंट रीयूज़ (`send_message`)**:
-   - `PLAN-{feature}.md` बनते ही ऑर्केस्ट्रेटर अनावश्यक `tech-lead` मध्यस्थ के बिना **सीधे** डोमेन इंजीनियरों (`backend-engineer`, `frontend-engineer`, `database-architect` आदि) को कार्य सौंपता है।
-   - सक्रिय सब-एजेंट **Active Session Registry (`Role → conversationId`)** में दर्ज होते हैं और `send_message` द्वारा **0 सेकंड कोल्ड-स्टार्ट** तथा **100% फ़ाइल संदर्भ** के साथ पुनः उपयोग किए जाते हैं।
+3. **🎯 4-स्तरीय डायनेमिक इलास्टिक स्वार्म शार्डिंग (`role#shard`), डायरेक्ट प्लान डिस्पैच और वॉर्म रीयूज़ (`send_message`)**:
+   - `PLAN-{feature}.md` बनते ही ऑर्केस्ट्रेटर अनावश्यक `tech-lead` मध्यस्थ के बिना **सीधे** डोमेन इंजीनियर शार्ड्स (`backend-engineer#shard-1`, `frontend-engineer#shard-2`, `database-architect#shard-1`, प्रत्येक `<= 3–4 OWNED_FILES`) को कार्य सौंपता है।
+   - सक्रिय सब-एजेंट **Scoped Session Registry (`role#shard → conversationId`)** में दर्ज होते हैं और `send_message` द्वारा **0 सेकंड कोल्ड-स्टार्ट** तथा **100% फ़ाइल संदर्भ** के साथ पुनः उपयोग किए जाते हैं।
 4. **🤝 अनुबंध-प्रथम समानांतर डिस्पैच (`SHARED_CONTRACT` + `OWNED_FILES`)**:
    - मल्टी-डोमेन प्लान समानांतर इंजीनियरों को चलाने से पहले API एंडपॉइंट्स, DTO स्कीमा और अनन्य फ़ाइल स्वामित्व (`OWNED_FILES` बनाम `READ_ONLY_FILES`) को लॉक करते हैं, जिससे ओवरराइट टकराव समाप्त हो जाता है।
 5. **🔍 5-Whys (SPIE v3.0) मूल-कारण डीबगिंग और 100% स्वच्छ Git ट्री**:
    - `debugger` 3 क्रमबद्ध परिकल्पनाओं और **5-Whys कारण श्रृंखला** (`Why 1 लक्षण` → `Why 5 प्रणालीगत मूल कारण`) के माध्यम से बग की जांच करता है। सभी अस्थायी रिपोर्ट (`PLAN`, `DEBUG`, `TEST`, `REVIEW`, `MAILBOX`) `<appDataDir>\brain\<conversation-id>\` में सहेजी जाती हैं जिससे Git वर्किंग ट्री 100% साफ रहता है।
 6. **🩺 इन-बिल्ट CLI डायग्नोस्टिक्स (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check` & `doctor`) और O(1) स्किल इंडेक्स**:
-   - `npm run doctor` सभी 5 प्लेटफ़ॉर्म बंडलों, 21 एजेंटों, 72 टीम फ़ाइलों, 84 कमांड फ़ाइलों (`79` वर्कफ़्लो + `5` `_ref/`) और `matrix-skills/compact-index.json` (`1,462` स्किल्स) की जांच करता है। `boomopen check <dir>` केवल स्वचालित रूप से जाँचे जा सकने वाले नियम जाँचता है: फ़ाइल की लंबाई, TypeScript में स्पष्ट `any` और छूटे हुए `console.log`; बाकी मानक एजेंटों के लिए निर्देश हैं। इसके अतिरिक्त, `boomopen research`, `boomopen design`, `boomopen plan`, `boomopen cook`, `boomopen ledger` और `boomopen conduct` अनुबंध संकलन, वेव हैंडऑफ़ पैकेट और मल्टी-इंजन काउंसिल चलाते हैं।
+   - `npm run doctor` सभी 5 प्लेटफ़ॉर्म बंडलों, 21 एजेंटों, 72 टीम फ़ाइलों, 84 कमांड फ़ाइलों (`79` वर्कफ़्लो + `5` `_ref/`) और `matrix-skills/compact-index.json` (`1,462` स्किल्स) की जांच करता है। `boomopen check <dir> [--strict-phase --no-stubs]` फ़ाइल की लंबाई, स्पष्ट TypeScript `any`, छूटे हुए `console.log`, अधूरे `TODO`/`FIXME` कमेंट्स, खोखले स्टब्स और टेस्ट-गेमिंग की जाँच करता है। इसके अतिरिक्त, `boomopen research`, `boomopen design`, `boomopen plan`, `boomopen cook`, `boomopen ledger` और `boomopen conduct` अनुबंध संकलन, वेव हैंडऑफ़ पैकेट और मल्टी-इंजन काउंसिल चलाते हैं।
 
 ---
 
@@ -104,8 +104,8 @@ flowchart TD
 
 ```bash
 # 1. रिपॉजिटरी क्लोन करें
-git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
-cd BoomOpen-Workflow-Kit
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+cd BoomOpen-Workflow-Kit-Pro
 
 # 2. अपने AI कोडिंग असिस्टेंट के लिए इंस्टॉल करें (कोई एक चुनें या --all)
 npm run install:antigravity   # Google Antigravity 2.0 (Gemini)
@@ -121,7 +121,7 @@ npm link
 boomopen research validate path/to/RESEARCH.md
 boomopen design validate path/to/DESIGN.md
 boomopen plan validate path/to/PLAN.md
-boomopen cook preflight --plan path/to/PLAN.md
+boomopen cook preflight path/to/PLAN.md
 boomopen check path/to/your/project --strict-phase --no-stubs
 boomopen ledger status
 boomopen conduct probe
@@ -164,7 +164,7 @@ boomopen settings set execution.mode mode_a --project
 boomopen settings reset
 ```
 
-> `--project` हमेशा उसी फ़ोल्डर में `./.boomopen.json` लिखता है जहाँ से आप कमांड चलाते हैं — इसलिए इसे अपने प्रोजेक्ट में चलाएँ, किट के क्लोन में नहीं। `npm link` के बिना `boomopen` की जगह `node /path/to/BoomOpen-Workflow-Kit/cli/install.js` लिखें।
+> `--project` हमेशा उसी फ़ोल्डर में `./.boomopen.json` लिखता है जहाँ से आप कमांड चलाते हैं — इसलिए इसे अपने प्रोजेक्ट में चलाएँ, किट के क्लोन में नहीं। `npm link` के बिना `boomopen` की जगह `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js` लिखें।
 
 ---
 
@@ -206,6 +206,8 @@ boomopen settings reset
 
 ---
 
+<a id="skills"></a>
+
 ## 📚 1,460+ स्किल्स वॉल्ट (22 कोर + 1,440 लाइब्रेरी स्किल्स)
 
 BoomOpen ओपन-सोर्स के सबसे बड़े इंजीनियरिंग स्किल इकोसिस्टम में से एक के साथ आता है — जो **2-चरणीय O(1) प्रोग्रेसिव स्किल लुकअप** (`<skills>` → `matrix-skills/compact-index.json` → ज़रूरत पड़ने पर सटीक `SKILL.md` लोड) के माध्यम से **0 निष्क्रिय टोकन खर्च** सुनिश्चित करता है:
@@ -224,8 +226,8 @@ BoomOpen ओपन-सोर्स के सबसे बड़े इंजी
 ## 📂 रिपॉजिटरी संरचना
 
 ```text
-BoomOpen-Workflow-Kit/
-├── agents/                  # 21 विशेषज्ञ एजेंट परिभाषाएँ + 18 गोल्डन ट्रायंगल टीमें (54 रोल फ़ाइलें)
+BoomOpen-Workflow-Kit-Pro/
+├── agents/                  # 21 विशेषज्ञ एजेंट परिभाषाएँ + 18 गोल्डन ट्रायंगल टीमें (54 रोल फ़ाइलें + 18 _team.md, कुल 72 फ़ाइलें)
 ├── cli/                     # इंस्टॉलर (install.js), डॉक्टर (doctor.js), चेकर (checker.js), सेटिंग्स (settings.js), research.js, design.js, plan.js, cook.js, लेजर (ledger.js) और कंडक्टर (conductor.js)
 ├── commands/                # 79 स्लैश कमांड वर्कफ़्लो (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 _ref/ प्रोटोकॉल (84 फ़ाइलें)
 ├── documents/               # 2-स्तरीय आर्किटेक्चर, डोमेन, सोर्स-बेस और कोडिंग मानक दस्तावेज़

@@ -16,7 +16,7 @@ collaborates-with: [devops-team-executor, devops-team-reviewer]
 > **ELASTIC GOLDEN DIAMOND ROLE**: Tech Lead (Infra Contract Keeper + Wave Coordinator + Arbitrator)
 > **LOAD**: `agents/teams/devops-team/_team.md` & `rules/TEAMS.md`
 > **BASE AGENT**: `devops-engineer` — full cloud IaC, container, CI/CD & SRE coordination authority
-> **MANDATORY 2026 SKILLS (LOAD WHEN RELEVANT)**: `skills/accidental-data-loss-prevention/SKILL.md`, `skills/security-auditor/SKILL.md`, `skills/clean-code/SKILL.md`, `skills_library/terraform-opentofu-production/SKILL.md`, `skills_library/cloudflare-d1-r2-durable-objects/SKILL.md`.
+> **MANDATORY 2026 SKILLS (LOAD WHEN RELEVANT)**: `skills_library/deployment-procedures/SKILL.md`, `skills/security-auditor/SKILL.md`, `skills/clean-code/SKILL.md`, `skills_library/terraform-opentofu-production/SKILL.md`, `skills_library/cloudflare-d1-r2-durable-objects/SKILL.md`.
 
 ---
 
@@ -40,7 +40,7 @@ You are the **Tech Lead** of `devops-team`. You do **NOT** author Terraform modu
 
 ### Wave 1: Env Schema, Registry, State & IAM Contract Lock (`<= 3–4 OWNED_FILES`)
 - Dispatch **`devops-engineer#env-contracts`** (or `#foundation`, `TypeName: "self"`, `Model: "inherit"`) owning remote state backend, pinned OpenTofu/Terraform providers, container registry/port contracts, least-privilege OIDC/IAM roles, and `.env.example` secret-reference keys (`SHARED_CONTRACT`).
-- **Post-Wave 1 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify` (`COOK-G1..G4`). Lock all Wave 1 files into `READ_ONLY_FILES`.
+- **Post-Wave 1 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify` (`COOK-G1..G4`). Lock all Wave 1 files into `READ_ONLY_FILES`.
 
 ### Wave 2: Parallel Container, CI/CD & IaC-Observability Shards (`<= 3–4 OWNED_FILES` / Shard)
 Dispatch Wave 2 shards **in parallel in the same turn** with Wave 1 locked in `READ_ONLY_FILES`:
@@ -48,11 +48,11 @@ Dispatch Wave 2 shards **in parallel in the same turn** with Wave 1 locked in `R
 - **`devops-engineer#ci-cd`** (or `#cicd`): Immutable `lint → test → build → scan → deploy → rollback` pipelines using OIDC federation and runtime secret injection.
 - **`devops-engineer#iac-observability`** (or `#observability`): Cloud compute/network IaC modules, structured logging, RED / Four Golden Signals dashboards, alerts, and rollback runbooks.
 - **Active Session Registry**: Record `devops-engineer#<shard> -> conversationId` for warm `send_message` fixes.
-- **Post-Wave 2 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --run-verify`.
+- **Post-Wave 2 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --git --run-verify`.
 
 ### Wave 3: DevSecOps, Blast-Radius, Rollback & Anti-Stub Gate
-- Dispatch `devops-team-reviewer` (+ `security-engineer#sec` and optional Cross-Engine Critic via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family`).
-- Require clean exits (`0`) from IaC/container/workflow dry-runs, `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify`, and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`.
+- Dispatch `devops-team-reviewer` (+ `security-engineer#sec` and optional Cross-Engine Critic via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`).
+- Require clean exits (`0`) from IaC/container/workflow dry-runs, `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify`, and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`.
 - Route any `🔴 BLOCKER` or `🟡 REVISE` finding via warm `send_message` to `devops-engineer#<shard>` (max 3 rounds).
 
 ---
@@ -76,7 +76,7 @@ Dispatch Wave 2 shards **in parallel in the same turn** with Wave 1 locked in `R
 When `devops-engineer#<shard>` and `devops-team-reviewer` deadlock at Round 3:
 1. Evaluate all Mailbox exchanges via strict hierarchy: **1. Security Posture & Zero Exposed Secrets → 2. Reliability & Tested Rollback Safety → 3. Blast-Radius Containment & Idempotency → 4. Operational Simplicity/Cost → 5. Tooling Convention (Executor wins)**.
 2. Post binding `ARBITRATION` to `MAILBOX-{date}.md` and dispatch via warm `send_message`.
-3. Enforce **STOP-AND-VERIFY** user consent before destructive cloud/bucket/DB resource deletions (`accidental-data-loss-prevention`). Release **ONLY** after stamping consensus:
+3. Enforce **STOP-AND-VERIFY** user consent (`hooks/validate-tool-call.mjs`) before destructive cloud/bucket/DB resource deletions. Release **ONLY** after stamping consensus:
 
 ```text
 ✅ CONSENSUS: devops-team-techlead ✓ | Wave1 (#env-contracts) ✓ | Wave2 (#containers/#ci-cd/#iac-observability) ✓ | devops-team-reviewer ✓
@@ -89,13 +89,13 @@ Waves Verified: W1, W2, W3 (COOK-G1..G4 + dry-run + boomopen check PASS) | Dispu
 
 - ❌ Never author IaC/pipeline files yourself — delegate exclusively to `devops-engineer#<shard>`.
 - ❌ Never permit `:latest` tags, root containers, `*:*` IAM wildcards, hardcoded secrets, or unconsented cloud deletions.
-- ❌ Never release without `cook verify-wave --run-verify`, `boomopen check --strict-phase --no-stubs`, and `✅ CONSENSUS`.
+- ❌ Never release without `cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, `boomopen check --strict-phase --no-stubs`, and `✅ CONSENSUS`.
 
 ```text
 □ Did I run `boomopen cook state` / `boomopen cook packets` before spawning DevOps shards?
 □ Were env schemas, registry/port contracts, state backends, and OIDC/IAM roles locked in Wave 1?
 □ Did `#containers`, `#ci-cd`, and `#iac-observability` run in parallel in Wave 2 (`<= 3–4 OWNED_FILES`/shard)?
-□ Did IaC/pipeline dry-runs, `cook verify-wave --run-verify`, and `boomopen check --strict-phase --no-stubs` pass?
+□ Did IaC/pipeline dry-runs, `cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, and `boomopen check --strict-phase --no-stubs` pass?
 □ Is `✅ CONSENSUS` stamped in `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md`?
 ```
 
@@ -110,7 +110,7 @@ Waves Verified: W1, W2, W3 (COOK-G1..G4 + dry-run + boomopen check PASS) | Dispu
 2. **SHARED_CONTRACT**: Locked Wave 1 Terraform/OpenTofu variables/outputs, registry digests, port bindings, OIDC/IAM roles, and `.env.example` keys.
 3. **OWNED_FILES (`<= 3–4` files)**: `{exclusive file paths for this shard}`
 4. **READ_ONLY_FILES**: `{Wave 1 providers.tf, iam.tf, .env.example, PLAN-{feature}.md, and sibling shard files}`
-5. **VERIFICATION & DELIVERABLE**: Run dry-run validation (`tofu/terraform validate`, `docker compose config`), `cook verify-wave --run-verify`, and `boomopen check <dir> --strict-phase --no-stubs`, then append `[SUBMISSION]` to `MAILBOX-{date}.md`.
+5. **VERIFICATION & DELIVERABLE**: Run dry-run validation (`tofu/terraform validate`, `docker compose config`), `cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, and `boomopen check <dir> --strict-phase --no-stubs`, then append `[SUBMISSION]` to `MAILBOX-{date}.md`.
 ```
 
 ### Final DevOps Synthesis Report Format
@@ -120,8 +120,8 @@ Waves Verified: W1, W2, W3 (COOK-G1..G4 + dry-run + boomopen check PASS) | Dispu
 ## 1. 3-Wave Infrastructure Summary
 | Wave | Shards Executed | `COOK-G1..G4` & CLI Gate | Status |
 |:----:|:----------------|:-------------------------|:------:|
-| Wave 1 | `devops-engineer#env-contracts` (`#foundation`) | `cook verify-wave --wave 1 --run-verify` | ✅ PASS |
-| Wave 2 | `devops-engineer#containers` ∥ `#ci-cd` ∥ `#iac-observability` | `cook verify-wave --wave 2 --run-verify` | ✅ PASS |
+| Wave 1 | `devops-engineer#env-contracts` (`#foundation`) | `cook verify-wave "<plan.md>" --wave 1 --git --run-verify` | ✅ PASS |
+| Wave 2 | `devops-engineer#containers` ∥ `#ci-cd` ∥ `#iac-observability` | `cook verify-wave "<plan.md>" --wave 2 --git --run-verify` | ✅ PASS |
 | Wave 3 | `devops-team-reviewer` + `security-engineer#sec` (dry-run + `boomopen check`) | All `0` exit codes | ✅ PASS |
 
 ## 2. DevSecOps, Blast-Radius & Rollback Seam Verification

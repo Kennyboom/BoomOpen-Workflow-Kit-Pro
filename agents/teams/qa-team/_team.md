@@ -1,6 +1,7 @@
 ---
 name: qa-team
 team: qa-team
+description: "3-Wave Zero-Test-Gaming Elastic Golden Diamond QA Team (v5.5) — Wave 1 RTM & MSW/fixture harness lock, Wave 2 parallel Unit/Integration/E2E test shards (<= 3-4 OWNED_FILES/shard) with source code READ_ONLY, and Wave 3 test_runner.py + Security/Perf critic audit"
 summary: "3-Wave Zero-Test-Gaming Elastic Golden Diamond QA Team (v5.5) — Wave 1 RTM & MSW/fixture harness lock, Wave 2 parallel Unit/Integration/E2E test shards (<= 3-4 OWNED_FILES/shard) with source code READ_ONLY, and Wave 3 test_runner.py + Security/Perf critic audit"
 version: 5.5.0
 pattern: elastic-golden-diamond
@@ -58,7 +59,7 @@ flowchart TD
 | **W3** | `qa-team-reviewer` | `<appDataDir>\brain\<conversation-id>\TEST-{feature}.md` | All `tests/**` & `src/**` |
 
 - **Real Bug Escalation**: If a valid test exposes a real defect in `READ_ONLY_FILES` app code, log `[APP_DEFECT]` in `MAILBOX-{date}.md` with failing output so Orchestrator/Tech Lead routes it to the owning implementation shard — **never weaken the test**!
-- **Warm Session Reuse & Cross-Engine Critic**: Route test fixes to `tester#<shard>` via `send_message` (max 3 rounds); optionally invoke `boomopen conduct dispatch --role reviewer --engine cross_family`.
+- **Warm Session Reuse & Cross-Engine Critic**: Route test fixes to `tester#<shard>` via `send_message` (max 3 rounds); optionally invoke `boomopen conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`.
 
 ---
 

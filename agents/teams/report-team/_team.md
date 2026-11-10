@@ -1,6 +1,7 @@
 ---
 name: report-team
 team: report-team
+description: "2-Stage Evidence-Mined Executive & Engineering Reporting Elastic Golden Diamond Team (v5.5) — parallel git/ledger/CLI telemetry mining, cohesive REPORT-{topic}.md with Mermaid xychart-beta/flowcharts, and zero-fabrication metric audit"
 summary: "2-Stage Evidence-Mined Executive & Engineering Reporting Elastic Golden Diamond Team (v5.5) — parallel git/ledger/CLI telemetry mining, cohesive REPORT-{topic}.md with Mermaid xychart-beta/flowcharts, and zero-fabrication metric audit"
 version: 5.5.0
 pattern: elastic-golden-diamond

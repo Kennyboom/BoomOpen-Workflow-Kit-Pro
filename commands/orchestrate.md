@@ -73,13 +73,13 @@ Dispatch tasks **directly from `PLAN-{feature}.md` to sharded domain engineers**
    - Compile Wave 1 5-Field Handoff Packets via **`boomopen cook packets`** and spawn `database-architect#schema`, `backend-engineer#contracts`, and `frontend-engineer#tokens-primitives` in parallel:
      ```bash
      node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<appDataDir>/brain/<conversation-id>/PLAN-<feature>.md" --wave 1
-     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<appDataDir>/brain/<conversation-id>/PLAN-<feature>.md" --wave 1 --run-verify
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<appDataDir>/brain/<conversation-id>/PLAN-<feature>.md" --wave 1 --git --run-verify
      ```
 2. **Wave 2 — Parallel Feature Shards (`100%` Concurrent `role#shard` Fan-Out)**:
-   - Compile Wave 2 packets (auto-locking Wave 1 contracts and sibling `OWNED_FILES` into `READ_ONLY_FILES`), launch `backend-engineer#1..k` + `frontend-engineer#1..k` (+ `mobile-engineer#1..k` / `game-engineer#1..k`) **in one parallel turn**, and enforce Post-Wave Gates `COOK-G1..G4` via **`boomopen cook verify-wave --wave 2 --run-verify`**:
+   - Compile Wave 2 packets (auto-locking Wave 1 contracts and sibling `OWNED_FILES` into `READ_ONLY_FILES`), launch `backend-engineer#1..k` + `frontend-engineer#1..k` (+ `mobile-engineer#1..k` / `game-engineer#1..k`) **in one parallel turn**, and enforce Post-Wave Gates `COOK-G1..G4` via **`boomopen cook verify-wave "<plan.md>" --wave 2 --git --run-verify`**:
      ```bash
      node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<appDataDir>/brain/<conversation-id>/PLAN-<feature>.md" --wave 2
-     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<appDataDir>/brain/<conversation-id>/PLAN-<feature>.md" --wave 2 --run-verify
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<appDataDir>/brain/<conversation-id>/PLAN-<feature>.md" --wave 2 --git --run-verify
      ```
 
 ### STAGE 3 (WAVE 3): PARALLEL VERIFICATION, ADVERSARIAL REVIEW & STRICT REPO GATE

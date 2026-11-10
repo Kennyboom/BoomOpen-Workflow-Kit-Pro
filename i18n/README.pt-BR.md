@@ -3,10 +3,10 @@
   <p><strong>Sistema Operacional de Força de Trabalho IA Smart-Hybrid Multiplataforma — 21 Agentes Especialistas, 18 Equipes Triângulo Dourado e Cofre de 1.460+ Habilidades Sob Demanda</strong></p>
 
   <p>
-    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
+    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
     <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
-    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
+    <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
     <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
   </p>
@@ -22,11 +22,11 @@
 ## 🎬 Trailer Oficial de Lançamento (Full HD 1080p)
 
 <div align="center">
-  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
+  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
     <img src="../assets/media/poster_en.png" alt="Assistir ao Trailer Oficial de Lançamento do BoomOpen Workflow Kit v5.5 (Full HD 1080p)" width="92%" />
   </a>
   <p>
-    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Clique aqui para assistir / transmitir o Trailer Oficial em Full HD 1080p (MP4 com narração de estúdio)</b></a>
+    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Clique aqui para assistir / transmitir o Trailer Oficial em Full HD 1080p (MP4 com narração de estúdio)</b></a>
   </p>
 </div>
 
@@ -36,9 +36,9 @@
 
 **BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** é um sistema operacional multi-agente de código aberto que transforma um único assistente de programação IA em uma organização de engenharia coordenada composta por **21 agentes especialistas**, **18 equipes adversárias Golden Triangle**, **22 habilidades principais (Core Skills)** e **mais de 1.440 habilidades especializadas (`skills_library`)**.
 
-Ao contrário de templates rígidos ou wrappers pesados que adicionam latência de inicialização a cada pergunta simples, o BoomOpen v5.5 introduz o **Portão Inteligente de Complexidade de 2 Modos (2-Mode Smart Complexity Threshold Gate)**:
-- **⚡ Modo A — Execução Direta (0s de Cold-Start)**: Perguntas e respostas (Q&A), explicações de código, correções de bugs em um único domínio ou alterações claras tocando **≤ 2 arquivos** (sem comando `/cmd`) são executadas, testadas e verificadas **diretamente** pelo agente principal, aplicando os **Padrões de Codificação Pragmáticos de 2 Níveis** e **Testes e Correção Persistente de Bugs**.
-- **🎻 Modo B — Orquestração Multi-Agente Estrita**: Funcionalidades complexas (**> 2 arquivos** ou **≥ 2 domínios**) ou comandos explícitos `/cmd` ativam o modo Orquestrador estrito com **Fan-Out Paralelo DAG**, **Despacho Direto do Plano para o Executor**, **Bloqueios de Arquivos por Contrato (`SHARED_CONTRACT` + `OWNED_FILES`)** e **Reutilização a Quente de Sub-agentes (`send_message`)**.
+Ao contrário de templates rígidos ou wrappers pesados que adicionam latência e inchaço de contexto a cada turno, o BoomOpen v5.5 combina o **Portão Proativo de Sub-agentes no Turno 1**, **Roteamento em Linguagem Natural em 17 Idiomas**, **Fragmentação Elástica de Enxame em 4 Níveis (`role#shard`)**, **Autopiloto de Projeto Multi-Sessão (`/autopilot`)** e **Condutor Multi-Engine (`/conduct`)**:
+- **🚀 Sub-agentes Paralelos no Turno 1 e Orquestração Modo B**: Exploração aberta de código (`> 2` arquivos), funcionalidades multidomínio (`≥ 2` domínios), intenções de fluxo em linguagem natural em **todos os 17 idiomas suportados** ou comandos `/cmd` explícitos disparam imediatamente shards paralelos (`role#shard`, `<= 3–4 OWNED_FILES`/shard) com **Fan-Out Paralelo DAG**, **Despacho Direto do Plano ao Executor**, **Bloqueios por Contrato (`SHARED_CONTRACT` + `OWNED_FILES`)** e **Reutilização a Quente (`role#shard -> conversationId` via `send_message`)**, além de `/autopilot` (`boomopen ledger`) e conselhos multi-engine `/conduct` (`boomopen conduct`).
+- **⚡ Modo A — Execução Micro-Direta em Alvos Conhecidos (0s de Cold-Start)**: Perguntas e respostas simples, explicações de código e microedições em que os **exatos `≤ 2` arquivos-alvo já são conhecidos no Turno 1** (0 exploração, sem `/cmd`) são executadas, testadas e verificadas **diretamente** aplicando os **Padrões de Codificação Pragmáticos de 2 Níveis** e **Testes e Correção Persistente de Bugs**.
 
 - **📚 Cofre Massivo de 1.462 Habilidades com Zero Inchaço de Contexto**: Combina **22 Habilidades Principais (`skills/`)** e **1.440 Habilidades de Biblioteca (`skills_library/`)** pré-compiladas em `matrix-skills/compact-index.json` para busca `O(1)` em 2 etapas — oferecendo domínio imediato em Backend, Frontend, Mobile, Game Dev (Unity/Unreal/Godot), IA/ML, BigQuery/Dados, Cloud/DevOps e Cibersegurança OWASP sem poluir a janela de prompt.
 
@@ -74,15 +74,15 @@ flowchart TD
 2. **📏 Padrões de Codificação Pragmáticos de 2 Níveis (Anti-Fragmentação)**:
    - **Nível 1 — Qualidade e Segurança Estritas (Tolerância Zero)**: Responsabilidade Única (Single Responsibility), **PROIBIDO `any` explícito**, **PROIBIDO deixar `console.log` de depuração** em produção, tratamento de erros tipado com `try/catch` em fronteiras async/API, constantes `SCREAMING_SNAKE_CASE`, DRY (`≥ 3`) e imports organizados.
    - **Nível 2 — Diretrizes Estruturais Flexíveis (Coesão em Primeiro Lugar)**: Arquivos coesos têm meta de `~200–350 linhas` com teto flexível de `~400–450 linhas` (divisão obrigatória apenas acima de `>500 linhas` ou múltiplos domínios; testes, tipos e docs são isentos). Funções lógicas `~20–40 linhas` (`~40–80 linhas` para UI/Handlers).
-3. **🎯 Despacho Direto do Plano ao Executor e Reutilização a Quente (`send_message`)**:
-   - Assim que `PLAN-{feature}.md` existe, o Orquestrador despacha tarefas **diretamente** para os engenheiros de domínio (`backend-engineer`, `frontend-engineer`, `database-architect`, etc.) sem salto intermediário redundante pelo `tech-lead`.
-   - Sub-agentes ativos ficam registrados no **Registro de Sessões Ativas (`Role → conversationId`)** e são reutilizados via `send_message` com **0s de cold-start** e **100% do contexto de arquivos preservado**.
+3. **🎯 Fragmentação Elástica em 4 Níveis (`role#shard`), Despacho Direto do Plano e Reutilização a Quente (`send_message`)**:
+   - Assim que `PLAN-{feature}.md` existe, o Orquestrador despacha tarefas **diretamente** para shards de engenheiros de domínio (`backend-engineer#shard-1`, `frontend-engineer#shard-2`, `database-architect#shard-1`, `<= 3–4 OWNED_FILES` cada) sem salto intermediário redundante pelo `tech-lead`.
+   - Sub-agentes ativos ficam registrados em um **Registro de Sessões por Shard (`role#shard → conversationId`)** e são reutilizados via `send_message` com **0s de cold-start** e **100% do contexto de arquivos preservado**.
 4. **🤝 Despacho Paralelo Baseado em Contratos (`SHARED_CONTRACT` + `OWNED_FILES`)**:
    - Planos multidomínio travam endpoints de API, esquemas DTO e propriedade exclusiva de arquivos (`OWNED_FILES` vs. `READ_ONLY_FILES`) antes de iniciar engenheiros em paralelo, eliminando colisões de escrita.
 5. **🔍 Depuração de Causa Raiz 5-Whys (SPIE v3.0) e Árvore Git 100% Limpa**:
    - `debugger` investiga cada bug por meio de 3 hipóteses ranqueadas e uma cadeia causal **5-Whys** (`Por que 1 Sintoma` → `Por que 5 Causa Raiz Sistêmica`). Artefatos transitórios (`PLAN`, `DEBUG`, `TEST`, `REVIEW`, `MAILBOX`) são gravados em `<appDataDir>\brain\<conversation-id>\`, mantendo a árvore Git 100% limpa.
 6. **🩺 Diagnóstico CLI Integrado (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check` & `doctor`) e Índice de Habilidades O(1)**:
-   - `npm run doctor` valida os 5 pacotes de plataforma, 21 agentes, 72 arquivos de equipe, 84 arquivos de comando (`79` fluxos + `5` em `_ref/`) e `matrix-skills/compact-index.json` (`1.462` habilidades). `boomopen check <dir>` verifica apenas as regras checáveis automaticamente: tamanho dos arquivos, `any` explícito em TypeScript e `console.log` esquecidos; os demais padrões são instruções para os agentes. Além disso, `boomopen research`, `boomopen design`, `boomopen plan`, `boomopen cook`, `boomopen ledger` e `boomopen conduct` compilam contratos, pacotes de handoff por onda e conselhos multi-engine.
+   - `npm run doctor` valida os 5 pacotes de plataforma, 21 agentes, 72 arquivos de equipe, 84 arquivos de comando (`79` fluxos + `5` em `_ref/`) e `matrix-skills/compact-index.json` (`1.462` habilidades). `boomopen check <dir> [--strict-phase --no-stubs]` audita tamanho dos arquivos, `any` explícito em TypeScript, `console.log` esquecidos, comentários `TODO`/`FIXME` adiados, stubs vazios e burlas em testes. Além disso, `boomopen research`, `boomopen design`, `boomopen plan`, `boomopen cook`, `boomopen ledger` e `boomopen conduct` compilam contratos, pacotes de handoff por onda e conselhos multi-engine.
 
 ---
 
@@ -104,8 +104,8 @@ flowchart TD
 
 ```bash
 # 1. Clonar o repositório
-git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
-cd BoomOpen-Workflow-Kit
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+cd BoomOpen-Workflow-Kit-Pro
 
 # 2. Instalar para o seu assistente de codificação IA (escolha um ou --all)
 npm run install:antigravity   # Google Antigravity 2.0 (Gemini)
@@ -121,7 +121,7 @@ npm link
 boomopen research validate path/to/RESEARCH.md
 boomopen design validate path/to/DESIGN.md
 boomopen plan validate path/to/PLAN.md
-boomopen cook preflight --plan path/to/PLAN.md
+boomopen cook preflight path/to/PLAN.md
 boomopen check path/to/your/project --strict-phase --no-stubs
 boomopen ledger status
 boomopen conduct probe
@@ -164,7 +164,7 @@ boomopen settings set execution.mode mode_a --project
 boomopen settings reset
 ```
 
-> `--project` sempre grava `./.boomopen.json` na pasta onde você executa o comando — execute-o dentro do seu projeto, não no clone do kit. Sem `npm link`, troque `boomopen` por `node /path/to/BoomOpen-Workflow-Kit/cli/install.js`.
+> `--project` sempre grava `./.boomopen.json` na pasta onde você executa o comando — execute-o dentro do seu projeto, não no clone do kit. Sem `npm link`, troque `boomopen` por `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`.
 
 ---
 
@@ -206,6 +206,8 @@ boomopen settings reset
 
 ---
 
+<a id="skills"></a>
+
 ## 📚 Cofre de 1.460+ Habilidades (22 Principais + 1.440 de Biblioteca)
 
 O BoomOpen traz um dos maiores ecossistemas de habilidades de engenharia do código aberto — projetado para **0 consumo de tokens em repouso** via **Resolução Progressiva O(1) em 2 Etapas** (`<skills>` → `matrix-skills/compact-index.json` → carregamento exato do `SKILL.md` sob demanda):
@@ -224,8 +226,8 @@ O BoomOpen traz um dos maiores ecossistemas de habilidades de engenharia do cód
 ## 📂 Estrutura do Repositório
 
 ```text
-BoomOpen-Workflow-Kit/
-├── agents/                  # 21 definições de Agentes Especialistas + 18 Equipes Golden Triangle (54 arquivos de função)
+BoomOpen-Workflow-Kit-Pro/
+├── agents/                  # 21 definições de Agentes Especialistas + 18 Equipes Golden Triangle (54 arquivos de função + 18 _team.md, 72 arquivos)
 ├── cli/                     # Instalador (install.js), Doctor (doctor.js), Checker (checker.js), Settings (settings.js), research.js, design.js, plan.js, cook.js, Ledger (ledger.js) e Conductor (conductor.js)
 ├── commands/                # 79 fluxos de comandos Slash (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 protocolos _ref/ (84 arquivos)
 ├── documents/               # Documentação de 2 níveis de Arquitetura, Domínio, Código-Fonte e Padrões

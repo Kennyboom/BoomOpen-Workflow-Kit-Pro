@@ -1,6 +1,7 @@
 ---
 name: fullstack-team
 team: fullstack-team
+description: "3-Wave Contract-First Elastic Golden Diamond Fullstack Team (v5.5) — Approved-Plan Fast-Forward, Wave 1 schema/DTO/token lock, Wave 2 100% parallel backend+frontend shards (<= 3-4 OWNED_FILES/shard), and Wave 3 deterministic cross-stack verification"
 summary: "3-Wave Contract-First Elastic Golden Diamond Fullstack Team (v5.5) — Approved-Plan Fast-Forward, Wave 1 schema/DTO/token lock, Wave 2 100% parallel backend+frontend shards (<= 3-4 OWNED_FILES/shard), and Wave 3 deterministic cross-stack verification"
 version: 5.5.0
 pattern: elastic-golden-diamond
@@ -48,8 +49,8 @@ flowchart TD
     G0{"PLAN-{feature}.md Validated?<br/>(boomopen cook state)"}
     G0 -->|"Yes (boomopen cook packets)"| W1
     G0 -->|"No (Ad-hoc /code:team)"| S0["Scope & Contract Lock<br/>fullstack-team-techlead + scouter#1..k<br/>Locks SHARED_CONTRACT & disjoint OWNED_FILES"]
-    S0 --> W1["💎 Wave 1: Foundation, Schema & Shared Primitives Lock (Parallel)<br/>• database-architect#schema (DB DDL & migrations)<br/>• backend-engineer#contracts (Shared DTO / Zod / OpenAPI types)<br/>• frontend-engineer#tokens-primitives (globals.css @theme OKLCH & UI primitives)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 1 --run-verify"]
-    W1 --> W2["💎 Wave 2: 100% Parallel Cross-Stack Feature Shards (<= 3-4 OWNED_FILES/shard)<br/>• backend-engineer#api-1..k (Routes, services, auth, pagination)<br/>• frontend-engineer#screen-1..k (5-State UI screens, hooks, mutations)<br/>Wave 1 contracts & globals.css locked in READ_ONLY_FILES<br/>Gate: boomopen cook verify-wave <plan.md> --wave 2 --run-verify"]
+    S0 --> W1["💎 Wave 1: Foundation, Schema & Shared Primitives Lock (Parallel)<br/>• database-architect#schema (DB DDL & migrations)<br/>• backend-engineer#contracts (Shared DTO / Zod / OpenAPI types)<br/>• frontend-engineer#tokens-primitives (globals.css @theme OKLCH & UI primitives)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 1 --git --run-verify"]
+    W1 --> W2["💎 Wave 2: 100% Parallel Cross-Stack Feature Shards (<= 3-4 OWNED_FILES/shard)<br/>• backend-engineer#api-1..k (Routes, services, auth, pagination)<br/>• frontend-engineer#screen-1..k (5-State UI screens, hooks, mutations)<br/>Wave 1 contracts & globals.css locked in READ_ONLY_FILES<br/>Gate: boomopen cook verify-wave <plan.md> --wave 2 --git --run-verify"]
     W2 --> W3["💎 Wave 3: Parallel Cross-Stack Verification & Adversarial Audit<br/>• fullstack-team-reviewer + tester#e2e (+ Optional Cross-Engine Critic)<br/>Runs: api_validator.py + ux_audit.py + accessibility_checker.py<br/>+ boomopen check <dir> --strict-phase --no-stubs"]
     W3 -->|"🔴 BLOCKER / 🟡 REVISE (<= 3 warm send_message rounds)"| W2
     W3 -->|"✅ COOK-G1..G4 PASS + CONSENSUS"| OUT["Release Verified Fullstack Deliverable"]
@@ -67,20 +68,20 @@ flowchart TD
 | **W3** | `fullstack-team-reviewer` + `tester#e2e` | `tests/e2e/*` (`tester` only; `reviewer` read-only) | All application source files |
 
 - **Scoped Warm Session Reuse**: Record `role#shard -> conversationId` on spawn; route Wave 3 findings directly to the owning shard via `send_message` (max 3 rounds; Round 3 escalates to `fullstack-team-techlead` for binding arbitration).
-- **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, invoke `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<wave diff & SHARED_CONTRACT>"` (`boomopen conduct dispatch --role reviewer --engine cross_family`).
+- **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, invoke `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<wave diff & SHARED_CONTRACT>"`.
 
 ---
 
 ## 🔍 4 Deterministic Post-Wave Gates (`COOK-G1..G4`)
 
-Every wave MUST pass `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`:
+Every wave MUST pass `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`:
 
 | Gate ID | Gate Dimension | Deterministic CLI & Reviewer Enforcement |
 |:-------:|:---------------|:-----------------------------------------|
-| **`COOK-G1`** | **Disjoint `OWNED_FILES` & Write-Lock** | All Wave `<N>` `OWNED_FILES` exist, `<= 4` files touched per `role#shard`, and `0` unauthorized edits to `READ_ONLY_FILES`. |
-| **`COOK-G2`** | **`SHARED_CONTRACT` & Zero-Stub Hygiene** | DTO/schema/token imports match Wave 1 contracts; `boomopen check <dir> --strict-phase --no-stubs` reports `0` stubs/TODOs, `0` explicit `any`, and `0` stray `console.log`. |
-| **`COOK-G3`** | **Wave `--run-verify` & Cross-Stack Audits** | Typecheck/build/tests exit `0` + `api_validator.py`, `ux_audit.py`, and `accessibility_checker.py` pass with WCAG 2.2 AA & 5-State UI coverage. |
-| **`COOK-G4`** | **RTM Traceability & Consensus Stamp** | `100%` of Wave `REQ-xxx` / `AC` items verified, Reviewer `APPROVAL` posted, and `fullstack-team-techlead` stamps `✅ CONSENSUS` in `MAILBOX-{date}.md`. |
+| **`COOK-G1`** | **Disjoint `OWNED_FILES` & Write-Lock** | `<= 4` files touched per `role#shard`; `0` unauthorized mutations to `READ_ONLY_FILES` (`--git`). |
+| **`COOK-G2`** | **Deliverables Present & Non-Empty** | All expected Wave `<N>` `OWNED_FILES` and `Test Files` exist on disk and are non-empty (`> 0` bytes). |
+| **`COOK-G3`** | **`SHARED_CONTRACT` & Zero-Stub Hygiene** | DTO/schema/token imports match Wave 1 contracts; `boomopen check <dir> --strict-phase --no-stubs` reports `<= 500` lines, `0` stubs/TODOs, `0` explicit `any`, and `0` stray `console.log`. |
+| **`COOK-G4`** | **Wave `--run-verify`, Audits & Consensus** | Typecheck/build/tests + `api_validator.py`, `ux_audit.py`, & `accessibility_checker.py` exit `0`, `100%` `REQ-xxx`/`AC` verified, Reviewer `APPROVAL`, and `✅ CONSENSUS`. |
 
 ---
 
@@ -106,6 +107,6 @@ Every shard spawned via `invoke_subagent(TypeName: "self", Model: "inherit")` re
 ### Hard Release Blockers (`fullstack-team-techlead` MUST Reject Release If Any Fail)
 - [ ] Any Wave 2 Frontend shard waited sequentially on Backend instead of building in parallel against Wave 1 contracts.
 - [ ] Any shard touched `> 4 OWNED_FILES` or mutated locked `READ_ONLY_FILES` (`COOK-G1` failure).
-- [ ] `boomopen cook verify-wave --run-verify` or `boomopen check <dir> --strict-phase --no-stubs` exited non-zero (`COOK-G2`/`G3`).
+- [ ] `boomopen cook verify-wave "<plan.md>" --wave <W> --git --run-verify` or `boomopen check <dir> --strict-phase --no-stubs` exited non-zero (`COOK-G2`..`COOK-G4`).
 - [ ] `api_validator.py`, `ux_audit.py`, or `accessibility_checker.py` reported unresolved `🔴 BLOCKER` findings.
 - [ ] `MAILBOX-{date}.md` lacks Reviewer `APPROVAL` (`PASS`) and `✅ CONSENSUS` across all waves (`COOK-G4`).

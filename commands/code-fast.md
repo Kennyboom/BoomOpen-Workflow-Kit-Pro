@@ -44,7 +44,7 @@ execution-mode: execute
 ### Step 3: Mandatory End-to-End Verification (Self-Heal Until Green)
 1. **Wave Gate** *(when `PLAN-{feature}.md` exists)*:
    ```bash
-   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify
    ```
 2. **Build, Tests & Strict Anti-Stub Check**:
    Run project typecheck/build (`tsc --noEmit` or equivalent), unit/integration tests, and:

@@ -3,10 +3,10 @@
   <p><strong>跨平台智慧混合 (Smart-Hybrid) AI 研發作業系統 — 21 位專家級智慧體、18 支黃金三角團隊與 1,460+ 按需技能寶庫</strong></p>
 
   <p>
-    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
+    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
     <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
-    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
+    <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
     <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
   </p>
@@ -22,11 +22,11 @@
 ## 🎬 官方發佈宣傳片 (Full HD 1080p)
 
 <div align="center">
-  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
+  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
     <img src="../assets/media/poster_en.png" alt="觀看 BoomOpen Workflow Kit v5.5 官方發佈宣傳片 (Full HD 1080p)" width="92%" />
   </a>
   <p>
-    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>點擊此處線上觀看 / 播放 Full HD 1080p 官方宣傳片 (MP4 專業配音版)</b></a>
+    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>點擊此處線上觀看 / 播放 Full HD 1080p 官方宣傳片 (MP4 專業配音版)</b></a>
   </p>
 </div>
 
@@ -36,9 +36,9 @@
 
 **BoomOpen Workflow Kit v5.5（跨平台統一與智慧混合版）** 是一套開源的多代理人（Multi-Agent）研發作業系統，能將單一 AI 程式設計助手升級為由 **21 位專家級代理人（Specialist Agents）**、**18 支黃金三角對抗團隊（Golden Triangle Teams）**、**22 項核心技能（Core Skills）** 以及 **1,440 項專業領域技能庫（`skills_library`）** 組成的協同工程團隊。
 
-不同於每次簡單提問都會產生冷啟動延遲的笨重框架，BoomOpen v5.5 引入了 **雙模式智慧複雜度閾值閘門（2-Mode Smart Complexity Threshold Gate）**：
-- **⚡ Mode A — 直接執行模式（0 秒冷啟動）**：針對日常問答、程式碼解釋、單一領域錯誤修復或僅觸及 **≤ 2 個檔案**（且未呼叫 `/cmd` 斜線指令）的明確修改，由主代理人**直接**執行、測試與驗證，同時嚴格執行 **務實雙層編碼規範（Pragmatic 2-Tier Coding Standards）** 與 **持續測試與除錯（Persistent Testing & Bug Fixing）**。
-- **🎻 Mode B — 嚴格多代理人編排模式（Strict Multi-Agent Orchestration）**：針對複雜功能開發（**> 2 個檔案** 或 **≥ 2 個領域**）或明確呼叫 `/cmd` 工作流指令時，啟動嚴格編排器模式，支援 **DAG 平行扇出（Parallel Fan-Out）**、**計畫直達執行者派發（Direct Plan-to-Executor Dispatch）**、**契約優先檔案鎖（`SHARED_CONTRACT` + `OWNED_FILES`）** 以及 **有狀態熱會話重用（`send_message`）**。
+不同於每輪對話都會產生冷啟動延遲與上下文膨脹的笨重代理封裝，BoomOpen v5.5 融合了 **Turn-1 子代理人優先閘門（Proactive Sub-agent First Gate）**、**17 語言自然語言工作流路由**、**4 層動態彈性蜂群分片（`role#shard`）**、**多會話專案自動駕駛（`/autopilot`）** 與 **跨引擎指揮官（`/conduct`）**：
+- **🚀 Turn-1 零稅平行子代理人與 Mode B 多代理人編排**：範圍未知的程式碼庫探索（`> 2` 個檔案）、跨領域功能（`≥ 2` 個領域）、**全部 17 種支援語言**的自然語言工作流意圖或明確 `/cmd` 指令，均在 Turn 1 立即平行啟動子代理人分片（`role#shard`，每分片 `<= 3–4` 個 `OWNED_FILES`），結合 **DAG 平行扇出**、**計畫直達執行者派發**、**契約優先檔案鎖（`SHARED_CONTRACT` + `OWNED_FILES`）**、**分片級熱會話重用（`role#shard -> conversationId`，透過 `send_message`）**，以及 `/autopilot`（`boomopen ledger`）與 `/conduct`（`boomopen conduct`）多引擎委員會。
+- **⚡ Mode A — 已知目標微直接執行（0 秒冷啟動）**：簡單問答、程式碼解釋以及 **在 Turn 1 已明確知曉精確 `≤ 2` 個目標檔案**的微小修改（0 探索、無 `/cmd`），由主代理人嚴格遵循 **務實雙層編碼規範** 與 **持續測試與除錯** **直接**完成並驗證。
 
 - **📚 1,462 巨型專業技能庫（零上下文膨脹）**：包含 **22 項核心技能 (`skills/`)** 與 **1,440 項垂直領域技能 (`skills_library/`)**，預編譯至 `matrix-skills/compact-index.json` 實現 `O(1)` 兩步按需載入，讓 AI 瞬間掌握後端、前端、行動端、遊戲開發 (Unity/Unreal/Godot)、AI/ML、BigQuery/資料工程、雲端原生/DevOps 與 OWASP 資安，且絕不污染提示詞視窗。
 
@@ -74,15 +74,15 @@ flowchart TD
 2. **📏 務實雙層編碼規範（Pragmatic 2-Tier Coding Standards — 拒絕機械式切碎檔案）**：
    - **第一層（Tier 1 — 嚴格品質與安全底線，零容忍）**：單一職責原則（Single Responsibility）、**嚴禁顯式 `any`**、**嚴禁在正式環境程式碼遺留除錯 `console.log`**、非同步與 API 邊界必須包含 `try/catch` 與強型別錯誤處理、常數採用 `SCREAMING_SNAKE_CASE`、DRY（重複 ≥ 3 次抽離）、清理並排序匯入語句。
    - **第二層（Tier 2 — 彈性結構指南，內聚優先）**：單一檔案軟目標為 `~200–350 行`，高內聚模組軟上限可達 `~400–450 行`（僅當 `>500 行` 或混雜多個領域職責時才強制拆分；測試、Schema/Types 與文件免除行數限制）。邏輯函式目標 `~20–40 行`（UI/處理函式 `~40–80 行`）。
-3. **🎯 計畫直達執行者派發 & 有狀態熱子代理人重用 (`send_message`)**：
-   - 一旦產出 `PLAN-{feature}.md`，編排器會將任務**直接派發**給領域工程師（`backend-engineer`、`frontend-engineer`、`database-architect` 等），徹底消除多餘的 `tech-lead` 中轉步驟。
-   - 已啟動的子代理人會記錄在 **活動會話註冊表 (`Role → conversationId`)** 中，後續修復與迭代透過 `send_message` 直接喚醒，實現 **0 秒冷啟動** 與 **100% 上下文保留**。
+3. **🎯 4 層動態彈性蜂群分片（`role#shard`）、計畫直達派發 & 熱會話重用 (`send_message`)**：
+   - 一旦產出 `PLAN-{feature}.md`，編排器會將任務**直接派發**給領域工程師分片（`backend-engineer#shard-1`、`frontend-engineer#shard-2`、`database-architect#shard-1` 等，每分片 `<= 3–4` 個 `OWNED_FILES`），徹底消除多餘的 `tech-lead` 中轉步驟。
+   - 活動子代理人按分片記錄在 **分片會話註冊表 (`role#shard → conversationId`)** 中，後續迭代透過 `send_message` 直接喚醒，實現 **0 秒冷啟動** 與 **100% 上下文保留**。
 4. **🤝 契約優先平行派發 (`SHARED_CONTRACT` + `OWNED_FILES`)**：
    - 跨領域計畫在啟動平行開發前，預先鎖定 API 介面契約、DTO 資料結構及互斥的檔案寫入所有權（`OWNED_FILES` 與 `READ_ONLY_FILES`），徹底杜絕平行覆寫衝突與介面不匹配。
 5. **🔍 5-Whys (SPIE v3.0) 根因除錯與 100% 潔淨 Git 樹**：
    - `debugger` 透過 3 個優先級假設與 **5-Whys 因果鏈**（`Why 1 直接症狀` → `Why 5 系統性根因`）定位問題。所有暫態產物（`PLAN`、`DEBUG`、`TEST`、`REVIEW`、`MAILBOX`）預設寫入 `<appDataDir>\brain\<conversation-id>\`，保持專案 Git 工作區 100% 潔淨。
 6. **🩺 內建 CLI 診斷工具 (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check` & `doctor`) 與 O(1) 技能索引**：
-   - `npm run doctor` 自動檢驗五大平台配置、21 個代理人、72 個團隊檔案、84 個指令檔案（`79` 個工作流 + `5` 個 `_ref/` 協定）及 `matrix-skills/compact-index.json`（索引 `1,462` 項技能）。`boomopen check <dir>` 僅檢查可機械驗證的規則：檔案行數、TypeScript 中的顯式 `any` 以及遺留的 `console.log`；其餘規範屬於對代理人的指令。 `boomopen research`、`boomopen design`、`boomopen plan`、`boomopen cook`、`boomopen ledger` 與 `boomopen conduct` 提供確定性契約編譯、分片交接包產生與跨引擎委員會編排。
+   - `npm run doctor` 自動檢驗五大平台配置、21 個代理人、72 個團隊檔案、84 個指令檔案（`79` 個工作流 + `5` 個 `_ref/` 協定）及 `matrix-skills/compact-index.json`（索引 `1,462` 項技能）。`boomopen check <dir> [--strict-phase --no-stubs]` 靜態審計檔案行數、顯式 TypeScript `any`、遺留 `console.log`、推遲的 `TODO`/`FIXME` 註解、空殼樁程式碼（stubs）及測試作弊行為。 `boomopen research`、`boomopen design`、`boomopen plan`、`boomopen cook`、`boomopen ledger` 與 `boomopen conduct` 提供確定性契約編譯、分片交接包產生與跨引擎委員會編排。
 
 ---
 
@@ -104,8 +104,8 @@ flowchart TD
 
 ```bash
 # 1. 複製程式碼儲存庫
-git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
-cd BoomOpen-Workflow-Kit
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+cd BoomOpen-Workflow-Kit-Pro
 
 # 2. 為您使用的 AI 程式設計助手安裝（任選其一或使用 --all 全部安裝）
 npm run install:antigravity   # Google Antigravity 2.0 (Gemini)
@@ -121,7 +121,7 @@ npm link
 boomopen research validate path/to/RESEARCH.md
 boomopen design validate path/to/DESIGN.md
 boomopen plan validate path/to/PLAN.md
-boomopen cook preflight --plan path/to/PLAN.md
+boomopen cook preflight path/to/PLAN.md
 boomopen check path/to/your/project --strict-phase --no-stubs
 boomopen ledger status
 boomopen conduct probe
@@ -164,7 +164,7 @@ boomopen settings set execution.mode mode_a --project
 boomopen settings reset
 ```
 
-> `--project` 一律在你執行指令的資料夾寫入 `./.boomopen.json`，請在你的專案目錄中執行，而非套件的 clone 目錄。未執行 `npm link` 時，請把 `boomopen` 換成 `node /path/to/BoomOpen-Workflow-Kit/cli/install.js`。
+> `--project` 一律在你執行指令的資料夾寫入 `./.boomopen.json`，請在你的專案目錄中執行，而非套件的 clone 目錄。未執行 `npm link` 時，請把 `boomopen` 換成 `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`。
 
 ---
 
@@ -206,6 +206,8 @@ boomopen settings reset
 
 ---
 
+<a id="skills"></a>
+
 ## 📚 1,460+ 專業技能寶庫（22 項核心技能 + 1,440 項領域技能）
 
 BoomOpen 內建開源界規模最大的 AI 工程技能矩陣之一，透過 **兩步 O(1) 漸進式檢索**（`<skills>` 核心匹配 → `matrix-skills/compact-index.json` 索引檢索 → 按需載入 `SKILL.md`）實現 **0 閒置 Token 消耗**：
@@ -224,8 +226,8 @@ BoomOpen 內建開源界規模最大的 AI 工程技能矩陣之一，透過 **�
 ## 📂 儲存庫目錄結構
 
 ```text
-BoomOpen-Workflow-Kit/
-├── agents/                  # 21 個專家代理人定義 + 18 支黃金三角團隊（54 個角色檔案）
+BoomOpen-Workflow-Kit-Pro/
+├── agents/                  # 21 個專家代理人定義 + 18 支黃金三角團隊（54 個角色檔案 + 18 個 _team.md，共 72 個檔案）
 ├── cli/                     # 安裝器 (install.js)、診斷 (doctor.js)、檢查器 (checker.js)、設定中心 (settings.js), research.js, design.js, plan.js, cook.js、帳本 (ledger.js) 與跨引擎指揮官 (conductor.js)
 ├── commands/                # 79 個斜線指令工作流 (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 個 _ref/ 共享協定 (共 84 個檔案)
 ├── documents/               # 雙層架構、領域模型、原始碼底座與編碼規範文件

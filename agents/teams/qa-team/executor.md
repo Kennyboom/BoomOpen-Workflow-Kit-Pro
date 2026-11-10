@@ -40,10 +40,10 @@ You are a scoped **Test Pyramid Executor Shard** (`tester#harness`, `tester#unit
    - For E2E/A11y (`tester#e2e`, `tester#a11y`): use resilient `getByRole` / `getByLabel` locators and verify WCAG 2.2 AA focus order, `SC 2.4.11` Focus Not Obscured, and `>= 24x24px` (`44pt` mobile) targets.
 3. **Self-Verification Before `[SUBMISSION]` (`QA-G4`)**:
    ```bash
-   python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <assigned-test-paths>
-   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <assigned-test-paths> --strict-phase --no-stubs
+   python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <project-root> [--coverage]
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <test-dir> --strict-phase --no-stubs
    ```
-   *(Run `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py <url-or-dir>` when owning E2E specs.)*
+   *(Run `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py --suite <project-root>` or `playwright_runner.py <http-url> [--a11y] [--screenshot]` when owning E2E specs.)*
 
 ---
 

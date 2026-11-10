@@ -1,6 +1,7 @@
 ---
 name: game-team
 team: game-team
+description: "3-Wave ECS & Frame-Budget Elastic Golden Diamond Game Team (v5.5) — Approved-Plan Fast-Forward, Wave 1 tick/ECS/shader contract lock, Wave 2 parallel gameplay/rendering/physics/netcode shards (<= 3-4 OWNED_FILES/shard), and Wave 3 60fps zero-GC verification"
 summary: "3-Wave ECS & Frame-Budget Elastic Golden Diamond Game Team (v5.5) — Approved-Plan Fast-Forward, Wave 1 tick/ECS/shader contract lock, Wave 2 parallel gameplay/rendering/physics/netcode shards (<= 3-4 OWNED_FILES/shard), and Wave 3 60fps zero-GC verification"
 version: 5.5.0
 pattern: elastic-golden-diamond
@@ -47,8 +48,8 @@ flowchart TD
     G0{"PLAN-{feature}.md Validated?<br/>(boomopen cook state)"}
     G0 -->|"Yes (boomopen cook packets)"| W1
     G0 -->|"No (Ad-hoc /code:team)"| S0["Loop, ECS & Frame-Budget Lock<br/>game-team-techlead + scouter#engine<br/>Locks SHARED_CONTRACT (components/events) & OWNED_FILES"]
-    S0 --> W1["💎 Wave 1: Core Game Loop, ECS Schemas & Input/Netcode Contracts<br/>• game-engineer#core-ecs (Fixed-timestep loop, ECS components, event bus,<br/>object pools, input & state-snapshot schemas; <= 3-4 OWNED_FILES)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 1 --run-verify"]
-    W1 --> W2["💎 Wave 2: Parallel Gameplay, Rendering, Physics & HUD Shards (<= 3-4 OWNED_FILES/shard)<br/>• game-engineer#gameplay-1..k (Combat, AI state machines, progression)<br/>• game-engineer#rendering-shaders (WGSL/HLSL/GDShader, instancing, VFX)<br/>• game-engineer#physics-netcode-hud (Collision layers, client prediction, HUD)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 2 --run-verify"]
+    S0 --> W1["💎 Wave 1: Core Game Loop, ECS Schemas & Input/Netcode Contracts<br/>• game-engineer#core-ecs (Fixed-timestep loop, ECS components, event bus,<br/>object pools, input & state-snapshot schemas; <= 3-4 OWNED_FILES)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 1 --git --run-verify"]
+    W1 --> W2["💎 Wave 2: Parallel Gameplay, Rendering, Physics & HUD Shards (<= 3-4 OWNED_FILES/shard)<br/>• game-engineer#gameplay-physics (Combat, AI state machines, progression)<br/>• game-engineer#rendering-shaders (WGSL/HLSL/GDShader, instancing, VFX)<br/>• game-engineer#netcode-hud (Collision layers, client prediction, HUD)<br/>Gate: boomopen cook verify-wave <plan.md> --wave 2 --git --run-verify"]
     W2 --> W3["💎 Wave 3: 16.6ms Frame-Time, Zero-GC, Determinism & Feel Audit<br/>• game-team-reviewer + tester#sim (+ Optional Cross-Engine Critic)<br/>Runs: Headless tick/simulation tests + boomopen check <dir> --strict-phase --no-stubs"]
     W3 -->|"🔴 BLOCKER / 🟡 REVISE (<= 3 warm send_message rounds)"| W2
     W3 -->|"✅ COOK-G1..G4 PASS + CONSENSUS"| OUT["Release Verified Playable Game Systems"]
@@ -59,26 +60,26 @@ flowchart TD
 | Wave | Shard Key (`role#shard`) | Disjoint `OWNED_FILES` (`<= 3–4`) | Locked `READ_ONLY_FILES` |
 |:----:|:-------------------------|:----------------------------------|:-------------------------|
 | **W1** | `game-engineer#core-ecs` | `src/core/loop.ts`, `src/ecs/components.ts`, `src/ecs/events.ts` | `PLAN-{feature}.md` |
-| **W2** | `game-engineer#gameplay-1..k` | `src/systems/combat.ts`, `src/systems/ai.ts` | Wave 1 `core-ecs` |
+| **W2** | `game-engineer#gameplay-physics` | `src/systems/combat.ts`, `src/systems/ai.ts` | Wave 1 `core-ecs` |
 | **W2** | `game-engineer#rendering-shaders` | `src/render/pipeline.ts`, `src/shaders/*.wgsl` | Wave 1 `core-ecs` |
-| **W2** | `game-engineer#physics-netcode-hud` | `src/physics/world.ts`, `src/net/sync.ts`, `src/ui/hud.ts` | Wave 1 `core-ecs` |
+| **W2** | `game-engineer#netcode-hud` | `src/physics/world.ts`, `src/net/sync.ts`, `src/ui/hud.ts` | Wave 1 `core-ecs` |
 | **W3** | `game-team-reviewer` + `tester#sim` | `tests/sim/*.test.ts` (`tester` only) | All `src/**` files |
 
 - **Scoped Warm Session Reuse**: Record `game-engineer#<shard> -> conversationId` and route review fixes via `send_message` (max 3 rounds; Round 3 escalates to `game-team-techlead`).
-- **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<gameplay/shader diff & frame budget>"` (`boomopen conduct dispatch --role reviewer --engine cross_family`).
+- **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<gameplay/shader diff & frame budget>"`.
 
 ---
 
 ## 🔍 4 Deterministic Post-Wave Gates (`COOK-G1..G4`)
 
-Every wave MUST pass `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`:
+Every wave MUST pass `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`:
 
 | Gate ID | Gate Dimension | Deterministic CLI & Reviewer Enforcement |
 |:-------:|:---------------|:-----------------------------------------|
-| **`COOK-G1`** | **Disjoint `OWNED_FILES` & ECS Lock** | `<= 4` files per `role#shard`; `0` unauthorized edits to Wave 1 core loop/ECS `READ_ONLY_FILES`. |
-| **`COOK-G2`** | **`SHARED_CONTRACT` & Zero-Stub/Hot-Alloc** | Component/event/packet alignment, `0` per-frame heap allocations in `update`/`_physics_process`, and `boomopen check <dir> --strict-phase --no-stubs` clean. |
-| **`COOK-G3`** | **Wave `--run-verify` & Simulation Tests** | Build/shader compile/headless tick & physics tests exit `0` within `16.6ms` (`60fps`) frame-time & draw-call budgets. |
-| **`COOK-G4`** | **RTM Traceability & Consensus Stamp** | `100%` of Wave `REQ-xxx` / `AC` verified, `game-team-reviewer` posts `APPROVAL`, and `game-team-techlead` stamps `✅ CONSENSUS`. |
+| **`COOK-G1`** | **Disjoint `OWNED_FILES` & ECS Lock** | `<= 4` files per `role#shard`; `0` unauthorized mutations to Wave 1 core loop/ECS `READ_ONLY_FILES` (`--git`). |
+| **`COOK-G2`** | **Deliverables Present & Non-Empty** | All expected Wave `<N>` ECS, gameplay, shader, and simulation test files exist on disk and are non-empty (`> 0` bytes). |
+| **`COOK-G3`** | **`SHARED_CONTRACT` & Zero-Stub/Hot-Alloc** | Component/event/packet alignment, `0` per-frame heap allocations in `update`/`_physics_process`, and `boomopen check <dir> --strict-phase --no-stubs` clean. |
+| **`COOK-G4`** | **Wave `--run-verify`, Sim Tests & Consensus** | Build/shader compile/headless tick & physics tests exit `0` within `16.6ms` (`60fps`) frame budget, `100%` `REQ-xxx`/`AC` verified, Reviewer `APPROVAL`, and `✅ CONSENSUS`. |
 
 ---
 
@@ -103,7 +104,7 @@ Every shard spawned via `invoke_subagent(TypeName: "self", Model: "inherit")` re
 
 ### Hard Release Blockers (`game-team-techlead` MUST Reject Release If Any Fail)
 - [ ] Any `game-engineer#<shard>` touched `> 4 OWNED_FILES` or mutated locked Wave 1 ECS/loop contracts (`COOK-G1`).
-- [ ] Per-frame heap/GC allocations (`new`, array/closure churn) or frame-rate-dependent physics (`dt` misuse) exist in hot tick loops (`COOK-G2`).
-- [ ] `cook verify-wave --run-verify` or `boomopen check <dir> --strict-phase --no-stubs` exited non-zero (`COOK-G3`).
+- [ ] Expected system/shader deliverables are missing/empty (`COOK-G2`), or per-frame heap/GC allocations (`new`, array/closure churn) or `dt` misuse exist in hot tick loops (`COOK-G3`).
+- [ ] `cook verify-wave "<plan.md>" --wave <W> --git --run-verify` or `boomopen check <dir> --strict-phase --no-stubs` exited non-zero (`COOK-G3`/`COOK-G4`).
 - [ ] Object pools, asset disposal, or deterministic state transitions lack verification tests.
 - [ ] `MAILBOX-{date}.md` lacks `game-team-reviewer` `APPROVAL` and `✅ CONSENSUS` (`COOK-G4`).

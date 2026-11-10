@@ -22,7 +22,7 @@ execution-mode: router
      - **Progress / RTM Audit Report (`REPORT-autopilot-{project}.md`)**: `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: false }`
 3. **Deterministic CLI Suite (`node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ...`)**:
    - **Ledger Lifecycle**: `ledger init [--name <name>] [--docs <a.md,b.md>]` | `ledger from-plan <plan.md>` | `ledger validate [--strict-shards]` | `ledger status` | `ledger next` | `ledger verify --phase <id> [--passed-tests <N>]` | `ledger audit`
-   - **Plan & Wave Execution**: `plan validate <plan.md> --sync-ledger` | `plan compile <plan.md>` | `cook state --artifact-dir "<appDataDir>/brain/<conversation-id>"` | `cook packets <plan.md> --wave <n>` | `cook verify-wave <plan.md> --wave <n> --run-verify`
+   - **Plan & Wave Execution**: `plan validate <plan.md> --sync-ledger` | `plan compile <plan.md>` | `cook state --artifact-dir "<appDataDir>/brain/<conversation-id>"` | `cook packets "<plan.md>" --wave <n>` | `cook verify-wave "<plan.md>" --wave <n> --git --run-verify`
    - **Strict Code Gate**: `check <dir> --strict-phase --no-stubs`
 
 ---
@@ -75,7 +75,7 @@ Whenever the user asks in natural language to ingest multiple specification docu
 | Route | Workflow File | Core Responsibility & Deterministic Guarantees |
 |-------|---------------|------------------------------------------------|
 | **`/autopilot:init`** | `commands/autopilot-init.md` | **Phase 0 — Sharded Multi-Doc Ingestion & Zero-Omission Ledger Lock**: Fast-bootstrap via `ledger from-plan` / `plan compile` OR parallel `scouter#doc-1..N` + `reviewer#spec-auditor` Reverse Coverage Audit + `ledger init` + `ledger validate --strict-shards` + cohesive Brain `PLAN-{project}.md` / `REPORT-autopilot-{project}.md`. |
-| **`/autopilot:run`** | `commands/autopilot-run.md` | **Phase K..N — Scoped Context Slice & 4-Layer Quality Ratchet**: `ledger next` (~2,000-token slice) + Direct Ledger/Plan-to-Executor Dispatch (`cook packets` + 0-turn `invoke_subagent` `<= 3–4 OWNED_FILES`/shard) + `cook verify-wave --run-verify` + `check --strict-phase --no-stubs` + `ledger verify --phase <id>`. |
+| **`/autopilot:run`** | `commands/autopilot-run.md` | **Phase K..N — Scoped Context Slice & 4-Layer Quality Ratchet**: `ledger next` (~2,000-token slice) + Direct Ledger/Plan-to-Executor Dispatch (`cook packets` + 0-turn `invoke_subagent` `<= 3–4 OWNED_FILES`/shard) + `cook verify-wave "<plan.md>" --wave <n> --git --run-verify` + `check --strict-phase --no-stubs` + `ledger verify --phase <id>`. |
 | **`/autopilot:audit`** | `commands/autopilot-audit.md` | **Full RTM & Anti-Regression Audit**: `ledger audit` + `check --strict-phase --no-stubs` + parallel `reviewer#rtm`, `tester#regression`, and `security-engineer` verification → cohesive `<appDataDir>\brain\<conversation-id>\REPORT-autopilot-{project}.md`. |
 
 ---

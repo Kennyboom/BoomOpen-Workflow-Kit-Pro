@@ -1,6 +1,7 @@
 ---
 name: debug-team
 team: debug-team
+description: "3-Stage SPIE v3.0 Root-Cause & Regression-First Elastic Golden Diamond Debug Team (v5.5) — parallel symptom reproduction & hypothesis sharding, 5-Whys causal proof, optional RED-GREEN surgical fix wave, and adversarial root-cause validation"
 summary: "3-Stage SPIE v3.0 Root-Cause & Regression-First Elastic Golden Diamond Debug Team (v5.5) — parallel symptom reproduction & hypothesis sharding, 5-Whys causal proof, optional RED-GREEN surgical fix wave, and adversarial root-cause validation"
 version: 5.5.0
 pattern: elastic-golden-diamond

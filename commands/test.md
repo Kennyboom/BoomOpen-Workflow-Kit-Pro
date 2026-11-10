@@ -20,7 +20,7 @@ execution-mode: router
 > 🛡️ **ZERO-TEST-GAMING & `READ_ONLY_FILES` APP-CODE LOCK (MANDATORY)**:
 > 1. **Production Source Lock**: During `/test`, all production application source files (`src/**`, `app/**`, `server/**`, `lib/**`) are strictly locked in **`READ_ONLY_FILES`** (unless `--fix` is passed or the user explicitly asks to fix uncovered bugs). Test shards (`tester#unit`, `tester#integration`, `tester#e2e`, `tester#a11y`, `<= 3–4` test files/shard) **NEVER mutate app code, weaken assertions, or use `it.skip` / `test.only` / `test.todo` to fake green results**!
 > 2. **Deterministic Runner & Hygiene Gates**: Every `/test` workflow MUST run:
->    - `python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <dir>` (plus `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py <url-or-dir>` when E2E applies)
+>    - `python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <project-root> [--coverage]` (plus `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py --suite <project-root>` or `playwright_runner.py <http-url> [--a11y] [--screenshot]` when E2E applies)
 >    - `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <test-dir> --strict-phase --no-stubs` (blocks `.skip`, `.only`, `.todo`, `any`, and stubbed assertions)
 > 3. **Cohesive Single-File `TEST-{scope}.md` & Conditional 1-Click `"Proceed"` to `/fix`**:
 >    - Synthesize **1 single user-facing file** at `<appDataDir>\brain\<conversation-id>\TEST-{scope}.md` (`<= 500` lines, zero `{name}/` folder splits!).

@@ -33,7 +33,7 @@ execution-mode: execute
    ```bash
    node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <target-dir> --strict-phase --no-stubs
    ```
-   *(When auth/input/AI routes touch security, also run `python ~/.{TOOL}/skills_library/vulnerability-scanner/scripts/security_scan.py <target-dir>`; when UI components change, run `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <ui-dir>` and `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <ui-dir>`.)*
+   *(When auth/input/AI routes touch security, also run `python ~/.{TOOL}/skills/security-auditor/scripts/security_scan.py <target-dir>`; when UI components change, run `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <ui-dir>` and `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <ui-dir>`.)*
 2. **4-Lens Manual Audit (Zero Speculative Nitpicks)**:
    - **Correctness & Contract Compliance**: Matches `PLAN-{scope}.md` & `SHARED_CONTRACT`? Null/boundary/race conditions handled? `try/catch` + typed errors on async boundaries?
    - **Security (OWASP Web + 2026 LLM/Agentic)**: Authn/RBAC/IDOR checks, parameterized queries, URL allowlists (SSRF), prompt/tool-argument sanitization, zero hardcoded secrets.

@@ -53,10 +53,10 @@ Spawn **`qa-team-reviewer`** (`agents/teams/qa-team/reviewer.md`, combined `secu
 
 1. **Run Deterministic Verification Suite**:
    ```bash
-   python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <project-or-test-dir>
+   python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <project-root> [--coverage]
    node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <test-dir> --strict-phase --no-stubs
    ```
-   *(Plus `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py <url-or-dir>` for E2E and `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <ui-dir>` for UI.)*
+   *(Plus `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py --suite <project-root>` or `playwright_runner.py <http-url> [--a11y] [--screenshot]` for E2E and `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <ui-dir>` for UI.)*
 2. **Enforce `QA-G1..G4` via Warm `send_message` (`<= 3` Rounds)**:
    - **`QA-G1` (Zero Test Gaming)**: `0` edits to `READ_ONLY_FILES` app code; `0` `.skip`/`.only`/`.todo` or tautological `expect(true).toBe(true)` assertions.
    - **`QA-G2` (Adversarial Security/Perf/Edge Depth)**: OWASP auth/injection/IDOR cases, concurrency/N+1 bounds, and 100% `AC` mapping verified.

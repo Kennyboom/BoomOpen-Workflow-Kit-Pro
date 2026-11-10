@@ -39,7 +39,7 @@ The kit is distributed from source (`git clone` + `node cli/install.js install <
 
 Please report vulnerabilities **privately**. Do **not** put exploit details, proof-of-concept code or affected secrets in a public issue, pull request or discussion.
 
-1. Use GitHub private vulnerability reporting: [Report a vulnerability](https://github.com/Kennyboom/BoomOpen-Workflow-Kit/security/advisories/new).
+1. Use GitHub private vulnerability reporting: [Report a vulnerability](https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/security/advisories/new).
 2. If that form is unavailable, open a public issue titled **"Security contact request"** containing **no technical details**. A maintainer will reply with a private channel.
 3. Include:
    - Affected file path(s), kit version or commit, and platform (`antigravity`, `claude`, `codex`, `cursor`, `copilot`)

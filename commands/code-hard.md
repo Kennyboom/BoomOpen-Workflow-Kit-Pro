@@ -67,7 +67,7 @@ execution-mode: execute
    ```
    Spawn Wave 1 shards (`database-architect#schema`, `backend-engineer#contracts`, `frontend-engineer#tokens-primitives`) concurrently (`TypeName: "self"`, `Model: "inherit"`), record `role#shard -> conversationId`, and verify:
    ```bash
-   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify
    ```
 2. **Wave 2 — High-Velocity Parallel Feature Shards (`≤ 3–4 OWNED_FILES`/Shard)**:
    ```bash
@@ -75,7 +75,7 @@ execution-mode: execute
    ```
    Spawn `backend-engineer#api-1..k`, `frontend-engineer#screen-1..k`, and `mobile-engineer#1..k` **in parallel in a single turn** (Wave 1 contracts/tokens & sibling shards' files auto-locked in `READ_ONLY_FILES`). Verify Wave 2 (routing any fixes via warm `send_message`, max 3 rounds):
    ```bash
-   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --run-verify
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --git --run-verify
    ```
 
 ---

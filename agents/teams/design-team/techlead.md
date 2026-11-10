@@ -43,7 +43,7 @@ You are the **Principal Design Director & Arbitrator (Tech Lead)** of the `desig
    - Dispatch in a **single Turn-1 parallel wave** (`TypeName: "self"`, `Model: "inherit"`) and record `role#shard -> conversationId` for Warm Session Reuse (`send_message`):
      - `scouter#ui-tokens` → Scans existing repo `globals.css`, `tailwind.config.*`, `DESIGN.md`, and `components/ui/*` into `<appDataDir>\brain\<conversation-id>\SCOUT-{request}.md` (`RequestFeedback: false`).
      - `researcher#ux-patterns` → Maps user JTBD flows, information architecture, and edge-case interactions into `<appDataDir>\brain\<conversation-id>\RESEARCH-{request}.md` (`RequestFeedback: false`).
-   - **Multi-Engine Council (`engines.designer` / `--council`)**:
+   - **Multi-Engine Council (`engines.planner = "council"` / `--council`)**:
      - When configured or requested, concurrently run:
        `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task design --prompt "<request>" --output "<appDataDir>/brain/<conversation-id>/COUNCIL-<request>.md"`
 

@@ -58,7 +58,7 @@ version: "5.5"
 
    # Scan repository code/configs & security posture when code exists alongside docs
    node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs
-   python ~/.{TOOL}/skills_library/vulnerability-scanner/scripts/security_scan.py <dir>
+   python ~/.{TOOL}/skills/security-auditor/scripts/security_scan.py <dir>
    ```
 
 ---

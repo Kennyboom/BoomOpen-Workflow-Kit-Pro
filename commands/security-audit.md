@@ -45,7 +45,7 @@ Launch deterministic scanners via `run_command` **in parallel** with `security-e
 
 ```bash
 # 1. Automated vulnerability & secret pattern scanner
-python ~/.{TOOL}/skills_library/vulnerability-scanner/scripts/security_scan.py <target-dir>
+python ~/.{TOOL}/skills/security-auditor/scripts/security_scan.py <target-dir>
 
 # 2. Strict code-quality, type-safety & anti-stub gate
 node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <target-dir> --strict-phase --no-stubs

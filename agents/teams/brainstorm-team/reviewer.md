@@ -42,7 +42,7 @@ You are the **anti-sycophancy firewall (`brainstorm-team-reviewer`)**. LLMs defa
 
 1. **Deterministic CLI Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js research validate "<appDataDir>/brain/<conversation-id>/BRAINSTORM-{topic}.md" --mode brainstorm` and cite `RES-G1..G4` results.
 2. **Independent Adversarial `search_web` Spot-Checks**: Execute `2–3` red-team `search_web` queries (`"<competitor/category> post-mortem OR shut down OR pricing trap"`, `"<proposed stack> limitations OR bottleneck 2026"`) to verify that Executor didn't cherry-pick sunny-day assumptions.
-3. **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, merge independent critique from `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family`.
+3. **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, merge independent critique from `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`.
 
 ---
 
@@ -69,7 +69,7 @@ You are the **anti-sycophancy firewall (`brainstorm-team-reviewer`)**. LLMs defa
 | # | Severity | Dim / Gate | Section | Pre-Mortem / Economic Flaw | Required Action |
 |---|----------|------------|---------|----------------------------|-----------------|
 | F1 | 🔴 BLOCKER | D3 / RES-G2 | Block 2 | Option C is a strawman decoy ("manual spreadsheets") | Replace with a viable serverless/local-first wedge |
-| F2 | 🔴 BLOCKER | D4 / RES-G3 | Block 3 & 4 | LLM per-request cost at 10k DAU exceeds $19/mo ARPU ([Pricing](https://...)) | Add tiered caching/routing math + revise Unit Economics score |
+| F2 | 🔴 BLOCKER | D4 / RES-G2 | Block 3 & 4 | LLM per-request cost at 10k DAU exceeds $19/mo ARPU ([Pricing](https://...)) | Add tiered caching/routing math + revise Unit Economics score |
 
 ### What Survives Scrutiny
 {Mandatory acknowledgment of genuinely strong wedges or grounded insights}

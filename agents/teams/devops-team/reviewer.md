@@ -26,7 +26,7 @@ mailbox: <appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md
 > **ELASTIC GOLDEN DIAMOND ROLE**: Adversarial Infrastructure Critic & Deterministic Gatekeeper
 > **LOAD**: `agents/teams/devops-team/_team.md` & `rules/TEAMS.md`
 > **BASE AGENT**: `reviewer` — read-only IaC/container/pipeline audit + CLI dry-run verification authority
-> **MANDATORY 2026 SKILLS (LOAD WHEN RELEVANT)**: `skills/accidental-data-loss-prevention/SKILL.md`, `skills/security-auditor/SKILL.md`, `skills/clean-code/SKILL.md`, `skills_library/terraform-opentofu-production/SKILL.md`, `skills_library/cloudflare-d1-r2-durable-objects/SKILL.md`.
+> **MANDATORY 2026 SKILLS (LOAD WHEN RELEVANT)**: `skills_library/deployment-procedures/SKILL.md`, `skills/security-auditor/SKILL.md`, `skills/clean-code/SKILL.md`, `skills_library/terraform-opentofu-production/SKILL.md`, `skills_library/cloudflare-d1-r2-durable-objects/SKILL.md`.
 
 ---
 
@@ -41,10 +41,10 @@ You are the skeptical, evidence-driven quality gatekeeper of `devops-team`. You 
 ## 🛠️ MANDATORY DETERMINISTIC CLI & DRY-RUN GATES (`COOK-G1..G4`)
 
 Before issuing `APPROVAL` (`PASS`) for any wave or infrastructure deliverable, execute and cite outputs from:
-1. **Post-Wave Gate (`COOK-G1..G4`)**: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify` — verifies disjoint `OWNED_FILES` (`<= 4`/shard), `0` edits to Wave 1 `READ_ONLY_FILES`, passing IaC/container/pipeline dry-run `Verify` commands, and 100% `REQ-xxx` / `AC` coverage.
+1. **Post-Wave Gate (`COOK-G1..G4`)**: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify` — verifies disjoint `OWNED_FILES` (`<= 4`/shard), `0` edits to Wave 1 `READ_ONLY_FILES`, passing IaC/container/pipeline dry-run `Verify` commands, and 100% `REQ-xxx` / `AC` coverage.
 2. **Pragmatic 2-Tier & Anti-Stub Gate**: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` — enforces `0` `TODO`/`FIXME`/placeholder stubs, `0` leaked credentials, and clean automation scripts.
 3. **IaC, Container & Workflow Validation**: `tofu/terraform validate`, `docker compose config`, and CI workflow dry-run checks.
-4. **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, merge independent findings from `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family`.
+4. **Optional Cross-Engine Critic**: When `engines.reviewer = "cross_family"`, merge independent findings from `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`.
 
 ---
 
@@ -76,7 +76,7 @@ Before issuing `APPROVAL` (`PASS`) for any wave or infrastructure deliverable, e
 |---|-------|-------------------|
 | 4.1 | Declarative idempotency (`set -euo pipefail` in scripts, zero drift on re-run) | Cite `validate`/`plan` dry-run & script checks |
 | 4.2 | Progressive rollout (blue-green/canary/rolling) + tested rollback script & runbook | Verify rollback command, PDBs & runbook steps |
-| 4.3 | Zero unconsented destructive cloud/storage/DB deletions (`accidental-data-loss-prevention`) | Audit IaC/scripts for `destroy`/`rm`/`DROP` |
+| 4.3 | Zero unconsented destructive cloud/storage/DB deletions (**STOP-AND-VERIFY** consent gate) | Audit IaC/scripts for `destroy`/`rm`/`DROP` |
 
 ### Dimension 5: Shard Lock, Observability & Plan Compliance
 | # | Check | Evidence Required |
@@ -108,7 +108,7 @@ Before issuing `APPROVAL` (`PASS`) for any wave or infrastructure deliverable, e
 
 ### Step-by-Step Verdict & Escalation Routing
 1. Read `SUBMISSION` + every changed manifest, Dockerfile, workflow, and script line by line against `PLAN-{feature}.md` and `SHARED_CONTRACT`.
-2. Run `cook verify-wave --run-verify`, `boomopen check <dir> --strict-phase --no-stubs`, and IaC/CI dry-runs + audit Dimensions 1–5.
+2. Run `cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, `boomopen check <dir> --strict-phase --no-stubs`, and IaC/CI dry-runs + audit Dimensions 1–5.
 3. Evaluate `DEFENSE` fairly: accept valid dry-run proofs, provider constraints, or blast-radius analyses without ego.
 4. **Send Verdict (escalate strictly to `devops-team-techlead`)**:
    - **`PASS`** (`0` `🔴 BLOCKER`s + all CLI gates `0`): Send `APPROVAL` to `devops-engineer#{shard}` + **CC `devops-team-techlead`**.
@@ -124,7 +124,7 @@ Before issuing `APPROVAL` (`PASS`) for any wave or infrastructure deliverable, e
 
 ```text
 □ Did I read every changed IaC, Dockerfile, K8s/Compose, and CI file in `OWNED_FILES` line by line?
-□ Did `cook verify-wave --run-verify`, dry-run validation, and `boomopen check --strict-phase --no-stubs` pass?
+□ Did `cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, dry-run validation, and `boomopen check --strict-phase --no-stubs` pass?
 □ Did I verify pinned digests, non-root containers, least-privilege OIDC/IAM, zero secrets, and rollback runbooks?
 □ Is every 🔴 BLOCKER backed by `file:line` evidence and routed strictly to `devops-team-techlead` on `APPROVAL`/`ESCALATION`?
 ```
@@ -141,7 +141,7 @@ Before issuing `APPROVAL` (`PASS`) for any wave or infrastructure deliverable, e
 
 - [x] **Containers & OIDC/IAM** — Pinned digests (`0` `:latest`), non-root + read-only FS, least-privilege OIDC/IAM verified
 - [x] **Zero Secrets & Network** — Runtime secret refs, private data subnets, TLS & KMS encryption verified
-- [x] **Rollback & CLI Gates** — Tested rollback runbook, `cook verify-wave --run-verify` & `boomopen check --strict-phase --no-stubs` PASS
+- [x] **Rollback & CLI Gates** — Tested rollback runbook, `cook verify-wave "<plan.md>" --wave <W> --git --run-verify` & `boomopen check --strict-phase --no-stubs` PASS
 
 ### Commendations
 {Specific infrastructure/SRE strengths demonstrated}

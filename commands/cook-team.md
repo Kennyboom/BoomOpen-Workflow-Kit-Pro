@@ -33,7 +33,7 @@ execution-mode: execute
 | **Stage 1: Discovery Diamond** | `SCOUT-{feature}.md` + `RESEARCH-{feature}.md` *(Skipped if present)* | — |
 | **Stage 2: UI/UX Design Diamond** | `DESIGN-{feature}.md` *(Skipped if no UI or already approved)* | `boomopen design validate "<design-path>"` |
 | **Stage 3: 3-Wave Planning Diamond** | `PLAN-{feature}.md` (+ `.boomopen/project-ledger.json` if `≥ 3` waves / `13+` files) | `boomopen plan validate "<plan-path>" [--sync-ledger]` |
-| **Stage 4: 3-Wave Implementation** | Source Code + `[x]` in `PLAN-{feature}.md` + `MAILBOX-{date}.md` | `boomopen cook verify-wave "<plan-path>" --wave <W> --run-verify` |
+| **Stage 4: 3-Wave Implementation** | Source Code + `[x]` in `PLAN-{feature}.md` + `MAILBOX-{date}.md` | `boomopen cook verify-wave "<plan-path>" --wave <W> --git --run-verify` |
 | **Stage 5: Wave 3 Verification Diamond** | Unified `REVIEW-{feature}.md` (`<= 300` lines, test + security + review proof) | `boomopen check <dir> --strict-phase --no-stubs` + `ux_audit.py` |
 
 ---
@@ -79,10 +79,10 @@ execution-mode: execute
 
 1. **Wave 1 — Foundation, Schema & Shared Primitives Lock**:
    - Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>" --wave 1` and dispatch `database-architect#schema`, `backend-engineer#contracts`, and `frontend-engineer#tokens-primitives` in parallel (`TypeName: "self"`, `Model: "inherit"`).
-   - Gate Wave 1: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify`.
+   - Gate Wave 1: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify`.
 2. **Wave 2 — Parallel Feature Shards (`1..6` Concurrent Executors, `≤ 3–4 OWNED_FILES`/Shard)**:
    - Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>" --wave 2` (auto-locking Wave 1 contracts/tokens & sibling shards' files in `READ_ONLY_FILES`) and dispatch `backend-engineer#api-1..k`, `frontend-engineer#screen-1..k`, and `mobile-engineer#1..k` **in parallel in the same turn**.
-   - Gate Wave 2: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --run-verify` (route any fixes via warm `send_message` to `role#shard -> conversationId`).
+   - Gate Wave 2: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --git --run-verify` (route any fixes via warm `send_message` to `role#shard -> conversationId`).
 
 ---
 
@@ -91,7 +91,7 @@ execution-mode: execute
 | Role | Agent Shard(s) (`TypeName: "self"`, `Model: "inherit"`) | Mission |
 |------|---------------------------------------------------------|---------|
 | **Parallel Test Executors (`[1..3]`)** | `tester#unit-int`, `tester#e2e` (`agents/tester.md`) | Write and execute tests across 100% of `AC1..N` and edge cases (`≤ 3–4` test files/shard). |
-| **Parallel Adversarial Critics (`[1..2]`)** | `reviewer` (`agents/reviewer.md`) + `security-engineer` (`agents/security-engineer.md`) *(+ optional `boomopen conduct dispatch --role reviewer --engine cross_family`)* | Audit `SHARED_CONTRACT` / `DESIGN_CONTRACT` alignment, OWASP security, and run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` + portable `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <project_path>` + `accessibility_checker.py <project_path>` (when UI changed). |
+| **Parallel Adversarial Critics (`[1..2]`)** | `reviewer` (`agents/reviewer.md`) + `security-engineer` (`agents/security-engineer.md`) *(+ optional `boomopen conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`)* | Audit `SHARED_CONTRACT` / `DESIGN_CONTRACT` alignment, OWASP security, and run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` + portable `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <project_path>` + `accessibility_checker.py <project_path>` (when UI changed). |
 | **Arbitrator & Sign-Off (`[1]`)** | `tech-lead` (`agents/tech-lead.md`) | Route any test/critic blockers to warm `{executor#shard}` sessions via `send_message` (max 3 rounds), update `[x]` in `PLAN-{feature}.md`, and stamp unified `REVIEW-{feature}.md` (`<= 300` lines, `RequestFeedback: false`). |
 
 **Consensus**: `✅ CONSENSUS (Verification): tech-lead ✓ | tester#1..k ✓ | reviewer + security-engineer ✓`

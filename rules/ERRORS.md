@@ -45,7 +45,7 @@ on_error:
      E3: Apply autonomous_first if safe, otherwise escalate via ask_question UI widget
      E4: Rollback owned_files, amend SHARED_CONTRACT, broadcast delta to warm shards via send_message
      E5: Repair failing artifact/wave via warm send_message and re-run `boomopen <research|design|plan|cook|ledger> validate/verify-wave` until exit 0
-     E6: Escalate after Round 2 via `boomopen conduct dispatch --role debugger --engine cross_family --author-engine <prev>`
+     E6: Escalate after Round 2 via `boomopen conduct dispatch --role debugger --engine cross_family --author-engine <prev> --prompt "<failure-context>"`
   4. RESUME workflow immediately upon exit 0 verification
   5. NEVER halt silently
 ```

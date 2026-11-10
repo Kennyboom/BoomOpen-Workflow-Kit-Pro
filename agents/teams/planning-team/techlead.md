@@ -42,7 +42,7 @@ You are the **Chief Architecture & Shard Planner (Tech Lead)** of the `planning-
    - **Multi-Engine Council (`engines.planner`)**:
      - When `engines.planner = "council"` in `/settings` (or requested by user), concurrently run:
        `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task plan --engines <engines.councilMembers> --prompt "<task>" --output "<appDataDir>/brain/<conversation-id>/COUNCIL-<task>.md"`
-     - When `engines.planner` targets a specific external engine (`claude`, `codex`, `cursor`, `copilot`), integrate `boomopen conduct dispatch --role planner --engine <engines.planner>`.
+     - When `engines.planner` targets a specific external engine (`claude`, `codex`, `cursor`, `copilot`), integrate `boomopen conduct dispatch --role planner --engine <engines.planner> --prompt "<task>"`.
 
 ### Stage 2: Contract-First DAG Wave Sharding, Arbitration & Consensus Synthesis
 3. **Lock Compilable `SHARED_CONTRACT` & ADR Decisions**:

@@ -69,14 +69,14 @@ $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\le
 ```bash
 node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <project_dir> --strict-phase --no-stubs
 ```
-*(When executing from `PLAN-{project}.md`, also run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <k> --run-verify`.)*
+*(When executing from `PLAN-{project}.md`, also run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <k> --git --run-verify`.)*
 - Must report **`0` violations** (`0` `TODO`/`FIXME`/`PLACEHOLDER`, `0` `NotImplementedError`/hollow stubs, `0` `.skip`/`.only`/vacuous test assertions, `0` explicit `any`, `0` files `> 500` lines, and `0` `READ_ONLY_FILES` mutations).
 - On any violation → send exact `File:Line` diagnostics to the warm `{role#shard}` `conversationId` via `send_message` to fix immediately.
 
 ### Gate 2 — Cumulative Regression Ratchet (`Phase 1 .. Phase K` Test Suite)
 Run the full automated test suite (`Phase 1` through `Phase K`) and verify **`0` failed**, **`0` skipped**, and:
 $$\text{PassedTests}(\text{Phase } K) \ge \text{baseline\_passed\_tests} + |\text{REQ}(\text{Phase } K)|$$
-- On failure → route to the warm engineer shard via `send_message` (or escalate via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role debugger --engine <engines.debugger>`).
+- On failure → route to the warm engineer shard via `send_message` (or escalate via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role debugger --engine <engines.debugger> --prompt "<failure-context>"`).
 
 ### Gate 3 — Deterministic Ledger Verification (`ledger verify` + `ledger status`)
 Agents must **NEVER** flip `"passes": true` by hand! Run:
@@ -87,7 +87,7 @@ node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger status
 - Deterministically verifies disk deliverables, runs `--strict-phase`, enforces the monotonic test ratchet, marks `Phase K` `"verified"`, advances `active_cursor` to `Phase K+1`, and refreshes `.boomopen/ROADMAP-PROGRESS.md`.
 
 ### Gate 4 — Adversarial Spec Audit (`Author ≠ Critic`) & Cohesive Brain Progress Artifact
-1. Spawn/reuse `reviewer` + `tester` (+ `security-engineer` loading `security-auditor` skill when auth/data/API touched) via `invoke_subagent(TypeName: "self", Model: "inherit")` / `send_message` (or `conduct dispatch --role reviewer --engine cross_family`) against `doc_slices` and `.boomopen/contracts/SHARED_CONTRACT.md`.
+1. Spawn/reuse `reviewer` + `tester` (+ `security-engineer` loading `security-auditor` skill when auth/data/API touched) via `invoke_subagent(TypeName: "self", Model: "inherit")` / `send_message` (or `conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`) against `doc_slices` and `.boomopen/contracts/SHARED_CONTRACT.md`.
 2. Write/update **1 cohesive Brain status artifact** at `<appDataDir>\brain\<conversation-id>\REPORT-autopilot-{project}.md` (`<= 500` lines, `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: false }`).
 
 ---

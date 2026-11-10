@@ -32,7 +32,7 @@ execution-mode: execute
 | Phase | Required Input | Deterministic CLI Gate | Output Deliverable |
 |-------|----------------|------------------------|--------------------|
 | **Phase 1: Scope & Sharding Diamond** | User request *(Skipped if `PLAN-{task}.md` exists!)* | — | `SHARED_CONTRACT` + Disjoint `OWNED_FILES` (`≤ 3–4`/shard) in `MAILBOX-{date}.md` |
-| **Phase 2: 3-Wave Implementation** | Validated `PLAN-{task}.md` or Phase 1 Scope | `boomopen cook verify-wave "<plan-path>" --wave <W> --run-verify` | Source Code + `[x]` in `PLAN-{task}.md` + `MAILBOX-{date}.md` |
+| **Phase 2: 3-Wave Implementation** | Validated `PLAN-{task}.md` or Phase 1 Scope | `boomopen cook verify-wave "<plan-path>" --wave <W> --git --run-verify` | Source Code + `[x]` in `PLAN-{task}.md` + `MAILBOX-{date}.md` |
 | **Phase 3: Wave 3 Verification Diamond** | Wave 1–2 Code Changes | `boomopen check <dir> --strict-phase --no-stubs` + `ux_audit.py` | `<appDataDir>\brain\<conversation-id>\REVIEW-{task}.md` (`<= 300` lines) |
 
 **Mailbox Entry Header (`MAILBOX-{date}.md`)**:
@@ -58,11 +58,11 @@ $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\le
 
 1. **Wave 1 — Foundation, Schema & Shared Primitives Lock**:
    - Extract packets via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>" --wave 1` (or Phase 1 `TASK_ASSIGNMENT`) and spawn `database-architect#schema`, `backend-engineer#contracts`, and `frontend-engineer#tokens-primitives` (`globals.css` `@theme inline` + shared UI primitives) concurrently (`TypeName: "self"`, `Model: "inherit"`). Record `role#shard -> conversationId`.
-   - Gate Wave 1: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify`.
+   - Gate Wave 1: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify`.
 2. **Wave 2 — Parallel Feature Shards (`1..6` Concurrent Executors, `≤ 3–4 OWNED_FILES`/Shard)**:
    - Extract packets via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>" --wave 2` (auto-locking Wave 1 contracts/tokens & sibling shards' files in `READ_ONLY_FILES`).
    - Dispatch `backend-engineer#api-1..k`, `frontend-engineer#screen-1..k`, `mobile-engineer#1..k`, or `game-engineer#1..k` **100% concurrently in one turn** (2-Wave Frontend Sharding keeps `globals.css` & `components/ui/*` read-only during Wave 2).
-   - Critic (`reviewer`, plus `security-engineer` when auth/data/API touched) audits each shard submission and runs `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --run-verify`.
+   - Critic (`reviewer`, plus `security-engineer` when auth/data/API touched) audits each shard submission and runs `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --git --run-verify`.
    - Route any `[CRITIQUE]` or gate failure via warm `send_message` **only** to the flagged `{role#shard}` `conversationId` (max 3 rounds; `tech-lead` arbitrates Round-3 disputes).
 
 **Consensus**: `✅ CONSENSUS (Implementation): tech-lead ✓ | {executor#1..N} ✓ | {reviewer#1..M} ✓`
@@ -76,7 +76,7 @@ $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\le
 | Role | Agent Shard(s) (`TypeName: "self"`, `Model: "inherit"`) | Mission |
 |------|---------------------------------------------------------|---------|
 | **Parallel Test Executors (`[1..3]`)** | `tester` (or `tester#unit-int` + `tester#e2e` when `> 4` test files, `agents/tester.md`) | Write and execute deterministic tests covering all `AC1..N`, error contracts, and edge cases (`≤ 3–4` test files/shard). |
-| **Parallel Adversarial Critics (`[1..2]`)** | `reviewer` (`agents/reviewer.md`) + `security-engineer` (`agents/security-engineer.md`) *(+ optional Cross-Engine `boomopen conduct dispatch --role reviewer --engine cross_family`)* | Audit test completeness, OWASP/auth safety, `SHARED_CONTRACT` / `DESIGN_CONTRACT` alignment, and zero regressions. |
+| **Parallel Adversarial Critics (`[1..2]`)** | `reviewer` (`agents/reviewer.md`) + `security-engineer` (`agents/security-engineer.md`) *(+ optional Cross-Engine `boomopen conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`)* | Audit test completeness, OWASP/auth safety, `SHARED_CONTRACT` / `DESIGN_CONTRACT` alignment, and zero regressions. |
 | **Coordinator & Arbitrator (`[1]`)** | `tech-lead` (`agents/tech-lead.md`) | Enforce deterministic CLI & UI gates, route any defects to warm `{executor#shard}` sessions via `send_message`, and synthesize `<appDataDir>\brain\<conversation-id>\REVIEW-{task}.md` (`<= 300` lines, `RequestFeedback: false`). |
 
 **Mandatory Repo & Portable UI Gates (Must Exit `0` Before Consensus)**:

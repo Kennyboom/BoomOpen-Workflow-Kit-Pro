@@ -51,7 +51,7 @@ category: research
 ### Step 0: `autonomous_first` GROUNDING GATE (MANDATORY FIRST ACTION)
 
 1. Inspect workspace manifests (`package.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`), `./documents/`, and `./DESIGN.md` (if present).
-2. Ingest `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}.md`, `SCOUT-{topic}.md` (or `-s1..k.md`), and `COUNCIL-{topic}.md` (when `boomopen conduct council --task brainstorm` ran).
+2. Ingest `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}.md`, `SCOUT-{topic}.md` (or `-s1..k.md`), and `COUNCIL-{topic}.md` (when `boomopen conduct council --task brainstorm --prompt "<brainstorm-context>"` ran).
 3. If `RESEARCH-{topic}.md` does not exist yet in `:hard`/`:team`, run targeted `search_web` + `compact-index.json` triangulation before proposing options — **zero ungrounded claims!**
 
 ### Step 1: GENERATE `3–4` ORTHOGONAL STRATEGIC OPTIONS (NOT MINOR VARIATIONS)

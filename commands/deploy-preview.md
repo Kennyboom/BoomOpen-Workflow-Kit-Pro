@@ -49,7 +49,7 @@ execution-mode: execute
 Launch concurrently on Turn 1 via `invoke_subagent(TypeName: "self", Model: "inherit")`:
 - **`devops-engineer#1` (`agents/devops-engineer.md`)**:
   - Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` and execute staging/preview build.
-  - Verify staging environment variables, non-production credentials isolation, and staging migration safety (`accidental-data-loss-prevention`).
+  - Verify staging environment variables, non-production credentials isolation, and staging migration safety (`skills_library/deployment-procedures/SKILL.md` — **STOP-AND-VERIFY** destructive-operation consent gate).
 - **`tester` + `security-engineer` (`agents/tester.md`, `agents/security-engineer.md` — skipped if `REPORT-deploy-check.md` is green on `HEAD`)**:
   - Run fast test suite and verify zero exposed secrets or critical CVEs before pushing to a network-accessible preview URL.
 

@@ -1,6 +1,6 @@
 ---
 name: BoomOpen Workflow Kit
-description: Smart-Hybrid Multi-Agent Orchestrator (v5.5) — Pragmatic 2-Tier Coding Standards, 2-Mode Gate, DAG Parallel Fan-Out, Direct Plan Dispatch & Warm Sub-agent Reuse.
+description: Smart-Hybrid Multi-Agent Orchestrator (v5.5) — Pragmatic 2-Tier Coding Standards, 2-Mode Gate, DAG Parallel Fan-Out, Direct Plan Dispatch & Contract-First File Locks.
 argument-hint: Type command + task, e.g. /cook:hard implement login
 ---
 
@@ -82,8 +82,8 @@ REPORTS   = ./reports/{topic}/
 
 ### 🛠️ Deterministic CLI Compilers & Gates (`node <CLI> <cmd>` or `boomopen <cmd>`)
 - **`research <validate|brief>`**: Validate `RESEARCH-*` / `BRAINSTORM-*` (`--mode brainstorm`, `RES-G1..G4`) & compile `HANDOFF_BRIEF`.
-- **`design <validate|contract>`**: Validate 6-Block `DESIGN-*` (`DES-G1..G5`) & compile `DESIGN_CONTRACT` (`@theme` CSS + TypeScript props).
-- **`plan <validate|compile>`**: Validate `PLAN-*` (`G1..G5`, `≤ 4 OWNED_FILES`/shard) & compile `.boomopen/project-ledger.json`.
+- **`design <validate|contract>`**: Validate 6-Block `DESIGN-*` (`DESIGN-G1..G4`) & compile `DESIGN_CONTRACT` (`@theme` CSS + TypeScript props).
+- **`plan <validate|compile>`**: Validate `PLAN-*` (`PLAN-G1..G5`, `≤ 4 OWNED_FILES`/shard) & compile `.boomopen/project-ledger.json`.
 - **`cook <state|packets|verify-wave|preflight>`**: Detect artifacts, compile 5-Field Wave Handoff Packets, & enforce `OWNED_FILES` / `READ_ONLY_FILES` + `--strict-phase --no-stubs`.
 - **`ledger` | `conduct <probe|dispatch|council|status>` | `check --strict-phase --no-stubs` | `settings` | `doctor`**: DAG ledger, 6-task Multi-Engine Council (`research|brainstorm|plan|design|review|debug`), 2-Tier code gate, settings, & health check.
 
@@ -127,7 +127,7 @@ REPORTS   = ./reports/{topic}/
 
 | Tier | Condition | Action |
 |------|-----------|--------|
-| **TIER 1** | Proactive Sub-agent First / Mode B | **MUST** spawn sub-agents on Turn 1 (`runSubagent`: kit agent briefs for edits, tests and research; read-only instructions for scouting; selected chat model) with Pre-Embedded 5-Field Handoff Packet (`1. MISSION`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION`), Direct Plan-to-Executor Dispatch & Warm Session Reuse |
+| **TIER 1** | Proactive Sub-agent First / Mode B | **MUST** spawn sub-agents on Turn 1 (`runSubagent`: kit agent briefs for edits, tests and research; read-only instructions for scouting; selected chat model) with Pre-Embedded 5-Field Handoff Packet (`1. MISSION`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION`), Direct Plan-to-Executor Dispatch & a fresh `runSubagent` per round (no warm reuse) |
 | **TIER 0** | Mode A (`≤ 2 known files`, 1 domain, 0 exploration, no `/cmd`) | Execute, test, and verify directly |
 | **TIER 2** | Mode B fallback (tool missing/error) | EMBODY agent from `AGENTS` path |
 
@@ -139,7 +139,7 @@ REPORTS   = ./reports/{topic}/
 |-----------|--------------------|
 | Core protocol & deliverable paths | `CORE.md` |
 | Running phases & DAG Fan-Out | `PHASES.md` |
-| Delegating (21 specialists), `OWNED_FILES` & Warm Reuse | `AGENTS.md` |
+| Delegating (21 specialists) & File Ownership Locks | `AGENTS.md` |
 | Golden Diamond / Triangle (18 `:team` teams) | `TEAMS.md` |
 | Skill resolution (`compact-index.json` — `1,440` library / `1,462` indexed skills) | `SKILLS.md` |
 | Error recovery (`E0`) / Quick lookup | `ERRORS.md` / `REFERENCE.md` |

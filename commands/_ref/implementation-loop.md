@@ -40,7 +40,7 @@ Whenever a task spans DB migrations, shared API/DTO contracts, or `> 3` UI files
 - **`frontend-engineer#tokens-primitives`** *(2-Wave Frontend Sharding Rule)*: Tailwind v4 `@theme inline` OKLCH variables (`globals.css`) and shared CVA/Radix UI primitives (`src/components/ui/*`) from `DESIGN_CONTRACT`.
 - **Deterministic Wave 1 Gate**:
   ```bash
-  node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify
+  node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify
   ```
 
 ### WAVE 2 — HIGH-VELOCITY PARALLEL FEATURE SHARDS (`1..6` Concurrent Executors in ONE Turn)
@@ -52,7 +52,7 @@ Whenever a task spans DB migrations, shared API/DTO contracts, or `> 3` UI files
 - Each `{role#shard}` modifies **ONLY** its `OWNED_FILES` (`≤ 3–4` files), runs its task `Verify` command + `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <owned_path> --strict-phase --no-stubs`, and reports completion.
 - **Deterministic Wave 2 Gate**:
   ```bash
-  node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --run-verify
+  node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --git --run-verify
   ```
 
 ### WAVE 3 — PARALLEL CROSS-STACK VERIFICATION & ADVERSARIAL REVIEW (`1..3` Critics + Testers)

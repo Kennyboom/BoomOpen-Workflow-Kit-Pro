@@ -1,10 +1,14 @@
 ---
+name: planning-team
 team: planning-team
+description: "2-Stage Elastic Golden Diamond Planning Team (v5.5) — Turn-1 parallel discovery/scouting/architecture fan-out, Contract-First DAG Wave sharding (<= 3-4 OWNED_FILES/shard), deterministic CLI plan validation (boomopen plan validate), and multi-specialist adversarial audit"
 summary: "2-Stage Elastic Golden Diamond Planning Team (v5.5) — Turn-1 parallel discovery/scouting/architecture fan-out, Contract-First DAG Wave sharding (<= 3-4 OWNED_FILES/shard), deterministic CLI plan validation (boomopen plan validate), and multi-specialist adversarial audit"
-version: "5.5"
+version: 5.5.0
+pattern: elastic-golden-diamond
 category: team-protocol
 domain: planning
-roles:
+roles: [techlead, executor, reviewer]
+role_agents:
   - planning-team-techlead
   - planning-team-executor
   - planning-team-reviewer
@@ -37,7 +41,7 @@ Every member of `planning-team` (`TypeName: "self"`, `Model: "inherit"`) **MUST*
 flowchart TD
     G0{"Prior SCOUT + RESEARCH<br/>Already Exist in Brain?"}
     G0 -->|"Yes (Fast-Forward Gate)"| S2
-    G0 -->|"No (Cold Start)"| S1["💎 Stage 1 (Turns 1–2): Parallel Discovery, Codebase Scout & Architecture Diamond<br/>Lead: planning-team-techlead | Shards: scouter#1..k + researcher#1..k + business-analyst#req<br/>(+ Optional Multi-Engine Council: boomopen conduct council --task plan)<br/>Critics: reviewer#feasibility + brainstormer#critic"]
+    G0 -->|"No (Cold Start)"| S1["💎 Stage 1 (Turns 1–2): Parallel Discovery, Codebase Scout & Architecture Diamond<br/>Lead: planning-team-techlead | Shards: scouter#1..k + researcher#1..k + business-analyst#req<br/>(+ Optional Multi-Engine Council: boomopen conduct council --task plan --prompt '<plan-context>')<br/>Critics: reviewer#feasibility + brainstormer#critic"]
     S1 -->|"SCOUT-{task}.md + RESEARCH-{task}.md<br/>(RequestFeedback: false)"| S2["💎 Stage 2 (Turns 3–4): Cohesive 6-Block PLAN Blueprint, CLI Validation & Adversarial Audit Diamond<br/>Lead: planning-team-techlead | Drafter: planning-team-executor (or #shard-1..k)<br/>Writes single cohesive PLAN-{task}.md (<= 500 lines, RequestFeedback: true)<br/>Runs CLI: boomopen plan validate PLAN-{task}.md --sync-ledger"]
     S2 --> C2["Parallel Adversarial Critics (Warm send_message):<br/>• planning-team-reviewer (5-Dimension Gate & PLAN-G1..G5)<br/>• security-engineer#sec (Auth/Validation/OWASP)<br/>• business-analyst#ac (100% REQ -> Task -> AC -> Verify RTM)"]
     C2 -->|"🔴 BLOCKER / 🟠 HIGH (<= 3 rounds)"| S2
@@ -68,7 +72,7 @@ flowchart TD
 | Deliverable | Path | `ArtifactMetadata` Setting | Size & Format Rule |
 |:------------|:-----|:---------------------------|:-------------------|
 | **Master Plan** | `<appDataDir>\brain\<conversation-id>\PLAN-{task}.md` | `UserFacing: true, RequestFeedback: true` (**1-Click "Proceed"**) | **Single cohesive file `<= 500` lines** (NEVER split at 150 lines!) |
-| **Codebase Scout** | `<appDataDir>\brain\<conversation-id>\SCOUT-{task}.md` | `UserFacing: true, RequestFeedback: false` | Supporting context artifact |
-| **Research & ADRs** | `<appDataDir>\brain\<conversation-id>\RESEARCH-{task}.md` | `UserFacing: true, RequestFeedback: false` | Supporting context artifact |
+| **Codebase Scout** | `<appDataDir>\brain\<conversation-id>\SCOUT-{task}.md` | `UserFacing: false, RequestFeedback: false` | Supporting context artifact |
+| **Research & ADRs** | `<appDataDir>\brain\<conversation-id>\RESEARCH-{task}.md` | `UserFacing: false, RequestFeedback: false` | Supporting context artifact |
 | **Team Mailbox** | `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md` | `UserFacing: false, RequestFeedback: false` | Append-only debate & consensus log |
 | **Autopilot Ledger** | `.boomopen/project-ledger.json` + `.boomopen/contracts/SHARED_CONTRACT.md` | N/A (Workspace JSON/MD via `--sync-ledger`) | Auto-synced when `Waves >= 2` / `Files > 8` or for `/autopilot` |

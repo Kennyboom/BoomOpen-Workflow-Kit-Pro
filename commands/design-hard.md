@@ -12,7 +12,7 @@ execution-mode: execute
 # /design:hard — High-Velocity 2-Wave UI/UX & Design System Specification
 
 > **MISSION**: Produce a complete, self-contained, machine-validated **6-Block `DESIGN-{request}.md`** (`<= 500` lines) + optional interactive `DESIGN-PREVIEW-{request}.html` (`generative_ui`) in **2 High-Velocity Parallel Waves**:
-> - **Wave 1 (Turn 1)**: Parallel Codebase Token Scout (`scouter`) + Empirical Design System Intelligence (`researcher` running `ui-ux-pro-max/scripts/search.py --design-system`) + optional Multi-Engine Design Council (`boomopen conduct council --task design`).
+> - **Wave 1 (Turn 1)**: Parallel Codebase Token Scout (`scouter`) + Empirical Design System Intelligence (`researcher` running `ui-ux-pro-max/scripts/search.py --design-system`) + optional Multi-Engine Design Council (`boomopen conduct council --task design --prompt "<design-context>"`).
 > - **Wave 2 (Turn 2)**: Cohesive 6-Block `DESIGN-{request}.md` (`RequestFeedback: true`) + optional Live HTML Prototype (`generative_ui`) / Bespoke Assets (`image-generator`) + Deterministic 4-Gate CLI Validation (`boomopen design validate`) + `reviewer` Audit.
 > **⛔ NO APPLICATION SOURCE CODE — produce design specifications and preview artifacts only.**
 
@@ -38,13 +38,13 @@ execution-mode: execute
 
 ## 🌊 WAVE 1 (TURN 1): PARALLEL CODEBASE TOKEN SCOUT & `ui-ux-pro-max` DESIGN INTELLIGENCE
 
-> **🚀 TURN-1 PARALLEL FAN-OUT DIRECTIVE**: Launch `scouter` (`scouter#1..k`) AND `researcher` (`researcher#1..k`) — plus optional `boomopen conduct council --task design` — **concurrently in a single Turn-1 tool batch** via `invoke_subagent(TypeName: "self", Model: "inherit")`. Join via Reactive Async Wakeup.
+> **🚀 TURN-1 PARALLEL FAN-OUT DIRECTIVE**: Launch `scouter` (`scouter#1..k`) AND `researcher` (`researcher#1..k`) — plus optional `boomopen conduct council --task design --prompt "<design-context>"` — **concurrently in a single Turn-1 tool batch** via `invoke_subagent(TypeName: "self", Model: "inherit")`. Join via Reactive Async Wakeup.
 
 | Parallel Shard(s) | Output Deliverable (`RequestFeedback: false`) | Turn-1 Mission |
 |-------------------|-----------------------------------------------|----------------|
 | **`scouter` / `scouter#1..k`** (`agents/scouter.md`, `TypeName: "self"`, `Model: "inherit"`) | `<appDataDir>\brain\<conversation-id>\SCOUT-{request}.md` | 1. Audit existing CSS custom properties (`globals.css`, `@theme`), Tailwind config, icon libraries, and UI component primitives (`≤ 3–4` heavy files per shard).<br>2. Map existing route structure, Server vs. Client component seams, and `./documents/` design standards. |
 | **`researcher` / `researcher#1..k`** (`agents/researcher.md`, `TypeName: "self"`, `Model: "inherit"`) | `<appDataDir>\brain\<conversation-id>\RESEARCH-{request}.md` | 1. **Run `ui-ux-pro-max` Design System Generator**:<br>`python3 ~/.{TOOL}/skills_library/ui-ux-pro-max/scripts/search.py "<product_type> <industry> <keywords>" --design-system -p "<Project>"` (use `python` or `py -3` on Windows if `python3` is absent).<br>2. Extract JTBD user stories, select 1 of the **7 Named Aesthetic Archetypes** (`skills/frontend-design/SKILL.md`), convert recommended colors into perceptual **OKLCH + sRGB `#hex` dual tokens**, and identify industry UX anti-patterns. |
-| **Optional Multi-Engine Design Council** | `<appDataDir>\brain\<conversation-id>\COUNCIL-DESIGN-{request}.md` | When `engines.designer = "council"` or requested by user, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task design --prompt "<request>"` in parallel. |
+| **Optional Multi-Engine Design Council** | `<appDataDir>\brain\<conversation-id>\COUNCIL-DESIGN-{request}.md` | When `engines.planner = "council"` or requested by user (`--council`), run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task design --prompt "<request>"` in parallel. |
 
 ---
 

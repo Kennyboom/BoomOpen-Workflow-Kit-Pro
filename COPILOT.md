@@ -70,6 +70,22 @@
 
 ---
 
+## 🔌 TOOL NAMES ON GITHUB COPILOT
+
+Commands, agents and rules use the Antigravity tool names on the left. On GitHub Copilot use the native tool on the right (full table: `rules/REFERENCE.md`); never call a tool that does not exist here.
+
+| Kit name | GitHub Copilot |
+|----------|----------------|
+| `invoke_subagent(...)` / `TypeName: "research"` | `runSubagent` (read-only instructions for scouts) |
+| `send_message(Recipient: …)` (Warm Reuse) | not available: call `runSubagent` again with the full 5-field packet |
+| `Model: "inherit"` / `"flash"` | omit (uses the selected chat model) |
+| `search_web` / `read_url_content` | `fetch` tool |
+| `view_file`, `grep_search`, `write_file`, `run_command` | `codebase`/read-file tools, `editFiles`, `runInTerminal` |
+| `ask_question` | ask in chat |
+| Artifacts `<appDataDir>\brain\<conversation-id>\` | `./reports/{topic}/` |
+
+---
+
 ## 🧠 QUALITY-FIRST MODEL POLICY (USE THE SELECTED CHAT MODEL)
 
 - **Default**: subagents run on the chat model you selected in Copilot; never ask for a weaker model for core engineering, planning, architecture, scouting, debugging, testing, reviewing, security, design, or documentation work.
@@ -92,8 +108,8 @@ REPORTS   = ./reports/{topic}/
 
 ### 🛠️ Deterministic CLI Compilers & Gates (`node <CLI> <cmd>` or `boomopen <cmd>`)
 - **`research <validate|brief>`**: Validate `RESEARCH-*` / `BRAINSTORM-*` (`--mode brainstorm`, `RES-G1..G4`) & compile `HANDOFF_BRIEF`.
-- **`design <validate|contract>`**: Validate 6-Block `DESIGN-*` (`DES-G1..G5`) & compile `DESIGN_CONTRACT` (`@theme` CSS + TypeScript props).
-- **`plan <validate|compile>`**: Validate `PLAN-*` (`G1..G5`, `≤ 4 OWNED_FILES`/shard) & compile `.boomopen/project-ledger.json`.
+- **`design <validate|contract>`**: Validate 6-Block `DESIGN-*` (`DESIGN-G1..G4`) & compile `DESIGN_CONTRACT` (`@theme` CSS + TypeScript props).
+- **`plan <validate|compile>`**: Validate `PLAN-*` (`PLAN-G1..G5`, `≤ 4 OWNED_FILES`/shard) & compile `.boomopen/project-ledger.json`.
 - **`cook <state|packets|verify-wave|preflight>`**: Detect artifacts, compile 5-Field Wave Handoff Packets, & enforce `OWNED_FILES` / `READ_ONLY_FILES` + `--strict-phase --no-stubs`.
 - **`ledger` | `conduct <probe|dispatch|council|status>` | `check --strict-phase --no-stubs` | `settings` | `doctor`**: DAG ledger, 6-task Multi-Engine Council (`research|brainstorm|plan|design|review|debug`), 2-Tier code gate, settings, & health check.
 

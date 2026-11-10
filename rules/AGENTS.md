@@ -26,9 +26,9 @@ $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\le
 When a domain spans `> 4` files or multiple vectors, horizontally shard the role (`backend-engineer#contracts`, `backend-engineer#auth`, `frontend-engineer#tokens-primitives`, `frontend-engineer#screen-1..k`, `researcher#v1..k`), each locked to **`≤ 3–4` disjoint `OWNED_FILES`** (or `1` disjoint scratch vector file `*-v{k}.md`).
 
 ### 2. Direct Plan-to-Executor Dispatch & 3-Wave Contract-First Topology (No Middleman Double-Hop)
-- **Once `PLAN-{feature}.md` passes `boomopen plan validate`** in `:fast`, `:hard`, `:team`, or `/orchestrate`, extract exact wave packets via `boomopen cook packets <plan.md> --wave <W>` and **dispatch directly from `PLAN` to sharded specialists**:
+- **Once `PLAN-{feature}.md` passes `boomopen plan validate`** in `:fast`, `:hard`, `:team`, or `/orchestrate`, extract exact wave packets via `boomopen cook packets "<plan.md>" --wave <W>` and **dispatch directly from `PLAN` to sharded specialists**:
   - **Wave 1 (Foundation/Contracts/Tokens)**: `database-architect#schema` + `backend-engineer#contracts` + `frontend-engineer#tokens-primitives` (`globals.css` `@theme inline` + `components/ui/*` from `DESIGN_CONTRACT`).
-  - **Wave 2 (Parallel Feature Shards)**: `backend-engineer#1..k` + `frontend-engineer#screen-1..k` + `mobile-engineer#1..k` + `game-engineer#1..k` + `devops-engineer#ci` (with Wave 1 contracts/tokens locked in `READ_ONLY_FILES`), gated by `boomopen cook verify-wave <plan.md> --wave 2`.
+  - **Wave 2 (Parallel Feature Shards)**: `backend-engineer#1..k` + `frontend-engineer#screen-1..k` + `mobile-engineer#1..k` + `game-engineer#1..k` + `devops-engineer#ci` (with Wave 1 contracts/tokens locked in `READ_ONLY_FILES`), gated by `boomopen cook verify-wave "<plan.md>" --wave 2 --git --run-verify`.
   - **Wave 3 (Parallel QA & Adversarial Audit)**: `tester#1..k` + `reviewer#1..m` + `security-engineer#sec` running concurrently.
 - **DO NOT** waste a turn spawning a middleman `tech-lead` just to re-read and re-shard an already CLI-validated `PLAN-{feature}.md`! Invoke `tech-lead` strictly when scoping an unplanned `:team` task, designing ADRs, or arbitrating `:team` review disputes.
 
@@ -50,7 +50,7 @@ active_subagents:
 
 ## 📦 STRUCTURED HANDOFF PACKET & FILE OWNERSHIP LOCK
 
-Every `invoke_subagent` prompt or `send_message` brief in Mode B (generated automatically by `boomopen cook packets <plan.md> --wave <W>`) **MUST** include these 5 fields:
+Every `invoke_subagent` prompt or `send_message` brief in Mode B (generated automatically by `boomopen cook packets "<plan.md>" --wave <W>`) **MUST** include these 5 fields:
 
 ```yaml
 1. MISSION & ACCEPTANCE CRITERIA:
@@ -72,7 +72,7 @@ Every `invoke_subagent` prompt or `send_message` brief in Mode B (generated auto
 - **🚫 Anti-Solo-Crawling Rule**: Whenever target files are unknown on Turn 1 or exploration spans **`> 2 files`**, **NEVER crawl sequentially in the primary agent** — spawn parallel sub-agent shards on Turn 1!
 - **⚡ `TypeName: "self"` (Default for ALL Mode B Shards)**: `invoke_subagent(TypeName: "self", Role: "<role>#<shard>", Model: "inherit", Prompt: ...)` grants `write_file`, `run_command`, and `search_web` immediately on Turn 1.
 - **⚠️ `TypeName: "research"` Restriction (`0-Artifact Ad-Hoc Q&A ONLY`)**: Has **NO `search_web`, NO `run_command`, and NO `write_file`**. Use **ONLY** for read-only codebase Q&A where zero files are written — **NEVER** use `TypeName: "research"` for `researcher`, `research-team`, `brainstorm-team`, or any Mode B `scouter` writing `SCOUT-*.md`!
-- **Join & Wave Verification**: Wait via **Reactive Async Wakeup** (never poll), then verify each wave via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave <plan.md> --wave <W>` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`.
+- **Join & Wave Verification**: Wait via **Reactive Async Wakeup** (never poll), then verify each wave via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan.md>" --wave <W> --git --run-verify` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`.
 - **TIER 2 Fallback (Tool Missing/Error Only)**: Log `"⚠️ TIER 2: {reason}"`, read `~/.{TOOL}/skills/boomopen-workflow-kit/agents/{agent}.md`, embody `📋 EMBODIED: {agent}`, and enforce all 5-field locks and `--strict-phase --no-stubs` gates.
 
 ---

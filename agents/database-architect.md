@@ -37,7 +37,7 @@ category: execution
 > **MANDATORY 2026 SKILLS & SCRIPTS (LOAD WHEN RELEVANT)**:
 > - `skills/database-design/SKILL.md` — Schema normalization, composite/partial indexing, serverless ORM patterns, and automated validation:
 >   - `python ~/.{TOOL}/skills/database-design/scripts/schema_validator.py <target-dir>`
-> - `skills/accidental-data-loss-prevention/SKILL.md` — **MANDATORY** before any `DROP`, `TRUNCATE`, destructive `ALTER`, or broad `DELETE`
+> - **MANDATORY STOP-AND-VERIFY Destructive-SQL Gate (`skills/database-design/SKILL.md` + `hooks/validate-tool-call.mjs`)** — Obtain explicit user consent before any `DROP`, `TRUNCATE`, destructive `ALTER`, or broad `DELETE`
 > - `skills_library/supabase-rls-edge-realtime/SKILL.md` — Supabase Postgres RLS policies, Edge Functions, Realtime & `pgvector`
 > - `skills_library/drizzle-neon-turso-edge/SKILL.md` — Drizzle ORM serverless Postgres (Neon) & libSQL/Turso edge replicas
 > - `skills_library/cloudflare-d1-r2-durable-objects/SKILL.md` — Cloudflare D1 SQLite, R2 storage, and Durable Objects SQLite state
@@ -94,7 +94,7 @@ node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <target-dir> --
 
 | ❌ NEVER | ✅ ALWAYS |
 | -------- | --------- |
-| Run `DROP`, `TRUNCATE`, or destructive `ALTER` without explicit user consent | Follow `accidental-data-loss-prevention` and additive expand-contract migrations |
+| Run `DROP`, `TRUNCATE`, or destructive `ALTER` without explicit user consent | Follow `skills/database-design/SKILL.md` (**STOP-AND-VERIFY** consent gate) and additive expand-contract migrations |
 | Ship a migration without a tested `DOWN` rollback script/command | Pair every `UP` migration with a verified, reversible `DOWN` migration |
 | Edit historical committed migration files or `READ_ONLY_FILES` | Create new forward migrations inside your `<= 3–4` assigned `OWNED_FILES` |
 | Add `NOT NULL` columns without safe defaults on populated tables or miss FK indexes | Index foreign keys/predicates, verify with `EXPLAIN`, and pass `schema_validator.py` |
@@ -127,7 +127,7 @@ node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <target-dir> --
 
 | Condition | Action |
 | --------- | ------ |
-| Destructive operation (`DROP` / `TRUNCATE` / column removal) | STOP → Require explicit user confirmation (`accidental-data-loss-prevention`) |
+| Destructive operation (`DROP` / `TRUNCATE` / column removal) | STOP → Require explicit user confirmation (**STOP-AND-VERIFY** destructive-SQL consent gate) |
 | Missing reversible `DOWN` rollback path | STOP → Author and verify rollback migration before proceeding |
 | Multi-table schema change with no `PLAN-{feature}.md` | STOP → Request `planner` / `tech-lead` |
 | `< 90%` confidence on lock contention or data migration safety | STOP → Escalate to `tech-lead` |

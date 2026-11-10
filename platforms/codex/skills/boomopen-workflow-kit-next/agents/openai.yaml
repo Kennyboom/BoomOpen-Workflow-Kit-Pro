@@ -1,6 +1,6 @@
 interface:
   display_name: "/next"
   short_description: "🧭 Smart Navigator — Auto-detect project, ledger, and Brain Artifact state to recommend the exact next BoomOpen v5.5 workflow"
-  brand_color: "#6366F1"
+  brand_color: "#06B6D4"
 policy:
   allow_implicit_invocation: true

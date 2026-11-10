@@ -1,10 +1,14 @@
 ---
+name: design-team
 team: design-team
+description: "2-Stage Elastic Golden Diamond Design Team (v5.5) — Turn-1 parallel UX discovery & codebase token scouting, cohesive 6-Block DESIGN-{request}.md blueprint (<= 500 lines, RequestFeedback: true), executable DESIGN_CONTRACT handoff, deterministic CLI validation (boomopen design validate), and max 3 adversarial review rounds"
 summary: "2-Stage Elastic Golden Diamond Design Team (v5.5) — Turn-1 parallel UX discovery & codebase token scouting, cohesive 6-Block DESIGN-{request}.md blueprint (<= 500 lines, RequestFeedback: true), executable DESIGN_CONTRACT handoff, deterministic CLI validation (boomopen design validate), and max 3 adversarial review rounds"
-version: "5.5"
+version: 5.5.0
+pattern: elastic-golden-diamond
 category: team-protocol
 domain: design
-roles:
+roles: [techlead, executor, reviewer]
+role_agents:
   - design-team-techlead
   - design-team-executor
   - design-team-reviewer
@@ -40,7 +44,7 @@ Every member of `design-team` (`TypeName: "self"`, `Model: "inherit"`) **MUST** 
 flowchart TD
     G0{"Prior SCOUT + RESEARCH / BRAINSTORM<br/>Already Exist in Brain?"}
     G0 -->|"Yes (Fast-Forward Gate)"| S2
-    G0 -->|"No (Cold Start)"| S1["💎 Stage 1 (Turn 1): Parallel UX Discovery, Token Scout & Aesthetic Direction Lock<br/>Lead: design-team-techlead | Shards: scouter#ui-tokens + researcher#ux-patterns<br/>Runs: ui-ux-pro-max/scripts/search.py --design-system<br/>(+ Optional Multi-Engine Council: boomopen conduct council --task design)<br/>Critic: design-team-reviewer (Challenges AI-slop & missing user flows)"]
+    G0 -->|"No (Cold Start)"| S1["💎 Stage 1 (Turn 1): Parallel UX Discovery, Token Scout & Aesthetic Direction Lock<br/>Lead: design-team-techlead | Shards: scouter#ui-tokens + researcher#ux-patterns<br/>Runs: ui-ux-pro-max/scripts/search.py --design-system<br/>(+ Optional Multi-Engine Council: boomopen conduct council --task design --prompt '<design-context>')<br/>Critic: design-team-reviewer (Challenges AI-slop & missing user flows)"]
     S1 -->|"SCOUT-{request}.md + RESEARCH-{request}.md<br/>(RequestFeedback: false)"| S2["💎 Stage 2 (Turns 2–3): Cohesive 6-Block DESIGN-{request}.md Blueprint, CLI Validation & Adversarial Audit<br/>Lead: design-team-techlead | Spec Author: design-team-executor (designer#spec-1..k)<br/>Writes single cohesive DESIGN-{request}.md (<= 500 lines, RequestFeedback: true)<br/>+ Optional DESIGN-PREVIEW-{request}.html (generative_ui) / image-generator assets<br/>Runs CLI: boomopen design validate DESIGN-{request}.md"]
     S2 --> C2["Adversarial Design Critic (Warm send_message):<br/>• design-team-reviewer (+ frontend-engineer#feasibility)<br/>Audits DESIGN-G1 (Tokens) + DESIGN-G2 (5 States) + DESIGN-G3 (WCAG 2.2 AA) + DESIGN-G4 (DESIGN_CONTRACT)"]
     C2 -->|"🔴 BLOCKER / 🟠 HIGH (<= 3 rounds)"| S2
@@ -50,7 +54,7 @@ flowchart TD
 ### Stage 1: Turn-1 Parallel UX Discovery, Existing Token Scout & Aesthetic Direction Lock
 - **Prior-Artifact Fast-Forward Gate**: If `SCOUT-{request}.md` and `RESEARCH-{request}.md` (or `BRAINSTORM-{request}.md`) already exist in `<appDataDir>\brain\<conversation-id>\`, **SKIP Stage 1** and jump directly to Stage 2!
 - **Turn-1 Parallel Fan-Out (`TypeName: "self"`, `Model: "inherit"`)**:
-  - **`design-team-techlead` (Design Director)**: Runs `python ~/.{TOOL}/skills_library/ui-ux-pro-max/scripts/search.py "<query>" --design-system -p "<Project>"`, locks the Named Aesthetic Direction, OKLCH token architecture, and component scope, and (when `engines.designer = "council"` or requested) runs `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task design --prompt "<request>" --output "<appDataDir>/brain/<conversation-id>/COUNCIL-<request>.md"`.
+  - **`design-team-techlead` (Design Director)**: Runs `python ~/.{TOOL}/skills_library/ui-ux-pro-max/scripts/search.py "<query>" --design-system -p "<Project>"`, locks the Named Aesthetic Direction, OKLCH token architecture, and component scope, and (when `engines.planner = "council"` or requested) runs `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task design --prompt "<request>" --output "<appDataDir>/brain/<conversation-id>/COUNCIL-<request>.md"`.
   - **`scouter#ui-tokens`**: Scans existing repo CSS/Tailwind config (`globals.css`, `tailwind.config.*`, `DESIGN.md`, `components/ui/*`) so the spec reuses existing project tokens into `<appDataDir>\brain\<conversation-id>\SCOUT-{request}.md` (`RequestFeedback: false`).
   - **`researcher#ux-patterns`**: Maps user JTBD flows, information architecture, and edge-case interaction patterns into `<appDataDir>\brain\<conversation-id>\RESEARCH-{request}.md` (`RequestFeedback: false`).
 
@@ -82,5 +86,5 @@ flowchart TD
 |:------------|:-----|:---------------------------|:-------------------|
 | **Master Design Spec** | `<appDataDir>\brain\<conversation-id>\DESIGN-{request}.md` | `UserFacing: true, RequestFeedback: true` (**1-Click "Proceed"**) | **Single cohesive file `<= 500` lines** (NEVER split at 150 lines!) |
 | **Interactive Prototype** | `<appDataDir>\brain\<conversation-id>\DESIGN-PREVIEW-{request}.html` | `UserFacing: true, RequestFeedback: false` | Optional `generative_ui` interactive HTML preview |
-| **Token Scout / Research** | `<appDataDir>\brain\<conversation-id>\SCOUT-{request}.md`, `RESEARCH-{request}.md` | `UserFacing: true, RequestFeedback: false` | Supporting Stage 1 discovery artifacts |
+| **Token Scout / Research** | `<appDataDir>\brain\<conversation-id>\SCOUT-{request}.md`, `RESEARCH-{request}.md` | `UserFacing: false, RequestFeedback: false` | Supporting Stage 1 discovery artifacts |
 | **Team Mailbox** | `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md` | `UserFacing: false, RequestFeedback: false` | Append-only debate & consensus log (max 3 rounds) |

@@ -1,6 +1,6 @@
 interface:
   display_name: "/orchestrate"
   short_description: "Coordinate multiple agents for complex tasks using Elastic Parallel Sharding, Contract-First Parallel Fan-Out, Direct Plan Dispatch, and Warm Sub-agent Reuse."
-  brand_color: "#6366F1"
+  brand_color: "#8B5CF6"
 policy:
   allow_implicit_invocation: true

@@ -1,6 +1,7 @@
 ---
 name: brainstorm-team
 team: brainstorm-team
+description: "2-Stage Elastic Golden Diamond Ideation & Strategy Team (v5.5) — Prior-Artifact Fast-Forward (boomopen research brief), Turn-1 parallel market/codebase grounding, cohesive 6-Block BRAINSTORM-{topic}.md with Weighted MCDA Matrix + 6-Month Pre-Mortem, and deterministic CLI validation (boomopen research validate --mode brainstorm)"
 summary: "2-Stage Elastic Golden Diamond Ideation & Strategy Team (v5.5) — Prior-Artifact Fast-Forward (boomopen research brief), Turn-1 parallel market/codebase grounding, cohesive 6-Block BRAINSTORM-{topic}.md with Weighted MCDA Matrix + 6-Month Pre-Mortem, and deterministic CLI validation (boomopen research validate --mode brainstorm)"
 version: 5.5.0
 pattern: elastic-golden-diamond
@@ -41,7 +42,7 @@ Every member of `brainstorm-team` (`TypeName: "self"`, `Model: "inherit"`) **MUS
 flowchart TD
     G0{"RESEARCH-{topic}.md Already Exists?"}
     G0 -->|"Yes: boomopen research brief <path><br/>(Skip duplicate web searches)"| S2
-    G0 -->|"No (Cold Start)"| S1["💎 Stage 1 (Turn 1): Parallel Grounding, Codebase Scout & Market Scan<br/>Lead: brainstorm-team-techlead (base-agent: planner)<br/>Shards: scouter#codebase + researcher#market-1..k (search_web)<br/>(+ Optional Council: boomopen conduct council --task brainstorm)<br/>Locks Constraints & MCDA Weights (25/20/20/20/15)"]
+    G0 -->|"No (Cold Start)"| S1["💎 Stage 1 (Turn 1): Parallel Grounding, Codebase Scout & Market Scan<br/>Lead: brainstorm-team-techlead (base-agent: planner)<br/>Shards: scouter#codebase + researcher#market-1..k (search_web)<br/>(+ Optional Council: boomopen conduct council --task brainstorm --prompt '<brainstorm-context>')<br/>Locks Constraints & MCDA Weights (25/20/20/20/15)"]
     S1 -->|"SCOUT + Grounding Notes<br/>(UserFacing: false)"| S2["💎 Stage 2 (Turns 2–3): Orthogonal Option Synthesis ⇄ Adversarial Pre-Mortem<br/>Author: brainstorm-team-executor (base-agent: brainstormer)<br/>Writes single cohesive 6-Block BRAINSTORM-{topic}.md (<= 500 lines, RequestFeedback: true)<br/>3–4 Orthogonal Options + MCDA Matrix + xychart-beta/flowchart + HANDOFF_BRIEF<br/>Runs: boomopen research validate <path> --mode brainstorm"]
     S2 --> C2["Adversarial Pre-Mortem Critic (Warm send_message):<br/>• brainstorm-team-reviewer (base-agent: tech-lead)<br/>6-Month Failure Pre-Mortem + Anti-Tarpit + Unit Economics + RES-G1..G4"]
     C2 -->|"🔴 BLOCKER / Strawman / Sycophancy (<= 3 rounds)"| S2
@@ -57,7 +58,7 @@ flowchart TD
 
 ### Stage 2: Cohesive 6-Block `BRAINSTORM-{topic}.md` Synthesis ⇄ 6-Month Failure Pre-Mortem
 - **`brainstorm-team-executor` (`base-agent: brainstormer`)**: Synthesizes `3–4` genuinely orthogonal options (never strawman decoys), scores the **Weighted MCDA Decision Matrix**, embeds Mermaid `xychart-beta` / `flowchart TD` diagrams and a machine-readable **`HANDOFF_BRIEF`**, and runs `boomopen research validate "<path>" --mode brainstorm`.
-- **`brainstorm-team-reviewer` (`base-agent: tech-lead`)**: Executes a **6-Month Failure Pre-Mortem**, kills AI sycophancy and tarpit ideas, audits unit economics (`$/1k DAU`, COGS, ops complexity), and loops in-place fixes via warm `send_message` (max 3 rounds; optional `boomopen conduct dispatch --role reviewer --engine cross_family`).
+- **`brainstorm-team-reviewer` (`base-agent: tech-lead`)**: Executes a **6-Month Failure Pre-Mortem**, kills AI sycophancy and tarpit ideas, audits unit economics (`$/1k DAU`, COGS, ops complexity), and loops in-place fixes via warm `send_message` (max 3 rounds; optional `boomopen conduct dispatch --role reviewer --engine cross_family --prompt "<options & pre-mortem>"`).
 
 ---
 
@@ -65,10 +66,10 @@ flowchart TD
 
 | Gate ID | Gate Dimension | Mandatory Criteria Checked by CLI & Reviewer |
 |:-------:|:---------------|:---------------------------------------------|
-| **`RES-G1`** | **Single-File Cohesion & Grounding** | Cohesive `BRAINSTORM-{topic}.md` (`<= 500` lines, `RequestFeedback: true`) with clickable citations & codebase/market grounding. |
-| **`RES-G2`** | **Orthogonal Options & MCDA Matrix** | `3–4` distinct architectural/product options scored across `Impact 25%`, `Speed 20%`, `Stack Fit 20%`, `Pre-Mortem Survivability 20%`, `Unit Economics 15%` + Mermaid `xychart-beta` / `flowchart TD`. |
-| **`RES-G3`** | **Anti-Sycophancy & 6-Month Pre-Mortem** | Concrete failure modes, tarpit traps, unit-economics math, and explicit *"When NOT to Choose / Build"* counter-arguments. |
-| **`RES-G4`** | **Executable `HANDOFF_BRIEF` & Consensus** | Machine-extractable `HANDOFF_BRIEF` (MVP cutline, non-goals, stack constraints) + `✅ CONSENSUS` stamp. |
+| **`RES-G1`** | **Constraints & Grounding Anchors** | Explicit Constraints / Assumptions / Grounding section + `>= 1` concrete grounding reference (codebase path, `RESEARCH-`/`SCOUT-` artifact, or clickable URL). |
+| **`RES-G2`** | **MCDA Matrix & 6-Month Pre-Mortem** | Multi-option MCDA decision matrix (`>= 2` data rows; `3–4` orthogonal options across `Impact 25%`, `Speed 20%`, `Stack Fit 20%`, `Survivability 20%`, `Unit Economics 15%`) + explicit Pre-Mortem / tarpit risks / *"When NOT to Choose"*. |
+| **`RES-G3`** | **Executive Verdict & `HANDOFF_BRIEF`** | Explicit Recommended Option / Verdict section + machine-extractable `HANDOFF_BRIEF` (MVP cutline, non-goals, stack constraints) ready for `boomopen research brief "<path>"`. |
+| **`RES-G4`** | **Single-File Cohesion & Zero Placeholders** | Single cohesive `BRAINSTORM-{topic}.md` (`<= 500` lines hard / `<= 400` soft, `RequestFeedback: true`), `0` unfilled `{placeholder}` / `TODO` / `TBD` markers, and `✅ CONSENSUS` stamp. |
 
 ---
 

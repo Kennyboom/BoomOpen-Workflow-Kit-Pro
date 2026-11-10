@@ -74,7 +74,7 @@ Append `REVIEW`, `APPROVAL`, or `ESCALATION` entries to `<appDataDir>\brain\<con
 ```
 
 ### 3. `ESCALATION` Format (Round 3 Unresolved `🔴 BLOCKER` → `debug-team-techlead`)
-- Never exceed `3` rounds and never escalate to `planner`: post `[ESCALATION]` to **`debug-team-techlead`** summarizing each unresolved `🔴 BLOCKER`, Executor's defense, Reviewer's counter-proof, and recommended arbitration check (or Cross-Engine critic run via `boomopen conduct dispatch --role reviewer --engine cross_family`).
+- Never exceed `3` rounds and never escalate to `planner`: post `[ESCALATION]` to **`debug-team-techlead`** summarizing each unresolved `🔴 BLOCKER`, Executor's defense, Reviewer's counter-proof, and recommended arbitration check (or Cross-Engine critic run via `boomopen conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`).
 
 ---
 

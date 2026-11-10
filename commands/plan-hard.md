@@ -32,7 +32,7 @@ execution-mode: execute
 
 **Deliverable & `ArtifactMetadata` Routing (Antigravity 2.0 Clean Git Tree)**:
 - **`PLAN-{task}.md`**: Write as **1 single cohesive file up to `500` lines** (NEVER split into a `{name}/` folder at 150 lines!) to `<appDataDir>\brain\<conversation-id>\PLAN-{task}.md` with `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: true }` so Antigravity 2.0 renders the native 1-click **"Proceed"** button.
-- **Intermediate Artifacts (`SCOUT-{task}.md`, `RESEARCH-{task}.md`, `COUNCIL-PLAN-{task}.md`)**: Always set `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: false }` so premature "Proceed" buttons never appear on discovery files.
+- **Intermediate Artifacts (`SCOUT-{task}.md`, `RESEARCH-{task}.md`, `COUNCIL-PLAN-{task}.md`)**: Always set `ArtifactMetadata: { Summary: "...", UserFacing: false, RequestFeedback: false }` so internal discovery files stay hidden and premature "Proceed" buttons never appear.
 
 ---
 
@@ -52,7 +52,7 @@ execution-mode: execute
 |-------------------|-----------------------------------------------|----------------|
 | **`scouter`** / **`scouter#1..k`** (`Model: "inherit"`) | `<appDataDir>\brain\<conversation-id>\SCOUT-{task}.md` | 1. Check `./documents/` (if present) and map existing architecture, DB schemas, and reusable modules (`≤ 3–4` heavy files/modules per shard).<br>2. Identify exact file paths for `OWNED_FILES`, `READ_ONLY_FILES`, and existing `Test Files`.<br>3. Perform **Blast-Radius Caller Scan**: list all downstream callers/imports of functions or schemas to be modified. |
 | **`researcher`** / **`researcher#1..k`** (`Model: "inherit"`) | `<appDataDir>\brain\<conversation-id>\RESEARCH-{task}.md` | 1. **Feature & Entity Discovery**: Map explicit + implicit CRUD/List/Search operations, UI states (loading/empty/error), validation, and permissions.<br>2. **Pattern & Skill Lookup**: Query `<skills>` and `matrix-skills/compact-index.json` (`1,462` skills); evaluate libraries, security/perf trade-offs, and ADR options (`1` vector per shard). |
-| **Optional Cross-Engine Planner (`engines.planner`)** | `<appDataDir>\brain\<conversation-id>\COUNCIL-PLAN-{task}.md` | - If `engines.planner = "council"`: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task plan --engines <engines.councilMembers> --prompt "<task>"` in parallel.<br>- If `engines.planner` is a specific external engine (`claude`, `codex`, etc.): Dispatch via `boomopen conduct dispatch --role planner --engine <engines.planner>` in Wave 2. |
+| **Optional Cross-Engine Planner (`engines.planner`)** | `<appDataDir>\brain\<conversation-id>\COUNCIL-PLAN-{task}.md` | - If `engines.planner = "council"`: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task plan --engines <engines.councilMembers> --prompt "<task>"` in parallel.<br>- If `engines.planner` is a specific external engine (`claude`, `codex`, etc.): Dispatch via `boomopen conduct dispatch --role planner --engine <engines.planner> --prompt "<task>"` in Wave 2. |
 
 *Interactive Scope Confirmation*: If Wave 1 reveals critical MVP vs. P1/P2 scope ambiguity, call `ask_question` before Wave 2.
 
@@ -165,13 +165,13 @@ export type FeatureErrorCode = 'ERR_VALIDATION' | 'ERR_UNAUTHORIZED' | 'ERR_NOT_
    # Add --sync-ledger when the plan has >= 2 waves/phases or > 8 target files
    node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js plan validate "<appDataDir>/brain/<conversation-id>/PLAN-{task}.md" [--sync-ledger]
    ```
-2. **6-Point Coverage & Shard Boundary Check (`reviewer`)**:
-   - [x] `PLAN-G1`: 100% requirement & `AC1..N` coverage (0 orphan ACs)
-   - [x] `PLAN-G2`: Every shard owns `≤ 3–4` files (`OWNED_FILES`)
-   - [x] `PLAN-G3`: Zero `OWNED_FILES` overlap across parallel tasks in the same Wave
-   - [x] `PLAN-G4`: Fenced TypeScript/SQL/JSON code block inside `SHARED_CONTRACT`
-   - [x] `PLAN-G5`: Every task defines `READ_ONLY_FILES`, `Test Files`, and executable `Verify` command with `check --strict-phase --no-stubs`
-   - [x] `PLAN-G6`: 3-Part Blast-Radius Pre-Mortem & Rollback command defined
+2. **5-Gate CLI & Blast-Radius Coverage Check (`reviewer`)**:
+   - [x] `PLAN-G1`: 6-Block schema, fenced TypeScript/SQL/JSON `SHARED_CONTRACT`, and 5-Field task metadata (`Agent`, `Acceptance`, `OWNED_FILES`, `READ_ONLY_FILES`, `Test Files`, `Verify`) present
+   - [x] `PLAN-G2`: Every shard owns `≤ 3–4` files (`OWNED_FILES` `≤ 4` hard cap)
+   - [x] `PLAN-G3`: Zero `OWNED_FILES` / `READ_ONLY_FILES` intra-task or parallel intra-wave collisions
+   - [x] `PLAN-G4`: Acyclic Wave/Phase `Depends On` DAG and valid `role#shard` names
+   - [x] `PLAN-G5`: 100% requirement & `AC1..N` traceability (`0` orphan ACs)
+   - [x] **Blast-Radius & Rollback Audit**: 3-Part Blast-Radius Pre-Mortem & reversible Rollback command defined
 
 ---
 

@@ -17,7 +17,7 @@ version: "5.5"
 
 1. **UPTIME FIRST ON `P0`/`P1`** — Stabilize and rollback before deep root-cause debugging (`< 15 min` for `P0`, `< 30 min` for `P1`; route `P3` minor dev bugs to `/debug:hard`).
 2. **BACKUP BEFORE EVERY ROLLBACK** — Capture current commit SHA, `git stash`, or DB snapshot before reverting.
-3. **🛑 MANDATORY DATA-LOSS CONSENT GATE (`accidental-data-loss-prevention`)**:
+3. **🛑 MANDATORY STOP-AND-VERIFY DATA-LOSS CONSENT GATE (`skills_library/deployment-procedures/SKILL.md` + `hooks/validate-tool-call.mjs`)**:
    - **STOP** before running **any** database down-migration, `pg_restore`, PITR restore, or destructive production rollback!
    - Show the user the **exact command** and **target host/database name** (redacting passwords/tokens), confirm a **verified backup** exists, and wait for an explicit `"yes"`. No confirmation → **zero execution**.
    - ⛔ **NEVER** run `prisma migrate reset`, `db:reset`, `db:drop`, `DROP TABLE`, or `TRUNCATE` against staging/production!

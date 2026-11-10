@@ -83,7 +83,7 @@ When the user requests applying fixes (not audit-only), dispatch parallel domain
 node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <target-dir> --strict-phase --no-stubs
 
 # 2. Verify cache/header/query changes introduced zero security or secret/CORS regressions
-python ~/.{TOOL}/skills_library/vulnerability-scanner/scripts/security_scan.py <target-dir>
+python ~/.{TOOL}/skills/security-auditor/scripts/security_scan.py <target-dir>
 ```
 *(Plus project build, `tsc --noEmit`, test suite, and post-change benchmark comparison — rollback immediately if any metric regresses!)*
 

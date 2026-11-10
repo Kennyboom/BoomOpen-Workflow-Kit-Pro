@@ -1,6 +1,7 @@
 ---
 name: research-team
 team: research-team
+description: "Elastic 3-to-6 Vector Deep-Research Golden Diamond Team (v5.5) — collision-free shard outputs (RESEARCH-{topic}-v1..k.md), Epistemic Confidence tagging, Contradiction Arbitration, Anti-Sycophancy 'When NOT to Use', HANDOFF_BRIEF, and deterministic CLI validation (boomopen research validate --mode research)"
 summary: "Elastic 3-to-6 Vector Deep-Research Golden Diamond Team (v5.5) — collision-free shard outputs (RESEARCH-{topic}-v1..k.md), Epistemic Confidence tagging, Contradiction Arbitration, Anti-Sycophancy 'When NOT to Use', HANDOFF_BRIEF, and deterministic CLI validation (boomopen research validate --mode research)"
 version: 5.5.0
 pattern: elastic-golden-diamond
@@ -39,7 +40,7 @@ Every shard of `research-team` MUST be spawned via `invoke_subagent(TypeName: "s
 
 ```mermaid
 flowchart TD
-    S1["💎 Stage 1 (Turn 1): Parallel Elastic Vector Deep-Hunting (Zero Write Collisions)<br/>• research-team-techlead (base-agent: researcher) -> Vector framing + Council<br/>• researcher#v1..k (3–6 shards, base-agent: researcher) -> RESEARCH-{topic}-v1..k.md + SCOUT-{topic}.md<br/>(All shard files: UserFacing: false, RequestFeedback: false)<br/>• Optional: boomopen conduct council --task research -> COUNCIL-{topic}.md"]
+    S1["💎 Stage 1 (Turn 1): Parallel Elastic Vector Deep-Hunting (Zero Write Collisions)<br/>• research-team-techlead (base-agent: researcher) -> Vector framing + Council<br/>• researcher#v1..k (3–6 shards, base-agent: researcher) -> RESEARCH-{topic}-v1..k.md + SCOUT-{topic}.md<br/>(All shard files: UserFacing: false, RequestFeedback: false)<br/>• Optional: boomopen conduct council --task research --prompt '<research-context>' -> COUNCIL-{topic}.md"]
     S1 --> S2["💎 Stage 2 (Turn 2): Cohesive 6-Block Master Synthesis<br/>Lead/Synthesizer merges RESEARCH-{topic}-v1..k.md (+ COUNCIL) into<br/>1 cohesive RESEARCH-{topic}.md (<= 500 lines, UserFacing: true, RequestFeedback: true)<br/>Runs: boomopen research validate <path> --mode research"]
     S2 --> S3["💎 Stage 3 (Turns 2–3): Epistemic & Adversarial Cross-Examination (Warm send_message)<br/>• research-team-reviewer (base-agent: reviewer / Epistemic Critic)<br/>Independent Wave 3 search_web fact-check + Contradiction Audit + RES-G1..G4"]
     S3 -->|"🔴 BLOCKER / Unverified Claim (<= 3 warm send_message rounds)"| S2
@@ -50,7 +51,7 @@ flowchart TD
 
 | Role | `base-agent` | Shard Ownership (`OWNED_FILES`) | Mission |
 |:-----|:-------------|:--------------------------------|:--------|
-| **Lead Research Architect** | `researcher` (`research-team-techlead`) | `RESEARCH-{topic}.md` (Master Synthesis) + `MAILBOX-{date}.md` | Decomposes `3–6` orthogonal vectors, runs official spec/RFC `search_web` queries (+ optional `boomopen conduct council --task research`), arbitrates contradictions, and stamps `✅ CONSENSUS`. |
+| **Lead Research Architect** | `researcher` (`research-team-techlead`) | `RESEARCH-{topic}.md` (Master Synthesis) + `MAILBOX-{date}.md` | Decomposes `3–6` orthogonal vectors, runs official spec/RFC `search_web` queries (+ optional `boomopen conduct council --task research --prompt "<research-context>"`), arbitrates contradictions, and stamps `✅ CONSENSUS`. |
 | **Elastic Vector Shards (`3–6`)** | `researcher` (`researcher#v1..k` — `research-team-executor`) | Disjoint `RESEARCH-{topic}-v{1..k}.md` + `SCOUT-{topic}.md` (`UserFacing: false`) | Triangulates workspace manifests (`read_file`), `matrix-skills/compact-index.json` (`1,462` skills), official SDK docs, and benchmarks via 3-Wave `search_web` (`1` vector per shard). |
 | **Epistemic Critic** | `reviewer` (`research-team-reviewer`) | `MAILBOX-{date}.md` (Append-only `REVIEW` / `APPROVAL`) | Runs independent Wave 3 adversarial `search_web` counter-queries (CVEs, breaking changes, post-mortems), enforces `[Confidence]` honesty, *"When NOT to Use"*, and `RES-G1..G4`. |
 
@@ -60,10 +61,10 @@ flowchart TD
 
 | Gate ID | Validation Dimension | Mandatory Criteria Checked by CLI & Epistemic Critic |
 |:-------:|:---------------------|:-----------------------------------------------------|
-| **`RES-G1`** | **6-Block Cohesion & Audit Log** | Single cohesive `RESEARCH-{topic}.md` (`<= 500` lines, `RequestFeedback: true`) with `>= 6` verified sources in the Research Execution Audit Log and clickable URLs. |
-| **`RES-G2`** | **Epistemic Rigor & Contradiction Table** | Inline `[Confidence: HIGH\|MEDIUM\|LOW]` tags on claims + **Contradiction Arbitration** table resolving conflicting benchmarks/docs + pinned `2025`/`2026` versions. |
-| **`RES-G3`** | **Anti-Sycophancy & Failure Modes** | Dedicated **"When NOT to Use"** section, quantitative trade-off matrix (`>= 3` options), production failure modes, CVEs, and unit-economics/latency math. |
-| **`RES-G4`** | **Executable `HANDOFF_BRIEF` & Consensus** | Machine-readable `HANDOFF_BRIEF` ready for `boomopen research brief "<path>"` + `✅ CONSENSUS` stamp. |
+| **`RES-G1`** | **Citations & Epistemic Confidence** | `>= 2` concrete `https://`, `file://`, or `file:line` citations (`>= 6` verified sources in Audit Log) + explicit `[Confidence: HIGH\|MEDIUM\|LOW]` tags on claims + pinned `2025`/`2026` versions. |
+| **`RES-G2`** | **Comparison Matrix & Anti-Sycophancy Risks** | Multi-option comparison/decision matrix table (`>= 2` data rows; `>= 3` options target) + explicit **Contradiction Arbitration**, **"When NOT to Use"**, CVEs, and failure-mode/latency trade-offs. |
+| **`RES-G3`** | **Executive Verdict & `HANDOFF_BRIEF`** | Explicit Executive Verdict / Recommended Option section + machine-extractable `HANDOFF_BRIEF` ready for `boomopen research brief "<path>"`. |
+| **`RES-G4`** | **Single-File Cohesion & Zero Placeholders** | Single cohesive `RESEARCH-{topic}.md` (`<= 500` lines hard / `<= 400` soft, `RequestFeedback: true`), `0` unfilled `{placeholder}` / `TODO` / `TBD` markers, and `✅ CONSENSUS` stamp. |
 
 ---
 

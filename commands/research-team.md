@@ -13,7 +13,7 @@ execution-mode: execute
 
 # /research:team — 2-Stage Elastic Golden Diamond Deep-Research Engine (`3–6` Vectors + Council)
 
-> **MISSION**: Achieve maximum epistemic accuracy and zero-hallucination synthesis through **Stage 1 Elastic Parallel Vector Deep-Hunting (`3` core `research-team` vectors scaling to `4–6` disjoint shards)** + optional **Multi-Engine Council (`boomopen conduct council --task research`)**, followed by **Stage 2 Adversarial Contradiction Cross-Examination & Wave 3 Gap-Filling via Warm `send_message`** into **1 CLI-validated 6-Block `RESEARCH-{topic}.md`**.
+> **MISSION**: Achieve maximum epistemic accuracy and zero-hallucination synthesis through **Stage 1 Elastic Parallel Vector Deep-Hunting (`3` core `research-team` vectors scaling to `4–6` disjoint shards)** + optional **Multi-Engine Council (`boomopen conduct council --task research --prompt "<research-context>"`)**, followed by **Stage 2 Adversarial Contradiction Cross-Examination & Wave 3 Gap-Filling via Warm `send_message`** into **1 CLI-validated 6-Block `RESEARCH-{topic}.md`**.
 > **DEFAULT (`naturalLanguageResearchTrigger = "auto_team"`)**: Default workflow for `/research` and natural-language deep technical/market investigations across all 17 languages.
 
 <topic>$ARGUMENTS</topic>

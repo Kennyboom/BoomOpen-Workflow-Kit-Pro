@@ -3,7 +3,7 @@
   <p><strong>Hệ Điều Hành Nhân Sự AI Đa Nền Tảng — 21 Đặc Vụ Chuyên Gia, 18 Đội Hình Tam Giác Vàng &amp; Kho Hơn 1.460+ Kỹ Năng Chuyên Sâu</strong></p>
 
   <p>
-    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
+    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#-các-nền-tảng-ai-được-hỗ-trợ"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
     <a href="#-21-đặc-vụ-chuyên-gia--18-đội-hình-tam-giác-vàng"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
     <a href="#-kho-hơn-1460-kỹ-năng-chuyên-sâu-22-kỹ-năng-lõi--1440-kỹ-năng-thư-viện"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
@@ -48,11 +48,11 @@
 ## 🎬 Video Giới Thiệu Chính Thức (Full HD 1080p)
 
 <div align="center">
-  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_vi.mp4">
+  <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_vi.mp4">
     <img src="../assets/media/poster_vi.png" alt="Xem Video Giới Thiệu BoomOpen Workflow Kit v5.5 (Full HD 1080p)" width="92%" />
   </a>
   <p>
-    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/raw/main/assets/media/boomopen_v55_trailer_vi.mp4"><b>Bấm Vào Đây Để Xem / Tải Video Giới Thiệu Chính Thức (Full HD 1080p — Thuyết Minh Studio)</b></a>
+    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_vi.mp4"><b>Bấm Vào Đây Để Xem / Tải Video Giới Thiệu Chính Thức (Full HD 1080p — Thuyết Minh Studio)</b></a>
   </p>
 </div>
 
@@ -128,8 +128,8 @@ flowchart TD
 
 ```bash
 # 1. Clone kho mã nguồn
-git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
-cd BoomOpen-Workflow-Kit
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+cd BoomOpen-Workflow-Kit-Pro
 
 # 2. Cài đặt cho trợ lý lập trình AI của bạn (chọn 1 hoặc --all)
 npm run install:antigravity   # Google Antigravity 2.0 (Gemini)
@@ -145,7 +145,7 @@ npm link
 boomopen research validate path/to/RESEARCH.md                  # Kiểm định RESEARCH-* / BRAINSTORM-* (--mode brainstorm) & brief
 boomopen design validate path/to/DESIGN.md                      # Kiểm định DESIGN-* 6 khối & xuất DESIGN_CONTRACT
 boomopen plan validate path/to/PLAN.md                          # Kiểm định PLAN-* & biên dịch .boomopen/project-ledger.json
-boomopen cook preflight --plan path/to/PLAN.md                  # Xuất gói giao việc 5 trường theo Wave & khóa OWNED_FILES
+boomopen cook preflight path/to/PLAN.md                         # Xuất gói giao việc 5 trường theo Wave & khóa OWNED_FILES
 boomopen check path/to/your/project --strict-phase --no-stubs
 boomopen ledger status
 boomopen conduct probe
@@ -197,7 +197,7 @@ Mặc định ngay sau khi cài đặt, BoomOpen v5.5 tự động kích hoạt 
    boomopen settings set execution.mode mode_a --project     # Ghi ./.boomopen.json vào ĐÚNG thư mục hiện tại
    boomopen settings reset                                   # Khôi phục về mặc định Recommended (smart-hybrid)
    ```
-   `--project` luôn ghi `./.boomopen.json` vào thư mục bạn chạy lệnh, nên hãy chạy trong dự án của bạn (không chạy trong thư mục clone của kit). Không dùng `npm link` thì thay `boomopen` bằng `node /path/to/BoomOpen-Workflow-Kit/cli/install.js`.
+   `--project` luôn ghi `./.boomopen.json` vào thư mục bạn chạy lệnh, nên hãy chạy trong dự án của bạn (không chạy trong thư mục clone của kit). Không dùng `npm link` thì thay `boomopen` bằng `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`.
 
 ---
 
@@ -255,7 +255,7 @@ BoomOpen tích hợp một trong những kho kỹ năng kỹ thuật phần mề
 ## 📂 Cấu Trúc Kho Mã Nguồn
 
 ```text
-BoomOpen-Workflow-Kit/
+BoomOpen-Workflow-Kit-Pro/
 ├── agents/                  # 21 Đặc vụ Chuyên gia + 18 Đội hình Tam Giác Vàng (54 file vai trò + 18 _team.md, 72 files)
 ├── cli/                     # Bộ CLI: install.js, doctor.js, checker.js, settings.js, research.js, design.js, plan.js, cook.js, ledger.js & conductor.js
 ├── commands/                # 79 quy trình lệnh Slash (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 giao thức _ref/ (84 files)

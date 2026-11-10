@@ -1,6 +1,7 @@
 ---
 name: performance-team
 team: performance-team
+description: "3-Wave Measure-First Elastic Golden Diamond Performance Team (v5.5) — Wave 1 baseline profiling & bottleneck proof, Wave 2 parallel hot-path optimization shards (<= 3-4 OWNED_FILES/shard), and Wave 3 before/after delta + zero-regression verification"
 summary: "3-Wave Measure-First Elastic Golden Diamond Performance Team (v5.5) — Wave 1 baseline profiling & bottleneck proof, Wave 2 parallel hot-path optimization shards (<= 3-4 OWNED_FILES/shard), and Wave 3 before/after delta + zero-regression verification"
 version: 5.5.0
 pattern: elastic-golden-diamond
@@ -67,7 +68,7 @@ flowchart TD
 |:-------:|:---------------|:----------------------------------------------|
 | **`PERF-G1`** | **Reproducible Baseline & Delta** | Before/after table under identical workload (`p50/p95/p99` ms, RPS, query cost, MB, or CWV/KB) showing measurable gain. |
 | **`PERF-G2`** | **Disjoint `OWNED_FILES` & API Lock** | `<= 4` files touched per shard; `0` breaking changes to public `SHARED_CONTRACT` signatures or locked regression tests. |
-| **`PERF-G3`** | **Zero Functional/Metric Trade-Off** | Existing unit/integration/E2E test suite exits `0` (`boomopen cook verify-wave --run-verify` when planned) with no memory leak or tail-latency spike. |
+| **`PERF-G3`** | **Zero Functional/Metric Trade-Off** | Existing unit/integration/E2E test suite exits `0` (`boomopen cook verify-wave "<plan.md>" --wave <W> --git --run-verify` when planned) with no memory leak or tail-latency spike. |
 | **`PERF-G4`** | **Pragmatic Code Hygiene** | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` exits `0` (`0` stubs, `0` `any`, `0` stray `console.log`). |
 
 ---

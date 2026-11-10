@@ -1,6 +1,6 @@
 interface:
   display_name: "/security-audit"
   short_description: "Fortress Builder v3 — OWASP Top 10 scan, STRIDE Threat Modeling, Auth/Authorization audit, Data Protection, API Security, Frontend/Infrastructure hardening, Supply Chain, and Zero Trust. Creates Security Report with severity scoring."
-  brand_color: "#6366F1"
+  brand_color: "#DC2626"
 policy:
   allow_implicit_invocation: true

@@ -92,7 +92,7 @@ Dispatch `report-team-executor` (`TypeName: "self"`, `Model: "inherit"`) consumi
 ```
 
 ### Step 2B — Adversarial Metric & Actionability Audit (`report-team-reviewer` via Warm `send_message`)
-Spawn `report-team-reviewer` (`TypeName: "self"`, `Model: "inherit"`; plus optional Cross-Engine critic via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family` when configured) to audit `REPORT-{topic}.md` against **`RPT-G1..G4`**:
+Spawn `report-team-reviewer` (`TypeName: "self"`, `Model: "inherit"`; plus optional Cross-Engine critic via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"` when configured) to audit `REPORT-{topic}.md` against **`RPT-G1..G4`**:
 - **`RPT-G1` (Provenance & Math)**: Recompute every sum, ratio, and percentage against `SCOUT-report-*.md` (`0` unverified numbers).
 - **`RPT-G2` (Executive Signal)**: 5-bullet Executive Summary stands alone with zero filler.
 - **`RPT-G3` (Actionability)**: Every recommendation specifies concrete files/commands and `P0–P2` priority.

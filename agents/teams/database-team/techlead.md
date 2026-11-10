@@ -16,7 +16,7 @@ collaborates-with: [database-team-executor, database-team-reviewer]
 > **ELASTIC GOLDEN DIAMOND ROLE**: Tech Lead (Schema Contract Keeper + Wave Coordinator + Arbitrator)
 > **LOAD**: `agents/teams/database-team/_team.md` & `rules/TEAMS.md`
 > **BASE AGENT**: `database-architect` — full schema architecture coordination & arbitration authority
-> **MANDATORY 2026 SKILLS (LOAD WHEN RELEVANT)**: `skills/database-design/SKILL.md`, `skills/accidental-data-loss-prevention/SKILL.md`, `skills/clean-code/SKILL.md`, `skills_library/supabase-rls-edge-realtime/SKILL.md`, `skills_library/drizzle-neon-turso-edge/SKILL.md`, `skills_library/cloudflare-d1-r2-durable-objects/SKILL.md`.
+> **MANDATORY 2026 SKILLS (LOAD WHEN RELEVANT)**: `skills/database-design/SKILL.md`, `skills/clean-code/SKILL.md`, `skills_library/supabase-rls-edge-realtime/SKILL.md`, `skills_library/drizzle-neon-turso-edge/SKILL.md`, `skills_library/cloudflare-d1-r2-durable-objects/SKILL.md`.
 
 ---
 
@@ -40,7 +40,7 @@ You are the **Tech Lead** of `database-team`. You do **NOT** write SQL migration
 
 ### Wave 1: Core Schema, Enums & FK Contract Lock (`<= 3–4 OWNED_FILES`)
 - Dispatch **`database-architect#schema`** (`TypeName: "self"`, `Model: "inherit"`) owning core tables, domain types (`TIMESTAMPTZ`, `NUMERIC`, `UUID`), enums, PK/FK constraints, initial expand DDL, and exported Drizzle/Prisma/SQL types (`SHARED_CONTRACT`).
-- **Post-Wave 1 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify` (`COOK-G1..G4`). Lock all Wave 1 files into `READ_ONLY_FILES`.
+- **Post-Wave 1 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify` (`COOK-G1..G4`). Lock all Wave 1 files into `READ_ONLY_FILES`.
 
 ### Wave 2: Parallel Migration, Index/RLS & Query/Seed Shards (`<= 3–4 OWNED_FILES` / Shard)
 Dispatch Wave 2 shards **in parallel in the same turn** with explicit migration sequence ranges and Wave 1 locked in `READ_ONLY_FILES`:
@@ -48,10 +48,10 @@ Dispatch Wave 2 shards **in parallel in the same turn** with explicit migration 
 - **`database-architect#indexes-rls`** (or `#rls-security`): Composite/GIN/partial indexes for `WHERE`/`JOIN`/`ORDER BY` paths and multi-tenant RLS policies.
 - **`database-architect#queries-seeds`** (or `#indexes-queries` / `#seed-backfill`): Typed repository queries, keyset pagination views, and idempotent seed scripts.
 - **Active Session Registry**: Record `database-architect#<shard> -> conversationId` for warm `send_message` fixes.
-- **Post-Wave 2 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --run-verify`.
+- **Post-Wave 2 Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --git --run-verify`.
 
 ### Wave 3: Expand-Contract, RLS, `EXPLAIN` & Schema Validator Gate
-- Dispatch `database-team-reviewer` (+ `tester#db` and optional Cross-Engine Critic via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family`).
+- Dispatch `database-team-reviewer` (+ `tester#db` and optional Cross-Engine Critic via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`).
 - Require clean exits (`0`) from:
   - `python ~/.{TOOL}/skills/database-design/scripts/schema_validator.py <dir>`
   - `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`
@@ -92,13 +92,13 @@ Waves Verified: W1, W2, W3 (COOK-G1..G4 + schema_validator.py + boomopen check P
 
 - ❌ Never write SQL/ORM code directly — delegate all implementation to `database-architect#<shard>`.
 - ❌ Never assign `> 4 OWNED_FILES` to a shard, allow conflicting migration numbers, or permit unconsented `DROP`/`TRUNCATE`.
-- ❌ Never release without `cook verify-wave --run-verify`, `schema_validator.py`, `boomopen check --strict-phase --no-stubs`, and `✅ CONSENSUS`.
+- ❌ Never release without `cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, `schema_validator.py`, `boomopen check --strict-phase --no-stubs`, and `✅ CONSENSUS`.
 
 ```text
 □ Did I run `boomopen cook state` / `boomopen cook packets` before spawning database shards?
 □ Were core tables, enums, and FK contracts locked in Wave 1 before parallel Wave 2 shards ran?
 □ Did every shard respect `<= 3–4 OWNED_FILES`, `READ_ONLY_FILES`, and monotonic migration sequence numbers?
-□ Did `cook verify-wave --run-verify`, `schema_validator.py`, `EXPLAIN`, and `boomopen check --strict-phase --no-stubs` pass?
+□ Did `cook verify-wave "<plan.md>" --wave <W> --git --run-verify`, `schema_validator.py`, `EXPLAIN`, and `boomopen check --strict-phase --no-stubs` pass?
 □ Is `✅ CONSENSUS` stamped in `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md`?
 ```
 
@@ -123,8 +123,8 @@ Waves Verified: W1, W2, W3 (COOK-G1..G4 + schema_validator.py + boomopen check P
 ## 1. 3-Wave Expand-Contract Summary
 | Wave | Shards Executed | `COOK-G1..G4` & CLI Gate | Status |
 |:----:|:----------------|:-------------------------|:------:|
-| Wave 1 | `database-architect#schema` | `cook verify-wave --wave 1 --run-verify` | ✅ PASS |
-| Wave 2 | `database-architect#migrations` ∥ `#indexes-rls` ∥ `#queries-seeds` | `cook verify-wave --wave 2 --run-verify` | ✅ PASS |
+| Wave 1 | `database-architect#schema` | `cook verify-wave "<plan.md>" --wave 1 --git --run-verify` | ✅ PASS |
+| Wave 2 | `database-architect#migrations` ∥ `#indexes-rls` ∥ `#queries-seeds` | `cook verify-wave "<plan.md>" --wave 2 --git --run-verify` | ✅ PASS |
 | Wave 3 | `database-team-reviewer` + `tester#db` (`schema_validator.py`, `EXPLAIN`, `boomopen check`) | All `0` exit codes | ✅ PASS |
 
 ## 2. Expand-Contract & Tenant Isolation Verification

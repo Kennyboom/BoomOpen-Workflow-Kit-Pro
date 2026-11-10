@@ -42,7 +42,7 @@ When the user asks to investigate a bug, trace an error/stack trace, or find the
 - **Clear Localized Stack Trace (`≤ 2` files)** → `/debug:fast` (`commands/debug-fast.md`)
 - **Cross-Module / Intermittent Bug (`> 2` files)** → `/debug:hard` (`commands/debug-hard.md`, elastic `debugger#h1..k` shards)
 - **Heisenbug / Race Condition / Distributed Failure (`execution.mode = team`)** → `/debug:team` (`commands/debug-team.md`, 3-Stage SPIE Elastic Golden Diamond)
-- **Multi-Engine Blind-Spot Escalation (`engines.debugger = "council"` or explicit request)** → `boomopen conduct council --task debug` / `boomopen conduct dispatch --role debugger --engine cross_family`
+- **Multi-Engine Blind-Spot Escalation (`engines.debugger = "council"` or explicit request)** → `boomopen conduct council --task debug --prompt "<debug-context>"` / `boomopen conduct dispatch --role debugger --engine cross_family --prompt "<failure-context>"`
 
 ---
 

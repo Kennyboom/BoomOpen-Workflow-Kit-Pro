@@ -53,14 +53,14 @@ Every handler, service, job, and test in your `OWNED_FILES` MUST satisfy:
 ### 4 Deterministic Post-Wave Backend Gates (`COOK-G1..G4`)
 | Gate ID | Gate Dimension | Mandatory Executor Self-Verification |
 |:-------:|:---------------|:-------------------------------------|
-| **`COOK-G1`** | **Disjoint `OWNED_FILES` & Write-Lock** | `<= 4` files touched in `backend-engineer#<shard>`; `0` edits to Wave 1 `READ_ONLY_FILES`. |
-| **`COOK-G2`** | **`SHARED_CONTRACT` & Zero-Stub Hygiene** | OpenAPI/Zod/Hono RPC DTOs + RFC 9457 error envelopes match Wave 1; `boomopen check --strict-phase --no-stubs` clean (`0` `any`, `0` `console.log`). |
-| **`COOK-G3`** | **Wave `--run-verify` & `api_validator.py`** | Typecheck + happy/edge/error tests + `api_validator.py` exit `0`; `0` SQLi, N+1, or RBAC gaps. |
-| **`COOK-G4`** | **RTM Traceability & Reviewer Sign-Off** | Every assigned `REQ-xxx` / `AC` item verified and documented in `MAILBOX-{date}.md` `[SUBMISSION]`. |
+| **`COOK-G1`** | **Disjoint `OWNED_FILES` & Write-Lock** | `<= 4` files touched in `backend-engineer#<shard>`; `0` mutations to Wave 1 `READ_ONLY_FILES` (`--git`). |
+| **`COOK-G2`** | **Deliverables Present & Non-Empty** | All assigned `OWNED_FILES` and `Test Files` exist on disk and are non-empty (`> 0` bytes). |
+| **`COOK-G3`** | **`SHARED_CONTRACT` & Zero-Stub Hygiene** | OpenAPI/Zod/Hono RPC DTOs + RFC 9457 error envelopes match Wave 1; `boomopen check --strict-phase --no-stubs` clean (`0` `any`, `0` `console.log`, `0` stubs). |
+| **`COOK-G4`** | **Wave `--run-verify`, `api_validator.py` & RTM** | Typecheck + happy/edge/error tests + `api_validator.py` exit `0`; `0` SQLi/N+1/RBAC gaps; `REQ-xxx`/`AC` documented in `[SUBMISSION]`. |
 
 ### Mandatory Pre-Submission Verification
 Before appending `SUBMISSION`, run and verify clean exits (`0`):
-1. Build, typecheck, and unit/integration tests + `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --run-verify` (when completing wave gates).
+1. Build, typecheck, and unit/integration tests + `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave <N> --git --run-verify` (when completing wave gates).
 2. `python ~/.{TOOL}/skills/api-patterns/scripts/api_validator.py <dir>` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`.
 3. Confirm **only** your assigned `<= 3–4 OWNED_FILES` were modified and `0` `READ_ONLY_FILES` were touched.
 
