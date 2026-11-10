@@ -1,308 +1,235 @@
-import type { LucideIcon } from 'lucide-react'
-import {
-  Server,
-  Palette,
-  Smartphone,
-  Gamepad2,
-  Building2,
-  Database,
-  TestTube,
-  Eye,
-  Bug,
-  Shield,
-  ClipboardList,
-  Lightbulb,
-  BarChart3,
-  Target,
-  Wrench,
-  FileText,
-  Gauge,
-  Search,
-  Map,
-  TrendingUp,
-  FileBarChart2,
-} from 'lucide-react'
+import type { AgentSpec } from '../types/ui-contract'
 
-export interface Agent {
-  id: string
-  name: string
-  role: string
-  category: AgentCategory
-  capabilities: string[]
-  description?: string
-  icon?: LucideIcon
-}
-
-export type AgentCategory = 'Implementation' | 'Architecture' | 'Quality' | 'Planning' | 'Support'
-
-export interface AgentCategoryGroup {
-  name: AgentCategory
-  description: string
-  color: 'orange' | 'purple' | 'green' | 'cyan' | 'red'
-  agents: Agent[]
-}
-
-// All 21 agents
-export const agents: Agent[] = [
-  // Implementation (4)
-  { 
-    id: 'backend-engineer', 
-    name: 'Backend Engineer', 
-    role: 'Principal Backend Architect',
-    category: 'Implementation', 
-    capabilities: ['REST APIs', 'GraphQL', 'Microservices', 'Security'],
-    description: 'APIs, databases, microservices, server-side logic',
-    icon: Server,
+export const SPECIALIST_AGENTS: readonly AgentSpec[] = [
+  {
+    id: 'backend-engineer',
+    title: { en: 'Principal Backend Architect', vi: 'Kiến trúc sư Backend Chính' },
+    domain: 'backend',
+    deliverable: 'SHARED_CONTRACT + API & Service Shards',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Implements 3-Wave Contract-First APIs, Zod/OpenAPI schemas, transactional services, and strict-phase verification.',
+      vi: 'Triển khai API 3 đợt theo hợp đồng trước, schema Zod/OpenAPI, giao dịch an toàn và kiểm chứng nghiêm ngặt.',
+    },
   },
-  { 
-    id: 'frontend-engineer', 
-    name: 'Frontend Engineer', 
-    role: 'Principal Frontend Architect',
-    category: 'Implementation', 
-    capabilities: ['React', 'TypeScript', 'Accessibility', 'Performance'],
-    description: 'UI/UX, React, accessibility, web performance',
-    icon: Palette,
+  {
+    id: 'brainstormer',
+    title: { en: 'Product & Strategy Ideation Architect', vi: 'Kiến trúc sư Ý tưởng & Chiến lược' },
+    domain: 'planning',
+    deliverable: 'BRAINSTORM-{topic}.md',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Grounds codebase context autonomously, generates orthogonal options, runs Devil’s Advocate pre-mortems, and scores trade-offs via MCDA.',
+      vi: 'Tự động bám sát codebase, đề xuất các phương án độc lập, phản biện rủi ro sớm và chấm điểm đa tiêu chí MCDA.',
+    },
   },
-  { 
-    id: 'mobile-engineer', 
-    name: 'Mobile Engineer', 
-    role: 'Mobile Development Lead',
-    category: 'Implementation', 
-    capabilities: ['React Native', 'Flutter', 'iOS', 'Android'],
-    description: 'iOS, Android, React Native, Flutter apps',
-    icon: Smartphone,
+  {
+    id: 'business-analyst',
+    title: { en: 'Business & Requirements Architect', vi: 'Kiến trúc sư Nghiệp vụ & Yêu cầu' },
+    domain: 'management',
+    deliverable: 'REQUIREMENTS-{feature}.md',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Models INVEST user stories, MoSCoW priorities, REQ-101..N identifiers, and Given/When/Then traceability matrices.',
+      vi: 'Mô hình hóa yêu cầu chuẩn INVEST, ưu tiên MoSCoW, mã định danh REQ-101..N và ma trận truy vết Given/When/Then.',
+    },
   },
-  { 
-    id: 'game-engineer', 
-    name: 'Game Engineer', 
-    role: 'Game Development Specialist',
-    category: 'Implementation', 
-    capabilities: ['Unity', 'Unreal', 'WebGL', 'Physics'],
-    description: 'Game logic, engines, graphics, multiplayer',
-    icon: Gamepad2,
+  {
+    id: 'database-architect',
+    title: { en: 'Principal Database Architect', vi: 'Kiến trúc sư Cơ sở Dữ liệu Chính' },
+    domain: 'data',
+    deliverable: 'Schema DDL & Reversible Migrations',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Locks Wave 1 relational/edge schemas, zero-downtime expand-contract migrations, composite indexes, and row-level security.',
+      vi: 'Khóa schema đợt 1, thiết kế migration mở rộng–thu hẹp không gián đoạn, tối ưu chỉ mục và bảo mật cấp dòng.',
+    },
   },
-  
-  // Architecture (2)
-  { 
-    id: 'tech-lead', 
-    name: 'Tech Lead', 
-    role: 'Principal Architect',
-    category: 'Architecture', 
-    capabilities: ['System Design', 'ADRs', 'Strategy', 'Scalability'],
-    description: 'System design, architecture decisions, technical strategy',
-    icon: Building2,
+  {
+    id: 'debugger',
+    title: { en: 'SPIE v3.0 Root-Cause Debugger', vi: 'Chuyên gia Gỡ lỗi Gốc rễ SPIE v3.0' },
+    domain: 'quality',
+    deliverable: 'DEBUG-{issue}.md',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Isolates defects via parallel hypothesis sharding, 5-Whys causal chains, deterministic reproducers, and minimal blast-radius fixes.',
+      vi: 'Khoanh vùng lỗi bằng phân mảnh giả thuyết song song, chuỗi nhân quả 5-Whys, tái hiện tất định và bản vá tối thiểu.',
+    },
   },
-  { 
-    id: 'database-architect', 
-    name: 'Database Architect', 
-    role: 'Data Architecture Lead',
-    category: 'Architecture', 
-    capabilities: ['SQL', 'NoSQL', 'Optimization', 'Migrations'],
-    description: 'Schema design, optimization, data modeling',
-    icon: Database,
+  {
+    id: 'designer',
+    title: { en: 'Principal UI/UX Design Architect', vi: 'Kiến trúc sư Thiết kế UI/UX Chính' },
+    domain: 'design',
+    deliverable: 'DESIGN-{request}.md + DESIGN_CONTRACT',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Authors 6-Block DESIGN specs with OKLCH perceptual color tokens, Tailwind v4 @theme ladders, 5-state matrices, and WCAG 2.2 AA.',
+      vi: 'Biên soạn đặc tả DESIGN 6 khối với hệ màu cảm nhận OKLCH, token Tailwind v4 @theme, ma trận 5 trạng thái và WCAG 2.2 AA.',
+    },
   },
-  
-  // Quality (4)
-  { 
-    id: 'tester', 
-    name: 'Tester', 
-    role: 'QA Architect',
-    category: 'Quality', 
-    capabilities: ['Unit Tests', 'E2E', 'Integration', 'Coverage'],
-    description: 'Unit tests, integration tests, E2E, test strategies',
-    icon: TestTube,
+  {
+    id: 'devops-engineer',
+    title: { en: 'Principal DevOps & Infra Architect', vi: 'Kiến trúc sư DevOps & Hạ tầng Chính' },
+    domain: 'devops',
+    deliverable: 'CI/CD Workflows & IaC Manifests',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Builds cross-platform CI/CD pipelines, declarative IaC modules, hardened containers, and health-checked release gates.',
+      vi: 'Xây dựng đường ống CI/CD đa nền tảng, hạ tầng dạng mã (IaC), đóng gói container an toàn và cổng phát hành tự động.',
+    },
   },
-  { 
-    id: 'reviewer', 
-    name: 'Reviewer', 
-    role: 'Code Quality Guardian',
-    category: 'Quality', 
-    capabilities: ['Code Review', 'Best Practices', 'Standards', 'Security'],
-    description: 'Code review, best practices, security audit',
-    icon: Eye,
+  {
+    id: 'docs-manager',
+    title: { en: 'Principal Documentation Architect', vi: 'Kiến trúc sư Tài liệu Kỹ thuật Chính' },
+    domain: 'research',
+    deliverable: './documents/* + Mermaid Specs',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Produces 100% source-grounded engineering docs, verified CLI/API references, and valid Mermaid system diagrams across sharded locks.',
+      vi: 'Biên soạn tài liệu kỹ thuật đối chiếu trực tiếp từ mã nguồn, tham chiếu CLI/API chính xác và sơ đồ kiến trúc Mermaid chuẩn.',
+    },
   },
-  { 
-    id: 'debugger', 
-    name: 'Debugger', 
-    role: 'Root Cause Analyst',
-    category: 'Quality', 
-    capabilities: ['Root Cause', 'Debugging', 'Profiling', 'Logs'],
-    description: 'Bug investigation, error analysis, troubleshooting',
-    icon: Bug,
+  {
+    id: 'frontend-engineer',
+    title: { en: 'Principal Frontend Architect', vi: 'Kiến trúc sư Frontend Chính' },
+    domain: 'frontend',
+    deliverable: '5-State UI + DESIGN_CONTRACT Shards',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Consumes DESIGN_CONTRACT tokens into accessible, keyboard-first React/Next/Web interfaces with 5-state resilience.',
+      vi: 'Chuyển hóa token từ DESIGN_CONTRACT thành giao diện web chuẩn tiếp cận, điều hướng bàn phím mượt mà và đủ 5 trạng thái.',
+    },
   },
-  { 
-    id: 'security-engineer', 
-    name: 'Security Engineer', 
-    role: 'Application Security Lead',
-    category: 'Quality', 
-    capabilities: ['OWASP', 'Pentesting', 'Hardening', 'Compliance'],
-    description: 'Security audits, vulnerability assessment, hardening',
-    icon: Shield,
+  {
+    id: 'game-engineer',
+    title: { en: 'Principal Real-Time & Game Architect', vi: 'Kiến trúc sư Hệ thống Thời gian thực & Game' },
+    domain: 'gaming',
+    deliverable: 'ECS Systems & 60+ FPS Shaders',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Engineers deterministic ECS simulation loops, WebGPU/Three.js shaders, Unity 6/Godot 4 architectures, and zero-GC hot paths.',
+      vi: 'Thiết kế vòng lặp mô phỏng ECS tất định, shader WebGPU/Three.js, kiến trúc Unity 6/Godot 4 và đường nóng không cấp phát rác.',
+    },
   },
-  
-  // Planning (3)
-  { 
-    id: 'planner', 
-    name: 'Planner', 
-    role: 'Implementation Strategist',
-    category: 'Planning', 
-    capabilities: ['Planning', 'Milestones', 'Estimates', 'Dependencies'],
-    description: 'Task breakdown, implementation plans, milestones',
-    icon: ClipboardList,
+  {
+    id: 'mobile-engineer',
+    title: { en: 'Principal Mobile Architect', vi: 'Kiến trúc sư Di động Đa nền tảng' },
+    domain: 'mobile',
+    deliverable: 'iOS 18 / Material 3 Mobile Shards',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Builds offline-first iOS 18 HIG, Android Material 3 Expressive, React Native, Flutter, and Tauri v2 mobile experiences.',
+      vi: 'Phát triển ứng dụng di động ưu tiên ngoại tuyến chuẩn iOS 18 HIG, Material 3 Expressive, React Native, Flutter và Tauri v2.',
+    },
   },
-  { 
-    id: 'brainstormer', 
-    name: 'Brainstormer', 
-    role: 'Creative Problem Solver',
-    category: 'Planning', 
-    capabilities: ['Ideas', 'Alternatives', 'Trade-offs', 'Innovation'],
-    description: 'Ideas, approaches, solution exploration',
-    icon: Lightbulb,
+  {
+    id: 'performance-engineer',
+    title: { en: 'Measure-First Performance Architect', vi: 'Kiến trúc sư Tối ưu Hiệu năng' },
+    domain: 'performance',
+    deliverable: 'p50/p95/p99 Profiling & CWV Fixes',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Eliminates tail-latency bottlenecks, N+1 query plans, memory leaks, and Core Web Vitals (LCP/INP/CLS) regressions with measured proof.',
+      vi: 'Triệt tiêu nghẽn độ trễ đuôi p99, truy vấn N+1, rò rỉ bộ nhớ và suy giảm Core Web Vitals bằng số liệu đo đạc thực nghiệm.',
+    },
   },
-  { 
-    id: 'business-analyst', 
-    name: 'Business Analyst', 
-    role: 'Requirements Engineer',
-    category: 'Planning', 
-    capabilities: ['Requirements', 'User Stories', 'Analysis', 'Documentation'],
-    description: 'Requirements, user stories, acceptance criteria',
-    icon: BarChart3,
+  {
+    id: 'planner',
+    title: { en: 'Contract-First Technical Planner', vi: 'Kiến trúc sư Lập kế hoạch Kỹ thuật' },
+    domain: 'planning',
+    deliverable: 'PLAN-{task}.md + project-ledger.json',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Compiles DAG wave blueprints, SHARED_CONTRACT interfaces, disjoint <= 4 OWNED_FILES shard locks, and blast-radius pre-mortems.',
+      vi: 'Biên dịch kế hoạch sóng DAG song song, hợp đồng SHARED_CONTRACT, khóa tối đa 4 file mỗi phân mảnh và phân tích phạm vi ảnh hưởng.',
+    },
   },
-  
-  // Support (8)
-  { 
-    id: 'designer', 
-    name: 'Designer', 
-    role: 'UI/UX Architect',
-    category: 'Support', 
-    capabilities: ['UI/UX', 'Design Systems', 'Prototypes', 'Accessibility'],
-    description: 'UI mockups, design systems, user experience',
-    icon: Target,
+  {
+    id: 'project-manager',
+    title: { en: 'Delivery & Governance Manager', vi: 'Quản trị Dự án & Điều phối Đa Pha' },
+    domain: 'management',
+    deliverable: 'PROJECT-{topic}.md + RAID Ledger',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Aligns multi-session roadmaps, milestone dependency gates, RAID risk registers, and .boomopen/project-ledger.json state.',
+      vi: 'Điều phối lộ trình đa phiên, cổng kiểm soát cột mốc, sổ đăng ký rủi ro RAID và trạng thái .boomopen/project-ledger.json.',
+    },
   },
-  { 
-    id: 'devops-engineer', 
-    name: 'DevOps Engineer', 
-    role: 'Platform Engineer',
-    category: 'Support', 
-    capabilities: ['CI/CD', 'Docker', 'Kubernetes', 'Monitoring'],
-    description: 'CI/CD, infrastructure, deployment, monitoring',
-    icon: Wrench,
+  {
+    id: 'reporter',
+    title: { en: 'Engineering Intelligence Reporter', vi: 'Chuyên gia Báo cáo & Phân tích Thực chứng' },
+    domain: 'research',
+    deliverable: 'REPORT-{topic}.md',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Synthesizes zero-fiction status reports grounded strictly in Git history, CLI gate telemetry, and verifiable test outputs.',
+      vi: 'Tổng hợp báo cáo kỹ thuật minh bạch dựa hoàn toàn trên lịch sử Git, nhật ký cổng CLI và kết quả kiểm thử xác thực.',
+    },
   },
-  { 
-    id: 'docs-manager', 
-    name: 'Docs Manager', 
-    role: 'Documentation Lead',
-    category: 'Support', 
-    capabilities: ['API Docs', 'Guides', 'README', 'OpenAPI'],
-    description: 'API docs, guides, README, knowledge base',
-    icon: FileText,
+  {
+    id: 'researcher',
+    title: { en: 'Autonomous Deep-Research Architect', vi: 'Kiến trúc sư Nghiên cứu Chuyên sâu' },
+    domain: 'research',
+    deliverable: 'RESEARCH-{topic}.md + HANDOFF_BRIEF',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Executes 3-Wave multi-hop search, 4-Source triangulation, contradiction arbitration, and anti-sycophancy red-teaming.',
+      vi: 'Thực thi tìm kiếm đa bước 3 đợt, đối chiếu chéo 4 nguồn độc lập, phân xử mâu thuẫn tài liệu và phản biện chống thiên kiến.',
+    },
   },
-  { 
-    id: 'performance-engineer', 
-    name: 'Performance Engineer', 
-    role: 'Optimization Specialist',
-    category: 'Support', 
-    capabilities: ['Profiling', 'Optimization', 'Benchmarks', 'Load Testing'],
-    description: 'Profiling, optimization, benchmarking',
-    icon: Gauge,
+  {
+    id: 'reviewer',
+    title: { en: 'Adversarial Code & Architecture Critic', vi: 'Chuyên gia Phản biện Mã nguồn & Kiến trúc' },
+    domain: 'quality',
+    deliverable: 'REVIEW-{scope}.md (P0–P3 Matrix)',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Audits SHARED_CONTRACT/DESIGN_CONTRACT compliance, strict-phase anti-stub rules, and proof-backed P0–P3 defect matrices.',
+      vi: 'Kiểm toán tuân thủ hợp đồng kiến trúc/giao diện, chặn mã giả tạm bợ và lập ma trận lỗi P0–P3 kèm bằng chứng cụ thể.',
+    },
   },
-  { 
-    id: 'researcher', 
-    name: 'Researcher', 
-    role: 'Technical Researcher',
-    category: 'Support', 
-    capabilities: ['Research', 'Analysis', 'Best Practices', 'Trends'],
-    description: 'Technology research, best practices, analysis',
-    icon: Search,
+  {
+    id: 'scouter',
+    title: { en: 'Codebase & Vault Intelligence Analyst', vi: 'Chuyên gia Trinh sát Codebase & Kho Kỹ năng' },
+    domain: 'architecture',
+    deliverable: 'SCOUT-{feature}.md',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Maps dependency graphs, runtime versions, disjoint shard boundaries, and O(1) matches across the 1,462-skill index.',
+      vi: 'Lập bản đồ phụ thuộc, phiên bản runtime, ranh giới phân mảnh không xung đột và tra cứu O(1) trên kho 1.462 kỹ năng.',
+    },
   },
-  { 
-    id: 'scouter', 
-    name: 'Scouter', 
-    role: 'Codebase Explorer',
-    category: 'Support', 
-    capabilities: ['Exploration', 'Dependencies', 'Patterns', 'Discovery'],
-    description: 'Code analysis, dependency mapping, file discovery',
-    icon: Map,
+  {
+    id: 'security-engineer',
+    title: { en: 'Offensive & Defensive Security Architect', vi: 'Kiến trúc sư Bảo mật Tấn công & Phòng thủ' },
+    domain: 'security',
+    deliverable: 'STRIDE / OWASP / LLM Security Audit',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Hardens systems against STRIDE threats, OWASP Web/API Top 10, 2026 LLM/MCP prompt-injection vectors, and auth flaws.',
+      vi: 'Gia cố hệ thống trước mô hình đe dọa STRIDE, OWASP Web/API Top 10, tấn công tiêm lệnh LLM/MCP 2026 và lỗ hổng xác thực.',
+    },
   },
-  { 
-    id: 'project-manager', 
-    name: 'Project Manager', 
-    role: 'Delivery Coordinator',
-    category: 'Support', 
-    capabilities: ['Timeline', 'Resources', 'Communication', 'Tracking'],
-    description: 'Timeline, resources, stakeholder communication',
-    icon: TrendingUp,
+  {
+    id: 'tech-lead',
+    title: { en: 'Golden Diamond Coordinator & Arbiter', vi: 'Trưởng nhóm Kỹ thuật & Trọng tài Kiến trúc' },
+    domain: 'architecture',
+    deliverable: 'MAILBOX-{date}.md + Binding Arbitration',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Coordinates Elastic Golden Diamond (:team) waves, locks shard file boundaries, and arbitrates Executor vs Critic debates.',
+      vi: 'Điều phối đội hình Kim Cương Vàng (:team), khóa quyền sở hữu file từng phân mảnh và phân xử tranh biện Thực thi – Phản biện.',
+    },
   },
-  { 
-    id: 'reporter', 
-    name: 'Reporter', 
-    role: 'Documentation & Reporting Specialist',
-    category: 'Support', 
-    capabilities: ['Reports', 'Summaries', 'Documentation', 'Templates'],
-    description: 'Create/update reports, status summaries, template-based output',
-    icon: FileBarChart2,
+  {
+    id: 'tester',
+    title: { en: 'Principal QA & Verification Architect', vi: 'Kiến trúc sư Kiểm thử & Đảm bảo Chất lượng' },
+    domain: 'quality',
+    deliverable: 'TEST-{scope}.md + Anti-Gaming Suites',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Builds parallel unit/integration/E2E suites with 100% AC coverage, MSW v2 harnesses, and zero-test-gaming enforcement.',
+      vi: 'Xây dựng bộ kiểm thử đơn vị/tích hợp/E2E song song phủ 100% tiêu chí nghiệm thu, giả lập MSW v2 và chống gian lận test.',
+    },
   },
 ]
-
-// Agents grouped by category
-export const agentCategories: AgentCategoryGroup[] = [
-  {
-    name: 'Implementation',
-    description: 'Agents that write production-quality code',
-    color: 'orange',
-    agents: agents.filter(a => a.category === 'Implementation'),
-  },
-  {
-    name: 'Architecture',
-    description: 'Agents that design system structure',
-    color: 'purple',
-    agents: agents.filter(a => a.category === 'Architecture'),
-  },
-  {
-    name: 'Quality',
-    description: 'Agents that ensure code quality',
-    color: 'green',
-    agents: agents.filter(a => a.category === 'Quality'),
-  },
-  {
-    name: 'Planning',
-    description: 'Agents that plan and strategize',
-    color: 'cyan',
-    agents: agents.filter(a => a.category === 'Planning'),
-  },
-  {
-    name: 'Support',
-    description: 'Agents that support the development process',
-    color: 'red',
-    agents: agents.filter(a => a.category === 'Support'),
-  },
-]
-
-// Category color mapping for badges
-export const categoryBadgeMap: Record<AgentCategory, 'Core' | 'Engineering' | 'Quality' | 'Support'> = {
-  Implementation: 'Engineering',
-  Architecture: 'Core',
-  Quality: 'Quality',
-  Planning: 'Core',
-  Support: 'Support',
-}
-
-// Get agent count by category
-export const getAgentCountByCategory = () => {
-  const counts: Record<AgentCategory, number> = {
-    Implementation: 0,
-    Architecture: 0,
-    Quality: 0,
-    Planning: 0,
-    Support: 0,
-  }
-  
-  agents.forEach(agent => {
-    counts[agent.category]++
-  })
-  
-  return counts
-}
-
-// Total agent count
-export const totalAgents = agents.length

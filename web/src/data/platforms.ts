@@ -1,153 +1,87 @@
-import { localInstallCommand, localUninstallCommand, type ToolId } from './install'
+import type { PlatformId, PlatformSpec } from '../types/ui-contract'
 
-export type PlatformStatus = 'full' | 'partial' | 'coming-soon'
+export const REPO_URL = 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro'
 
-export interface Platform {
-  id: ToolId
-  name: string
-  icon: string
-  description: string
-  status: PlatformStatus
-  configFile: string
-  installPath: string
-  features: string[]
-  steps: string[]
-  /** [install, uninstall] commands, run from the cloned repository. */
-  setup: [string, string]
-}
+export const CLONE_SNIPPET =
+  'git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git && cd BoomOpen-Workflow-Kit-Pro'
 
-export const platforms: Platform[] = [
+export const INSTALL_ALL_COMMAND = `${CLONE_SNIPPET} && node cli/install.js install --all`
+
+export const DOCTOR_VERIFY_COMMAND = 'node cli/install.js doctor'
+
+export const PLATFORMS: readonly PlatformSpec[] = [
   {
-    id: 'cursor',
-    name: 'Cursor',
-    icon: '⚡',
-    description: 'Full integration with Cursor IDE through .cursorrules and custom rules.',
-    status: 'full',
-    configFile: '~/.cursor/CURSOR.md + ~/.cursor/rules/',
-    installPath: '~/.cursor/skills/boomopen-workflow-kit/',
-    features: [
-      'Custom agent rules',
-      'Skill auto-discovery',
-      'Command workflows',
-      'Sub-agent orchestration',
-    ],
-    steps: [
-      'Clone the repository and run the install command',
-      'Restart Cursor IDE',
-      'BoomOpen Workflow Kit auto-discovers from global path',
-      'Start using /cook, /fix, /test commands',
-    ],
-    setup: [localInstallCommand('cursor'), localUninstallCommand('cursor')],
+    id: 'antigravity',
+    name: 'Antigravity (Gemini)',
+    vendor: 'Google DeepMind',
+    entryFile: '~/.gemini/GEMINI.md',
+    frameworkPath: '~/.gemini/config/skills/boomopen-workflow-kit/',
+    installCommand: `${CLONE_SNIPPET} && node cli/install.js install antigravity`,
+    verifyCommand: DOCTOR_VERIFY_COMMAND,
+    uninstallCommand: 'node cli/install.js uninstall antigravity',
+    summary: {
+      en: 'Native Turn-1 parallel invoke_subagent fan-out, warm send_message session reuse, Brain Artifact UI routing, and global workflow parity.',
+      vi: 'Fan-out subagent song song ngay Turn 1 qua invoke_subagent, tái sử dụng phiên ấm bằng send_message, định tuyến Brain Artifact và đồng bộ workflow toàn cục.',
+    },
   },
   {
     id: 'claude',
     name: 'Claude Code',
-    icon: '🤖',
-    description: 'Native support through CLAUDE.md for seamless Claude integration.',
-    status: 'full',
-    configFile: '~/.claude/CLAUDE.md',
-    installPath: '~/.claude/skills/boomopen-workflow-kit/',
-    features: [
-      'Native Claude support',
-      'CLAUDE.md configuration',
-      'Full skill library',
-      'Orchestration laws',
-    ],
-    steps: [
-      'Clone the repository and run the install command',
-      'CLAUDE.md is auto-detected in projects',
-      'Global config applies to all projects',
-      'Use slash commands in any project',
-    ],
-    setup: [localInstallCommand('claude'), localUninstallCommand('claude')],
+    vendor: 'Anthropic',
+    entryFile: '~/.claude/CLAUDE.md',
+    frameworkPath: '~/.claude/skills/boomopen-workflow-kit/',
+    installCommand: `${CLONE_SNIPPET} && node cli/install.js install claude`,
+    verifyCommand: DOCTOR_VERIFY_COMMAND,
+    uninstallCommand: 'node cli/install.js uninstall claude',
+    summary: {
+      en: 'Dispatches parallel Task/Agent shards with disjoint OWNED_FILES write locks, SendMessage warm reuse, 84 slash commands, and 21 specialist profiles.',
+      vi: 'Điều phối các shard Task/Agent song song với khóa ghi OWNED_FILES tách biệt, tái sử dụng phiên ấm qua SendMessage, đủ 84 lệnh slash và 21 chuyên gia.',
+    },
+  },
+  {
+    id: 'codex',
+    name: 'OpenAI Codex',
+    vendor: 'OpenAI',
+    entryFile: '~/.codex/AGENTS.md + ~/.codex/config.toml',
+    frameworkPath: '~/.codex/skills/boomopen-workflow-kit/',
+    installCommand: `${CLONE_SNIPPET} && node cli/install.js install codex`,
+    verifyCommand: DOCTOR_VERIFY_COMMAND,
+    uninstallCommand: 'node cli/install.js uninstall codex',
+    summary: {
+      en: 'Ships 21 native TOML role configs, spawn_agent + send_input multi-agent orchestration, and 84 generated $boomopen-* command skill bundles.',
+      vi: 'Trang bị 21 cấu hình TOML bản địa, điều phối đa tác tử qua spawn_agent + send_input và 84 gói kỹ năng lệnh $boomopen-* tự động biên dịch.',
+    },
+  },
+  {
+    id: 'cursor',
+    name: 'Cursor',
+    vendor: 'Anysphere',
+    entryFile: '~/.cursor/CURSOR.md + ~/.cursor/rules/boomopen-workflow-kit.mdc',
+    frameworkPath: '~/.cursor/skills/boomopen-workflow-kit/',
+    installCommand: `${CLONE_SNIPPET} && node cli/install.js install cursor`,
+    verifyCommand: DOCTOR_VERIFY_COMMAND,
+    uninstallCommand: 'node cli/install.js uninstall cursor',
+    summary: {
+      en: 'Integrates always-on .mdc workspace rules, parallel Task subagents, 84 global slash workflows, and on-demand 1,462-skill resolution inside Cursor IDE.',
+      vi: 'Tích hợp quy tắc .mdc luôn bật, subagent Task chạy song song, 84 workflow slash toàn cục và tra cứu kho 1,462 kỹ năng trực tiếp trong Cursor IDE.',
+    },
   },
   {
     id: 'copilot',
     name: 'GitHub Copilot',
-    icon: '🐙',
-    description: 'Works with GitHub Copilot through boomopen-workflow-kit.agent.md files.',
-    status: 'full',
-    configFile: 'VS Code prompts/boomopen-workflow-kit.agent.md + ~/.copilot/COPILOT.md',
-    installPath: '~/.copilot/skills/boomopen-workflow-kit/',
-    features: [
-      'Copilot agents',
-      'Workspace integration',
-      'Custom instructions',
-      'Skill injection',
-    ],
-    steps: [
-      'Clone the repository and run the install command',
-      'Agent files are auto-detected',
-      'Works with Copilot Chat',
-      'Full orchestration support',
-    ],
-    setup: [localInstallCommand('copilot'), localUninstallCommand('copilot')],
-  },
-  {
-    id: 'antigravity',
-    name: 'Antigravity',
-    icon: '🚀',
-    description: 'Full support for Antigravity through GEMINI.md configuration.',
-    status: 'full',
-    configFile: '~/.gemini/GEMINI.md',
-    installPath: '~/.gemini/config/skills/boomopen-workflow-kit/',
-    features: [
-      'Gemini integration',
-      'Global configuration',
-      'Agent workflows',
-      'Matrix skills',
-    ],
-    steps: [
-      'Clone the repository and run the install command',
-      'GEMINI.md is auto-detected',
-      'Global configuration applies',
-      'Use all commands and workflows',
-    ],
-    setup: [localInstallCommand('antigravity'), localUninstallCommand('antigravity')],
-  },
-  {
-    id: 'codex',
-    name: 'Codex',
-    icon: '💻',
-    description: 'Full support for OpenAI Codex through AGENTS.md (primary) and CODEX.md compatibility.',
-    status: 'full',
-    configFile: '~/.codex/AGENTS.md + ~/.codex/CODEX.md',
-    installPath: '~/.codex/skills/boomopen-workflow-kit/',
-    features: [
-      'Codex integration',
-      'CODEX.md configuration',
-      'Full skill library',
-      'Orchestration laws',
-    ],
-    steps: [
-      'Clone the repository and run the install command',
-      'CODEX.md is auto-detected in projects',
-      'Global config applies to all projects',
-      'Use slash commands in any project',
-    ],
-    setup: [localInstallCommand('codex'), localUninstallCommand('codex')],
+    vendor: 'GitHub / Microsoft',
+    entryFile: '~/.copilot/COPILOT.md + VS Code prompts/boomopen-workflow-kit.agent.md',
+    frameworkPath: '~/.copilot/skills/boomopen-workflow-kit/',
+    installCommand: `${CLONE_SNIPPET} && node cli/install.js install copilot`,
+    verifyCommand: DOCTOR_VERIFY_COMMAND,
+    uninstallCommand: 'node cli/install.js uninstall copilot',
+    summary: {
+      en: 'Installs the VS Code Copilot custom agent profile, fresh-context #runSubagent handoff packets, deterministic CLI gates, and bilingual workflow routing.',
+      vi: 'Cài đặt hồ sơ custom agent cho VS Code Copilot, gói bàn giao #runSubagent ngữ cảnh sạch, cổng kiểm định CLI tất định và định tuyến đa ngôn ngữ.',
+    },
   },
 ]
 
-// Platform comparison features
-export const platformComparisonFeatures = [
-  { feature: 'Agent Orchestration', cursor: true, claude: true, copilot: true, antigravity: true, codex: true },
-  { feature: 'Skill Injection', cursor: true, claude: true, copilot: true, antigravity: true, codex: true },
-  { feature: 'Command Workflows', cursor: true, claude: true, copilot: true, antigravity: true, codex: true },
-  { feature: 'Quality Gates', cursor: true, claude: true, copilot: true, antigravity: true, codex: true },
-  { feature: 'Global Config', cursor: true, claude: true, copilot: true, antigravity: true, codex: true },
-  { feature: 'Sub-agent Invocation', cursor: true, claude: true, copilot: true, antigravity: true, codex: true },
-]
-
-// Simplified platform data for badges
-export const platformBadges = platforms.map(p => ({
-  name: p.name,
-  emoji: p.icon,
-  status: p.status,
-}))
-
-// Get platform by ID
-export const getPlatformById = (id: ToolId) => platforms.find(p => p.id === id)
-
-// Total platforms count
-export const totalPlatforms = platforms.length
+export function findPlatformSpec(id: PlatformId): PlatformSpec | undefined {
+  return PLATFORMS.find((platform) => platform.id === id)
+}

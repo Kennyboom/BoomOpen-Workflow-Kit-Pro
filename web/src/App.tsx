@@ -1,60 +1,47 @@
-import { lazy, Suspense } from 'react'
-import { Routes, Route } from 'react-router-dom'
-import { Layout } from './components/layout'
-import { RouteSEO } from './components/seo'
-import { ErrorBoundary, LoadingSpinner } from './components/ErrorBoundary'
+import { lazy } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { MotionConfig } from 'framer-motion'
+import { Layout } from './components/layout/Layout'
 
-// Lazy loaded pages for code splitting
-const HomePage = lazy(() => import('./pages/HomePage'))
-const NotFound = lazy(() => import('./pages/NotFound'))
-const Installation = lazy(() => import('./pages/Installation'))
-const Docs = lazy(() => import('./pages/Docs'))
+const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })))
+const CommandsPage = lazy(() => import('./pages/CommandsPage').then((m) => ({ default: m.CommandsPage })))
+const AgentsTeamsPage = lazy(() => import('./pages/AgentsTeamsPage').then((m) => ({ default: m.AgentsTeamsPage })))
+const SkillsPage = lazy(() => import('./pages/SkillsPage').then((m) => ({ default: m.SkillsPage })))
+const ArchitecturePage = lazy(() => import('./pages/ArchitecturePage').then((m) => ({ default: m.ArchitecturePage })))
+const InstallPage = lazy(() => import('./pages/InstallPage').then((m) => ({ default: m.InstallPage })))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })))
 
-// Feature pages
-const OneTimeSetup = lazy(() => import('./pages/features/OneTimeSetup'))
-const SubAgentOrchestration = lazy(() => import('./pages/features/SubAgentOrchestration'))
-const MultiPlatform = lazy(() => import('./pages/features/MultiPlatform'))
-const MatrixSkills = lazy(() => import('./pages/features/MatrixSkills'))
-const SpecialistAgents = lazy(() => import('./pages/features/SpecialistAgents'))
-const Commands = lazy(() => import('./pages/features/Commands'))
-const QualityGates = lazy(() => import('./pages/features/QualityGates'))
-const Workflow = lazy(() => import('./pages/features/Workflow'))
-const AgentTeams = lazy(() => import('./pages/features/AgentTeams'))
-
-function App() {
+/**
+ * Declarative Flagship Router (1,462 indexed skills) — pairs code-split route modules
+ * with `<Layout />` skeleton Suspense, AnimatePresence transitions, and legacy redirects.
+ */
+export function App() {
   return (
-    <ErrorBoundary>
-      {/* Per-route title, meta, canonical, Open Graph and JSON-LD */}
-      <RouteSEO />
-      
-      <Suspense fallback={<LoadingSpinner />}>
-        <Routes>
-          <Route element={<Layout />}>
-            {/* Home */}
-            <Route path="/" element={<HomePage />} />
-            
-            {/* Features */}
-            <Route path="/features" element={<OneTimeSetup />} />
-            <Route path="/features/one-time-setup" element={<OneTimeSetup />} />
-            <Route path="/features/sub-agent-orchestration" element={<SubAgentOrchestration />} />
-            <Route path="/features/multi-platform-support" element={<MultiPlatform />} />
-            <Route path="/features/matrix-skills" element={<MatrixSkills />} />
-            <Route path="/features/specialist-agents" element={<SpecialistAgents />} />
-            <Route path="/features/commands-workflows" element={<Commands />} />
-            <Route path="/features/quality-gates" element={<QualityGates />} />
-            <Route path="/features/workflow" element={<Workflow />} />
-            <Route path="/features/agent-teams" element={<AgentTeams />} />
-            
-            {/* Other pages */}
-            <Route path="/installation" element={<Installation />} />
-            <Route path="/docs" element={<Docs />} />
-            
-            {/* 404 fallback */}
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </Suspense>
-    </ErrorBoundary>
+    <MotionConfig reducedMotion="user">
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="commands" element={<CommandsPage />} />
+          <Route path="agents" element={<AgentsTeamsPage />} />
+          <Route path="skills" element={<SkillsPage />} />
+          <Route path="architecture" element={<ArchitecturePage />} />
+          <Route path="install" element={<InstallPage />} />
+
+          {/* Legacy bookmark redirects */}
+          <Route path="installation" element={<Navigate to="/install" replace />} />
+          <Route path="docs" element={<Navigate to="/architecture" replace />} />
+          <Route path="features/commands" element={<Navigate to="/commands" replace />} />
+          <Route path="features/commands-workflows" element={<Navigate to="/commands" replace />} />
+          <Route path="features/specialist-agents" element={<Navigate to="/agents" replace />} />
+          <Route path="features/agent-teams" element={<Navigate to="/agents" replace />} />
+          <Route path="features/matrix-skills" element={<Navigate to="/skills" replace />} />
+          <Route path="features" element={<Navigate to="/architecture" replace />} />
+          <Route path="features/*" element={<Navigate to="/architecture" replace />} />
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </MotionConfig>
   )
 }
 

@@ -1,8 +1,11 @@
 {
   "version": "5.5.0",
+  "platforms": 5,
+  "i18nLocales": 17,
   "agents": 21,
   "teams": 18,
   "teamRoles": 54,
+  "teamFiles": 72,
   "skills": 1462,
   "coreSkills": 22,
   "librarySkills": 1440,
@@ -328,5 +331,7 @@
       "description": "UI/UX Pro Max — Empirical design intelligence (50+ styles, 97 palettes, 57 font pairings) + 2026 OKLCH @theme tokens, 6-Block DESIGN_CONTRACT & 4-Gate CLI validation"
     }
   ],
-  "commandFiles": 79
+  "commandWorkflowFiles": 79,
+  "commandRefFiles": 5,
+  "commandFiles": 84
 }

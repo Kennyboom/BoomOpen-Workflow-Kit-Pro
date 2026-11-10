@@ -1,46 +1,63 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Title, description, canonical, Open Graph, Twitter and JSON-LD are rendered from
-         src/components/seo/seo-config.ts by build/site-plugin.ts and updated per route at runtime. -->
-    <!--app-seo-->
+    <!-- Static SEO baseline for pre-build crawlers/scanners; replaced per-route by build/site-plugin.ts -->
+    <!-- seo:start -->
+    <title>BoomOpen Workflow Kit Pro v5.5 — Multi-Agent AI Orchestration</title>
+    <meta name="description" content="Production-grade multi-agent AI engineering framework for Antigravity, Claude Code, OpenAI Codex, Cursor, and GitHub Copilot: 3-Wave Contract-First sharding, 12 CLI compilers, 32 commands, 21 agents, 18 Golden Diamond teams, and 1,462 skills." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://boomopen.vercel.app/" />
+    <meta property="og:site_name" content="BoomOpen Workflow Kit Pro" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="BoomOpen Workflow Kit Pro v5.5 — Multi-Agent AI Orchestration" />
+    <meta property="og:description" content="Contract-First 3-Wave multi-agent orchestration across 5 AI IDEs with 12 deterministic CLI gates, 32 slash commands, 21 specialist agents, 18 teams, and 1,462 skills." />
+    <meta property="og:url" content="https://boomopen.vercel.app/" />
+    <meta property="og:image" content="https://boomopen.vercel.app/assets/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BoomOpen Workflow Kit Pro v5.5 — Multi-Agent AI Orchestration" />
+    <meta name="twitter:description" content="Contract-First 3-Wave multi-agent orchestration across 5 AI IDEs with 12 deterministic CLI gates, 32 slash commands, 21 specialist agents, 18 teams, and 1,462 skills." />
+    <meta name="twitter:image" content="https://boomopen.vercel.app/assets/og-image.jpg" />
+    <script type="application/ld+json" id="site-json-ld">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"BoomOpen Workflow Kit Pro","softwareVersion":"5.5.0","applicationCategory":"DeveloperApplication","operatingSystem":"Windows, macOS, Linux","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","url":"https://boomopen.vercel.app/","codeRepository":"https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro","description":"Multi-agent AI engineering orchestration toolkit for Antigravity, Claude Code, OpenAI Codex, Cursor, and GitHub Copilot."}</script>
+    <!-- seo:end -->
 
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#0a0a0a" />
+    <!-- Obsidian Tungsten Surface Theme -->
+    <meta name="theme-color" content="#0c0d0e" />
     <meta name="color-scheme" content="dark" />
 
-    <!-- Favicons -->
+    <!-- Favicons & Web App Manifest -->
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
-
-    <!-- Manifest -->
     <link rel="manifest" href="/manifest.json" />
 
-    <!-- Fonts: Inter for UI text, Fira Code for terminal/code -->
+    <!-- 3-Axis Typography: Space Grotesk (Display), Plus Jakarta Sans (Body), JetBrains Mono (Code/Metrics) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
-      /* Prevent FOUC */
       html {
-        background-color: #0a0a0a;
+        background-color: #0c0d0e;
       }
-      /* Critical CSS for initial load */
       body {
         margin: 0;
         padding: 0;
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        background-color: #0a0a0a;
-        color: #fafafa;
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        background-color: #0c0d0e;
+        color: #f4f6f9;
       }
     </style>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <main>BoomOpen Workflow Kit Pro v5.5 — Enable JavaScript to explore interactive command, agent, team, and skill catalogs.</main>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

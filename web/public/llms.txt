@@ -1,0 +1,29 @@
+# BoomOpen Workflow Kit Pro (v5.5.0)
+
+> Production-grade Multi-Agent AI Engineering Orchestration Framework across 5 AI IDEs (Antigravity, Claude Code, OpenAI Codex, Cursor, GitHub Copilot) with 17-language natural-language routing, Contract-First 3-Wave sharding, and 12 deterministic CLI compilers & gates.
+
+## Key Telemetry (Synced from Repository Ground Truth)
+- **Version**: `v5.5.0` ([GitHub Repository](https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro))
+- **Supported AI Platforms**: `5` (`antigravity`, `claude`, `codex`, `cursor`, `copilot`)
+- **Multilingual NL Routing**: `17` supported locales
+- **Deterministic CLI Suite**: `12` CLI commands (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check`, `settings`, `doctor`, `install`, `list`)
+- **Slash Commands**: `32` base commands (`84` files: `79` workflows + `5` shared `_ref` protocols) — `/architect`, `/ask` (:fast, :hard), `/auto`, `/autopilot` (:audit, :init, :run), `/brainstorm` (:fast, :hard, :team), `/code` (:fast, :hard, :team), `/conduct` (:council, :pipeline), `/cook` (:fast, :hard, :team), `/debug` (:fast, :hard, :team), `/deep-audit`, `/deploy` (:check, :preview, :production, :rollback), `/design` (:fast, :hard, :team)
+- **Specialist Workforce**: `21` specialist agents & `18` Elastic Golden Diamond teams (`72` files: `18` `_team.md` + `54` role specs)
+- **Skills Vault**: `1,462` indexed skills (`22` core + `1,440` library across `19` domains)
+
+## Documentation & Interactive Catalogs
+- [Overview, EN/VI 1080p Launch Trailer & 3-Wave Swarm Visualizer](https://boomopen.vercel.app/)
+- [32 Slash Commands & 17-Language Natural-Language Router](https://boomopen.vercel.app/commands)
+- [21 Specialist Agents & 18 Elastic Golden Diamond Teams](https://boomopen.vercel.app/agents)
+- [1,462 Indexed Skills Across 19 Engineering Domains](https://boomopen.vercel.app/skills)
+- [Contract-First 3-Wave Architecture & 12 Deterministic CLI Gates](https://boomopen.vercel.app/architecture)
+- [Safe 1-Click Setup for Antigravity, Claude Code, Codex, Cursor & Copilot](https://boomopen.vercel.app/install)
+- [Source Code & Releases](https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro)
+
+## Safe Quickstart Installation
+```bash
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
+cd BoomOpen-Workflow-Kit-Pro
+node cli/install.js install antigravity
+node cli/install.js doctor
+```

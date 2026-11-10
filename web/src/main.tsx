@@ -1,26 +1,22 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { MotionConfig } from 'framer-motion'
-import App from './App.tsx'
-import { installPreloadRecovery } from './lib/preload-recovery'
+import { LanguageProvider } from './i18n/context'
+import { App } from './App'
 import './styles/globals.css'
 
-installPreloadRecovery()
-
+/** Mounts the bilingual BoomOpen Workflow Kit Pro v5.5 Flagship Application with AnimatePresence shell. */
 const rootElement = document.getElementById('root')
-
 if (!rootElement) {
-  throw new Error('Root element not found')
+  throw new Error('Root mount element #root not found in index.html')
 }
 
 createRoot(rootElement).render(
   <StrictMode>
-    {/* Honour prefers-reduced-motion for every framer-motion animation (transforms are skipped). */}
-    <MotionConfig reducedMotion="user">
+    <LanguageProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </MotionConfig>
+    </LanguageProvider>
   </StrictMode>,
 )
