@@ -180,7 +180,7 @@ test('extractDesignContract extracts explicit CSS/TS blocks and synthesizes cont
   const explicit = extractDesignContract(VALID_DESIGN_MD);
   assert.match(explicit.cssTheme, /@theme inline/);
   assert.match(explicit.typescriptProps, /export interface MetricCardProps/);
-  assert.match(explicit.markdownBlock, /## 🤝 Design-to-Code Contract \(`DESIGN_CONTRACT`\)/);
+  assert.match(explicit.markdownBlock, /### 🤝 Design-to-Code Contract \(`DESIGN_CONTRACT`\)/);
 
   const yamlOnlyMd = `---
 colors:
@@ -221,8 +221,7 @@ test('runDesignCli supports validate, contract --out, --json, help, and conducto
     const prevExit = process.exitCode;
     const badCode = runDesignCli(['validate', badPath], { cwd: root, silent: true });
     assert.equal(badCode, 1);
-    assert.equal(process.exitCode, 1);
-    process.exitCode = prevExit;
+    assert.equal(process.exitCode, prevExit);
 
     // Verify Multi-Engine Council prompt enrichment when task === 'design'
     const capturedPrompts = [];
@@ -248,6 +247,62 @@ test('runDesignCli supports validate, contract --out, --json, help, and conducto
       assert.match(p, /OKLCH \+ Tailwind v4 @theme inline/);
       assert.match(p, /5-State component matrix/);
     }
+  } finally {
+    removeDir(root);
+  }
+});
+
+test('regressions S1-BUG-04, S1-BUG-06, S1-BUG-07 & S1-BUG-08: Vietnamese anti-slop negations & 5-state matrix, UTF-8 BOM frontmatter, 4-backtick carousel, and strict CLI flags', () => {
+  const root = tempDir('boomopen-design-reg-');
+  try {
+    const viDesignBomAndCarousel = `\uFEFF---
+colors:
+  primary: "oklch(0.55 0.19 255)"
+surface_elevation:
+  canvas: "oklch(0.985 0.004 85)"
+typography:
+  sans: "'Plus Jakarta Sans', sans-serif"
+spacing:
+  base: "4px"
+---
+# Đặc tả Thiết kế Giao diện — Thanh toán
+
+## 1. Quy tắc Cấm
+- **Font**: Không sử dụng Inter, Roboto, hoặc Arial làm font mặc định.
+- **Gradient**: Cấm dùng dải màu #8B5CF6 sang #06B6D4.
+
+## 2. Ma trận 5 Trạng thái
+| Thành phần | Mặc định | Đang tải | Trống | Lỗi | Vô hiệu hóa |
+|------------|----------|----------|-------|-----|-------------|
+| Hóa đơn | Số dư | Khung xương | Chưa có dữ liệu | Thất bại | Mờ 50% |
+
+## 3. WCAG 2.2 AA
+- Tương phản >= 4.5:1, vùng chạm >= 24x24px / 44x44pt, prefers-reduced-motion, 375px và 1440px.
+
+\`\`\`\`carousel
+<!-- slide -->
+\`\`\`css
+@theme inline {
+  --color-brand: oklch(0.55 0.19 255);
+}
+\`\`\`
+<!-- slide -->
+\`\`\`ts
+export interface InvoiceProps { amount: number; }
+\`\`\`
+\`\`\`\`
+`;
+    const val = validateDesign(viDesignBomAndCarousel);
+    assert.equal(val.valid, true, val.errors.join('; '));
+    const contract = extractDesignContract(viDesignBomAndCarousel);
+    assert.match(contract.cssTheme, /--color-brand:\s*oklch\(0\.55 0\.19 255\)/);
+    assert.match(contract.typescriptProps, /export interface InvoiceProps/);
+
+    const filePath = path.join(root, 'DESIGN-vi.md');
+    fs.writeFileSync(filePath, viDesignBomAndCarousel, 'utf8');
+    assert.equal(runDesignCli(['validate', filePath, '--bogus'], { cwd: root, silent: true }), 2);
+    assert.equal(runDesignCli(['contract', filePath, '--out', '--json'], { cwd: root, silent: true }), 2);
+    assert.ok(!fs.existsSync(path.join(root, '--json')));
   } finally {
     removeDir(root);
   }

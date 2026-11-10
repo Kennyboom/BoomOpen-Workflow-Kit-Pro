@@ -231,3 +231,72 @@ test('runMultiEngineCouncil enriches prompts for research & brainstorm and detec
     removeDir(brain);
   }
 });
+
+test('regressions S1-BUG-04, S1-BUG-06, S1-BUG-07, S1-BUG-08 & S1-BUG-14: Vietnamese headings, BRAINSTORM_ underscore, 4-backtick carousel, UTF-8 BOM, and strict flags', () => {
+  const dir = tempDir('boomopen-research-reg-');
+  try {
+    const viResearch = `\uFEFF---
+title: "Nghiên cứu Kiến trúc Passkey"
+confidence: HIGH
+---
+# Nghiên cứu Chuyên sâu — Passkey
+
+## 1. Tóm tắt Điều hành & Kết luận
+Chọn WebAuthn passkey kết hợp HttpOnly cookie [HIGH] dựa trên \`src/auth/session.ts:42\` và https://www.w3.org/TR/webauthn-3/.
+
+\`\`\`\`carousel
+<!-- slide -->
+\`\`\`ts
+const example = "{topic} inside nested fence";
+// TODO: nested code comment inside 4-backtick carousel
+\`\`\`
+\`\`\`\`
+
+## 2. Ma trận So sánh
+| Phương án | Độ trễ | Độ tin cậy |
+|-----------|--------|------------|
+| Passkey | < 5ms | HIGH |
+| JWT | < 2ms | MEDIUM |
+
+## 3. Đánh đổi, Mâu thuẫn & Rủi ro
+- Cần luồng khôi phục tài khoản dự phòng (\`src/auth/recovery.ts:18\`).
+
+## 4. Bàn giao Kiến trúc
+- Khóa \`PasskeyStore\` trong Wave 1 \`SHARED_CONTRACT\`.
+`;
+    const rVal = validateResearch(viResearch, { filePath: 'RESEARCH_auth.md' });
+    assert.equal(rVal.valid, true, rVal.errors.join('; '));
+    const brief = extractResearchBrief(viResearch, { filePath: 'RESEARCH_auth.md' });
+    assert.match(brief.verdict, /WebAuthn passkey/);
+    assert.match(brief.risksSummary, /khôi phục/);
+
+    const viBrainstorm = `\uFEFF# Khám phá Ý tưởng — Đồng bộ Ngoại tuyến
+## 1. Bối cảnh & Ràng buộc
+- **Ràng buộc**: Tương thích \`SCOUT_sync.md\` và \`src/sync/engine.ts\`.
+## 2. Ma trận Phương án
+| Phương án | Điểm |
+|-----------|------|
+| SSE | 9/10 |
+| CRDT | 7/10 |
+## 3. Phản biện & Rủi ro
+- Mất kết nối tạm thời khi cuộn phiên bản.
+## 4. Phương án Đề xuất
+Chọn SSE.
+## 5. Bước tiếp theo
+- Tạo \`SyncContract\`.
+`;
+    const bsVal = validateResearch(viBrainstorm, { filePath: 'BRAINSTORM_sync.md' });
+    assert.equal(bsVal.mode, 'brainstorm');
+    assert.equal(bsVal.valid, true, bsVal.errors.join('; '));
+
+    const resFile = path.join(dir, 'RESEARCH-vi.md');
+    fs.writeFileSync(resFile, viResearch, 'utf8');
+    const prevExit = process.exitCode;
+    assert.equal(runResearchCli(['validate', resFile, '--bogus-flag'], { cwd: dir, silent: true }), 2);
+    assert.equal(runResearchCli(['brief', resFile, '--out', '--json'], { cwd: dir, silent: true }), 2);
+    assert.ok(!fs.existsSync(path.join(dir, '--json')));
+    assert.equal(process.exitCode, prevExit);
+  } finally {
+    removeDir(dir);
+  }
+});

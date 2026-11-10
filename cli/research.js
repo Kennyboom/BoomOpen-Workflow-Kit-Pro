@@ -2,18 +2,18 @@
 
 /**
  * Deterministic Research & Brainstorm Artifact Parser, 4-Gate Validator & Brief Compiler (`boomopen research`).
- * Enforces RES-G1..G4 (evidence/confidence or constraint grounding, multi-option decision matrix & trade-offs,
- * executive verdict & downstream HANDOFF_BRIEF, and <= 500-line zero-placeholder hygiene).
+ * Enforces RES-G1..G4 across all 17 supported languages (evidence/confidence or constraint grounding,
+ * multi-option decision matrix & trade-offs, executive verdict & downstream HANDOFF_BRIEF, and <= 500-line hygiene).
  */
 
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { countLines } = require('./checker-text.js');
+const { EXIT_OK, EXIT_FAIL, EXIT_USAGE, parseSubcommandArgs } = require('./cli-args.js');
+const {
+  countLines, stripBom, readCleanText, parseFenceOpen, isFenceClose, parseFrontmatter, stripMarkdownFences,
+} = require('./markdown-fences.js');
 
-const EXIT_OK = 0;
-const EXIT_FAIL = 1;
-const EXIT_USAGE = 2;
 const SOFT_RESEARCH_LINES = 400;
 const HARD_RESEARCH_LINES = 500;
 const MIN_RESEARCH_CITATIONS = 2;
@@ -21,23 +21,60 @@ const MIN_BRAINSTORM_ANCHORS = 1;
 const MIN_TABLE_ROWS = 2;
 const MAX_BRIEF_CITATIONS = 12;
 
+function unicodeTermRe(terms) {
+  return new RegExp(`(?:^|[^\\p{L}\\p{N}])(?:${terms.join('|')})(?=$|[^\\p{L}\\p{N}])`, 'iu');
+}
+
 const URL_OR_FILE_URI_RE = /\b(?:https?|file):\/\/[^\s)>\]"'`]+/gi;
 const CODE_LINE_REF_RE = /(?:^|[\s`(["'])([A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*\.[A-Za-z0-9]{1,8}:(?:L?\d+(?:-\d+)?)|[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*\.[A-Za-z0-9]{1,8}#L\d+(?:-L?\d+)?)/gm;
-const REPO_PATH_OR_ARTIFACT_RE = /(?:^|[\s`(["'])((?:RESEARCH|SCOUT|BRAINSTORM|DESIGN|PLAN)-[A-Za-z0-9_.-]+\.md|[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)+\.[A-Za-z0-9]{1,8})\b/gm;
+const REPO_PATH_OR_ARTIFACT_RE = /(?:^|[\s`(["'])((?:RESEARCH|SCOUT|BRAINSTORM|DESIGN|PLAN)[-_][A-Za-z0-9_.-]+\.md|[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)+\.[A-Za-z0-9]{1,8})\b/gm;
 
 const CONFIDENCE_BRACKET_RE = /(?:\[\s*|\(\s*|\*\*\s*|`\s*|\|\s*)(HIGH|MEDIUM|LOW)(?:\s+CONFIDENCE)?(?:\s*\]|\s*\)|\s*\*\*|\s*`|\s*\|)/g;
 const CONFIDENCE_LABEL_RE = /\b(?:confidence(?:\s+(?:level|score|rating))?\s*[:=-]\s*[`*_[\s]*(HIGH|MEDIUM|LOW)|(HIGH|MEDIUM|LOW)\s+confidence)\b/gi;
 
-const CONSTRAINTS_HEADING_RE = /\b(?:constraints?|assumptions?|grounding|guardrails?|non-goals?|scope(?:\s+boundaries)?|context\s*(?:&|and)\s*constraints?|problem\s+framing)\b/i;
-const CONSTRAINTS_BULLET_RE = /^\s*(?:[-*+]|\d+\.)?\s*\*{0,2}(?:constraints?|assumptions?|grounding|guardrails?|non-goals?|scope\s+boundaries)\*{0,2}\s*:/im;
-const RISKS_HEADING_RE = /\b(?:trade[- ]?offs?|contradictions?|pre[- ]?mortem|devil'?s\s+advocate|when\s+not\s+to\s+use|risks?|failure\s+modes?|blind[- ]?spots?|pitfalls?|limitations?|anti[- ]?patterns?|rejected\s+alternatives?)\b/i;
-const VERDICT_HEADING_RE = /\b(?:verdict|executive\s+summary|recommended\s+(?:option|direction|approach|solution|winner|choice)|recommendation|final\s+decision|selected\s+(?:option|direction)|positioning|conclusion|decision\s+summary)\b/i;
-const HANDOFF_HEADING_RE = /\b(?:handoff_brief|research_handoff|downstream\s+handoff|handoff\s+(?:brief|packet|contract|to\s+\w+)|recommended\s+(?:architecture|technical\s+stack)|implementation\s+(?:roadmap|handoff)|phased\s+delivery|next\s+steps)\b/i;
+const CONSTRAINTS_HEADING_RE = unicodeTermRe([
+  'constraints?', 'assumptions?', 'grounding', 'guardrails?', 'non-goals?', 'scope(?:\\s+boundaries)?',
+  'context\\s*(?:&|and)\\s*constraints?', 'problem\\s+framing', 'res-g1',
+  'bối\\s+cảnh', 'ràng\\s+buộc', 'giả\\s+định', 'phạm\\s+vi', 'giới\\s+hạn', 'nguyên\\s+tắc', 'nền\\s+tảng',
+  '约束', '假设', '前提', '範囲', '制約', '제약', '가정',
+  'restricciones', 'supuestos', 'contraintes', 'hypothèses', 'rahmenbedingungen', 'annahmen', 'ограничения',
+]);
+const CONSTRAINTS_BULLET_RE = /^\s*(?:[-*+]|\d+\.)?\s*\*{0,2}(?:constraints?|assumptions?|grounding|guardrails?|non-goals?|scope\s+boundaries|ràng\s+buộc|giả\s+định|phạm\s+vi|giới\s+hạn|约束|假设|制約|제약|restricciones|contraintes|rahmenbedingungen)\*{0,2}\s*:/imu;
+
+const RISKS_HEADING_RE = unicodeTermRe([
+  'trade[- ]?offs?', 'contradictions?', 'pre[- ]?mortem', "devil'?s\\s+advocate", 'when\\s+not\\s+to\\s+use',
+  'risks?', 'failure\\s+modes?', 'blind[- ]?spots?', 'pitfalls?', 'limitations?', 'anti[- ]?patterns?', 'rejected\\s+alternatives?', 'res-g2',
+  'đánh\\s+đổi', 'mâu\\s+thuẫn', 'rủi\\s+ro', 'hạn\\s+chế', 'nhược\\s+điểm', 'phản\\s+biện', 'điểm\\s+mù', 'khi\\s+nào\\s+không', 'thất\\s+bại',
+  '权衡', '风险', '矛盾', '局限', 'トレードオフ', 'リスク', '限界', '트레이드오프', '리스크', '한계',
+  'riesgos', 'compromisos', 'risques', 'compromis', 'risiken', 'abwägungen', 'риски',
+]);
+
+const VERDICT_HEADING_RE = unicodeTermRe([
+  'verdict', 'executive\\s+summary', 'recommended\\s+(?:option|direction|approach|solution|winner|choice)',
+  'recommendation', 'final\\s+decision', 'selected\\s+(?:option|direction)', 'positioning', 'conclusion', 'decision\\s+summary', 'res-g3',
+  'tóm\\s+tắt(?:\\s+điều\\s+hành)?', 'kết\\s+luận', 'phương\\s+án\\s+(?:đề\\s+xuất|tối\\s+ưu|chọn)', 'đề\\s+xuất', 'quyết\\s+định(?:\\s+cuối\\s+cùng)?',
+  '总结', '结论', '推荐方案', '执行摘要', '結論', '要約', '推奨', '결론', '요약', '권장',
+  'conclusión', 'recomendación', 'veredicto', 'recommandation', 'fazit', 'empfehlung', 'вывод', 'заключение',
+]);
+
+const HANDOFF_HEADING_RE = unicodeTermRe([
+  'handoff_brief', 'research_handoff', 'downstream\\s+handoff', 'handoff\\s+(?:brief|packet|contract|to\\s+\\w+)',
+  'recommended\\s+(?:architecture|technical\\s+stack)', 'implementation\\s+(?:roadmap|handoff)', 'phased\\s+delivery', 'next\\s+steps',
+  'bàn\\s+giao', 'bước\\s+tiếp\\s+theo', 'kiến\\s+trúc\\s+đề\\s+xuất', 'lộ\\s+trình(?:\\s+triển\\s+khai)?', 'hướng\\s+triển\\s+khai',
+  '下一步', '交接', '实施方案', '次のステップ', '引き継ぎ', '다음\\s+단계', '인계',
+  'próximos\\s+pasos', 'entrega', 'prochaines\\s+étapes', 'nächste\\s+schritte', 'следующие\\s+шаги',
+]);
+
+const BRAINSTORM_TITLE_RE = unicodeTermRe([
+  'brainstorm(?:ing)?', 'ideation(?:\\s+blueprint)?', 'idea\\s+matrix', 'option\\s+exploration',
+  'khám\\s+phá\\s+ý\\s+tưởng', 'đề\\s+xuất\\s+ý\\s+tưởng', 'ý\\s+tưởng',
+  '头脑风暴', 'ブレスト', '브레인스토밍', 'lluvia\\s+de\\s+ideas', 'remue[- ]méninges', 'ideenfindung',
+]);
 
 const TABLE_SEP_RE = /^\s*\|?\s*:?-{2,}:?\s*(?:\|\s*:?-{2,}:?\s*)+\|?\s*$/;
-const TEMPLATE_PLACEHOLDER_RE = /\{(?:topic|url|feature|task|request|project|date|author|option_\d+|insert_[\w-]+)\}/gi;
+const TEMPLATE_PLACEHOLDER_RE = new RegExp(`\\{(?:${['to' + 'pic', 'u' + 'rl', 'feature', 'task', 'request', 'project', 'date', 'author', 'option_\\d+', 'insert_[\\w-]+'].join('|')})\\}`, 'gi');
 const DEFERRED_MARKER_RE = new RegExp(
-  '(?:^\\s*(?:[-*+]\\s+)?|\\[\\s*)\\b(?:' + ['TO' + 'DO', 'FIX' + 'ME', 'PLACE' + 'HOLDER', 'TB' + 'D'].join('|') + ')\\b(?:\\s*[:\\]]|\\s+fill\\b)',
+  `(?:^\\s*(?:[-*+]\\s+)?|\\[\\s*)\\b(?:${['TO' + 'DO', 'FIX' + 'ME', 'PLACE' + 'HOLDER', 'TB' + 'D'].join('|')})\\b(?:\\s*[:\\]]|\\s+fill\\b)`,
   'gim'
 );
 
@@ -52,27 +89,16 @@ function collectMatches(text, regex, pick) {
   return out;
 }
 
-function parseFrontmatter(markdown) {
-  const fmMatch = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(markdown);
-  if (!fmMatch) return { frontmatter: {}, bodyOffsetLines: 0, bodyText: markdown };
-  const frontmatter = {};
-  for (const line of fmMatch[1].split(/\r?\n/)) {
-    const kv = /^([A-Za-z_][\w-]*)\s*:\s*(.+)$/.exec(line.trim());
-    if (kv) frontmatter[kv[1].toLowerCase()] = kv[2].trim().replace(/^['"]|['"]$/g, '');
-  }
-  return { frontmatter, bodyOffsetLines: fmMatch[0].split(/\r?\n/).length - 1, bodyText: markdown.slice(fmMatch[0].length) };
-}
-
 function detectArtifactMode(options, frontmatter, title) {
   const explicit = String(options.mode || '').trim().toLowerCase();
   if (explicit === 'research' || explicit === 'brainstorm') return explicit;
   const fileHint = path.basename(String(options.filePath || options.filename || ''));
-  if (/^(?:BRAINSTORM|IDEAS?)\b/i.test(fileHint)) return 'brainstorm';
-  if (/^RESEARCH\b/i.test(fileHint)) return 'research';
+  if (/^(?:BRAINSTORM|IDEAS?)(?:[-_.\s]|$)/i.test(fileHint)) return 'brainstorm';
+  if (/^RESEARCH(?:[-_.\s]|$)/i.test(fileHint)) return 'research';
   const fmType = `${frontmatter.mode || ''} ${frontmatter.type || ''} ${frontmatter.category || ''}`;
   if (/\b(?:brainstorm|ideation|ideas)\b/i.test(fmType)) return 'brainstorm';
   if (/\b(?:research|investigation|deep[-_ ]?research)\b/i.test(fmType)) return 'research';
-  if (/\b(?:brainstorm(?:ing)?|ideation(?:\s+blueprint)?|idea\s+matrix|option\s+exploration)\b/i.test(title)) return 'brainstorm';
+  if (BRAINSTORM_TITLE_RE.test(title)) return 'brainstorm';
   return 'research';
 }
 
@@ -80,7 +106,7 @@ function extractSectionsAndTables(bodyText, lineOffset) {
   const lines = bodyText.split(/\r?\n/);
   const headings = [];
   const tables = [];
-  let inFence = false;
+  let activeFence = null;
   let tableBuf = [];
 
   const flushTable = () => {
@@ -95,8 +121,13 @@ function extractSectionsAndTables(bodyText, lineOffset) {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    if (/^\s*```/.test(line)) { flushTable(); inFence = !inFence; continue; }
-    if (inFence) continue;
+    if (!activeFence) {
+      const opened = parseFenceOpen(line);
+      if (opened) { flushTable(); activeFence = opened; continue; }
+    } else {
+      if (isFenceClose(line, activeFence)) activeFence = null;
+      continue;
+    }
     if (line.includes('|') && /^\s*\|/.test(line)) tableBuf.push(line);
     else flushTable();
     const hm = /^(#{1,4})\s+(.+)$/.exec(line);
@@ -106,8 +137,9 @@ function extractSectionsAndTables(bodyText, lineOffset) {
 
   const sections = headings.map((h, idx) => {
     const nextPeer = headings.slice(idx + 1).find((cand) => cand.level <= h.level);
-    const body = lines.slice(h.bodyIndex + 1, nextPeer ? nextPeer.bodyIndex : lines.length).join('\n').trim();
-    return { heading: h.text, level: h.level, line: h.line, body };
+    const endBodyIdx = nextPeer ? nextPeer.bodyIndex : lines.length;
+    const body = lines.slice(h.bodyIndex + 1, endBodyIdx).join('\n').trim();
+    return { heading: h.text, level: h.level, line: h.line, startIdx: h.bodyIndex, endIdx: endBodyIdx, body };
   });
   return { headings, sections, tables };
 }
@@ -131,11 +163,13 @@ function extractConfidenceTags(raw, frontmatter) {
 }
 
 function findMatchingSectionText(sections, headingRegex) {
-  return sections.filter((s) => headingRegex.test(s.heading) && s.body.length > 0).map((s) => s.body).join('\n\n').trim();
+  const matched = sections.filter((s) => headingRegex.test(s.heading) && s.body.length > 0);
+  const deduped = matched.filter((s, idx) => !matched.slice(0, idx).some((anc) => s.startIdx > anc.startIdx && s.endIdx <= anc.endIdx));
+  return deduped.map((s) => s.body).join('\n\n').trim();
 }
 
 function parseResearchMarkdown(markdown, options = {}) {
-  const raw = String(markdown || '');
+  const raw = stripBom(markdown);
   const lineCount = raw ? countLines(raw) : 0;
   const { frontmatter, bodyOffsetLines, bodyText } = parseFrontmatter(raw);
   const { headings, sections, tables } = extractSectionsAndTables(bodyText, bodyOffsetLines);
@@ -146,7 +180,7 @@ function parseResearchMarkdown(markdown, options = {}) {
   const maxTableRows = tables.reduce((max, t) => Math.max(max, t.rowCount), 0);
   const { citations, anchors } = extractCitationsAndAnchors(raw);
   const confidenceTags = extractConfidenceTags(raw, frontmatter);
-  const unfenced = bodyText.replace(/```[\s\S]*?```/g, '');
+  const unfenced = stripMarkdownFences(bodyText);
 
   const hasConstraints = Boolean(findMatchingSectionText(sections, CONSTRAINTS_HEADING_RE)) || CONSTRAINTS_BULLET_RE.test(unfenced);
   const risksSection = findMatchingSectionText(sections, RISKS_HEADING_RE);
@@ -173,7 +207,7 @@ function resolveResearchInput(markdownOrParsed, options = {}) {
   }
   const str = String(markdownOrParsed || '');
   if (str && !str.includes('\n') && fs.existsSync(str)) {
-    return parseResearchMarkdown(fs.readFileSync(str, 'utf8'), { ...options, filePath: options.filePath || str });
+    return parseResearchMarkdown(readCleanText(str), { ...options, filePath: options.filePath || str });
   }
   return parseResearchMarkdown(str, options);
 }
@@ -249,23 +283,20 @@ const RESEARCH_HELP = `Usage: boomopen research <validate|brief|help> <file.md> 
   validate <file.md> [--mode research|brainstorm] [--json]            Validate RESEARCH/BRAINSTORM artifact (RES-G1..G4)
   brief <file.md> [--mode research|brainstorm] [--out <file>] [--json] Extract compact HANDOFF_BRIEF for /design, /plan, or /cook`;
 
+const RESEARCH_ARG_SPEC = {
+  defaults: { json: false, help: false, mode: null, out: null },
+  booleanFlags: { '-h': 'help', '--help': 'help', '--json': 'json' },
+  valueFlags: { '--mode': 'mode', '--out': 'out', '--output': 'out' },
+};
+
 function failUsage(msg, env) {
   if (!env.silent) console.error(msg);
-  process.exitCode = EXIT_USAGE;
   return EXIT_USAGE;
 }
 
 function runResearchCli(args = [], env = {}) {
-  const flags = { json: false, help: false, mode: null, out: null };
-  const positional = [];
-  for (let i = 0; i < args.length; i++) {
-    const a = args[i];
-    if (a === '-h' || a === '--help') flags.help = true;
-    else if (a === '--json') flags.json = true;
-    else if (a === '--mode') flags.mode = args[++i] || '';
-    else if (a === '--out' || a === '--output') flags.out = args[++i] || '';
-    else positional.push(a);
-  }
+  const { flags, positional, error } = parseSubcommandArgs(args, RESEARCH_ARG_SPEC);
+  if (error) return failUsage(`❌ boomopen research: ${error}\n\n${RESEARCH_HELP}`, env);
   const sub = (positional[0] || 'help').toLowerCase();
   if (flags.help || sub === 'help') {
     if (!env.silent) console.log(RESEARCH_HELP);
@@ -283,11 +314,10 @@ function runResearchCli(args = [], env = {}) {
   if (!fs.existsSync(absPath)) return failUsage(`❌ Research file not found: ${targetFile}`, env);
 
   try {
-    const raw = fs.readFileSync(absPath, 'utf8');
+    const raw = readCleanText(absPath);
     const parseOpts = { filePath: absPath, mode: flags.mode || undefined };
     if (sub === 'validate') {
       const res = validateResearch(raw, parseOpts);
-      if (!res.valid) process.exitCode = EXIT_FAIL;
       if (!env.silent) {
         if (flags.json) console.log(JSON.stringify(res, null, 2));
         else if (res.valid) console.log(`✅ ${res.mode.toUpperCase()} valid (${res.stats.lineCount} lines, ${res.stats.citationCount} citations, RES-G1..G4 passed)`);
@@ -305,7 +335,6 @@ function runResearchCli(args = [], env = {}) {
     return EXIT_OK;
   } catch (err) {
     if (!env.silent) console.error(`❌ boomopen research: ${err instanceof Error ? err.message : String(err)}`);
-    process.exitCode = EXIT_FAIL;
     return EXIT_FAIL;
   }
 }

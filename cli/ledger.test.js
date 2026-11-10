@@ -200,3 +200,59 @@ test('normalizeLedgerShape normalizes source_documents, requirements, id/name, f
     assert.equal(aliasLedger.features[0].passes, true);
   });
 });
+
+test('regressions S1-BUG-06, S1-BUG-08, S1-BUG-09, S1-BUG-13 & S1-IMP-17: UTF-8 BOM ledger, custom --file cwd, non-code >500-line CSS, EISDIR safety, .boomopen.json standards, verify-phase & --run-verify', () => {
+  withWorkspace((root) => {
+    // Workspace .boomopen.json `relaxed` preset (hard limit 800 lines)
+    write(root, '.boomopen.json', JSON.stringify({ codingStandards: { preset: 'relaxed' } }));
+    const bigCss = `${Array.from({ length: 520 }, (_, i) => `--tok-${i}: ${i}px;`).join('\n')}\n`;
+    const bigTs = `${Array.from({ length: 550 }, (_, i) => `export const c${i} = ${i};`).join('\n')}\n`;
+    write(root, 'src/tokens.css', bigCss);
+    write(root, 'src/big.ts', bigTs);
+    write(root, 'src/big.test.ts', 'import { test } from "node:test";\ntest("ok", () => {});\n');
+
+    // Custom nested --file path with UTF-8 BOM and source_documents relative to workspace root
+    const customRel = '.boomopen/nested/custom-ledger.json';
+    const customAbs = path.join(root, ...customRel.split('/'));
+    fs.mkdirSync(path.dirname(customAbs), { recursive: true });
+    const bomJson = `\uFEFF${JSON.stringify({
+      schema_version: '5.5.0',
+      project_name: 'BomNested',
+      source_documents: ['documents/SRS.md'],
+      active_cursor: { current_phase_id: 'phase-01', baseline_passed_tests: 0 },
+      phases: [{ phase_id: 'phase-01', title: 'Phase 1', status: 'pending', depends_on: [] }],
+      features: [{
+        req_id: 'REQ-001',
+        phase_id: 'phase-01',
+        title: 'Tokens and Relaxed TS',
+        source_doc: 'documents/SRS.md#L3',
+        acceptance_criteria: ['Tokens'],
+        owned_files: ['src/tokens.css', 'src/big.ts'],
+        test_files: ['src/big.test.ts'],
+        verification_cmd: 'node -e "process.exit(1)"',
+        status: 'pending',
+        passes: false,
+      }],
+    }, null, 2)}\n`;
+    fs.writeFileSync(customAbs, bomJson, 'utf8');
+
+    // Unknown flag `--passed-test` must return EXIT_USAGE (2)
+    assert.equal(runLedgerCli(['verify', '--file', customRel, '--phase', 'phase-01', '--passed-test', '0'], { cwd: root, silent: true }), 2);
+
+    // `verify-phase` with `--run-verify` fails when verification_cmd exits 1
+    assert.equal(runLedgerCli(['verify-phase', 'phase-01', '--file', customRel, '--run-verify'], { cwd: root, silent: true }), 1);
+
+    // Update verification_cmd to exit 0 -> `verify-phase` + `--run-verify` passes on 520-line CSS + 550-line relaxed TS
+    const loaded = loadLedgerFile(customAbs, root);
+    loaded.features[0].verification_cmd = 'node -e "process.exit(0)"';
+    saveLedgerFile(customAbs, loaded);
+    assert.equal(runLedgerCli(['verify-phase', 'phase-01', '--file', customRel, '--run-verify', '--passed-tests', '2'], { cwd: root, silent: true }), 0);
+
+    // Directory entry in owned_files reports clean violation in auditLedger instead of throwing EISDIR
+    const verifiedLedger = loadLedgerFile(customAbs, root);
+    verifiedLedger.features[0].owned_files = ['src'];
+    const dirAudit = auditLedger(verifiedLedger, root);
+    assert.equal(dirAudit.passed, false);
+    assert.ok(dirAudit.violations.some((v) => /missing file on disk "src"/.test(v)));
+  });
+});

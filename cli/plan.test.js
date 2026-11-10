@@ -219,3 +219,85 @@ test('runMultiEngineCouncil enriches prompt with SHARED_CONTRACT and role#shard 
     removeDir(root);
   }
 });
+
+test('regressions S1-BUG-04, S1-BUG-06..08, S1-BUG-12 & HARD_PLAN_LINES: Vietnamese/numbered/emoji headers, fenced markdown, DESIGN_CONTRACT preservation, path-list notes, duplicate REQs, AC-01, and <=500 line budget', () => {
+  const root = tempDir('boomopen-plan-reg-');
+  try {
+    const viAndEmojiPlan = [
+      '\uFEFF# Kế hoạch Triển khai: Hệ thống Xác thực & Thanh toán',
+      '',
+      '## 🎯 Tiêu chí Nghiệm thu',
+      '| ID | Điều kiện | Kết quả |',
+      '|----|-----------|---------|',
+      '| AC-01 | Hợp lệ | JWT |',
+      '| AC-02 | Hóa đơn | Đã thu |',
+      '',
+      '## 🤝 Hợp đồng Giao diện Chung (`SHARED_CONTRACT`)',
+      '```markdown',
+      '## Fake Header Inside Fence',
+      '### Task 9.9 (REQ-999): Fake Task Inside Code Fence',
+      '```',
+      '## 🤝 Design-to-Code Contract (`DESIGN_CONTRACT`)',
+      '```css',
+      '@theme inline { --color-brand: oklch(0.6 0.2 250); }',
+      '```',
+      '',
+      '## Giai đoạn 1: Triển khai Song song (`phase_id: PHASE-1` | `Song song: Có`)',
+      '',
+      '### Nhiệm vụ 1.1 (REQ-101): Dịch vụ JWT',
+      '- **Vai trò**: `backend-engineer#auth`',
+      '- **Nghiệm thu**: `AC1`',
+      '- **OWNED_FILES**: `src/app/(auth)/login.tsx` (implements `AuthDto`)',
+      '- **READ_ONLY_FILES**: All files outside OWNED_FILES',
+      '- **Kiểm tra**: `npm test`',
+      '',
+      '## 2. Phase 2: Numbered Phase (`phase_id: PHASE-2` | `Depends On: PHASE-1`)',
+      '',
+      '### 🛠️ Task 2.1 (REQ-102): Emoji Billing Task',
+      '- **Agent**: `backend-engineer#billing`',
+      '- **Acceptance**: `AC2`',
+      '- **OWNED_FILES**: `src/billing/charge.ts`',
+      '- **Verify**: `npm test`',
+    ].join('\n');
+
+    const parsed = parsePlanMarkdown(viAndEmojiPlan, 'PLAN-vi.md');
+    assert.equal(parsed.title, 'Hệ thống Xác thực & Thanh toán');
+    assert.equal(parsed.phases.length, 2);
+    assert.equal(parsed.tasks.length, 2);
+    assert.ok(!parsed.tasks.some((t) => t.reqId === 'REQ-999'));
+    assert.match(parsed.sharedContract, /@theme inline/);
+    assert.deepEqual(parsed.tasks[0].ownedFiles, ['src/app/(auth)/login.tsx']);
+    assert.deepEqual(parsed.tasks[0].readOnlyFiles, []);
+    const validRes = validatePlan(parsed);
+    assert.equal(validRes.valid, true, validRes.errors.join('; '));
+
+    // Duplicate REQ-IDs, case-insensitive Windows path collision, and >500 HARD_PLAN_LINES
+    const dupAndCasePlan = [
+      '# Implementation Plan: Dup & Case Collision',
+      '## 🤝 Shared Interface Contracts (`SHARED_CONTRACT`)',
+      '- Shared DTO.',
+      '## Phase 1: Parallel (`Parallelizable: Yes`)',
+      '### Task 1.1 (REQ-101): Shard A',
+      '- **Agent**: `be#a`',
+      '- **OWNED_FILES**: `src/Auth/jwt.ts`',
+      '- **Verify**: `npm test`',
+      '### Task 1.2 (REQ-101): Shard B',
+      '- **Agent**: `be#b`',
+      '- **OWNED_FILES**: `src/auth/jwt.ts`',
+      '- **Verify**: `npm test`',
+      ...Array.from({ length: 495 }, (_, i) => `> Line ${i + 1}`),
+    ].join('\n');
+    const badRes = validatePlan(dupAndCasePlan);
+    assert.equal(badRes.valid, false);
+    assert.ok(badRes.gates['PLAN-G1'].some((e) => /Duplicate requirement ID "REQ-101"/.test(e)));
+    assert.ok(badRes.gates['PLAN-G3'].some((e) => /File lock collision/.test(e)));
+    assert.ok(badRes.gates['PLAN-G5'].some((e) => /exceeds cohesive single-file limit of 500 lines/.test(e)));
+
+    const planFile = path.join(root, 'PLAN-vi.md');
+    fs.writeFileSync(planFile, viAndEmojiPlan, 'utf8');
+    assert.equal(runPlanCli(['validate', planFile, '--bogus'], { cwd: root, silent: true }), 2);
+    assert.equal(runPlanCli(['compile', planFile, '--file', '--json'], { cwd: root, silent: true }), 2);
+  } finally {
+    removeDir(root);
+  }
+});

@@ -34,8 +34,21 @@ const TEST_FILE = /(?:\.(?:test|spec)\.[^.]+$|^test_.+\.py$|_test\.(?:py|go)$)/;
 const SCHEMA_OR_TYPES_FILE = /(?:^(?:types|schema)\.[cm]?tsx?$|\.(?:types|schema)\.[cm]?tsx?$)/;
 
 const ANY_PREFIX_CHARS = new Set([':', '<', ',', '|', '&', '(', '[', '=']);
-const ANY_PREFIX_WORDS = new Set(['as', 'keyof', 'extends', 'readonly', 'satisfies']);
-const LOOK_AROUND_CHARS = 64;
+const ANY_PREFIX_WORDS = new Set(['as', 'keyof', 'extends', 'readonly', 'satisfies', 'is']);
+const LOOK_AROUND_CHARS = 128;
+
+const DEFERRED_WORDS = ['TO' + 'DO', 'FIX' + 'ME', 'PLACE' + 'HOLDER', 'X' + 'XX'];
+const DEFERRED_COMMENT_RE = new RegExp(
+  `(?:^(?:\\/\\/|\\/\\*+|\\s*\\*+|\\s*#+)\\s*|\\b)(?:${DEFERRED_WORDS.join('|')})\\b(?=\\s*[:(\\-])|^(?:\\/\\/|\\/\\*+|\\s*\\*+|\\s*#+)\\s*(?:${[DEFERRED_WORDS[0], DEFERRED_WORDS[1], DEFERRED_WORDS[3]].join('|')})\\b`,
+  'm'
+);
+const STUB_THROW_RE = new RegExp(
+  `\\bthrow\\s+new\\s+\\w*Error\\s*\\(\\s*['"\`]\\s*(?:not\\s+implemented(?:\\s+yet)?|${['to' + 'do', 'fix' + 'me', 'stub', 'unimplemented'].join('\\b|')}\\b|pending\\s+implementation\\b)`,
+  'gi'
+);
+const PY_TOKEN_RE = /(?:[fFrRbBuU]{0,2})(?:"""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\\r\n])*"|'(?:\\.|[^'\\\r\n])*')|(#[^\r\n]*)/g;
+const RS_TOKEN_RE = /b?r(#*)"[\s\S]*?"\1|b?"(?:\\.|[^"\\])*"|(\/\/[^\r\n]*|\/\*[\s\S]*?\*\/)/g;
+const GO_TOKEN_RE = /`[\s\S]*?`|"(?:\\.|[^"\\\r\n])*"|'(?:\\.|[^'\\\r\n])*'|(\/\/[^\r\n]*|\/\*[\s\S]*?\*\/)/g;
 
 /**
  * Split a relative path into its folder/file segments (OS independent).
@@ -50,32 +63,17 @@ function isIgnoredSegment(segment) {
   return IGNORED_DIRS.has(segment) || (segment.startsWith('.') && segment !== '.' && segment !== '..');
 }
 
-/**
- * @param {string[]} segments path segments relative to the project root
- * @returns {boolean}
- */
 function isTestPath(segments) {
   const fileName = segments[segments.length - 1] || '';
   return TEST_FILE.test(fileName) || segments.slice(0, -1).some((s) => TEST_DIR_NAMES.has(s));
 }
 
-/**
- * Exempt from line limits: tests, declaration/schema/types files and the kit's own cli/install.js.
- * @param {string} absPath
- * @param {string[]} segments path segments relative to the project root
- * @returns {boolean}
- */
 function isLineCountExempt(absPath, segments) {
   const fileName = segments[segments.length - 1] || path.basename(absPath);
   if (path.resolve(absPath) === KIT_INSTALLER_PATH) return true;
   return isTestPath(segments) || DECLARATION_FILE.test(fileName) || SCHEMA_OR_TYPES_FILE.test(fileName);
 }
 
-/**
- * console.log is allowed in CLI tools, scripts and tests (CLAUDE.md Tier 1 rule 3).
- * @param {string[]} segments path segments relative to the project root
- * @returns {boolean}
- */
 function isConsoleLogAllowed(segments) {
   return CONSOLE_ALLOWED_DIRS.has(segments[0]) || isTestPath(segments);
 }
@@ -96,6 +94,41 @@ function codeOnly(content, ext) {
   return stripNonCode(content, { jsx: JSX_EXTENSIONS.has(ext) });
 }
 
+function blankPreservingNewlines(slice) {
+  return slice.replace(/[^\r\n]/g, ' ');
+}
+
+/**
+ * Extract comment spans and stripped code for Python, Rust, Go, or JS/TS.
+ * @param {string} rawContent
+ * @param {string} [ext]
+ * @returns {{ stripped: string, comments: Array<{ text: string, offset: number }> }}
+ */
+function lexCommentsAndCode(rawContent, ext = '') {
+  const lower = String(ext || '').toLowerCase();
+  if (!lower || JS_FAMILY_EXTENSIONS.has(lower)) {
+    const comments = [];
+    const stripped = stripNonCode(rawContent, {
+      jsx: JSX_EXTENSIONS.has(lower),
+      onComment: (slice, offset) => comments.push({ text: slice, offset }),
+    });
+    return { stripped, comments };
+  }
+  const tokenRe = lower === '.py' ? PY_TOKEN_RE : lower === '.rs' ? RS_TOKEN_RE : lower === '.go' ? GO_TOKEN_RE : null;
+  if (!tokenRe) return { stripped: rawContent, comments: [] };
+
+  tokenRe.lastIndex = 0;
+  const comments = [];
+  const stripped = rawContent.replace(tokenRe, (...args) => {
+    const full = args[0];
+    const offset = args[args.length - 2];
+    const commentText = lower === '.rs' ? args[2] : args[1];
+    if (commentText) comments.push({ text: commentText, offset });
+    return blankPreservingNewlines(full);
+  });
+  return { stripped, comments };
+}
+
 /**
  * Find the first explicit `any` type in code that was already passed through codeOnly().
  * @param {string} code
@@ -110,9 +143,7 @@ function findExplicitAny(code) {
     const prevChar = before[before.length - 1];
     const prevWord = (before.match(/[A-Za-z_$][\w$]*$/) || [''])[0];
     const isMember = prevChar === '.' || prevChar === '#' || before.endsWith('...');
-    // `T extends U ? any : never` is a conditional type; `{ any: 1 }` / `any()` are not types.
     const isConditionalBranch = prevChar === '?' && after.startsWith(':');
-    // `any.x` / `any?.x` read a value named `any`; no type can be followed by member access.
     const isKeyOrValue = after.startsWith(':') || after.startsWith('(') || after.startsWith('?:')
       || after.startsWith('.') || after.startsWith('?.');
     const typePosition =
@@ -125,11 +156,6 @@ function findExplicitAny(code) {
   return 0;
 }
 
-/**
- * First line with a console.log( call in code that was already passed through codeOnly().
- * @param {string} code
- * @returns {number} 1-based line number, or 0 when none
- */
 function findConsoleLog(code) {
   const match = /\bconsole\s*\.\s*log\s*\(/.exec(code);
   return match ? lineNumberAt(code, match.index) : 0;
@@ -137,21 +163,15 @@ function findConsoleLog(code) {
 
 /**
  * First line containing a deferred-work comment marker (used with --strict-phase / --no-stubs).
- * Scans bounded comments outside single-line string literals and matches uppercase markers.
  * @param {string} rawContent
+ * @param {string} [ext]
  * @returns {number} 1-based line number, or 0 when none
  */
-function findDeferredTodoComment(rawContent) {
-  const tokenOrComment =
-    /"(?:\\.|[^"\\\r\n])*"|'(?:\\.|[^'\\\r\n])*'|`(?:\\.|[^`\\\r\n])*`|(\/\/[^\r\n]*|\/\*[\s\S]*?\*\/|^\s*#[^\r\n]*)/gm;
-  const marker = /(?:^(?:\/\/|\/\*+|\s*\*+|\s*#+)\s*|\b)(?:TODO|FIXME|PLACEHOLDER|XXX)\b(?=\s*[:(\-])|^(?:\/\/|\/\*+|\s*\*+|\s*#+)\s*(?:TODO|FIXME|XXX)\b/m;
-  let match = tokenOrComment.exec(rawContent);
-  while (match) {
-    if (match[1]) {
-      const kw = marker.exec(match[1]);
-      if (kw) return lineNumberAt(rawContent, match.index + kw.index);
-    }
-    match = tokenOrComment.exec(rawContent);
+function findDeferredTodoComment(rawContent, ext = '') {
+  const { comments } = lexCommentsAndCode(rawContent, ext);
+  for (const c of comments) {
+    const kw = DEFERRED_COMMENT_RE.exec(c.text);
+    if (kw) return lineNumberAt(rawContent, c.offset + kw.index);
   }
   return 0;
 }
@@ -161,22 +181,31 @@ function findDeferredTodoComment(rawContent) {
  * @param {string} code stripped JS/TS code (or empty string for non-JS files)
  * @param {string} rawContent original file text
  * @param {boolean} isTest whether the file is a test file
+ * @param {string} [ext]
  * @returns {{ line: number, reason: string } | null}
  */
-function findHollowStub(code, rawContent, isTest) {
-  const throwRe = /\bthrow\s+new\s+\w*Error\s*\(\s*['"`](?:not\s+implemented|todo|pending|stub|unimplemented)/gi;
-  let m = throwRe.exec(rawContent);
+function findHollowStub(code, rawContent, isTest, ext = '') {
+  const lower = String(ext || '').toLowerCase();
+  const effectiveCode = code || (lower ? lexCommentsAndCode(rawContent, lower).stripped : '');
+
+  STUB_THROW_RE.lastIndex = 0;
+  let m = STUB_THROW_RE.exec(rawContent);
   while (m) {
-    if (!code || code.slice(m.index, m.index + 5) === 'throw') {
+    if (!effectiveCode || effectiveCode.slice(m.index, m.index + 5) === 'throw') {
       return { line: lineNumberAt(rawContent, m.index), reason: 'throw NotImplemented/TODO stub' };
     }
-    m = throwRe.exec(rawContent);
+    m = STUB_THROW_RE.exec(rawContent);
   }
   if (!code) {
-    const pyStub = /^\s*raise\s+NotImplementedError\b/m.exec(rawContent);
-    if (pyStub) return { line: lineNumberAt(rawContent, pyStub.index), reason: 'raise NotImplementedError stub' };
-    const rustStub = /\b(?:todo|unimplemented)!\s*\(/.exec(rawContent);
-    if (rustStub) return { line: lineNumberAt(rawContent, rustStub.index), reason: 'todo!/unimplemented! macro stub' };
+    const target = effectiveCode || rawContent;
+    if (!lower || lower === '.py') {
+      const pyStub = /^\s*raise\s+NotImplementedError\b/m.exec(target);
+      if (pyStub) return { line: lineNumberAt(target, pyStub.index), reason: 'raise NotImplementedError stub' };
+    }
+    if (!lower || lower === '.rs') {
+      const rustStub = new RegExp(`\\b(?:${['to' + 'do', 'unimplemented'].join('|')})!\\s*\\(`).exec(target);
+      if (rustStub) return { line: lineNumberAt(target, rustStub.index), reason: 'todo!/unimplemented! macro stub' };
+    }
   }
   if (!isTest && code) {
     const prodMock = /\b(?:vi|jest)\s*\.\s*(?:mock|spyOn|fn)\s*\(/.exec(code);
@@ -187,15 +216,11 @@ function findHollowStub(code, rawContent, isTest) {
 
 /**
  * Detect skipped/focused tests or vacuous assertions in test files (--strict-phase / --no-stubs).
- * @param {string} code stripped JS/TS code
- * @param {string} rawContent original file text
- * @param {boolean} isTest whether the file is a test file
- * @returns {{ line: number, reason: string } | null}
  */
-function findTestGaming(code, rawContent, isTest) {
+function findTestGaming(code, rawContent, isTest, ext = '') {
   if (!isTest) return null;
-  const target = code || rawContent;
-  const skipped = /\b(?:it|test|describe)\s*\.\s*(?:skip|only|todo)\s*\(/.exec(target);
+  const target = code || (ext ? lexCommentsAndCode(rawContent, ext).stripped : rawContent);
+  const skipped = new RegExp(`\\b(?:it|test|describe)\\s*\\.\\s*(?:skip|only|${'to' + 'do'})\\s*\\(`).exec(target);
   if (skipped) return { line: lineNumberAt(target, skipped.index), reason: 'skipped/focused/todo test' };
   const vacuous = /\bexpect\s*\(\s*(?:true|1)\s*\)\s*\.\s*to(?:Be|Equal|StrictEqual)\s*\(\s*(?:true|1)\s*\)/.exec(target);
   if (vacuous) return { line: lineNumberAt(target, vacuous.index), reason: 'vacuous expect(true).toBe(true)' };

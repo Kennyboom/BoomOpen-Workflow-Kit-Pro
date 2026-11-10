@@ -11,8 +11,10 @@ const {
   probeEngines,
   resolveCrossFamilyEngine,
   buildEngineInvocation,
+  unwrapEngineStdout,
   captureReadOnlySnapshot,
   verifyAndRestoreReadOnlySnapshot,
+  executeEngineSubprocess,
 } = require('./conductor-engines.js');
 const {
   COUNCIL_TASK_DIRECTIVES,
@@ -274,5 +276,89 @@ test('Windows .cmd npm shim resolution unwraps Node script and ignores extension
     assert.equal(target.shell, false);
   } finally {
     removeDir(binDir);
+  }
+});
+
+test('regressions S1-BUG-01, S1-BUG-02, S1-BUG-06 & S1-BUG-11: Windows .cmd spaces/& safety, JSON/JSONL unwrapping, directory snapshots, designer affinity, and strict CLI flags', async () => {
+  const root = tempDir('boomopen-conductor-reg-');
+  try {
+    // Designer role affinity -> antigravity primary
+    const probes = probeEngines({ mockProbes: ALL_AVAILABLE_PROBES });
+    assert.equal(resolveEngineForRole('designer', {}, probes).primaryEngine, 'antigravity');
+
+    // S1-BUG-01: Non-npm .cmd wrapper in path containing spaces and `&` symbols (no shell injection / no DEP0190)
+    const trickyDir = path.join(root, 'Dir With Spaces & Symbols (v1)', 'bin dir');
+    fs.mkdirSync(trickyDir, { recursive: true });
+    const echoJs = path.join(trickyDir, 'runner.js');
+    fs.writeFileSync(echoJs, 'console.log(JSON.stringify({ args: process.argv.slice(2) }));\n', 'utf8');
+    const customCmd = path.join(trickyDir, 'cursor-agent.cmd');
+    fs.writeFileSync(customCmd, `@echo off\r\n"${process.execPath}" "${echoJs}" %*\r\n`, 'utf8');
+
+    const winTarget = resolveSpawnTarget('cursor-agent', ['-p', 'hello & world'], { PATH: trickyDir }, 'win32');
+    assert.equal(winTarget.shell, false);
+    assert.equal(winTarget.windowsVerbatimArguments, true);
+    if (process.platform === 'win32') {
+      const promptPath = path.join(trickyDir, 'prompt file.md');
+      const inv = buildEngineInvocation('cursor', promptPath, { available: true, bin: 'cursor-agent', readOnly: true });
+      const subRes = await executeEngineSubprocess('cursor', inv, {
+        cwd: trickyDir,
+        env: { ...process.env, PATH: `${trickyDir};${process.env.PATH || process.env.Path || ''}` },
+        platform: 'win32',
+        timeoutMs: 10000,
+      });
+      assert.equal(subRes.ok, true, subRes.stderr);
+      assert.match(subRes.stdout, /prompt file\.md/);
+    }
+
+    // S1-BUG-02: Unwrap real --output-format json (Claude/Antigravity) and --json JSONL (Codex) in council
+    assert.equal(unwrapEngineStdout('claude', '{"type":"result","result":"- Bullet one"}'), '- Bullet one');
+    const councilRes = await runMultiEngineCouncil({
+      cwd: root,
+      runId: 'json-unwrap-council',
+      task: 'research',
+      engines: ['claude', 'codex', 'antigravity'],
+      prompt: 'Audit JWT rotation',
+      mockProbes: ALL_AVAILABLE_PROBES,
+      mockRunner: async (engine) => {
+        if (engine === 'claude') {
+          return { ok: true, exitCode: 0, stdout: JSON.stringify({ type: 'result', result: '# Claude\n- Enforce short-lived JWTs with rotation\n- Isolate signing keys' }) };
+        }
+        if (engine === 'codex') {
+          return {
+            ok: true,
+            exitCode: 0,
+            stdout: [
+              JSON.stringify({ type: 'thread.started', thread_id: 'th_1' }),
+              JSON.stringify({ type: 'item.completed', item: { type: 'agent_message', text: '# Codex\n- Enforce short-lived JWTs with rotation\n- Use EdDSA verification' } }),
+            ].join('\n'),
+          };
+        }
+        return { ok: true, exitCode: 0, stdout: JSON.stringify({ response: '# Antigravity\n- Enforce short-lived JWTs with rotation\n- Support passkeys' }) };
+      },
+    });
+    assert.equal(councilRes.consensus.length, 1);
+    assert.deepEqual(councilRes.consensus[0].engines, ['claude', 'codex', 'antigravity']);
+    assert.ok(!JSON.stringify(councilRes.uniqueByEngine).includes('thread.started'));
+
+    // S1-BUG-11: Recursive directory snapshot & restore guard
+    const contractsDir = path.join(root, 'contracts');
+    fs.mkdirSync(path.join(contractsDir, 'nested'), { recursive: true });
+    fs.writeFileSync(path.join(contractsDir, 'api.ts'), 'export const SAFE = 1;\n', 'utf8');
+    fs.writeFileSync(path.join(contractsDir, 'nested', 'dto.ts'), 'export interface Dto { id: string; }\n', 'utf8');
+    const snap = captureReadOnlySnapshot(root, ['contracts']);
+    fs.writeFileSync(path.join(contractsDir, 'api.ts'), 'export const HACKED = 999;\n', 'utf8');
+    fs.rmSync(path.join(contractsDir, 'nested', 'dto.ts'));
+    fs.writeFileSync(path.join(contractsDir, 'rogue.ts'), 'export const ROGUE = true;\n', 'utf8');
+    const guard = verifyAndRestoreReadOnlySnapshot(root, snap);
+    assert.equal(guard.restored, true);
+    assert.equal(fs.readFileSync(path.join(contractsDir, 'api.ts'), 'utf8'), 'export const SAFE = 1;\n');
+    assert.ok(fs.existsSync(path.join(contractsDir, 'nested', 'dto.ts')));
+    assert.ok(!fs.existsSync(path.join(contractsDir, 'rogue.ts')));
+
+    // S1-BUG-06: Strict CLI option validation
+    assert.equal(await runConductorCli(['probe', '--unknown-flag'], { cwd: root, silent: true }), 2);
+    assert.equal(await runConductorCli(['dispatch', '--prompt', 'ok', '--output', '--json'], { cwd: root, silent: true }), 2);
+  } finally {
+    removeDir(root);
   }
 });

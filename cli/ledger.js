@@ -4,22 +4,21 @@
  * Multi-Session Project Ledger & Phase Gate Engine (`boomopen ledger`).
  * Manages `.boomopen/project-ledger.json`, `.boomopen/ROADMAP-PROGRESS.md`, and
  * `.boomopen/contracts/SHARED_CONTRACT.md` for Spec-Hash Drift Guard, Scoped Context Slicing,
- * Deterministic Phase Gate (`--strict-phase` + Regression Ratchet), and 100% RTM Audit.
+ * Deterministic Phase Gate (`--strict-phase` + Regression Ratchet + `--run-verify`), and 100% RTM Audit.
  */
 
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { inspectSourceFile } = require('./checker.js');
-const { countLines } = require('./checker-text.js');
+const { inspectSourceFile, resolveActiveStandards } = require('./checker.js');
+const { CODE_EXTENSIONS } = require('./checker-rules.js');
+const { EXIT_OK, EXIT_FAIL, EXIT_USAGE, parseSubcommandArgs, splitCommaOption, runVerifyCommands } = require('./cli-args.js');
 const { KIT_VERSION } = require('./doctor-version.js');
+const { countLines, readCleanText } = require('./markdown-fences.js');
 
 const DEFAULT_LEDGER_REL = path.join('.boomopen', 'project-ledger.json');
 const VALID_STATUSES = new Set(['pending', 'in_progress', 'verified']);
-const EXIT_OK = 0;
-const EXIT_FAIL = 1;
-const EXIT_USAGE = 2;
 
 function hashFileSha256(filePath) {
   return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
@@ -40,7 +39,7 @@ function normalizeLedgerShape(raw, cwd) {
       if (typeof doc !== 'string') return doc;
       const abs = cwd ? path.resolve(cwd, doc) : null;
       const exists = abs && fs.existsSync(abs) && fs.statSync(abs).isFile();
-      return { path: doc, sha256: exists ? hashFileSha256(abs) : '', lines: exists ? countLines(fs.readFileSync(abs, 'utf8')) : 0 };
+      return { path: doc, sha256: exists ? hashFileSha256(abs) : '', lines: exists ? countLines(readCleanText(abs)) : 0 };
     });
   }
   if (!Array.isArray(raw.features) && Array.isArray(raw.requirements)) raw.features = raw.requirements;
@@ -64,10 +63,11 @@ function normalizeLedgerShape(raw, cwd) {
   return raw;
 }
 
-function loadLedgerFile(ledgerPath) {
+function loadLedgerFile(ledgerPath, cwd) {
   if (!fs.existsSync(ledgerPath)) throw new Error(`Project ledger not found at ${ledgerPath}. Run "boomopen ledger init" first.`);
-  const raw = JSON.parse(fs.readFileSync(ledgerPath, 'utf8'));
-  return normalizeLedgerShape(raw, path.resolve(path.dirname(ledgerPath), '..'));
+  const dir = path.dirname(path.resolve(ledgerPath));
+  const inferredCwd = cwd || (path.basename(dir) === '.boomopen' ? path.resolve(dir, '..') : dir);
+  return normalizeLedgerShape(JSON.parse(readCleanText(ledgerPath)), inferredCwd);
 }
 
 function saveLedgerFile(ledgerPath, ledger) {
@@ -84,15 +84,11 @@ function renderProgressMarkdown(ledger) {
   const pct = features.length ? Math.round((verifiedReqs / features.length) * 100) : 0;
   const cursor = ledger.active_cursor || {};
   const lines = [
-    `# 📊 Project Autopilot Roadmap & Progress — ${ledger.project_name || 'Project'}`,
-    '',
+    `# 📊 Project Autopilot Roadmap & Progress — ${ledger.project_name || 'Project'}`, '',
     `- **Schema Version**: \`${ledger.schema_version || KIT_VERSION}\` | **Active Phase**: \`${cursor.current_phase_id || 'COMPLETE'}\``,
     `- **Phases Verified**: \`${verifiedPhases} / ${phases.length}\` | **Requirements Verified**: \`${verifiedReqs} / ${features.length}\` (**${pct}%**)`,
-    `- **Cumulative Passing Tests Ratchet**: \`${cursor.baseline_passed_tests || 0}\``,
-    '',
-    '## 🗺️ Phase DAG Status',
-    '| Phase ID | Title | Depends On | Status | Requirements |',
-    '|----------|-------|------------|--------|--------------|',
+    `- **Cumulative Passing Tests Ratchet**: \`${cursor.baseline_passed_tests || 0}\``, '',
+    '## 🗺️ Phase DAG Status', '| Phase ID | Title | Depends On | Status | Requirements |', '|----------|-------|------------|--------|--------------|',
   ];
   for (const p of phases) {
     const pReqs = features.filter((f) => f.phase_id === p.phase_id);
@@ -175,7 +171,7 @@ function validateLedger(ledger, cwd, options = {}) {
       }
       if (options.strictShards) {
         for (const rel of f.owned_files) {
-          const key = `${f.phase_id}::${rel.replace(/\\/g, '/')}`;
+          const key = `${f.phase_id}::${rel.replace(/\\/g, '/').toLowerCase()}`;
           const prev = phaseFileOwners.get(key);
           if (prev && prev !== f.req_id) errors.push(`File collision in phase ${f.phase_id}: "${rel}" owned by both ${prev} and ${f.req_id}`);
           else phaseFileOwners.set(key, f.req_id);
@@ -192,7 +188,7 @@ function initLedger(options = {}) {
   const specDocs = (options.docs || []).map((relDoc) => {
     const absDoc = path.resolve(cwd, relDoc);
     if (!fs.existsSync(absDoc)) throw new Error(`Spec document not found: ${relDoc}`);
-    return { path: relDoc, sha256: hashFileSha256(absDoc), lines: countLines(fs.readFileSync(absDoc, 'utf8')) };
+    return { path: relDoc, sha256: hashFileSha256(absDoc), lines: countLines(readCleanText(absDoc)) };
   });
   const ledger = {
     schema_version: KIT_VERSION, project_name: options.name || path.basename(cwd), updated_at: new Date().toISOString(),
@@ -223,6 +219,29 @@ function getNextPhaseSlice(ledger, paths) {
   };
 }
 
+function inspectRequirementFiles(reqs, cwd, options = {}) {
+  const violations = [];
+  const activeStd = resolveActiveStandards(cwd, { cwd, homeDir: options.homeDir });
+  const codeFiles = new Set();
+  for (const req of reqs) {
+    if (options.requireArrays) {
+      if (!req.owned_files?.length) violations.push(`${req.req_id}: owned_files[] cannot be empty`);
+      if (!req.test_files?.length) violations.push(`${req.req_id}: test_files[] cannot be empty`);
+    }
+    const testFiles = Array.isArray(req.test_files) ? req.test_files : [];
+    for (const relFile of [...(req.owned_files || []), ...testFiles]) {
+      const absFile = path.resolve(cwd, relFile);
+      if (!fs.existsSync(absFile) || !fs.statSync(absFile).isFile()) violations.push(`${req.req_id}: missing file on disk "${relFile}"`);
+      else if (readCleanText(absFile).trim().length === 0) violations.push(`${req.req_id}: empty file "${relFile}"`);
+      else if (CODE_EXTENSIONS.has(path.extname(absFile).toLowerCase())) codeFiles.add(absFile);
+    }
+  }
+  for (const absFile of codeFiles) {
+    violations.push(...inspectSourceFile(absFile, cwd, undefined, activeStd, { projectRoot: cwd, strictPhase: true }).violations);
+  }
+  return violations;
+}
+
 function verifyPhaseGate(ledger, phaseId, options = {}) {
   const cwd = options.cwd || process.cwd();
   const violations = [...validateLedger(ledger, cwd).errors];
@@ -234,20 +253,14 @@ function verifyPhaseGate(ledger, phaseId, options = {}) {
   const phaseReqs = (ledger.features || []).filter((f) => f.phase_id === phaseId);
   if (phaseReqs.length === 0) violations.push(`Phase "${phaseId}" has 0 requirements in features[]`);
 
-  const filesToInspect = new Set();
-  for (const req of phaseReqs) {
-    if (!req.owned_files?.length) violations.push(`${req.req_id}: owned_files[] cannot be empty`);
-    if (!req.test_files?.length) violations.push(`${req.req_id}: test_files[] cannot be empty`);
-    for (const relFile of [...(req.owned_files || []), ...(req.test_files || [])]) {
-      const absFile = path.resolve(cwd, relFile);
-      if (!fs.existsSync(absFile) || !fs.statSync(absFile).isFile()) violations.push(`${req.req_id}: missing file on disk "${relFile}"`);
-      else if (fs.readFileSync(absFile, 'utf8').trim().length === 0) violations.push(`${req.req_id}: empty file "${relFile}"`);
-      else filesToInspect.add(absFile);
-    }
+  violations.push(...inspectRequirementFiles(phaseReqs, cwd, { ...options, requireArrays: true }));
+
+  if (options.runVerify) {
+    const cmds = [...new Set(phaseReqs.map((r) => String(r.verification_cmd || '').trim()).filter(Boolean))];
+    if (cmds.length === 0 && phaseReqs.length > 0) violations.push(`Phase "${phaseId}" has no verification_cmd defined for --run-verify`);
+    else violations.push(...runVerifyCommands(cmds, cwd, options.timeoutMs));
   }
-  for (const absFile of filesToInspect) {
-    violations.push(...inspectSourceFile(absFile, cwd, undefined, undefined, { projectRoot: cwd, strictPhase: true }).violations);
-  }
+
   const requiredTests = (ledger.active_cursor?.baseline_passed_tests || 0) + phaseReqs.length;
   if (options.passedTests !== undefined && (!Number.isInteger(options.passedTests) || options.passedTests < requiredTests)) {
     violations.push(`Regression ratchet failed: --passed-tests ${options.passedTests} < required minimum ${requiredTests}`);
@@ -261,7 +274,7 @@ function verifyPhaseGate(ledger, phaseId, options = {}) {
   return { passed: true, violations: [], next_phase_id: ledger.active_cursor.current_phase_id };
 }
 
-function auditLedger(ledger, cwd) {
+function auditLedger(ledger, cwd, options = {}) {
   const violations = [...validateLedger(ledger, cwd).errors];
   const phases = Array.isArray(ledger.phases) ? ledger.phases : [];
   const features = Array.isArray(ledger.features) ? ledger.features : [];
@@ -269,57 +282,37 @@ function auditLedger(ledger, cwd) {
   if (features.length === 0) violations.push('Ledger has 0 features/requirements');
   for (const f of features) {
     if (!f.passes || f.status !== 'verified') violations.push(`Unverified requirement: ${f.req_id} (${f.status})`);
-    for (const relFile of [...(f.owned_files || []), ...(reqFiles(f))]) {
-      const absFile = path.resolve(cwd, relFile);
-      if (!fs.existsSync(absFile)) violations.push(`${f.req_id}: missing file "${relFile}"`);
-      else violations.push(...inspectSourceFile(absFile, cwd, undefined, undefined, { projectRoot: cwd, strictPhase: true }).violations);
-    }
   }
+  violations.push(...inspectRequirementFiles(features, cwd, options));
   return {
     passed: violations.length === 0, total_phases: phases.length, verified_phases: phases.filter((p) => p.status === 'verified').length,
     total_requirements: features.length, verified_requirements: features.filter((f) => f.passes && f.status === 'verified').length, violations,
   };
 }
 
-function reqFiles(f) {
-  return Array.isArray(f.test_files) ? f.test_files : [];
-}
-
 const LEDGER_HELP = `Usage: boomopen ledger <init|from-plan|validate|status|next|verify|audit|help> [options]
-  init [--name <name>] [--docs <a.md,b.md>]        Initialize .boomopen/project-ledger.json & contracts
-  from-plan <plan.md> [--file <path>] [--json]     Compile approved PLAN.md into .boomopen/project-ledger.json
-  validate [--file <path>] [--strict-shards]       Validate ledger schema, phase DAG, and spec SHA-256 drift
-  status [--file <path>] [--json]                  Print progress summary and refresh ROADMAP-PROGRESS.md
-  next [--file <path>] [--json]                    Output scoped context slice for the next ready phase
-  verify --phase <id> [--passed-tests <N>]         Run strict phase gate (--strict-phase + regression ratchet)
-  audit [--file <path>] [--json]                   Run end-to-end 100% Requirement Traceability Matrix audit`;
+  init [--name <name>] [--docs <a.md,b.md>]                  Initialize .boomopen/project-ledger.json & contracts
+  from-plan <plan.md> [--file <path>] [--json]               Compile approved PLAN.md into .boomopen/project-ledger.json
+  validate [--file <path>] [--strict-shards]                 Validate ledger schema, phase DAG, and spec SHA-256 drift
+  status [--file <path>] [--json]                            Print progress summary and refresh ROADMAP-PROGRESS.md
+  next [--file <path>] [--json]                              Output scoped context slice for the next ready phase
+  verify --phase <id> [--passed-tests <N>] [--run-verify]    Run strict phase gate (alias: verify-phase)
+  audit [--file <path>] [--json]                             Run end-to-end 100% Requirement Traceability Matrix audit`;
 
-function parseLedgerFlags(argv) {
-  const flags = { file: null, name: null, docs: [], phase: null, passedTests: undefined, strictShards: false, json: false, help: false };
-  const positional = [];
-  for (let i = 0; i < argv.length; i++) {
-    const a = argv[i];
-    if (a === '-h' || a === '--help') flags.help = true;
-    else if (a === '--json') flags.json = true;
-    else if (a === '--strict-shards') flags.strictShards = true;
-    else if (a === '--file') flags.file = argv[++i];
-    else if (a === '--name') flags.name = argv[++i];
-    else if (a === '--docs') flags.docs = (argv[++i] || '').split(',').map((s) => s.trim()).filter(Boolean);
-    else if (a === '--phase') flags.phase = argv[++i];
-    else if (a === '--passed-tests') {
-      const raw = argv[++i];
-      flags.passedTests = raw !== undefined && /^\d+$/.test(String(raw)) ? Number.parseInt(String(raw), 10) : Number.NaN;
-    } else positional.push(a);
-  }
-  return { sub: (positional[0] || 'status').toLowerCase(), positional, flags };
-}
+const LEDGER_ARG_SPEC = {
+  defaults: { file: null, name: null, docs: '', phase: null, passedTests: undefined, strictShards: false, runVerify: false, json: false, help: false },
+  booleanFlags: { '-h': 'help', '--help': 'help', '--json': 'json', '--strict-shards': 'strictShards', '--run-verify': 'runVerify' },
+  valueFlags: { '--file': 'file', '--name': 'name', '--docs': 'docs', '--phase': 'phase', '--passed-tests': 'passedTests' },
+};
 
 function runLedgerCli(argv = [], options = {}) {
-  const { sub, positional, flags } = parseLedgerFlags(argv);
-  if (flags.help || sub === 'help') {
-    if (!options.silent) console.log(LEDGER_HELP);
-    return EXIT_OK;
+  const { flags, positional, error } = parseSubcommandArgs(argv, LEDGER_ARG_SPEC);
+  if (error) {
+    if (!options.silent) console.error(`❌ boomopen ledger: ${error}\n\n${LEDGER_HELP}`);
+    return EXIT_USAGE;
   }
+  const sub = (positional[0] || 'status').toLowerCase();
+  if (flags.help || sub === 'help') { if (!options.silent) console.log(LEDGER_HELP); return EXIT_OK; }
   const cwd = options.cwd || process.cwd();
   const paths = resolvePaths(cwd, flags.file);
   try {
@@ -332,11 +325,11 @@ function runLedgerCli(argv = [], options = {}) {
       return runPlanCli(fwd, options);
     }
     if (sub === 'init') {
-      const { ledger } = initLedger({ cwd, file: flags.file, name: flags.name, docs: flags.docs });
+      const { ledger } = initLedger({ cwd, file: flags.file, name: flags.name, docs: splitCommaOption(flags.docs) });
       if (!options.silent) console.log(`✅ Initialized project ledger at ${paths.ledgerPath} (${ledger.spec_documents.length} spec docs)`);
       return EXIT_OK;
     }
-    const ledger = loadLedgerFile(paths.ledgerPath);
+    const ledger = loadLedgerFile(paths.ledgerPath, cwd);
     if (sub === 'validate') {
       const res = validateLedger(ledger, cwd, { strictShards: flags.strictShards });
       if (!options.silent) {
@@ -359,17 +352,19 @@ function runLedgerCli(argv = [], options = {}) {
       if (!options.silent) console.log(JSON.stringify(getNextPhaseSlice(ledger, paths), null, 2));
       return EXIT_OK;
     }
-    if (sub === 'verify') {
-      if (!flags.phase) { if (!options.silent) console.error('❌ boomopen ledger verify requires --phase <phaseId>'); return EXIT_USAGE; }
-      const res = verifyPhaseGate(ledger, flags.phase, { cwd, passedTests: flags.passedTests });
+    if (sub === 'verify' || sub === 'verify-phase') {
+      const phaseId = flags.phase || positional[1];
+      if (!phaseId) { if (!options.silent) console.error('❌ boomopen ledger verify requires --phase <phaseId>'); return EXIT_USAGE; }
+      const passedTests = flags.passedTests === undefined ? undefined : (/^\d+$/.test(String(flags.passedTests)) ? Number.parseInt(String(flags.passedTests), 10) : Number.NaN);
+      const res = verifyPhaseGate(ledger, phaseId, { cwd, homeDir: options.homeDir, passedTests, runVerify: flags.runVerify });
       if (!res.passed) { if (!options.silent) for (const v of res.violations) console.error(`❌ ${v}`); return EXIT_FAIL; }
       saveLedgerFile(paths.ledgerPath, ledger);
       writeProgressFile(paths.progressPath, ledger);
-      if (!options.silent) console.log(`✅ Phase "${flags.phase}" verified! Next phase: ${res.next_phase_id || 'ALL COMPLETE'}`);
+      if (!options.silent) console.log(`✅ Phase "${phaseId}" verified! Next phase: ${res.next_phase_id || 'ALL COMPLETE'}`);
       return EXIT_OK;
     }
     if (sub === 'audit') {
-      const res = auditLedger(ledger, cwd);
+      const res = auditLedger(ledger, cwd, { homeDir: options.homeDir });
       if (!options.silent) {
         console.log(flags.json ? JSON.stringify(res, null, 2) : `📊 RTM Audit: ${res.verified_requirements}/${res.total_requirements} REQs verified (${res.violations.length} violations)`);
         if (!flags.json) for (const v of res.violations) console.error(`❌ ${v}`);

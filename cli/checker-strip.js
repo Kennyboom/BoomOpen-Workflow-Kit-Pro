@@ -18,11 +18,12 @@ const IDENT_PART = /[A-Za-z0-9_$]/;
 
 /**
  * @param {string} source
- * @param {{ jsx?: boolean }} [options]
+ * @param {{ jsx?: boolean, onComment?: (slice: string, offset: number) => void }} [options]
  * @returns {string}
  */
 function stripNonCode(source, options = {}) {
   const jsx = Boolean(options.jsx);
+  const onComment = typeof options.onComment === 'function' ? options.onComment : null;
   const out = source.split('');
   const n = source.length;
   // Last significant token in code: a single punctuation char, or a word.
@@ -96,26 +97,44 @@ function stripNonCode(source, options = {}) {
     return i;
   }
 
+  function hasClosingJsxTag(tagName, fromIndex) {
+    if (!tagName) return source.indexOf('</>', fromIndex) !== -1;
+    const needle = `</${tagName}`;
+    let pos = source.indexOf(needle, fromIndex);
+    while (pos !== -1) {
+      const after = source[pos + needle.length];
+      if (after === '>' || after === ' ' || after === '\t' || after === '\r' || after === '\n') return true;
+      pos = source.indexOf(needle, pos + 2);
+    }
+    return false;
+  }
+
   function looksLikeJsx(start) {
     const next = source[start + 1];
-    if (next === '>') return true;
+    if (next === '>') return hasClosingJsxTag('', start + 2);
     if (!next || !IDENT_START.test(next)) return false;
     const nameEnd = readTagName(start + 1);
-    const rest = source.slice(nameEnd, nameEnd + 12);
-    return !/^\s*(?:,|extends\b)/.test(rest);
+    const rest = source.slice(nameEnd, nameEnd + 24);
+    return !/^\s*(?:,|extends\b|=[^>=])/.test(rest);
   }
 
   // Returns the index after the element. `start` points at '<'.
   function scanJsxElement(start) {
     let i = start + 1;
     if (source[i] === '>') return scanJsxChildren(i + 1);
-    i = readTagName(i);
+    const nameEnd = readTagName(i);
+    const tagName = source.slice(i, nameEnd);
+    i = nameEnd;
+    if (source[i] === '>' && !hasClosingJsxTag(tagName, i + 1)) {
+      // Unconstrained TS generic parameter such as `<T>(value: T) => T` — not a JSX element.
+      return i + 1;
+    }
     while (i < n) {
       const ch = source[i];
       if (ch === '"' || ch === "'") { i = scanQuoted(i, ch); continue; }
       if (ch === '{') { i = scanCode(i + 1, true); continue; }
       if (ch === '/' && source[i + 1] === '>') return i + 2;
-      if (ch === '>') return scanJsxChildren(i + 1);
+      if (ch === '>') return hasClosingJsxTag(tagName, i + 1) ? scanJsxChildren(i + 1) : i + 1;
       i++;
     }
     return n;
@@ -158,6 +177,7 @@ function stripNonCode(source, options = {}) {
       if (ch === '/' && next === '/') {
         const end = source.indexOf('\n', i);
         const stop = end === -1 ? n : end;
+        if (onComment) onComment(source.slice(i, stop), i);
         blank(i, stop);
         i = stop;
         continue;
@@ -165,6 +185,7 @@ function stripNonCode(source, options = {}) {
       if (ch === '/' && next === '*') {
         const end = source.indexOf('*/', i + 2);
         const stop = end === -1 ? n : end + 2;
+        if (onComment) onComment(source.slice(i, stop), i);
         blank(i, stop);
         i = stop;
         continue;
@@ -188,6 +209,16 @@ function stripNonCode(source, options = {}) {
         continue;
       }
       if (/\s/.test(ch)) { i++; continue; }
+      if ((ch === '+' || ch === '-') && next === ch) {
+        prev = exprAllowed(REGEX_PREFIX_CHARS) ? ch : 'postfix';
+        i += 2;
+        continue;
+      }
+      if (ch === '!' && next !== '=' && !exprAllowed(REGEX_PREFIX_CHARS)) {
+        prev = 'nonnull';
+        i++;
+        continue;
+      }
       if (ch === '{') depth++;
       if (ch === '}') {
         if (depth === 0 && untilBrace) { prev = '}'; return i + 1; }

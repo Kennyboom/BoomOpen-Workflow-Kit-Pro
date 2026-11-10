@@ -2,33 +2,45 @@
 
 /**
  * Deterministic Design Spec Parser, 4-Gate Validator & DESIGN_CONTRACT Compiler (`boomopen design`).
- * Enforces DESIGN-G1..G4 (OKLCH/token completeness, anti-slop guardrails, 5-state UI matrix,
- * WCAG 2.2 AA & responsive ergonomics, single-file budget <= 500 lines, and extractable DESIGN_CONTRACT).
+ * Enforces DESIGN-G1..G4 across all 17 supported languages (OKLCH/token completeness, anti-slop guardrails,
+ * 5-state UI matrix, WCAG 2.2 AA & responsive ergonomics, <= 500 lines, and extractable DESIGN_CONTRACT).
  */
 
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { countLines } = require('./checker-text.js');
+const { EXIT_OK, EXIT_FAIL, EXIT_USAGE, parseSubcommandArgs } = require('./cli-args.js');
+const { countLines, stripBom, readCleanText, parseFrontmatter, extractFencedBlocks } = require('./markdown-fences.js');
 
-const EXIT_OK = 0;
-const EXIT_FAIL = 1;
-const EXIT_USAGE = 2;
 const SOFT_DESIGN_LINES = 400;
 const HARD_DESIGN_LINES = 500;
 
-const NEGATION_LINE_RE = /\b(?:never|ban|banned|forbid|forbidden|avoid|do\s+not|don't|no\s+default|anti[- ]?slop|anti_patterns|instead\s+of|not\s+use|reject)\b|❌/i;
+function unicodeWordRe(terms) {
+  return new RegExp(`(?:^|[^\\p{L}\\p{N}])(?:${terms.join('|')})(?=$|[^\\p{L}\\p{N}])`, 'iu');
+}
+
+const NEGATION_LINE_RE = new RegExp(
+  `${unicodeWordRe([
+    'never', 'ban', 'banned', 'forbid', 'forbidden', 'prohibit', 'prohibited', 'disallow', 'disallowed',
+    'avoid', 'do\\s+not', "don't", 'no\\s+default', 'anti[- ]?slop', 'anti_patterns', 'instead\\s+of', 'not\\s+use', 'reject',
+    'không\\s+dùng', 'không\\s+sử\\s+dụng', 'không\\s+được', 'cấm', 'tránh', 'loại\\s+bỏ', 'từ\\s+chối',
+    '禁止', '禁用', '避免', '不要', '不可', '금지', '피하', '사용하지',
+    'prohibido', 'evitar', 'nunca', 'interdit', 'éviter', 'jamais', 'verboten', 'vermeiden', 'niemals', 'запрещено',
+  ]).source}|❌|🚫|⛔`,
+  'iu'
+);
+const ANTI_PATTERNS_HEADING_RE = /^\s*anti_patterns\s*:|^#{1,4}\s+.*(?:anti[- ]?slop|anti[- ]?patterns|banned|forbidden|prohibited|quy\s+tắc\s+cấm|mẫu\s+bị\s+cấm|chống\s+ai|反模式|禁止|アンチパターン|안티패턴)/iu;
 const BANNED_FONT_RE = /\b(?:Inter|Roboto|Arial)\b/i;
-const DISTINCT_DISPLAY_FONT_RE = /\b(?:Instrument\s+Serif|Playfair\s+Display|Fraunces|Plus\s+Jakarta\s+Sans|Space\s+Grotesk|Clash\s+Display|Cabinet\s+Grotesk|Syne|Satoshi|Newsreader|Cormorant|Bricolage\s+Grotesque|Geist|Outfit|Manrope|DM\s+Serif|Lora)\b/i;
-const MONO_FONT_RE = /\b(?:JetBrains\s+Mono|Fira\s+Code|Geist\s+Mono|IBM\s+Plex\s+Mono|Source\s+Code\s+Pro|Space\s+Mono|Commit\s+Mono|Monaspace)\b/i;
-const FONT_ASSIGN_RE = /(?:^\s*(?:[-*]\s+)?(?:\*\*)?(?:sans|display|primary|heading|body|font(?:[-_ ]?family)?|--font-(?:sans|display))\b|font-family\s*:)/i;
+const DISTINCT_DISPLAY_FONT_RE = /\b(?:Instrument\s+Serif|Playfair\s+Display|Fraunces|Plus\s+Jakarta\s+Sans|Space\s+Grotesk|Clash\s+Display|Cabinet\s+Grotesk|Syne|Satoshi|Newsreader|Cormorant|Bricolage\s+Grotesque|Geist|Outfit|Manrope|DM\s+Serif|Lora|Sora)\b/i;
+const MONO_FONT_RE = /\b(?:JetBrains\s+Mono|Fira\s+Code|Geist\s+Mono|IBM\s+Plex\s+Mono|Source\s+Code\s+Pro|Space\s+Mono|Commit\s+Mono|Monaspace|Berkeley\s+Mono|Iosevka|Cascadia\s+(?:Code|Mono)|Victor\s+Mono|DM\s+Mono|Martian\s+Mono)\b/i;
+const FONT_ASSIGN_RE = /(?:^\s*(?:[-*]\s+)?(?:\*\*)?(?:sans|display|primary|heading|body|font(?:[-_ ]?family)?|phông\s+chữ|--font-(?:sans|display))\b|font-family\s*:)/iu;
 
 const STATE_PATTERNS = [
-  { key: 'Default', re: /\b(?:default|idle|normal|resting|initial)\b/i },
-  { key: 'Loading', re: /\b(?:loading|skeleton|shimmer|pending|spinner)\b/i },
-  { key: 'Empty', re: /\b(?:empty|zero[- ]data|no[- ]data|no[- ]results|blank[- ]slate)\b/i },
-  { key: 'Error', re: /\b(?:error|failed|failure|invalid|destructive)\b/i },
-  { key: 'Disabled/Focus', re: /\b(?:disabled|focus|focus-visible|focused|readonly)\b/i },
+  { key: 'Default', re: unicodeWordRe(['default', 'idle', 'normal', 'resting', 'initial', 'mặc\\s+định', 'bình\\s+thường', 'ban\\s+đầu', '默认', '通常', '기본', 'predeterminado', 'par\\s+défaut', 'standard']) },
+  { key: 'Loading', re: unicodeWordRe(['loading', 'skeleton', 'shimmer', 'pending', 'spinner', 'đang\\s+tải', 'khung\\s+xương', 'chờ\\s+xử\\s+lý', '加载中', '骨架屏', '読み込み中', '로딩', 'cargando', 'chargement', 'laden']) },
+  { key: 'Empty', re: unicodeWordRe(['empty', 'zero[- ]data', 'no[- ]data', 'no[- ]results', 'blank[- ]slate', 'trống', 'rỗng', 'chưa\\s+có\\s+dữ\\s+liệu', 'không\\s+có\\s+dữ\\s+liệu', '空状态', '无数据', 'データなし', '빈\\s+상태', 'vacío', 'vide', 'leer']) },
+  { key: 'Error', re: unicodeWordRe(['error', 'failed', 'failure', 'invalid', 'destructive', 'lỗi', 'thất\\s+bại', 'không\\s+hợp\\s+lệ', 'sự\\s+cố', '错误', '失败', 'エラー', '오류', '실패', 'erreur', 'fehler']) },
+  { key: 'Disabled/Focus', re: unicodeWordRe(['disabled', 'focus', 'focus-visible', 'focused', 'readonly', 'vô\\s+hiệu(?:\\s+hóa)?', 'tiêu\\s+điểm', 'tập\\s+trung', 'chỉ\\s+đọc', '禁用', '聚焦', '焦点', '無効', 'フォーカス', '비활성', '포커스', 'deshabilitado', 'désactivé', 'deaktiviert']) },
 ];
 
 const BREAKPOINT_TOKENS = ['375px', '768px', '1024px', '1280px', '1440px'];
@@ -95,16 +107,12 @@ function parseYamlTokens(yamlText) {
 }
 
 function extractFrontmatterAndFences(markdown) {
-  const fmMatch = /^---\r?\n([\s\S]*?)\r?\n---/.exec(markdown);
-  let yamlBlock = fmMatch ? fmMatch[1] : '';
+  const { yamlText, bodyText } = parseFrontmatter(markdown);
+  let yamlBlock = yamlText;
   const cssBlocks = [];
   const tsBlocks = [];
   const yamlFences = [];
-  const fenceRe = /```([a-zA-Z0-9_-]*)\r?\n([\s\S]*?)```/g;
-  let m = fenceRe.exec(markdown);
-  while (m) {
-    const lang = (m[1] || '').toLowerCase();
-    const body = m[2].trim();
+  for (const { lang, body } of extractFencedBlocks(bodyText)) {
     if (lang === 'css' || lang === 'scss' || lang === 'postcss' || /@theme\b|--(?:color|surface|font|radius)-/.test(body)) {
       cssBlocks.push(body);
     } else if (lang === 'ts' || lang === 'tsx' || lang === 'typescript' || /\b(?:export\s+)?(?:interface|type)\s+[A-Z]\w*/.test(body)) {
@@ -112,7 +120,6 @@ function extractFrontmatterAndFences(markdown) {
     } else if ((lang === 'yaml' || lang === 'yml') && [...KNOWN_YAML_KEYS].some((k) => new RegExp(`^${k}\\s*:`, 'm').test(body))) {
       yamlFences.push(body);
     }
-    m = fenceRe.exec(markdown);
   }
   if (!yamlBlock && yamlFences.length > 0) yamlBlock = yamlFences.join('\n');
   return { yamlBlock, cssBlocks, tsBlocks };
@@ -125,7 +132,8 @@ function detectAntiSlopViolations(markdown, yamlTokens) {
   let hasCyan = false;
 
   for (const line of String(markdown || '').split(/\r?\n/)) {
-    if (/^\s*anti_patterns\s*:|^#{1,4}\s+.*(?:anti[- ]?slop|anti[- ]?patterns|banned|forbidden)/i.test(line)) {
+    if (/^---\s*$/.test(line)) { inAntiPatterns = false; continue; }
+    if (ANTI_PATTERNS_HEADING_RE.test(line)) {
       inAntiPatterns = true;
       continue;
     }
@@ -145,7 +153,7 @@ function detectAntiSlopViolations(markdown, yamlTokens) {
 }
 
 function parseDesignMarkdown(markdown) {
-  const raw = String(markdown || '');
+  const raw = stripBom(markdown);
   const lineCount = raw ? countLines(raw) : 0;
   const { yamlBlock, cssBlocks, tsBlocks } = extractFrontmatterAndFences(raw);
   const yamlTokens = parseYamlTokens(yamlBlock);
@@ -190,17 +198,13 @@ function resolveDesignInput(markdownOrParsed) {
     return markdownOrParsed;
   }
   const str = String(markdownOrParsed || '');
-  const raw = str && !str.includes('\n') && fs.existsSync(str) ? fs.readFileSync(str, 'utf8') : str;
+  const raw = str && !str.includes('\n') && fs.existsSync(str) ? readCleanText(str) : str;
   return parseDesignMarkdown(raw);
 }
 
 function validateDesign(markdownOrParsed) {
   const parsed = resolveDesignInput(markdownOrParsed);
-  const g1 = [];
-  const g2 = [];
-  const g3 = [];
-  const g4 = [];
-  const warnings = [];
+  const [g1, g2, g3, g4, warnings] = [[], [], [], [], []];
 
   if (!parsed.hasOklch && !parsed.hasYamlTokenTriad) {
     g1.push('[DESIGN-G1] Missing perceptual color/token architecture: define oklch(...) tokens or YAML colors + typography + surface_elevation/spacing.');
@@ -235,11 +239,7 @@ function validateDesign(markdownOrParsed) {
 
 function synthesizeCssFromYaml(yamlTokens) {
   const lines = ['@theme inline {'];
-  const groups = [
-    ['color', yamlTokens.colors],
-    ['surface', yamlTokens.surface_elevation],
-    ['font', yamlTokens.typography],
-  ];
+  const groups = [['color', yamlTokens.colors], ['surface', yamlTokens.surface_elevation], ['font', yamlTokens.typography]];
   for (const [prefix, obj] of groups) {
     if (!obj || typeof obj !== 'object') continue;
     for (const [k, v] of Object.entries(obj)) {
@@ -266,7 +266,7 @@ function extractDesignContract(markdownOrPath) {
   const cssTheme = parsed.cssBlocks.length > 0 ? parsed.cssBlocks.join('\n\n') : synthesizeCssFromYaml(parsed.yamlTokens);
   const typescriptProps = parsed.tsBlocks.length > 0 ? parsed.tsBlocks.join('\n\n') : synthesizeTsFromYaml(parsed.yamlTokens);
   const markdownBlock = [
-    '## 🤝 Design-to-Code Contract (`DESIGN_CONTRACT`)', '',
+    '### 🤝 Design-to-Code Contract (`DESIGN_CONTRACT`)', '',
     '```css', cssTheme, '```', '',
     '```ts', typescriptProps, '```',
   ].join('\n');
@@ -277,35 +277,42 @@ const DESIGN_HELP = `Usage: boomopen design <validate|contract|help> <design.md>
   validate <design.md> [--json]              Validate DESIGN.md against 4 Deterministic Gates (DESIGN-G1..G4)
   contract <design.md> [--out <file>] [--json] Extract DESIGN_CONTRACT (CSS @theme + TypeScript Props) for SHARED_CONTRACT`;
 
+const DESIGN_ARG_SPEC = {
+  defaults: { json: false, help: false, out: null },
+  booleanFlags: { '-h': 'help', '--help': 'help', '--json': 'json' },
+  valueFlags: { '--out': 'out', '--output': 'out' },
+};
+
 function runDesignCli(args = [], options = {}) {
-  const flags = { json: false, help: false, out: null };
-  const positional = [];
-  for (let i = 0; i < args.length; i++) {
-    const a = args[i];
-    if (a === '-h' || a === '--help') flags.help = true;
-    else if (a === '--json') flags.json = true;
-    else if (a === '--out' || a === '--output') flags.out = args[++i];
-    else positional.push(a);
+  const { flags, positional, error } = parseSubcommandArgs(args, DESIGN_ARG_SPEC);
+  if (error) {
+    if (!options.silent) console.error(`❌ boomopen design: ${error}\n\n${DESIGN_HELP}`);
+    return EXIT_USAGE;
   }
   const sub = (positional[0] || 'help').toLowerCase();
   if (flags.help || sub === 'help') {
     if (!options.silent) console.log(DESIGN_HELP);
     return EXIT_OK;
   }
+  if (sub !== 'validate' && sub !== 'contract') {
+    if (!options.silent) console.error(`❌ Unknown design subcommand "${sub}"\n\n${DESIGN_HELP}`);
+    return EXIT_USAGE;
+  }
   const cwd = options.cwd || process.cwd();
   const targetFile = positional[1];
   if (!targetFile) {
     if (!options.silent) console.error(`❌ boomopen design ${sub} requires a <design.md> path.\n\n${DESIGN_HELP}`);
-    process.exitCode = EXIT_USAGE;
+    return EXIT_USAGE;
+  }
+  const absPath = path.resolve(cwd, targetFile);
+  if (!fs.existsSync(absPath)) {
+    if (!options.silent) console.error(`❌ boomopen design: Design file not found: ${targetFile}`);
     return EXIT_USAGE;
   }
   try {
-    const absPath = path.resolve(cwd, targetFile);
-    if (!fs.existsSync(absPath)) throw new Error(`Design file not found: ${targetFile}`);
-    const raw = fs.readFileSync(absPath, 'utf8');
+    const raw = readCleanText(absPath);
     if (sub === 'validate') {
       const res = validateDesign(raw);
-      if (!res.valid) process.exitCode = EXIT_FAIL;
       if (!options.silent) {
         if (flags.json) console.log(JSON.stringify(res, null, 2));
         else if (res.valid) console.log(`✅ Design valid (${res.stats.lineCount} lines, ${res.stats.stateCount}/5 states, DESIGN-G1..G4 passed)`);
@@ -313,22 +320,16 @@ function runDesignCli(args = [], options = {}) {
       }
       return res.valid ? EXIT_OK : EXIT_FAIL;
     }
-    if (sub === 'contract') {
-      const contract = extractDesignContract(raw);
-      if (flags.out) {
-        const outAbs = path.resolve(cwd, flags.out);
-        fs.mkdirSync(path.dirname(outAbs), { recursive: true });
-        fs.writeFileSync(outAbs, `${contract.markdownBlock}\n`, 'utf8');
-      }
-      if (!options.silent) console.log(flags.json ? JSON.stringify(contract, null, 2) : contract.markdownBlock);
-      return EXIT_OK;
+    const contract = extractDesignContract(raw);
+    if (flags.out) {
+      const outAbs = path.resolve(cwd, flags.out);
+      fs.mkdirSync(path.dirname(outAbs), { recursive: true });
+      fs.writeFileSync(outAbs, `${contract.markdownBlock}\n`, 'utf8');
     }
-    if (!options.silent) console.error(`❌ Unknown design subcommand "${sub}"\n\n${DESIGN_HELP}`);
-    process.exitCode = EXIT_USAGE;
-    return EXIT_USAGE;
+    if (!options.silent) console.log(flags.json ? JSON.stringify(contract, null, 2) : contract.markdownBlock);
+    return EXIT_OK;
   } catch (err) {
     if (!options.silent) console.error(`❌ boomopen design: ${err instanceof Error ? err.message : String(err)}`);
-    process.exitCode = EXIT_FAIL;
     return EXIT_FAIL;
   }
 }

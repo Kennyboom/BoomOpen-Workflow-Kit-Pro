@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { inspectSourceFile, runCheck, runCheckCli, EXIT_USAGE } = require('./checker.js');
+const { inspectSourceFile, resolveActiveStandards, runCheck, runCheckCli, EXIT_USAGE } = require('./checker.js');
 const { countLines, decodeTextBuffer } = require('./checker-text.js');
 const { stripNonCode } = require('./checker-strip.js');
 const { tempDir, removeDir } = require('./sandbox.test-helper.js');
@@ -233,4 +233,64 @@ test('--strict-phase (and --no-stubs) catches deferred TODOs, hollow stubs/mocks
     '}',
   ].join('\n');
   assert.deepEqual(inspectSourceFile('/p/src/clean.ts', '/p', cleanProse, undefined, { strictPhase: true }).violations, []);
+});
+
+test('regressions S1-BUG-03, S1-BUG-09 & S1-BUG-10: TSX generics, postfix !/++ division, multiline templates/docstrings, Pending errors, and `v is any`', () => {
+  // S1-BUG-03: `<T>(value: T) => T` in .tsx (even with `<Table>...</Table>` below) must NOT swallow downstream code
+  const tsxWithGenericAndTable = [
+    'export type Identity = <T>(value: T) => T;',
+    'export type Defaulted = <T = string>(value: T) => T;',
+    'export const leakedAny: any = 42;',
+    'console.log("debug leak");',
+    'export const View = () => <Table><span>(optional) any text in JSX</span></Table>;',
+  ].join('\n');
+  const tsxRes = inspectSourceFile('/p/src/View.tsx', '/p', tsxWithGenericAndTable, undefined, { projectRoot: '/p', strictPhase: true });
+  assert.equal(tsxRes.violations.length, 1);
+  assert.match(tsxRes.violations[0], /View\.tsx:3: explicit 'any'/);
+  assert.equal(tsxRes.warnings.length, 1);
+  assert.match(tsxRes.warnings[0], /View\.tsx:4: leftover console\.log/);
+
+  // S1-BUG-10: TS postfix `!` and `++` before `/` division followed by `//` comments
+  const tsDivisionComments = [
+    'export function ratio(total: number | null, count: number): number {',
+    '  let c = count;',
+    '  const a = total! / 100; // Note: never cast: any here',
+    '  const b = c++ / 10; // Unclosed `backtick in prose comment',
+    '  return a + b;',
+    '}',
+    'export const realViolationBelow: any = 1;',
+  ].join('\n');
+  const divRes = inspectSourceFile('/p/src/math.ts', '/p', tsDivisionComments, undefined, { projectRoot: '/p' });
+  assert.deepEqual(divRes.violations, [`${path.join('src', 'math.ts')}:7: explicit 'any' type detected`]);
+
+  // S1-BUG-10: Multiline JS template, regex literal, Python docstring, Rust comment/raw string, Go raw string, and "Pending..." domain error
+  const multilineTpl = 'export const md = `\n  # TODO: generated item\n  // FIXME: sample\n`;\nexport const re = /\\/\\/\\s*TODO:/;\n';
+  assert.deepEqual(inspectSourceFile('/p/src/tpl.ts', '/p', multilineTpl, undefined, { strictPhase: true }).violations, []);
+
+  const pyDoc = 'def guide():\n    """\n    # TODO: example\n    raise NotImplementedError("docs")\n    """\n    return True\n';
+  assert.deepEqual(inspectSourceFile('/p/src/guide.py', '/p', pyDoc, undefined, { strictPhase: true }).violations, []);
+  const pyRealStub = 'def save():\n    raise NotImplementedError("unbuilt")\n';
+  assert.equal(inspectSourceFile('/p/src/save.py', '/p', pyRealStub, undefined, { strictPhase: true }).violations.length, 1);
+
+  const rsClean = '// Rule: never commit todo!() in release\npub fn msg() -> &\'static str { r#"avoid unimplemented!()"# }\n';
+  assert.deepEqual(inspectSourceFile('/p/src/lib.rs', '/p', rsClean, undefined, { strictPhase: true }).violations, []);
+  const rsRealStub = 'pub fn compute() -> i32 { todo!("implement") }\n';
+  assert.equal(inspectSourceFile('/p/src/lib.rs', '/p', rsRealStub, undefined, { strictPhase: true }).violations.length, 1);
+
+  const goClean = 'package p\nconst tpl = `\n// TODO: inside Go raw string\n`\n';
+  assert.deepEqual(inspectSourceFile('/p/pkg/a.go', '/p', goClean, undefined, { strictPhase: true }).violations, []);
+
+  const domainPending = 'export function refund(s: string): void {\n  if (s !== "settled") throw new Error("Pending settlement cannot be refunded");\n}\n';
+  assert.deepEqual(inspectSourceFile('/p/src/refund.ts', '/p', domainPending, undefined, { strictPhase: true }).violations, []);
+
+  // S1-BUG-10: TypeScript `v is any` type predicate must be caught
+  const typePred = 'export function isAnything(v: unknown): v is any {\n  return Boolean(v);\n}\n';
+  assert.equal(inspectSourceFile('/p/src/guard.ts', '/p', typePred).violations.length, 1);
+
+  // S1-BUG-09: exported resolveActiveStandards honors workspace .boomopen.json
+  withProject((root, home) => {
+    write(root, '.boomopen.json', JSON.stringify({ codingStandards: { preset: 'relaxed' } }));
+    const active = resolveActiveStandards(root, { cwd: root, homeDir: home });
+    assert.equal(active.hardFileLines, 800);
+  });
 });

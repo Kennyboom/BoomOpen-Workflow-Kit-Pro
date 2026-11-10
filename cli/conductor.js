@@ -14,16 +14,13 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+const { EXIT_OK, EXIT_FAIL, EXIT_USAGE, parseSubcommandArgs, splitCommaOption } = require('./cli-args.js');
 const {
   SUPPORTED_ENGINES, ENGINE_FAMILY, ROLE_AFFINITY_ORDER, normalizeEngineName,
   probeEngines, resolveCrossFamilyEngine, buildEngineInvocation,
   captureReadOnlySnapshot, verifyAndRestoreReadOnlySnapshot, executeEngineSubprocess,
 } = require('./conductor-engines.js');
 const { loadSettings } = require('./settings.js');
-
-const EXIT_OK = 0;
-const EXIT_FAIL = 1;
-const EXIT_USAGE = 2;
 
 const COUNCIL_LENSES = {
   claude: 'Deep Architecture, System Invariants, Edge Cases & Security Critique',
@@ -85,7 +82,7 @@ function renderHandoffEnvelope({ role, engine, prompt, sharedContract, ownedFile
     readOnlyFiles.length === 0 ? '- All files outside OWNED_FILES' : readOnlyFiles.map((f) => `- \`${f}\``).join('\n'),
     '',
     '## 5. VERIFICATION & DELIVERABLE',
-    '- Output structured, evidence-backed findings or verified code changes with 0 stubs/TODOs.',
+    '- Output structured, evidence-backed findings or verified code changes with 0 stubs/deferred markers.',
     '',
   ].join('\n');
 }
@@ -109,7 +106,14 @@ async function dispatchToEngine(options = {}) {
   let engineUsed = resolved.primaryEngine;
   let promptPath = '';
 
-  for (const candidate of candidates) {
+  for (let idx = 0; idx < candidates.length; idx++) {
+    const candidate = candidates[idx];
+    const probe = probes[candidate] || { available: true, bin: candidate };
+    const isQueueCapable = candidate === 'cursor' || candidate === 'copilot';
+    if (!probe.available && !isQueueCapable && !options.mockRunner && idx < candidates.length - 1) {
+      failoverHistory.push({ engine: candidate, exitCode: 127, isQuotaError: false, skippedUnavailable: true });
+      continue;
+    }
     engineUsed = candidate;
     promptPath = path.join(runsDir, `${runId}-${candidate}-prompt.md`);
     const promptText = renderHandoffEnvelope({
@@ -118,12 +122,11 @@ async function dispatchToEngine(options = {}) {
     });
     fs.writeFileSync(promptPath, promptText, 'utf8');
 
-    const probe = probes[candidate] || { available: true, bin: candidate };
     const invocation = buildEngineInvocation(candidate, promptPath, {
       readOnly: Boolean(options.readOnly), available: probe.available, bin: probe.bin, queueFile: path.join(queueDir, `${runId}-${candidate}.md`),
     });
     finalRes = await executeEngineSubprocess(candidate, invocation, { cwd, promptText, mockRunner: options.mockRunner, timeoutMs: options.timeoutMs });
-    if (finalRes.ok || (!finalRes.isQuotaError && finalRes.exitCode !== 127)) break;
+    if (finalRes.ok || (!finalRes.isQuotaError && finalRes.exitCode !== 127 && finalRes.exitCode !== 9009)) break;
     failoverHistory.push({ engine: candidate, exitCode: finalRes.exitCode, isQuotaError: finalRes.isQuotaError });
   }
 
@@ -299,35 +302,31 @@ const CONDUCTOR_HELP = `Usage: boomopen conduct <probe|dispatch|council|status|h
   council --task <type> --prompt <text> [opts]     Run N engines in parallel and synthesize Consensus & Blind-Spots
   status [--json]                                  List recent cross-engine runs and queued handoffs`;
 
-function parseFlags(argv) {
-  const flags = { role: 'coder', task: 'research', engine: null, authorEngine: null, engines: null, prompt: '', owned: [], readOnly: [], output: null, json: false, help: false };
-  const positional = [];
-  let taskExplicit = false;
-  for (let i = 0; i < argv.length; i++) {
-    const a = argv[i];
-    if (a === '-h' || a === '--help') flags.help = true;
-    else if (a === '--json') flags.json = true;
-    else if (a === '--role') { const v = argv[++i]; flags.role = v; if (!taskExplicit) flags.task = v; }
-    else if (a === '--task') { flags.task = argv[++i]; taskExplicit = true; }
-    else if (a === '--engine') flags.engine = argv[++i];
-    else if (a === '--author-engine') flags.authorEngine = argv[++i];
-    else if (a === '--engines') flags.engines = argv[++i];
-    else if (a === '--prompt') flags.prompt = argv[++i] || '';
-    else if (a === '--output') flags.output = argv[++i];
-    else if (a === '--owned' || a === '--owned-files') flags.owned = (argv[++i] || '').split(',').map((s) => s.trim()).filter(Boolean);
-    else if (a === '--read-only' || a === '--read-only-files') flags.readOnly = (argv[++i] || '').split(',').map((s) => s.trim()).filter(Boolean);
-    else positional.push(a);
-  }
-  return { sub: (positional[0] || 'probe').toLowerCase(), flags };
-}
+const CONDUCT_ARG_SPEC = {
+  defaults: { role: null, task: null, engine: null, authorEngine: null, engines: null, prompt: '', owned: '', readOnly: '', output: null, json: false, help: false },
+  booleanFlags: { '-h': 'help', '--help': 'help', '--json': 'json' },
+  valueFlags: {
+    '--role': 'role', '--task': 'task', '--engine': 'engine', '--author-engine': 'authorEngine',
+    '--engines': 'engines', '--prompt': 'prompt', '--output': 'output', '--out': 'output',
+    '--owned': 'owned', '--owned-files': 'owned', '--read-only': 'readOnly', '--read-only-files': 'readOnly',
+  },
+  allowDashValueFlags: ['--prompt'],
+};
 
 async function runConductorCli(argv = [], options = {}) {
-  const { sub, flags } = parseFlags(argv);
+  const { flags, positional, error } = parseSubcommandArgs(argv, CONDUCT_ARG_SPEC);
+  if (error) {
+    if (!options.silent) console.error(`❌ boomopen conduct: ${error}\n\n${CONDUCTOR_HELP}`);
+    return EXIT_USAGE;
+  }
+  const sub = (positional[0] || 'probe').toLowerCase();
   if (flags.help || sub === 'help') {
     if (!options.silent) console.log(CONDUCTOR_HELP);
     return EXIT_OK;
   }
   const cwd = options.cwd || process.cwd();
+  const ownedFiles = splitCommaOption(flags.owned);
+  const readOnlyFiles = splitCommaOption(flags.readOnly);
   if (sub === 'probe') {
     const probes = probeEngines({ mockProbes: options.mockProbes });
     if (!options.silent) console.log(flags.json ? JSON.stringify(probes, null, 2) : Object.entries(probes).map(([k, v]) => `${v.available ? '✅' : '⬚'} ${k.padEnd(12)} (${v.family}) bin=${v.bin || 'none'}`).join('\n'));
@@ -338,7 +337,7 @@ async function runConductorCli(argv = [], options = {}) {
       if (!options.silent) console.error('❌ boomopen conduct dispatch requires --prompt "<task>".');
       return EXIT_USAGE;
     }
-    const res = await dispatchToEngine({ cwd, homeDir: options.homeDir, role: flags.role, engine: flags.engine, authorEngine: flags.authorEngine, prompt: flags.prompt, output: flags.output, ownedFiles: flags.owned, readOnlyFiles: flags.readOnly, mockProbes: options.mockProbes, mockRunner: options.mockRunner });
+    const res = await dispatchToEngine({ cwd, homeDir: options.homeDir, role: flags.role || 'coder', engine: flags.engine, authorEngine: flags.authorEngine, prompt: flags.prompt, output: flags.output, ownedFiles, readOnlyFiles, mockProbes: options.mockProbes, mockRunner: options.mockRunner });
     if (!options.silent) console.log(flags.json ? JSON.stringify(res, null, 2) : `✅ Dispatched [${res.role}] to ${res.engineUsed} (${res.family}) -> ${res.resultPath}`);
     return res.ok ? EXIT_OK : EXIT_FAIL;
   }
@@ -347,7 +346,8 @@ async function runConductorCli(argv = [], options = {}) {
       if (!options.silent) console.error('❌ boomopen conduct council requires --prompt "<task>".');
       return EXIT_USAGE;
     }
-    const res = await runMultiEngineCouncil({ cwd, homeDir: options.homeDir, task: flags.task, engines: flags.engines, prompt: flags.prompt, output: flags.output, readOnlyFiles: flags.readOnly, mockProbes: options.mockProbes, mockRunner: options.mockRunner });
+    const task = flags.task || flags.role || 'research';
+    const res = await runMultiEngineCouncil({ cwd, homeDir: options.homeDir, task, engines: flags.engines, prompt: flags.prompt, output: flags.output, readOnlyFiles, mockProbes: options.mockProbes, mockRunner: options.mockRunner });
     if (!options.silent) console.log(flags.json ? JSON.stringify(res, null, 2) : `🏛️ Council synthesis (${res.engines.join(', ')}) written to ${res.synthesisPath}`);
     return res.ok ? EXIT_OK : EXIT_FAIL;
   }

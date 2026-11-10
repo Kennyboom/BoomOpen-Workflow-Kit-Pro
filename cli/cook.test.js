@@ -1,5 +1,6 @@
 'use strict';
 
+const { spawnSync } = require('node:child_process');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -225,5 +226,77 @@ test('runCookPreflight and runCookCli return expected exit codes (0, 1, 2) and w
     assert.equal(runCookCli(['unknown-sub'], { cwd: root, silent: true }), 2);
   } finally {
     removeDir(root);
+  }
+});
+
+test('regressions S1-BUG-05, S1-BUG-06, S1-BUG-09, S1-IMP-16, S4-P0-02 & S4-P3-02: git mv READ_ONLY detection, UTF-8 git -z, auto-git, sibling --shard --git, .boomopen.json standards, --plan alias, and strict flags', () => {
+  const root = tempDir('boomopen-cook-git-reg-');
+  const nonGitDir = tempDir('boomopen-cook-nongit-');
+  try {
+    // Explicit --git in a non-git folder must fail COOK-G1 instead of silently passing
+    const minPlan = '# Plan\n## Phase 1: W1\n### Task 1.1 (REQ-101): X\n- **Agent**: `be#1`\n- **OWNED_FILES**: `src/a.ts`\n- **Verify**: `node -e ""`\n';
+    fs.mkdirSync(path.join(nonGitDir, 'src'), { recursive: true });
+    fs.writeFileSync(path.join(nonGitDir, 'src', 'a.ts'), 'export const a = 1;\n', 'utf8');
+    const nonGitRes = verifyWaveExecution(minPlan, { cwd: nonGitDir, wave: 1, git: true });
+    assert.equal(nonGitRes.valid, false);
+    assert.ok(nonGitRes.errors.some((e) => /Git status check failed/.test(e)));
+
+    // Real git repository tests: auto-git, UTF-8 filenames, sibling --shard --git, and staged git mv READ_ONLY
+    fs.mkdirSync(path.join(root, 'src'), { recursive: true });
+    spawnSync('git', ['init'], { cwd: root, windowsHide: true });
+    spawnSync('git', ['config', 'user.email', 'test@example.com'], { cwd: root, windowsHide: true });
+    spawnSync('git', ['config', 'user.name', 'Test'], { cwd: root, windowsHide: true });
+    fs.writeFileSync(path.join(root, 'package.json'), '{"name":"git-cook"}\n', 'utf8');
+    fs.writeFileSync(path.join(root, '.boomopen.json'), JSON.stringify({ codingStandards: { preset: 'relaxed' } }), 'utf8');
+    fs.writeFileSync(path.join(root, 'src', 'contract.ts'), 'export interface Secret { id: string; }\n', 'utf8');
+    spawnSync('git', ['add', '.'], { cwd: root, windowsHide: true });
+    spawnSync('git', ['commit', '-m', 'init'], { cwd: root, windowsHide: true });
+
+    const utf8AndParallelPlan = `# Implementation Plan: Parallel UTF-8
+## 🤝 Shared Interface Contracts (\`SHARED_CONTRACT\`)
+- \`Secret\` locked.
+## Wave 1: Parallel (\`Parallelizable: Yes\`)
+### Task 1.1 (REQ-101): UTF-8 Report Module
+- **Agent**: \`backend-engineer#report\`
+- **OWNED_FILES**: \`src/báo-cáo.ts\`
+- **READ_ONLY_FILES**: \`src/contract.ts\`
+- **Verify**: \`node -e "process.exit(0)"\`
+### Task 1.2 (REQ-102): Large Relaxed Module
+- **Agent**: \`backend-engineer#large\`
+- **OWNED_FILES**: \`src/large.ts\`
+- **READ_ONLY_FILES**: \`src/contract.ts\`
+- **Verify**: \`node -e "process.exit(0)"\`
+`;
+    const planFile = path.join(root, 'PLAN-utf8.md');
+    fs.writeFileSync(planFile, utf8AndParallelPlan, 'utf8');
+    fs.writeFileSync(path.join(root, 'src', 'báo-cáo.ts'), 'export const report = "ok";\n', 'utf8');
+    // 550 lines passes under workspace .boomopen.json `relaxed` preset (hard limit 800)
+    const lines550 = `${Array.from({ length: 550 }, (_, i) => `export const v${i} = ${i};`).join('\n')}\n`;
+    fs.writeFileSync(path.join(root, 'src', 'large.ts'), lines550, 'utf8');
+
+    // Sibling-aware `--shard backend-engineer#report --git` ignores sibling `src/large.ts` in git status
+    const shardGitPass = verifyWaveExecution(planFile, { cwd: root, wave: 1, shard: 'backend-engineer#report', git: true });
+    assert.equal(shardGitPass.valid, true, shardGitPass.errors.join('; '));
+
+    // Auto-git check (without passing `git: true`) catches rogue `src/rogue.ts`, unless `--no-git` is set
+    fs.writeFileSync(path.join(root, 'src', 'rogue.ts'), 'export const r = 1;\n', 'utf8');
+    const autoGitFail = verifyWaveExecution(planFile, { cwd: root, wave: 1 });
+    assert.equal(autoGitFail.valid, false);
+    assert.ok(autoGitFail.errors.some((e) => /Unauthorized file modified.*"src\/rogue\.ts"/.test(e)));
+    assert.equal(runCookCli(['verify-wave', '--plan', planFile, '--wave', '1', '--no-git'], { cwd: root, silent: true }), 0);
+    fs.rmSync(path.join(root, 'src', 'rogue.ts'));
+
+    // Staged `git mv src/contract.ts src/báo-cáo.ts` MUST fail COOK-G1 (READ_ONLY source moved)
+    fs.rmSync(path.join(root, 'src', 'báo-cáo.ts'));
+    spawnSync('git', ['mv', 'src/contract.ts', 'src/báo-cáo.ts'], { cwd: root, windowsHide: true });
+    const renameBypassCheck = verifyWaveExecution(planFile, { cwd: root, wave: 1, git: true });
+    assert.equal(renameBypassCheck.valid, false);
+    assert.ok(renameBypassCheck.errors.some((e) => /Read-only file mutated.*"src\/contract\.ts"/.test(e)));
+
+    // Typo flag `--run-tests` must fail with EXIT_USAGE (2) instead of silently passing
+    assert.equal(runCookCli(['verify-wave', planFile, '--run-tests'], { cwd: root, silent: true }), 2);
+  } finally {
+    removeDir(root);
+    removeDir(nonGitDir);
   }
 });

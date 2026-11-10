@@ -77,9 +77,10 @@ function findUp(startDir, markers) {
 /**
  * Global (~/.boomopen/settings.json) + nearest workspace .boomopen.json, as documented in /settings.
  */
-function resolveActiveStandards(targetDir, options) {
+function resolveActiveStandards(targetDir, options = {}) {
   if (options.codingStandards) return options.codingStandards;
-  const settingsCwd = findUp(targetDir, [WORKSPACE_CONFIG]) || options.cwd || process.cwd();
+  const base = targetDir || options.cwd || process.cwd();
+  const settingsCwd = findUp(base, [WORKSPACE_CONFIG]) || options.cwd || base;
   return loadSettings({ cwd: settingsCwd, homeDir: options.homeDir }).codingStandards;
 }
 
@@ -115,11 +116,11 @@ function inspectSourceFile(filePath, baseDir, overrideContent, customStandards, 
   const isTest = isTestPath(segments);
   const code = JS_FAMILY_EXTENSIONS.has(ext) ? codeOnly(content, ext) : '';
   if (context.strictPhase) {
-    const todoLine = findDeferredTodoComment(content);
+    const todoLine = findDeferredTodoComment(content, ext);
     if (todoLine) violations.push(`${relPath}:${todoLine}: deferred TODO/FIXME/PLACEHOLDER comment detected (--strict-phase)`);
-    const stub = findHollowStub(code, content, isTest);
+    const stub = findHollowStub(code, content, isTest, ext);
     if (stub) violations.push(`${relPath}:${stub.line}: hollow stub/mock detected (${stub.reason})`);
-    const gaming = findTestGaming(code, content, isTest);
+    const gaming = findTestGaming(code, content, isTest, ext);
     if (gaming) violations.push(`${relPath}:${gaming.line}: test gaming / skipped test detected (${gaming.reason})`);
   }
   if (!JS_FAMILY_EXTENSIONS.has(ext)) return { violations, warnings };
@@ -327,6 +328,7 @@ module.exports = {
   EXIT_USAGE,
   collectSourceFiles,
   inspectSourceFile,
+  resolveActiveStandards,
   resolveCodingStandards,
   runCheck,
   runCheckCli,
