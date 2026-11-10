@@ -1,246 +1,59 @@
 ---
-description: "🔺 Team Review — Golden Triangle adversarial collaboration for maximum quality code review"
+description: "🔺 Team Review — 2-Stage Elastic Golden Diamond Multi-Specialist Audit, Cross-Engine Council (Author != Critic), Warm False-Positive Elimination & 1-Click Proceed to /fix"
 version: "5.5"
 category: quality
 execution-mode: execute
 ---
 
-# /review:team — Golden Triangle Code Review
+> **📂 Cohesive Single-File & Zero-Collision Rule (v5.5)**:
+> - **Single User-Facing Deliverable**: `<appDataDir>\brain\<conversation-id>\REVIEW-{scope}.md` (`<= 500` lines, zero `{name}/` folder splits!). Set `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: true }` when `P0/P1` issues exist so Antigravity 2.0's 1-click **"Proceed"** button fast-forwards straight into `/fix:team` (`RequestFeedback: false` when `0` `P0/P1` issues exist).
+> - **Zero Multi-File Sprawl & Zero Write Collisions**: Never dump separate `SCOUT-{scope}` or `REVIEW-REPORT-{scope}` files on the user! Parallel Stage 1 shards return structured payloads via message OR write disjoint internal scratch files (`REVIEW-{scope}-s{1..k}.md`, `COUNCIL-review-{scope}.md`) with `ArtifactMetadata: { Summary: "...", UserFacing: false, RequestFeedback: false }`. Consolidated debate logs in `MAILBOX-{date}.md` also carry `UserFacing: false, RequestFeedback: false`.
 
-> **MISSION**: Maximum quality code review through adversarial collaboration.
-> Each phase spawns a **Golden Triangle** of 3 agents: Tech Lead (coordinator),
-> Executor (implementer), Reviewer (devil's advocate). Findings are released ONLY
-> upon consensus after debate.
+---
+
+# /review:team — 2-Stage Elastic Golden Diamond & Cross-Engine Adversarial Code Audit
+
+> **MISSION**: Deliver zero-blind-spot, zero-false-positive code, security, performance, and test assurance in **2 high-parallelism stages** (replacing legacy 4-triangle sequential bloat): **Stage 1 Turn-1 Multi-Lens Specialist Swarm + Automated Scanners + Cross-Engine Critic (`Author != Critic`)**, followed by **Stage 2 Adversarial Cross-Examination & Patch Verification via Warm `send_message`**.
 
 <scope>$ARGUMENTS</scope>
 
 ---
 
+## ⚡ TURN-1 ELASTIC SHARDING, TEAM PROTOCOLS & READ-ONLY LOCK
+
+- **Zero Turn-1 Pre-Flight Delay**: Do **NOT** block Turn 1 reading reference files — launch all Stage 1 shards + CLI scanners **immediately in Turn 1** (`invoke_subagent(TypeName: "self", Model: "inherit")`), loading `commands/_ref/golden-triangle-protocol.md`, `agents/teams/security-team/_team.md`, or `agents/teams/performance-team/_team.md` on-demand.
+- **Cognitive Load Sharding Law (`<= 3–4` Heavy Files / Shard)**:
+  $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\left\lceil \frac{\text{Total Target Files}}{3.5} \right\rceil,\; \text{Audit Vectors}\right)\right)$$
+- **🛡️ `READ_ONLY_FILES` Lock**: Lock **100% of repository source and test files** in `READ_ONLY_FILES` across every shard — `/review:team` never modifies workspace code!
 
 ---
 
-## ⛔ MANDATORY REFERENCE — READ BEFORE PROCEEDING
+## 🎭 Stage 1 (Turn-1 Parallel Fan-Out): ELASTIC MULTI-LENS SPECIALIST SWARM + CROSS-ENGINE COUNCIL — 💎 GOLDEN DIAMOND
 
-> **🔴 YOU MUST READ these reference files NOW. Do NOT skip.**
->
-> 1. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/golden-triangle-protocol.md` — Tiered Execution, Mailbox, Pre-Flight, Triangle Loop
-> 2. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/convergent-analysis-loop.md` — Convergent Analysis detailed protocol
-> 3. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/implementation-loop.md` — Implementation step-by-step (for coding phases)
->
-> **Failure to read = incorrect execution. These files contain BINDING protocols.**
+Spawn all disjoint audit shards concurrently on Turn 1 and record `role#shard → conversationId`:
 
----
-
-## 📁 DELIVERABLE FILES (BRAIN ARTIFACTS FIRST ON ANTIGRAVITY 2.0)
-
-> **Antigravity 2.0 Default**: Write transient deliverables (`BRAINSTORM`, `RESEARCH`, `SCOUT`, `DESIGN`, `PLAN`, `DEBUG`, `TEST`, `REVIEW`, `REPORT`, `MAILBOX`) to `<appDataDir>\brain\<conversation-id>\` to keep the Git tree clean. Use `./reports/{topic}/` only on non-Antigravity tools or when explicitly requested.
-
-| Phase | Output |
-|-------|--------|
-| P1: Scope & Context | `<appDataDir>\\brain\\<conversation-id>\\SCOUT-{scope}` (or `./reports/{topic}/scouts/SCOUT-{scope}`) |
-| P3: Improvement Plan | `<appDataDir>\\brain\\<conversation-id>\\REVIEW-REPORT-{scope}` (or `./reports/{topic}/reviews/REVIEW-REPORT-{scope}`) |
-| P4: Final Review | `<appDataDir>\\brain\\<conversation-id>\\REVIEW-{scope}` (or `./reports/{topic}/reviews/REVIEW-{scope}`) |
-| ALL Phases | `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md` (or `./reports/{topic}/MAILBOX-{date}.md`) |
-
-**⚠️ Paths = base names.** ≤ 150 lines → `{name}.md`. > 150 lines → `{name}/` folder.
+| Diamond Vector | Specialist Shard (`TypeName: "self"`, `Model: "inherit"`) | Disjoint Audit Mission & Output Lock (`UserFacing: false, RequestFeedback: false`) |
+|----------------|-----------------------------------------------------------|------------------------------------------------------------------------------------|
+| **🏗️ Vector 1: Architecture, Logic & Contract Shards** | `reviewer#arch-1..k` (`agents/reviewer.md`, `<= 3–4` files/shard) | Line-by-line correctness, null/concurrency edge cases, `PLAN-{scope}.md` + `DESIGN-{scope}.md` + `SHARED_CONTRACT` adherence, and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`. Output via message or `REVIEW-{scope}-s{1..k}.md`. |
+| **🔐 Vector 2: Offensive STRIDE, OWASP & AI/MCP Security** | `security-engineer#owasp` (`agents/security-engineer.md`) | Run `python ~/.{TOOL}/skills_library/vulnerability-scanner/scripts/security_scan.py <dir>` + trace source-to-sink exploits across Auth/OAuth2.1/Better-Auth/IDOR, SQLi/SSRF/XSS, secrets, Indirect Prompt Injection & MCP tool boundaries. Output via message or `REVIEW-{scope}-sec.md`. |
+| **⚡ Vector 3: Hot-Path Performance, SQL & CWV** | `performance-engineer#hotpaths` (`agents/performance-engineer.md`) | Audit p50/p95/p99 bottlenecks, N+1 queries / missing indexes, memory/GC leaks, bundle size & Core Web Vitals (`INP/LCP/CLS`); run `ux_audit.py` + `accessibility_checker.py` when UI changes. Output via message or `REVIEW-{scope}-perf.md`. |
+| **🧪 Vector 4: Test Coverage & Regression Audit** | `tester#coverage` (`agents/tester.md`) | Run `python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <dir>`, audit assertion strength (`0` tautologies / `.skip`), and identify untested failure/boundary paths. Output via message or `REVIEW-{scope}-qa.md`. |
+| **🎼 Vector 5: Cross-Engine Adversarial Review (`Author != Critic`)** | `boomopen conduct council` / `dispatch` | Run concurrently on Turn 1 when `engines.reviewer = "council"` (or requested):<br>`node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task review --output "<appDataDir>/brain/<conversation-id>/COUNCIL-review-{scope}.md" --prompt "<scope>"`<br>*(Or `conduct dispatch --role reviewer --engine cross_family --prompt "<scope>"` when `engines.reviewer = "cross_family"`.)* |
 
 ---
 
-## 🔗 PHASE DEPENDENCIES
+## 🎭 Stage 2: ADVERSARIAL FALSE-POSITIVE ELIMINATION & PATCH VERIFICATION (`tech-lead` via Warm `send_message`)
 
-| Phase                             | Requires                        | Blocking    |
-| --------------------------------- | ------------------------------- | ----------- |
-| P1: Scope & Context               | User scope / PR / files         | No          |
-| P2: Code Quality Review           | Scout findings from P1          | **YES**     |
-| P3: Improvement Plan              | All review findings from P2     | **YES**     |
-| P4: Summary & Recommendations     | Improvement plan from P3        | **YES**     |
+> **♻️ WARM SESSION REUSE**: Never cold-spawn extra `planner` or `business-analyst` triangles! `tech-lead` (`agents/tech-lead.md`) arbitrates Stage 1 findings with warm shards via `send_message(Recipient: conversationId)` (`<= 2–3` rounds; consolidated log in `MAILBOX-{date}.md` with `UserFacing: false, RequestFeedback: false`):
 
-**⛔ Blocking**: If input missing → STOP → Create it first → Resume
+1. **Adversarial Challenge & Compound-Risk Chaining**:
+   - Challenge every `P0/P1` candidate: *"Show the exact `file:line` source-to-sink or concurrency trigger; retract if guarded by framework/ORM/type invariants."*
+   - Check compound chains (e.g., `P2` missing rate-limit + `P2` expensive query = `P1` DoS) and verify every proposed remediation snippet does **not** introduce a secondary bypass or contract break.
+   - Stamp `✅ CONSENSUS: tech-lead ✓ | reviewer#arch-1..k ✓ | security-engineer#owasp ✓ | performance-engineer#hotpaths ✓ | tester#coverage ✓` in `MAILBOX-{date}.md`.
+2. **Synthesize 1 Cohesive `<appDataDir>\brain\<conversation-id>\REVIEW-{scope}.md` (`<= 500` Lines)**:
+   - **1. Executive Verdict, Consensus Stamp & Automated Gate Summary** (`APPROVE` | `REQUEST_CHANGES` | `BLOCK`, `PLAN`/`SHARED_CONTRACT` matrix, CLI scanner exit codes, Cross-Engine Council delta).
+   - **2. Calibrated Severity Matrix (`P0..P3`)**: `ID | Severity (P0..P3) | [Confidence: HIGH|MEDIUM|LOW] | Vector | Clickable file:line | Exploit / Failure Proof | Patch Summary`.
+   - **3. Non-Bypassable Remediation Diffs**: Concrete code patches + regression test cases for every `P0/P1` finding.
+   - **4. Architectural Strengths**: Verified high-craft patterns worth preserving.
 
----
-
-## 🎭 Phase 1: SCOPE & CONTEXT — 🔺 GOLDEN TRIANGLE
-
-| Role      | Agent                                | Mission                                                    |
-| --------- | ------------------------------------ | ---------------------------------------------------------- |
-| Tech Lead | `reviewer`                           | Decompose: review scope, files to review, review dimensions |
-| Executor  | `scouter`                            | Execute: map changed files, identify blast radius, trace dependencies |
-| Reviewer  | `tech-lead` (Devil's Advocate)       | Challenge: scope complete? Missing files? Architecture impact assessed? |
-
-**Triangle Loop**:
-1. `reviewer` decomposes scope into areas: changed files, dependency graph, architecture impact, plan compliance baseline
-2. `reviewer` posts TASK_ASSIGNMENT → dispatches to `scouter`
-3. `scouter` surveys codebase → posts SUBMISSION with findings per area:
-   - All changed files with line-level diff summary
-   - Call chain trace: callers and callees of changed functions
-   - Blast radius: downstream components affected by changes
-   - Recent churn: files with high change frequency (risk indicator)
-   - Architecture layer mapping: which layers are touched
-4. `tech-lead` reviews each SUBMISSION → posts REVIEW:
-   - Is the blast radius complete or are downstream effects missing?
-   - Are there untouched files that SHOULD have changed (consistency gap)?
-   - Is the architecture impact properly assessed?
-   - Are there hidden coupling risks not surfaced?
-5. If FAIL → `scouter` addresses gaps or defends → RESUBMISSION/DEFENSE
-6. Max 3 rounds → ESCALATION to `reviewer` if unresolved
-7. `reviewer` synthesizes approved findings into unified scope document
-
-**Deliverable**: `<appDataDir>\\brain\\<conversation-id>\\SCOUT-{scope}` (or `./reports/{topic}/scouts/SCOUT-{scope}`)
-**Exit Criteria**: Review scope mapped, blast radius assessed, dependencies traced, focus areas flagged
-**Consensus**: ✅ CONSENSUS: reviewer ✓ | scouter ✓ | tech-lead ✓
-
----
-
-## 🎭 Phase 2: CODE QUALITY REVIEW — 🔺 GOLDEN TRIANGLE (CRITICAL)
-
-> **THIS IS THE MOST CRITICAL PHASE.** Every step is detailed. No shortcuts.
-
-| Role      | Agent                                                     | Mission                                                    |
-| --------- | --------------------------------------------------------- | ---------------------------------------------------------- |
-| Tech Lead | `reviewer`                                                | Coordinate: assign review dimensions, synthesize findings  |
-| Executor  | `reviewer` (self-implements deep review)                  | Execute: line-by-line code review across ALL dimensions    |
-| Reviewer  | `security-engineer` + `performance-engineer` (combined)   | Challenge: security vulnerabilities? Performance concerns? Code standards? |
-
-**Prerequisite**: **READ** `<appDataDir>\\brain\\<conversation-id>\\SCOUT-{scope}` (or `./reports/{topic}/scouts/SCOUT-{scope}`)
-
-### 5 REVIEW DIMENSIONS (ALL MANDATORY)
-
-| # | Dimension | Focus |
-|---|-----------|-------|
-| 1 | CORRECTNESS | Logic bugs, edge cases, error handling |
-| 2 | SECURITY | Injection, auth bypass, input validation, secrets |
-| 3 | PERFORMANCE | N+1 queries, unnecessary allocations, hot paths |
-| 4 | CODE QUALITY | Naming, DRY, SOLID, readability, test coverage |
-| 5 | PLAN COMPLIANCE | Does code match plan spec? (if PLAN exists) |
-
-### GOLDEN TRIANGLE REVIEW LOOP (CRITICAL — Step by Step)
-
-
-> **⛔ See `_ref/convergent-analysis-loop.md` or `_ref/implementation-loop.md` for detailed step-by-step protocol.**
-
-
-**PLAN COMPLIANCE** (if PLAN exists):
-```
-FOR EACH phase in PLAN-{scope}.md:
-  - Verify code implements plan spec → "Plan Phase X → Code Y → ✅/⚠️/❌"
-```
-
-**Exit Criteria**: All files reviewed across 5 dimensions, findings severity-ranked, security + performance validated
-**Consensus**: ✅ CONSENSUS: reviewer ✓ | reviewer(exec) ✓ | security+perf ✓
-
----
-
-## 🎭 Phase 3: IMPROVEMENT PLAN — 🔺 GOLDEN TRIANGLE
-
-| Role      | Agent                                | Mission                                                    |
-| --------- | ------------------------------------ | ---------------------------------------------------------- |
-| Tech Lead | `tech-lead`                          | Synthesize: prioritize findings, create improvement plan   |
-| Executor  | `planner`                            | Execute: write REVIEW-REPORT-{scope}.md with prioritized issues |
-| Reviewer  | `reviewer`                           | Challenge: priorities correct? Severity accurate? Missing improvements? |
-
-**Prerequisite**: All Phase 2 findings consolidated in Mailbox.
-
-**Triangle Loop**:
-1. `tech-lead` reads Phase 2 findings → decomposes into improvement areas:
-   - Critical issues (must fix before merge)
-   - Warnings (should fix, tech debt if deferred)
-   - Suggestions (opportunistic improvements)
-   - Plan deviations (if PLAN exists)
-2. `tech-lead` posts TASK_ASSIGNMENT → dispatches to `planner`
-3. `planner` writes structured improvement plan → posts SUBMISSION:
-   - Prioritized issue table with effort estimates
-   - Fix recommendations per issue (specific, actionable)
-   - Dependency order: which fixes must come first
-   - Risk of NOT fixing: business + technical impact per issue
-4. `reviewer` reviews improvement plan → posts REVIEW:
-   - Severity ratings accurate or inflated/deflated?
-   - Fix recommendations correct and complete?
-   - Phase 2 findings dropped or downgraded without justification?
-   - Priority ordering sound (critical before cosmetic)?
-5. Debate loop if FAIL → `planner` adjusts or defends → max 3 rounds
-6. `tech-lead` synthesizes final improvement plan
-
-**Deliverable**: `<appDataDir>\\brain\\<conversation-id>\\REVIEW-REPORT-{scope}` (or `./reports/{topic}/reviews/REVIEW-REPORT-{scope}`)
-**Exit Criteria**: All findings prioritized, fix recommendations documented, effort estimated, nothing dropped
-**Consensus**: ✅ CONSENSUS: tech-lead ✓ | planner ✓ | reviewer ✓
-
----
-
-## 🎭 Phase 4: SUMMARY & RECOMMENDATIONS — 🔺 GOLDEN TRIANGLE
-
-| Role      | Agent                                | Mission                                                    |
-| --------- | ------------------------------------ | ---------------------------------------------------------- |
-| Tech Lead | `tech-lead`                          | Final synthesis: orchestrate executive summary creation     |
-| Executor  | `reporter`                           | Execute: executive summary, risk assessment, recommended actions |
-| Reviewer  | `business-analyst`                   | Challenge: business impact? Stakeholder communication? Actionable? |
-
-**Prerequisite**: **READ** `<appDataDir>\\brain\\<conversation-id>\\REVIEW-REPORT-{scope}` (or `./reports/{topic}/reviews/REVIEW-REPORT-{scope}`)
-
-**Triangle Loop**:
-1. `tech-lead` decomposes summary: verdict, risk matrix, actions, stakeholder brief
-2. `tech-lead` posts TASK_ASSIGNMENT → dispatches to `reporter`
-3. `reporter` writes final review report → posts SUBMISSION:
-   ```markdown
-   # Code Review: {scope}
-   ## Verdict: ✅ APPROVED / ⚠️ APPROVED WITH CONDITIONS / ❌ CHANGES REQUIRED
-   ## Executive Summary
-   {2-3 sentence overview of code quality, key risks, recommendation}
-   ## Risk Assessment
-   | Risk | Severity | Likelihood | Business Impact | Mitigation |
-   ## Critical Issues ({count}) — MUST fix
-   | # | Category | File:Line | Description | Fix | Effort |
-   ## Warnings ({count}) — SHOULD fix
-   | # | Category | File:Line | Description | Fix | Effort |
-   ## Suggestions ({count}) — COULD improve
-   | # | Category | File:Line | Description | Fix | Effort |
-   ## Security Summary
-   Vulnerabilities: {count by severity} | OWASP: {categories}
-   ## Performance Summary
-   Bottlenecks: {count} | Impact: {description}
-   ## Plan Compliance (if applicable)
-   Phases verified: {X}/{Y} | Deviations: {list or "None"}
-   ## Recommended Actions
-   1. {action} — Owner: {who} — Priority: {P0/P1/P2}
-   ```
-4. `business-analyst` reviews final report → posts REVIEW:
-   - Business impact clearly communicated?
-   - Non-technical stakeholder would understand verdict?
-   - Recommended actions concrete and assignable?
-   - Risk assessment calibrated (not alarmist or dismissive)?
-5. Debate loop if FAIL → `reporter` adjusts or defends → max 3 rounds
-6. `tech-lead` approves final report
-
-**Deliverable**: `<appDataDir>\\brain\\<conversation-id>\\REVIEW-{scope}` (or `./reports/{topic}/reviews/REVIEW-{scope}`)
-**Exit Criteria**: Executive summary complete, verdict issued, all findings actionable, stakeholder-ready
-**Consensus**: ✅ CONSENSUS: tech-lead ✓ | reporter ✓ | business-analyst ✓
-
----
-
-## ⛔ ABSOLUTE PROHIBITION — NO CODE
-
-> **🔴 THIS WORKFLOW PRODUCES REVIEW REPORTS ONLY. NO CODE.**
->
-> - ❌ NEVER write implementation code or fix code directly
-> - ❌ NEVER modify source files
-> - ❌ NEVER auto-transition to `/fix`, `/code`, `/cook`
-> - ✅ ONLY produce review report files in `<appDataDir>\brain\<conversation-id>\` (or `./reports/{topic}/`)
-> - ✅ Report files MUST be written in the same language the user communicates with you
->
-> If user wants fixes, they must EXPLICITLY invoke `/fix` workflow.
-
----
-
-## ⛔ HARD STOP — AWAIT USER DECISION
-
-> **WORKFLOW COMPLETE. DO NOT PROCEED FURTHER.**
->
-> Present review report file links to user and STOP. Wait for explicit user command.
->
-> Suggested next steps (USER must explicitly choose):
-> 1. ✅ Approved — Code ready to merge
-> 2. ⚠️ Approved with conditions — `/fix:fast` for minor fixes
-> 3. ❌ Changes required — `/fix:hard` or `/fix:team`
-> 4. 🧪 Test gaps — `/test:team`
-> 5. 🔄 Iterate — Refine review
->
-> **⛔ DO NOT auto-transition to any workflow. YIELD control to user.**
+> **⛔ HARD STOP**: Present `[REVIEW-{scope}.md](file:///...)`. When `P0/P1` findings exist (`RequestFeedback: true`), clicking **"Proceed"** (or running `/fix:team`) consumes the verified patch blueprints directly; when `0` `P0/P1` issues remain (`RequestFeedback: false`), approve for merge or `/deploy:check`.

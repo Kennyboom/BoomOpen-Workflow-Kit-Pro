@@ -273,12 +273,6 @@ await foreach (var activity in client.AskQuestionAsync("Hello!", null))
 5. Reuse HttpClient from IHttpClientFactory and cache MSAL tokens.
 6. Prefer async handlers and pass CancellationToken to SDK calls.
 
-## Reference Files
-
-| File | Contents |
-| --- | --- |
-| references/acceptance-criteria.md | Import paths, hosting pipeline, Copilot Studio client patterns, anti-patterns |
-
 ## Reference Links
 
 | Resource | URL |

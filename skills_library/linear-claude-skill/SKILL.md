@@ -6,6 +6,10 @@ source: "https://github.com/wrsmith108/linear-claude-skill"
 date_added: "2026-02-27"
 ---
 
+> **Skill folder:** paths below that start with `$SKILL_DIR` are relative to the folder that contains this SKILL.md. BoomOpen installs vault skills at `~/.<tool>/skills_library/linear-claude-skill` (for example `~/.claude/skills_library/linear-claude-skill`, `~/.codex/skills_library/linear-claude-skill` or `~/.gemini/config/skills_library/linear-claude-skill`). Set it before running a command, e.g. `SKILL_DIR=~/.claude/skills_library/linear-claude-skill`.
+
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/linear-helpers.mjs`, `scripts/linear-ops.ts`, `scripts/query.ts`, `scripts/setup.ts`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 ## When to Use This Skill
 
 Manage Linear issues, projects, and teams
@@ -113,7 +117,7 @@ cat .env
 Run the setup check to verify your configuration:
 
 ```bash
-npx tsx ~/.claude/skills/linear/scripts/setup.ts
+npx tsx $SKILL_DIR/scripts/setup.ts
 ```
 
 This will check:
@@ -146,7 +150,7 @@ echo 'LINEAR_API_KEY=lin_api_your_key_here' >> ~/.claude/.env
 Verify everything works:
 
 ```bash
-npx tsx ~/.claude/skills/linear/scripts/query.ts "query { viewer { name } }"
+npx tsx $SKILL_DIR/scripts/query.ts "query { viewer { name } }"
 ```
 
 You should see your name from Linear.
@@ -473,7 +477,7 @@ See **api.md** for complete documentation including:
 **Quick ad-hoc query:**
 
 ```bash
-npx tsx ~/.claude/skills/linear/scripts/query.ts "query { viewer { name } }"
+npx tsx $SKILL_DIR/scripts/query.ts "query { viewer { name } }"
 ```
 
 ## Projects & Initiatives

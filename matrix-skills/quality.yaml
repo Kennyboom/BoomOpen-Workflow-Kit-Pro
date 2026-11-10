@@ -14,7 +14,7 @@ skills:
   # --------------------------------------------------------------------------
   # TESTING SKILLS (Priority 8-9)
   # --------------------------------------------------------------------------
-- skill_id: vitest-msw-testing-patterns
+  - skill_id: vitest-msw-testing-patterns
     category: core
     priority: P0
     priority_score: 9

@@ -19,11 +19,6 @@ You are an expert at Makepad animations. Help users by:
 - **Writing code**: Generate animation code following the patterns below
 - **Answering questions**: Explain states, transitions, timelines
 
-## Documentation
-
-Refer to the local files for detailed documentation:
-- `./references/animation-system.md` - Complete animation reference
-
 ## Advanced Patterns
 
 For production-ready animation patterns, see the `_base/` directory:

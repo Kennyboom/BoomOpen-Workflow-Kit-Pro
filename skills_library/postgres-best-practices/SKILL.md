@@ -6,6 +6,8 @@ source: community
 date_added: "2026-02-27"
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`rules/schema-partial-indexes.md`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Supabase Postgres Best Practices
 
 Comprehensive performance optimization guide for Postgres, maintained by Supabase. Contains rules across 8 categories, prioritized by impact to guide automated query optimization and schema design.

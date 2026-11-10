@@ -72,8 +72,6 @@ Handle physical quantities with units, perform unit conversions, and ensure dime
 - Use equivalencies for domain-specific conversions (spectral, doppler, parallax)
 - Work with logarithmic units (magnitudes, decibels)
 
-**See:** `references/units.md` for comprehensive documentation, unit systems, equivalencies, performance optimization, and unit arithmetic.
-
 ### 2. Coordinate Systems (`astropy.coordinates`)
 
 Represent celestial positions and transform between different coordinate frames.
@@ -87,8 +85,6 @@ Represent celestial positions and transform between different coordinate frames.
 - Handle proper motions and radial velocities
 - Query named objects from online databases
 
-**See:** `references/coordinates.md` for detailed coordinate frame descriptions, transformations, observer-dependent frames (AltAz), catalog matching, and performance tips.
-
 ### 3. Cosmological Calculations (`astropy.cosmology`)
 
 Perform cosmological calculations using standard cosmological models.
@@ -101,8 +97,6 @@ Perform cosmological calculations using standard cosmological models.
 - Determine Hubble parameter at any redshift
 - Calculate density parameters and volumes
 - Perform inverse calculations (find z for given distance)
-
-**See:** `references/cosmology.md` for available models, distance calculations, time calculations, density parameters, and neutrino effects.
 
 ### 4. FITS File Handling (`astropy.io.fits`)
 
@@ -118,8 +112,6 @@ Read, write, and manipulate FITS (Flexible Image Transport System) files.
 - Use memory mapping for large files
 - Access remote FITS files (S3, HTTP)
 
-**See:** `references/fits.md` for comprehensive file operations, header manipulation, image and table handling, multi-extension files, and performance considerations.
-
 ### 5. Table Operations (`astropy.table`)
 
 Work with tabular data with support for units, metadata, and various file formats.
@@ -134,8 +126,6 @@ Work with tabular data with support for units, metadata, and various file format
 - Work with unit-aware columns (QTable)
 - Handle missing data with masking
 
-**See:** `references/tables.md` for table creation, I/O operations, data manipulation, sorting, filtering, joins, grouping, and performance tips.
-
 ### 6. Time Handling (`astropy.time`)
 
 Precise time representation and conversion between time scales and formats.
@@ -149,8 +139,6 @@ Precise time representation and conversion between time scales and formats.
 - Work with time arrays efficiently
 - Handle masked (missing) times
 
-**See:** `references/time.md` for time formats, time scales, conversions, arithmetic, observing features, and precision handling.
-
 ### 7. World Coordinate System (`astropy.wcs`)
 
 Transform between pixel coordinates in images and world coordinates.
@@ -162,11 +150,7 @@ Transform between pixel coordinates in images and world coordinates.
 - Access WCS parameters (reference pixel, projection, scale)
 - Create custom WCS objects
 
-**See:** `references/wcs_and_other_modules.md` for WCS operations and transformations.
-
 ## Additional Capabilities
-
-The `references/wcs_and_other_modules.md` file also covers:
 
 ### NDData and CCDData
 Containers for n-dimensional datasets with metadata, uncertainty, masking, and WCS information.
@@ -317,14 +301,3 @@ print(f"Found {len(cat1_matched)} matches")
 - Official Astropy Documentation: https://docs.astropy.org/en/stable/
 - Tutorials: https://learn.astropy.org/
 - GitHub: https://github.com/astropy/astropy
-
-## Reference Files
-
-For detailed information on specific modules:
-- `references/units.md` - Units, quantities, conversions, and equivalencies
-- `references/coordinates.md` - Coordinate systems, transformations, and catalog matching
-- `references/cosmology.md` - Cosmological models and calculations
-- `references/fits.md` - FITS file operations and manipulation
-- `references/tables.md` - Table creation, I/O, and operations
-- `references/time.md` - Time formats, scales, and calculations
-- `references/wcs_and_other_modules.md` - WCS, NDData, modeling, visualization, constants, and utilities

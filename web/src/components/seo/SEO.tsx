@@ -1,59 +1,33 @@
-import { Helmet } from 'react-helmet-async'
-import { SITE_URL, DEFAULT_IMAGE, SITE_NAME } from './seo-config'
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+import { applyHeadTags, upsertJsonLd } from './head-manager'
+import { PAGE_JSON_LD_ID, SITE_JSON_LD_ID, buildHeadTags } from './head-tags'
+import { getFullTitle, getPageSEO, type PageSEO } from './seo-config'
+import { buildSiteSchema, buildWebPageSchema } from './structured-data'
 
-export interface SEOProps {
-  title: string
-  description: string
-  pathname?: string
+export interface SEOProps extends PageSEO {
   image?: string
-  noindex?: boolean
 }
 
-export function SEO({ 
-  title, 
-  description, 
-  pathname = '', 
-  image = DEFAULT_IMAGE,
-  noindex = false,
-}: SEOProps) {
-  const fullTitle = title === SITE_NAME 
-    ? title 
-    : `${title} - ${SITE_NAME}`
-  
-  const canonicalUrl = `${SITE_URL}${pathname}`
-  const imageUrl = image.startsWith('http') ? image : `${SITE_URL}${image}`
+/**
+ * Applies title, meta, canonical, Open Graph and JSON-LD for one page.
+ * Renders nothing: it updates the tags that index.html already contains.
+ */
+export function SEO({ image, ...page }: SEOProps) {
+  const { title, description, pathname, noindex } = page
 
-  return (
-    <Helmet>
-      {/* Primary Meta Tags */}
-      <title>{fullTitle}</title>
-      <meta name="title" content={fullTitle} />
-      <meta name="description" content={description} />
-      
-      {/* Canonical URL */}
-      <link rel="canonical" href={canonicalUrl} />
-      
-      {/* Robots */}
-      {noindex && <meta name="robots" content="noindex, nofollow" />}
-      
-      {/* Open Graph / Facebook */}
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:title" content={fullTitle} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={imageUrl} />
-      <meta property="og:site_name" content={SITE_NAME} />
-      
-      {/* Twitter */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:url" content={canonicalUrl} />
-      <meta name="twitter:title" content={fullTitle} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={imageUrl} />
-      
-      {/* Additional Meta */}
-      <meta name="author" content="Kennyboom" />
-      <meta name="keywords" content="AI, coding assistant, agents, Cursor, Claude, GitHub Copilot, development workflow, orchestration" />
-    </Helmet>
-  )
+  useEffect(() => {
+    const current: PageSEO = { title, description, pathname, noindex }
+    applyHeadTags(getFullTitle(current), buildHeadTags(current, image))
+    upsertJsonLd(SITE_JSON_LD_ID, buildSiteSchema())
+    upsertJsonLd(PAGE_JSON_LD_ID, buildWebPageSchema(current))
+  }, [title, description, pathname, noindex, image])
+
+  return null
+}
+
+/** Picks the SEO entry for the current route (unknown routes get a noindex 404 entry). */
+export function RouteSEO() {
+  const location = useLocation()
+  return <SEO {...getPageSEO(location.pathname)} />
 }

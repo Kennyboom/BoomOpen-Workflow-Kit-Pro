@@ -271,13 +271,5 @@ except CosmosHttpResponseError as e:
 6. **Design partition key** for even data distribution
 7. **Use `read_item`** instead of query for single document retrieval
 
-## Reference Files
-
-| File | Contents |
-|------|----------|
-| references/partitioning.md | Partition key strategies, hierarchical keys, hot partition detection and mitigation |
-| references/query-patterns.md | Query optimization, aggregations, pagination, transactions, change feed |
-| scripts/setup_cosmos_container.py | CLI tool for creating containers with partitioning, throughput, and indexing |
-
 ## When to Use
 This skill is applicable to execute the workflow or actions described in the overview.

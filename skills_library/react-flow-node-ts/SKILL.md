@@ -17,11 +17,6 @@ Copy templates from assets/ and replace placeholders:
 - `{{nodeType}}` → kebab-case type identifier (e.g., `video-node`)
 - `{{NodeData}}` → Data interface name (e.g., `VideoNodeData`)
 
-## Templates
-
-- assets/template.tsx - Node component
-- assets/types.template.ts - TypeScript definitions
-
 ## Node Component Pattern
 
 ```tsx

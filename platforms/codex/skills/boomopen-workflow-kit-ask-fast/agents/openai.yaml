@@ -1,4 +1,6 @@
-display_name: "/ask:fast"
-short_description: "⚡ Quick Answer — Direct response from codebase context"
-brand_color: "#06B6D4"
-allow_implicit_invocation: true
+interface:
+  display_name: "/ask:fast"
+  short_description: "⚡ Quick Answer — Mode A Direct (≤ 2 Known Files) or Turn-1 Parallel Codebase Scout (Zero Report Clutter)"
+  brand_color: "#06B6D4"
+policy:
+  allow_implicit_invocation: true

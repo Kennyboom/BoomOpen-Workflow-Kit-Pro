@@ -58,7 +58,7 @@ These features significantly enhance quality, reliability, and extensibility. Th
 |-------|---------|-----------|-------------|-----------|
 | BF-011 | 17 Domain Teams | Adversarial collaboration (BG-008) is a key quality differentiator — but single-agent execution still works. Teams are an upgrade, not a requirement. | BF-006 (`:team` variant), `rules/TEAMS.md` | v1.2.0 |
 | BF-012 | Error Self-Healing (E1–E4) | Silent failures degrade trust. Classified recovery is important but the framework can operate (with degraded UX) without it. | `rules/ERRORS.md` | v1.0.0 |
-| BF-013 | Dynamic Skill Discovery | Extends skills beyond bundled 1,430. Important for niche domains but the core skill set covers most use cases. | `find-skills` CLI, network access | v1.3.0 |
+| BF-013 | Dynamic Skill Discovery | Extends skills beyond bundled 1,462. Important for niche domains but the core skill set covers most use cases. | `find-skills` CLI, network access | v1.3.0 |
 | BF-014 | Trust Progression Lifecycle | Quality gate for dynamic skills. Without it, community skills could degrade output quality. Important but only relevant when BF-013 is active. | BF-013 (dynamic discovery active) | v1.3.0 |
 | BF-015 | Documentation Generation | Auto-docs save significant effort (BG-010) but developers can write docs manually. High value, not existential. | BF-004 (scouter, BA, docs-manager agents) | v1.0.0 |
 | BF-016 | Debate Mechanism (Mailbox) | Traceable inter-agent communication is valuable for audit and quality but teams can function with implicit communication. | BF-011 (teams active), `rules/TEAMS.md` | v1.2.0 |

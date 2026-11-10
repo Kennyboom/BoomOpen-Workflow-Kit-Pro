@@ -1,13 +1,11 @@
 import { motion } from 'framer-motion'
 import { Button, Card, CardContent, Badge, Section, SectionHeader } from '../../components/ui'
 import { PageSideDecorations, GradientBackground } from '../../components/decorations'
-import { SEO, pageSEO } from '../../components/seo'
 import { platforms, platformComparisonFeatures } from '../../data'
 
 export default function MultiPlatform() {
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <SEO {...pageSEO.multiPlatform} />
+    <div className="min-h-screen bg-bg-primary">
       
       {/* Hero Section */}
       <Section background="primary" spacing="xl" className="relative overflow-hidden">
@@ -132,6 +130,11 @@ export default function MultiPlatform() {
                     <span>🚀</span> Antigravity
                   </span>
                 </th>
+                <th className="text-center py-4 px-4 text-text-secondary font-medium">
+                  <span className="flex items-center justify-center gap-2">
+                    <span>💻</span> Codex
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -141,6 +144,9 @@ export default function MultiPlatform() {
                   className={`border-b border-border-secondary ${index % 2 === 0 ? 'bg-bg-secondary/50' : ''}`}
                 >
                   <td className="py-3 px-4 text-text-primary">{row.feature}</td>
+                  <td className="py-3 px-4 text-center">
+                    <span className="text-gradient-green text-xl">✓</span>
+                  </td>
                   <td className="py-3 px-4 text-center">
                     <span className="text-gradient-green text-xl">✓</span>
                   </td>
@@ -220,6 +226,6 @@ export default function MultiPlatform() {
           </div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

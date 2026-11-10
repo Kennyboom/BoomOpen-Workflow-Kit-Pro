@@ -8,6 +8,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/doi_to_bibtex.py`, `scripts/extract_metadata.py`, `scripts/format_bibtex.py`, `scripts/generate_schematic.py`, `scripts/search_google_scholar.py`, `scripts/search_pubmed.py`, `scripts/validate_citations.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Citation Management
 
 ## Overview
@@ -91,7 +93,7 @@ python scripts/search_google_scholar.py "machine learning protein folding" \
   --output ml_proteins.json
 ```
 
-**Advanced Search Strategies** (see `references/google_scholar_search.md`):
+**Advanced Search Strategies**:
 - Use quotation marks for exact phrases: `"deep learning"`
 - Search by author: `author:LeCun`
 - Search in title: `intitle:"neural networks"`
@@ -126,7 +128,7 @@ python scripts/search_pubmed.py \
   --output alzheimers_trials.json
 ```
 
-**Advanced PubMed Queries** (see `references/pubmed_search.md`):
+**Advanced PubMed Queries**:
 - Use MeSH terms: `"Diabetes Mellitus"[MeSH]`
 - Field tags: `"cancer"[Title]`, `"Smith J"[Author]`
 - Boolean operators: `AND`, `OR`, `NOT`
@@ -181,7 +183,7 @@ python scripts/extract_metadata.py --url "https://www.nature.com/articles/s41586
 python scripts/extract_metadata.py --input identifiers.txt --output citations.bib
 ```
 
-**Metadata Sources** (see `references/metadata_extraction.md`):
+**Metadata Sources**:
 
 1. **CrossRef API**: Primary source for DOIs
    - Comprehensive metadata for journal articles
@@ -219,8 +221,6 @@ python scripts/extract_metadata.py --input identifiers.txt --output citations.bi
 **Goal**: Generate clean, properly formatted BibTeX entries.
 
 #### Understanding BibTeX Entry Types
-
-See `references/bibtex_formatting.md` for complete guide.
 
 **Common Entry Types**:
 - `@article`: Journal articles (most common)
@@ -321,7 +321,7 @@ python scripts/validate_citations.py references.bib \
   --verbose
 ```
 
-**Validation Checks** (see `references/citation_validation.md`):
+**Validation Checks**:
 
 1. **DOI Verification**:
    - DOI resolves correctly via doi.org
@@ -485,7 +485,7 @@ Always prioritize papers based on citation count, venue quality, and author repu
 - Filter by top venues using `source:Nature` or `source:Science`
 - Search for papers by known field leaders using `author:LastName`
 
-**Advanced Operators** (full list in `references/google_scholar_search.md`):
+**Advanced Operators**:
 ```
 "exact phrase"           # Exact phrase matching
 author:lastname          # Search by author
@@ -550,8 +550,6 @@ The scripts use NCBI E-utilities API for programmatic access:
 - **EFetch**: Retrieve full metadata
 - **ESummary**: Get summary information
 - **ELink**: Find related articles
-
-See `references/pubmed_search.md` for complete API documentation.
 
 ## Tools and Scripts
 

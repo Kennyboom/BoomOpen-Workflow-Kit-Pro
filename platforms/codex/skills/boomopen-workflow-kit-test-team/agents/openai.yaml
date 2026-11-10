@@ -1,4 +1,6 @@
-display_name: "/test:team"
-short_description: "🔺 Team Test — Golden Triangle adversarial collaboration"
-brand_color: "#10B981"
-allow_implicit_invocation: true
+interface:
+  display_name: "/test:team"
+  short_description: "🔺 Team Test — 3-Wave Zero-Test-Gaming Elastic Golden Diamond (qa-team), App-Code READ_ONLY Lock, Security/Perf Test Critic & Cross-Engine Audit"
+  brand_color: "#10B981"
+policy:
+  allow_implicit_invocation: true

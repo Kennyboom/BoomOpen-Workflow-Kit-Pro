@@ -8,6 +8,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/plot_template.py`, `scripts/style_configurator.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Matplotlib
 
 ## Overview
@@ -168,8 +170,6 @@ ax.boxplot([data1, data2, data3], labels=['A', 'B', 'C'])
 ax.violinplot([data1, data2, data3], positions=[1, 2, 3])
 ```
 
-For comprehensive plot type examples and variations, refer to `references/plot_types.md`.
-
 ### 4. Styling and Customization
 
 **Color specification methods:**
@@ -202,8 +202,6 @@ ax.text(x, y, 'annotation', fontsize=12, ha='center')
 ax.annotate('important point', xy=(x, y), xytext=(x+1, y+1),
             arrowprops=dict(arrowstyle='->', color='red'))
 ```
-
-For detailed styling options and colormap guidelines, see `references/styling_guide.md`.
 
 ### 5. Saving Figures
 
@@ -326,15 +324,6 @@ Interactive utility to configure matplotlib style preferences and generate custo
 ```bash
 python scripts/style_configurator.py
 ```
-
-## Detailed References
-
-For comprehensive information, consult the reference documents:
-
-- **`references/plot_types.md`** - Complete catalog of plot types with code examples and use cases
-- **`references/styling_guide.md`** - Detailed styling options, colormaps, and customization
-- **`references/api_reference.md`** - Core classes and methods reference
-- **`references/common_issues.md`** - Troubleshooting guide for common problems
 
 ## Integration with Other Tools
 

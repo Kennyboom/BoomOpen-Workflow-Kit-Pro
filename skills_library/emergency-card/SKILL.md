@@ -5,6 +5,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/generate_emergency_card.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # 紧急医疗信息卡生成器
 
 生成紧急情况下快速访问的医疗信息摘要，用于急救或就医。

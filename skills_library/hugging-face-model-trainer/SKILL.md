@@ -1,10 +1,12 @@
 ---
 name: hugging-face-model-trainer
 description: "Train language models using TRL (Transformer Reinforcement Learning) on fully managed Hugging Face infrastructure. No local GPU setup required—models train on cloud GPUs and results are automatically saved to the Hugging Face Hub."
-license: Complete terms in LICENSE.txt
+license: Unknown (upstream LICENSE.txt was not vendored; see THIRD_PARTY_NOTICES.md)
 risk: unknown
 source: community
 ---
+
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`references/gguf_conversion.md`, `references/training_patterns.md`, `scripts/estimate_cost.py`, `scripts/train_dpo_example.py`, `scripts/train_sft_example.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
 
 # TRL Training on Hugging Face Jobs
 
@@ -26,8 +28,6 @@ hf_doc_fetch("https://huggingface.co/docs/trl/dpo_trainer")  # DPO
 # etc.
 ```
 
-**See also:** `references/training_methods.md` for method overviews and selection guidance
-
 ## When to Use This Skill
 
 Use this skill when users want to:
@@ -40,13 +40,11 @@ Use this skill when users want to:
 
 ### When to Use Unsloth
 
-Use **Unsloth** (`references/unsloth.md`) instead of standard TRL when:
+Use **Unsloth** instead of standard TRL when:
 - **Limited GPU memory** - Unsloth uses ~60% less VRAM
 - **Speed matters** - Unsloth is ~2x faster
 - Training **large models (>13B)** - memory efficiency is critical
 - Training **Vision-Language Models (VLMs)** - Unsloth has `FastVisionModel` support
-
-See `references/unsloth.md` for complete Unsloth documentation and `scripts/unsloth_sft_example.py` for a production-ready training script.
 
 ## Key Directives
 
@@ -363,8 +361,6 @@ trl-jobs sft \
 - Multi-GPU automatically handled by TRL/Accelerate
 - Start with smaller hardware for testing
 
-**See:** `references/hardware_guide.md` for detailed specifications
-
 ## Critical: Saving Results to Hub
 
 **⚠️ EPHEMERAL ENVIRONMENT—MUST PUSH TO HUB**
@@ -396,8 +392,6 @@ Before submitting:
 - [ ] `hub_model_id` includes username/repo-name
 - [ ] `secrets` parameter includes HF_TOKEN
 - [ ] User has write access to target repo
-
-**See:** `references/hub_saving.md` for detailed troubleshooting
 
 ## Timeout Management
 
@@ -447,15 +441,11 @@ Output includes estimated time, cost, recommended timeout (with buffer), and opt
 
 Load these scripts for correctly:
 
-- **`scripts/train_sft_example.py`** - Complete SFT training with Trackio, LoRA, checkpoints
-- **`scripts/train_dpo_example.py`** - DPO training for preference learning
-- **`scripts/train_grpo_example.py`** - GRPO training for online RL
-
 These scripts demonstrate proper Hub saving, Trackio integration, checkpoint management, and optimized parameters. Pass their content inline to `hf_jobs()` or use as templates for custom scripts.
 
 ## Monitoring and Tracking
 
-**Trackio** provides real-time metrics visualization. See `references/trackio_guide.md` for complete setup guide.
+**Trackio** provides real-time metrics visualization.
 
 **Key points:**
 - Add `trackio` to dependencies
@@ -475,8 +465,6 @@ These scripts demonstrate proper Hub saving, Trackio integration, checkpoint man
 
 
 This is useful for managing multiple jobs with the same configuration or keeping training scripts portable.
-
-See `references/trackio_guide.md` for complete documentation including grouping runs for experiments.
 
 ### Check Job Status
 
@@ -588,8 +576,6 @@ After training, convert models to **GGUF format** for use with llama.cpp, Ollama
 - Deploying to edge devices
 - Sharing models for local-first use
 
-**See:** `references/gguf_conversion.md` for complete conversion guide, including production-ready conversion script, quantization options, hardware requirements, usage examples, and troubleshooting.
-
 **Quick conversion:**
 ```python
 hf_jobs("uv", {
@@ -672,27 +658,7 @@ Add to PEP 723 header:
 - Import/module errors → Add PEP 723 header with dependencies, verify format
 - Authentication errors → Check `mcp__huggingface__hf_whoami()`, token permissions, secrets parameter
 
-**See:** `references/troubleshooting.md` for complete troubleshooting guide
-
 ## Resources
-
-### References (In This Skill)
-- `references/training_methods.md` - Overview of SFT, DPO, GRPO, KTO, PPO, Reward Modeling
-- `references/training_patterns.md` - Common training patterns and examples
-- `references/unsloth.md` - Unsloth for fast VLM training (~2x speed, 60% less VRAM)
-- `references/gguf_conversion.md` - Complete GGUF conversion guide
-- `references/trackio_guide.md` - Trackio monitoring setup
-- `references/hardware_guide.md` - Hardware specs and selection
-- `references/hub_saving.md` - Hub authentication troubleshooting
-- `references/troubleshooting.md` - Common issues and solutions
-
-### Scripts (In This Skill)
-- `scripts/train_sft_example.py` - Production SFT template
-- `scripts/train_dpo_example.py` - Production DPO template
-- `scripts/train_grpo_example.py` - Production GRPO template
-- `scripts/unsloth_sft_example.py` - Unsloth text LLM training template (faster, less VRAM)
-- `scripts/estimate_cost.py` - Estimate time and cost (offer when appropriate)
-- `scripts/convert_to_gguf.py` - Complete GGUF conversion script
 
 ### External Scripts
 - [Dataset Inspector](https://huggingface.co/datasets/mcp-tools/skills/raw/main/dataset_inspector.py) - Validate dataset format before training (use via `uv run` or `hf_jobs`)

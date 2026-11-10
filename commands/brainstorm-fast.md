@@ -1,179 +1,77 @@
 ---
-description: ⚡ Quick Ideation — Rapid idea generation
+description: "⚡ Quick Ideation — 1-Wave Autonomous Codebase Grounding, 3 Orthogonal Options, Pre-Mortem Check & Weighted Decision Matrix"
 version: "5.5"
 category: planning
 execution-mode: execute
 ---
 
-> **📂 Deliverable Routing (v5.5)**: On Antigravity 2.0, write transient deliverables (`BRAINSTORM`, `RESEARCH`, `SCOUT`, `DESIGN`, `PLAN`, `DEBUG`, `TEST`, `REVIEW`, `REPORT`, `MAILBOX`) to `<appDataDir>\brain\<conversation-id>\` to keep the Git tree clean (use `./reports/{topic}/` on non-Antigravity tools or when explicitly requested).
+> **📂 Cohesive Single-File & 1-Click `"Proceed"` Rule (v5.5)**:
+> - Write `<appDataDir>\brain\<conversation-id>\BRAINSTORM-{topic}.md` (always include `.md` extension; `<= 350` lines; zero `{name}/` folder splits!) with `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: true }` so Antigravity 2.0 renders the native 1-click **"Proceed"** button (use `./reports/{topic}/BRAINSTORM-{topic}.md` outside Antigravity).
+> - Set `ArtifactMetadata: { Summary: "...", UserFacing: false, RequestFeedback: false }` on any internal scratch `SCOUT-{topic}-s1.md` file.
 
 ---
 
-# /brainstorm:fast — Rapid Ideation
+# /brainstorm:fast — 1-Wave `autonomous_first` Grounding & 3-Option Decision Matrix
 
-> **MISSION**: Generate ideas quickly through focused exploration without external research.
+> **MISSION**: Rapidly explore a feature, UX workflow, or architectural trade-off in **1 fast parallel wave** — grounding in codebase reality **first** (`autonomous_first`), generating **`3` genuinely distinct strategic options**, stress-testing them with a compact **6-Month Pre-Mortem**, and producing a CLI-validated 6-Block `BRAINSTORM-{topic}.md`.
 
 <topic>$ARGUMENTS</topic>
 
 ---
 
-## ⚡ TURN-1 ZERO-TAX DISPATCH & ON-DEMAND RULES
+## ⚡ TURN-1 PRIOR-ARTIFACT FAST-FORWARD & PARALLEL WAVE DISPATCH
 
-⚡ **TURN-1 ZERO-TAX DISPATCH**: Core orchestration laws and the 5-Field Handoff Packet (`1. MISSION`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION`) are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md` — route and launch Phase 1 sub-agents **immediately on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")`; load `./rules/*.md` on-demand in parallel only when needed.
+> ⛔ **ZERO APPLICATION CODE**: This workflow produces `BRAINSTORM-{topic}.md` ONLY — never modify project source code or run app builds.
+> ⚠️ **SUB-AGENT CAPABILITY RULE (`TypeName: "self"` MANDATORY)**: Antigravity's built-in read-only scout sub-agent disables `search_web` and `write_file`. Always use `invoke_subagent(TypeName: "self", Model: "inherit")` for `scouter` and `brainstormer`.
 
-**Skills Resolution**: When delegating, load `SKILLS.md` on-demand. Fast variant uses matrix-only (no dynamic discovery for speed optimization).
+Execute **1 Fast `autonomous_first` Wave** immediately on Turn 1 (never ask blind questions before grounding in the repo!):
+
+1. **Prior-Artifact Fast-Forward Check**:
+   - Inspect `<appDataDir>\brain\<conversation-id>\` on Turn 1. If `RESEARCH-{topic}.md` or `SCOUT-{topic}.md` already exists, run:
+     ```bash
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js research brief "<research-or-scout-path>"
+     ```
+     Pass the extracted `HANDOFF_BRIEF` directly into `brainstormer` and **skip redundant scouting/searching**!
+2. **Parallel `scouter` + `brainstormer` Wave (When no prior artifact exists)**:
+   - Spawn `scouter` (if workspace code exists — inspects `package.json` / schemas / target modules and returns structured constraints via message or writes `SCOUT-{topic}-s1.md` with `UserFacing: false, RequestFeedback: false`) **in parallel with** `brainstormer` (`TypeName: "self"`, `Model: "inherit"`).
+3. **Conditional Native `ask_question` UI Rule (Post-Grounding Only)**:
+   - Call `ask_question` (`1–3` crisp multiple-choice questions, unnumbered, no manual `'Other'`, `(Recommended)` option first) **ONLY AFTER** autonomous repo grounding if a genuine P0 product/business fork cannot be inferred from the codebase.
 
 ---
 
-## 🔀 TIERED EXECUTION & 4-SOURCE TRIANGULATION PROTOCOL (MANDATORY)
+## 📐 CANONICAL 6-BLOCK `BRAINSTORM-{topic}.md` BLUEPRINT (`<= 350` Lines)
 
-> **Reference: AGENTS.md (Tiered Execution)**
+Synthesize **1 cohesive file** at `<appDataDir>\brain\<conversation-id>\BRAINSTORM-{topic}.md` (`ArtifactMetadata: { Summary: "<winning option + matrix score + MVP cutline>", UserFacing: true, RequestFeedback: true }`) with all **6 Mandatory Blocks**:
 
-```yaml
-tiered_execution:
-  principle: "Sub-agent FIRST (Tier 1, TypeName: 'self', Model: 'inherit'). EMBODY ONLY on system failure (Tier 2)."
-  antigravity_subagent_rule:
-    - "⚠️ NEVER use `TypeName: 'research'` (which disables `search_web` and `write_file`). ALWAYS use `invoke_subagent(TypeName: 'self', Model: 'inherit')` for `brainstormer`, `researcher`, and `scouter`."
-  rapid_triangulation_and_search:
-    - "When external facts or docs are needed, execute 4-Source Triangulation (Workspace manifests + 1,471 Skills Vault `compact-index.json` + Official Docs via `search_web` + Benchmarks/Issues) and multi-wave `search_web` verification."
-  anti_lazy_fallback:
-    - ❌ NEVER use Tier 2 when Tier 1 tool is available
-    - ✅ ALWAYS attempt Tier 1 (`TypeName: "self"`) first when tool exists
+1. **`## 1. Autonomous Codebase & Constraint Grounding`**:
+   - Existing repo stack/touchpoints (`[file:line](file:///...)`), prior `RESEARCH` brief (if fast-forwarded), target user problem, hard constraints, and explicit **Non-Goals**.
+2. **`## 2. Strategic Options (3–4 Orthogonal Paths)`**:
+   - **`Option A: Conservative Fast-Ship`** — Minimal blast radius, maximum reuse of existing codebase patterns, fastest delivery.
+   - **`Option B: Pragmatic Balanced [Recommended]`** — Optimal balance of strategic differentiation, clean architecture, and low maintenance.
+   - **`Option C: Ambitious Category Wedge`** — High-upside UX/AI/architectural differentiator and 10x product moat.
+   - *(Optional `Option D: Composable / Zero-Build Alternative` when applicable).*
+3. **`## 3. Devil's Advocate 6-Month Failure Pre-Mortem & Rejected Tarpits`**:
+   - Assume each option catastrophically failed 6 months in production — isolate exact technical, UX adoption, and cost failure modes + list **Rejected Tarpit Ideas** (seductive ideas deliberately pruned and why).
+4. **`## 4. Weighted MCDA Decision Matrix`**:
+   - Quantitative table (`>= 3` criteria rows: e.g., `Strategic Impact 25%`, `Implementation Speed 20%`, `Repo Stack Fit 20%`, `Pre-Mortem Survivability 20%`, `Ops/Cost Simplicity 15%`) + **Mermaid `xychart-beta` or `flowchart LR` diagram**.
+5. **`## 5. Recommended Option Verdict & Deep-Dive (MVP vs V1/V2 Cutline & Core Loop)`**:
+   - Core user/system loop (`stateDiagram-v2` or `flowchart LR`), concrete mechanics & domain contracts, and strict **`MVP (Build Now)`** vs. **`V1/V2 (Deferred)`** cutline.
+6. **`## 6. Downstream Handoff Brief (HANDOFF_BRIEF)`**:
+   - Machine-ready handoff block (`Selected Option`, `MVP Scope Cutline`, `Deferred Non-Goals`, `Needs UI Design: true|false`, `Target Repo Touchpoints`, `Key Pre-Mortem Risks for PLAN`).
+
+---
+
+## ✅ DETERMINISTIC CLI VALIDATION GATE & HARD STOP
+
+Validate `BRAINSTORM-{topic}.md` via CLI before presenting it (fix any missing block, option, or matrix row if exit code `!= 0`):
+
+```bash
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js research validate "<appDataDir>/brain/<conversation-id>/BRAINSTORM-{topic}.md" --mode brainstorm
 ```
 
----
-
-## ⚠️ CRITICAL: DELIVERABLE FILE RULES
-
-```yaml
-deliverable_files:
-  brainstormer: "<appDataDir>\\brain\\<conversation-id>\\BRAINSTORM-{topic}" # Default Brain Artifact (fallback: ./reports/{topic}/brainstorms/BRAINSTORM-{topic})
-
-enforcement:
-  - Clarification questions → Chat OK
-  - Idea synthesis/analysis → MUST create file
-```
-
-All deliverables in `<appDataDir>\\brain\\<conversation-id>\\` (or `./reports/{topic}/`) → Write in the same language the user communicates with you. Code comments remain in English.
-**⚠️ Paths above = base names.** Small (≤ 150 lines) → create as `{name}.md`. Large (> 150 lines or ≥ 4 sections) → create as `{name}/` folder with `00-index.md` + `01-*.md`, `02-*.md` section files.
-
----
-
-## ⛔ ABSOLUTE PROHIBITION — NO CODE
-
-> **🔴 THIS WORKFLOW PRODUCES REPORTS ONLY. NO CODE.**
+> **⛔ WORKFLOW COMPLETE. DO NOT WRITE APPLICATION SOURCE CODE AUTOMATICALLY.**
 >
-> - ❌ NEVER write implementation code (TypeScript, Python, Rust, etc.)
-> - ❌ NEVER modify source files
-> - ❌ NEVER run build/test commands
-> - ❌ NEVER auto-implement findings or auto-transition to `/code`, `/cook`, `/fix`
-> - ✅ ONLY produce report/analysis files in `<appDataDir>\\brain\\<conversation-id>\\` (or `./reports/{topic}/`)
-> - ✅ ONLY create ideation/research documents
->
-> If user wants implementation after research, they must EXPLICITLY invoke another workflow.
-
----
-
-## ⛔ INCREMENTAL EXECUTION (MANDATORY)
-
-Execute phases using **DAG Parallel Fan-Out** for independent tracks, **Direct Plan-to-Executor Dispatch** (`Model: "inherit"`), and **Stateful Warm Sub-agent Reuse** (`send_message`) per `rules/PHASES.md` (v5.5).
-
----
-
-## 🎭 Phase 1: TOPIC CLARIFICATION
-
-| Attribute | Value                                |
-| --------- | ------------------------------------ |
-| **Agent** | `brainstormer`                       |
-| **Goal**  | Clarify requirements and constraints |
-
-### ⚡ TIERED EXECUTION
-
-**TIER 1 (MANDATORY when tool exists):**
-
-> Invoke native sub-agent (`invoke_subagent` / `runSubagent`) for `brainstormer`. Context: ISOLATED.
-
-**TIER 2 (FALLBACK on system error only):**
-
-> Load `{AGENTS_PATH}/brainstormer.md`
-> EMBODY [brainstormer] — Requires logged system error justification.
-
-**Exit Criteria:**
-
-- [ ] Topic understood
-- [ ] Constraints identified
-- [ ] Success criteria defined
-- [ ] **METHODOLOGY CHECK**: Output aligns with `brainstormer` Thinking Protocol
-
----
-
-## 🎭 Phase 2: IDEA GENERATION
-
-| Attribute | Value                  |
-| --------- | ---------------------- |
-| **Agent** | `brainstormer`         |
-| **Goal**  | Generate diverse ideas |
-
-### ⚡ TIERED EXECUTION
-
-**TIER 1 (MANDATORY when tool exists):**
-
-> Invoke native sub-agent (`invoke_subagent` / `runSubagent`) for `brainstormer`. Context: ISOLATED.
-
-**TIER 2 (FALLBACK on system error only):**
-
-> Load `{AGENTS_PATH}/brainstormer.md`
-> EMBODY [brainstormer] — Requires logged system error justification.
-
-**MANDATORY**: CREATE `<appDataDir>\\brain\\<conversation-id>\\BRAINSTORM-{topic}` (or `./reports/{topic}/brainstorms/BRAINSTORM-{topic}`) for synthesis
-
-**Exit Criteria:**
-
-- [ ] Brainstorm file created at `<appDataDir>\\brain\\<conversation-id>\\BRAINSTORM-{topic}` (or `./reports/{topic}/brainstorms/BRAINSTORM-{topic}`)
-- [ ] Multiple ideas generated
-- [ ] Ideas categorized
-- [ ] Trade-offs noted
-- [ ] **METHODOLOGY CHECK**: Output aligns with `brainstormer` Thinking Protocol
-
----
-
-## 🎭 Phase 3: CODEBASE CONTEXT (CONDITIONAL)
-
-| Attribute   | Value                                |
-| ----------- | ------------------------------------ |
-| **Agent**   | `scouter`                            |
-| **Goal**    | Find relevant existing patterns      |
-| **Trigger** | If ideas relate to existing codebase |
-
-### ⚡ TIERED EXECUTION
-
-**TIER 1 (MANDATORY when tool exists):**
-
-> Invoke native sub-agent (`invoke_subagent` / `runSubagent`) for `scouter`. Context: ISOLATED.
-
-**TIER 2 (FALLBACK on system error only):**
-
-> Load `{AGENTS_PATH}/scouter.md`
-> EMBODY [scouter] — Requires logged system error justification.
-
-**Exit Criteria:**
-
-- [ ] Existing patterns found
-- [ ] Integration points identified
-- [ ] **METHODOLOGY CHECK**: Output aligns with `scouter` Thinking Protocol
-
----
-
-## ⛔ HARD STOP — AWAIT USER DECISION
-
-> **WORKFLOW COMPLETE. DO NOT PROCEED FURTHER.**
->
-> Present deliverable files to user and STOP. Wait for explicit user command.
->
-> Suggested next steps (USER must explicitly choose):
-> 1. 🔬 `/brainstorm:hard` → Deeper research
-> 2. 📋 `/plan` → Plan implementation
-> 3. 🏗️ `/code` or `/cook` → Build
-> 4. 🔄 Ask for changes → Iterate on research
->
-> **⛔ DO NOT auto-transition to any workflow. YIELD control to user.**
+> Present clickable link `[BRAINSTORM-{topic}.md](file:///...)` (with Antigravity 2.0's 1-click **"Proceed"** button active) and highlight concise next options:
+> 1. 🔘 **Click "Proceed"** (or run `/plan:fast` / `/cook:fast`) → Execute the winning `HANDOFF_BRIEF` directly
+> 2. 🎨 `/design:fast` or `/design:hard` → Author the 6-Block UI/UX `DESIGN-{topic}.md` specification
+> 3. 🔺 `/brainstorm:team` → Escalate to multi-vector Golden Diamond + Multi-Engine Council stress-testing

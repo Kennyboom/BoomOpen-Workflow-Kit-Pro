@@ -51,8 +51,6 @@ expand((x + 1)**3)  # x**3 + 3*x**2 + 3*x + 1
 factor(x**2 - 1)    # (x - 1)*(x + 1)
 ```
 
-**For detailed basics:** See `references/core-capabilities.md`
-
 ### 2. Calculus
 
 **Derivatives:**
@@ -78,8 +76,6 @@ limit(sin(x)/x, x, 0)  # 1
 series(exp(x), x, 0, 6)  # 1 + x + x**2/2 + x**3/6 + x**4/24 + x**5/120 + O(x**6)
 ```
 
-**For detailed calculus operations:** See `references/core-capabilities.md`
-
 ### 3. Equation Solving
 
 **Algebraic equations:**
@@ -102,8 +98,6 @@ from sympy import Function, dsolve, Derivative
 f = symbols('f', cls=Function)
 dsolve(Derivative(f(x), x) - f(x), f(x))  # Eq(f(x), C1*exp(x))
 ```
-
-**For detailed solving methods:** See `references/core-capabilities.md`
 
 ### 4. Matrices and Linear Algebra
 
@@ -129,8 +123,6 @@ A = Matrix([[1, 2], [3, 4]])
 b = Matrix([5, 6])
 x = A.solve(b)  # Solve Ax = b
 ```
-
-**For comprehensive linear algebra:** See `references/matrices-linear-algebra.md`
 
 ### 5. Physics and Mechanics
 
@@ -168,8 +160,6 @@ A = Operator('A')
 comm = Commutator(A, B).doit()
 ```
 
-**For detailed physics capabilities:** See `references/physics-mechanics.md`
-
 ### 6. Advanced Mathematics
 
 The skill includes comprehensive support for:
@@ -181,8 +171,6 @@ The skill includes comprehensive support for:
 - **Statistics:** Probability distributions, random variables, expectation, variance
 - **Special Functions:** Gamma, Bessel, orthogonal polynomials, hypergeometric functions
 - **Polynomials:** Polynomial algebra, roots, factorization, Groebner bases
-
-**For detailed advanced topics:** See `references/advanced-topics.md`
 
 ### 7. Code Generation and Output
 
@@ -210,8 +198,6 @@ from sympy.utilities.codegen import codegen
 from sympy import latex
 latex_str = latex(expr)  # Convert to LaTeX for documents
 ```
-
-**For comprehensive code generation:** See `references/code-generation-printing.md`
 
 ## Working with SymPy: Best Practices
 

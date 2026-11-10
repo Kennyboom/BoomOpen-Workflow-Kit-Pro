@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion'
+import { usePrefersReducedMotion } from '../../hooks'
+import { SKILL_COUNT, formatCount } from '../../data/kitStats'
 
 // Decoration themes for different pages
 export type DecorationTheme = 
@@ -29,10 +31,10 @@ interface DecorationConfig {
 const themeConfigs: Record<DecorationTheme, DecorationConfig> = {
   installation: {
     left: [
-      { text: 'npm install', icon: '📦', color: '#ff4444' },
-      { text: 'git clone', icon: '🔗', color: '#ff8844' },
-      { text: 'curl -fsSL', icon: '⬇️', color: '#8844ff' },
-      { text: 'brew install', icon: '🍺', color: '#00d4ff' },
+      { text: 'git clone', icon: '📦', color: '#ff4444' },
+      { text: 'node cli/install.js', icon: '🔗', color: '#ff8844' },
+      { text: 'npm link', icon: '⬇️', color: '#8844ff' },
+      { text: 'boomopen install', icon: '🍺', color: '#00d4ff' },
     ],
     right: [
       { text: 'Quick Setup', icon: '⚡', color: '#00ff88' },
@@ -72,7 +74,7 @@ const themeConfigs: Record<DecorationTheme, DecorationConfig> = {
       { text: '/docs', icon: '📖', color: '#ff8844' },
       { text: '/deploy', icon: '🚀', color: '#ff4444' },
     ],
-    codeLeft: [':fast', ':hard', ':auto'],
+    codeLeft: [':fast', ':hard', ':team'],
     codeRight: ['run', 'exec', 'call'],
   },
   agents: {
@@ -93,15 +95,15 @@ const themeConfigs: Record<DecorationTheme, DecorationConfig> = {
   },
   platforms: {
     left: [
-      { text: 'Cursor', icon: '🖱️', color: '#8844ff' },
+      { text: 'Antigravity', icon: '🚀', color: '#00ff88' },
       { text: 'Claude', icon: '🤖', color: '#ff8844' },
-      { text: 'Copilot', icon: '✈️', color: '#00d4ff' },
-      { text: 'Windsurf', icon: '🏄', color: '#00ff88' },
+      { text: 'Cursor', icon: '⚡', color: '#8844ff' },
+      { text: 'Copilot', icon: '🐙', color: '#00d4ff' },
     ],
     right: [
-      { text: 'VSCode', icon: '💻', color: '#00d4ff' },
-      { text: 'JetBrains', icon: '🧠', color: '#ff4444' },
-      { text: 'Neovim', icon: '📝', color: '#00ff88' },
+      { text: 'Codex', icon: '💻', color: '#00d4ff' },
+      { text: 'VSCode', icon: '🧩', color: '#ff4444' },
+      { text: 'JetBrains', icon: '🧠', color: '#00ff88' },
       { text: 'Terminal', icon: '⌨️', color: '#8844ff' },
     ],
     codeLeft: ['IDE', 'editor', 'tool'],
@@ -168,7 +170,7 @@ const themeConfigs: Record<DecorationTheme, DecorationConfig> = {
       { text: 'GraphQL', icon: '◈', color: '#ff4444' },
       { text: 'Database', icon: '🗄️', color: '#8844ff' },
     ],
-    codeLeft: ['310+', 'skills', 'tools'],
+    codeLeft: [formatCount(SKILL_COUNT), 'skills', 'tools'],
     codeRight: ['match', 'load', 'use'],
   },
 }
@@ -340,17 +342,20 @@ interface PageSideDecorationsProps {
 export function PageSideDecorations({ theme, className = '' }: PageSideDecorationsProps) {
   const config = themeConfigs[theme]
   const colors = config.left.map(i => i.color)
+  // Purely decorative looping animation: skipped entirely for prefers-reduced-motion.
+  const prefersReducedMotion = usePrefersReducedMotion()
+  if (prefersReducedMotion) return null
 
   return (
     <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`} aria-hidden="true">
       {/* Left badges */}
       {config.left.map((item, index) => (
-        <LeftBadge key={item.text} item={item} index={index} />
+        <LeftBadge key={`${item.text}-${index}`} item={item} index={index} />
       ))}
       
       {/* Right badges */}
       {config.right.map((item, index) => (
-        <RightBadge key={item.text} item={item} index={index} />
+        <RightBadge key={`${item.text}-${index}`} item={item} index={index} />
       ))}
       
       {/* Floating code - left */}

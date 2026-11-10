@@ -1,0 +1,6 @@
+interface:
+  display_name: "/settings"
+  short_description: "🎛️ Settings & Control Center — Configure BoomOpen presets, Mode A/B threshold, elastic swarm scaling, Cross-Engine Conductor matrix, multilingual NL routing, model policy, and coding standards across all 5 platforms."
+  brand_color: "#6366F1"
+policy:
+  allow_implicit_invocation: true

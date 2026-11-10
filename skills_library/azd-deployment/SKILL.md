@@ -284,12 +284,6 @@ azd show                            # Show project status
 az containerapp logs show -n <app> -g <rg> --follow  # Stream logs
 ```
 
-## Reference Files
-
-- **Bicep patterns**: See references/bicep-patterns.md for Container Apps modules
-- **Troubleshooting**: See references/troubleshooting.md for common issues
-- **azure.yaml schema**: See references/azure-yaml-schema.md for full options
-
 ## Critical Reminders
 
 1. **Always use `remoteBuild: true`** - Local builds fail on M1/ARM Macs deploying to AMD64

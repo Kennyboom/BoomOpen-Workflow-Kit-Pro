@@ -1,4 +1,6 @@
-display_name: "/ask"
-short_description: "❓ Ask Router — Route questions to answer workflows"
-brand_color: "#06B6D4"
-allow_implicit_invocation: true
+interface:
+  display_name: "/ask"
+  short_description: "❓ Ask Router — Smart-Hybrid Question Answering Router (Mode A Direct, Elastic Parallel Scout & Evidence-Gated Research)"
+  brand_color: "#06B6D4"
+policy:
+  allow_implicit_invocation: true

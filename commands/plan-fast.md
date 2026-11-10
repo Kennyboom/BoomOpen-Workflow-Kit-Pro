@@ -1,75 +1,106 @@
 ---
-description: ⚡ Quick Plan — Fast planning without deep research
+description: ⚡ Quick Plan — Tier 1 compact machine-validated plan (<= 100 lines) with full 5-Field Handoff & native Proceed button
 version: "5.5"
 category: planning
 execution-mode: execute
 ---
 
-> **📂 Deliverable Routing (v5.5)**: On Antigravity 2.0, write transient deliverables (`BRAINSTORM`, `RESEARCH`, `SCOUT`, `DESIGN`, `PLAN`, `DEBUG`, `TEST`, `REVIEW`, `REPORT`, `MAILBOX`) to `<appDataDir>\brain\<conversation-id>\` to keep the Git tree clean (use `./reports/{topic}/` on non-Antigravity tools or when explicitly requested).
+> **📂 Deliverable & Native "Proceed" Routing (v5.5)**: On Antigravity 2.0, write `<appDataDir>\brain\<conversation-id>\PLAN-{task}.md` as **1 single cohesive file (`<= 100` lines for `/plan:fast`, never split into a folder)** with `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: true }` so the native 1-click **"Proceed"** button renders in the UI. Set `RequestFeedback: false` on any intermediate `SCOUT` artifact.
 
 ---
 
-# /plan:fast — Quick Planning
+# /plan:fast — Tier 1 Compact Implementation Plan (`<= 100` Lines)
 
-> **MISSION**: Create quick implementation plan for clear tasks.
+> **MISSION**: Produce a fast, deterministic, machine-validated implementation plan (`<= 100` lines) for focused tasks (`1–5` files) with complete 5-Field Handoff metadata (`SHARED_CONTRACT`, `Agent: role#shard`, `OWNED_FILES <= 4`, `READ_ONLY_FILES`, `Test Files`, `Verify`) ready for 1-click execution via `/code:fast` or `/code:hard`.
 
 <task>$ARGUMENTS</task>
 
 ---
 
-## ⚡ TURN-1 ZERO-TAX DISPATCH & ON-DEMAND RULES
+## ⚡ TURN-1 ZERO-TAX DISPATCH & PRIOR-ARTIFACT FAST-FORWARD
 
-⚡ **TURN-1 ZERO-TAX DISPATCH**: Core orchestration laws and the 5-Field Handoff Packet (`1. MISSION`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION`) are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md` — route and launch Phase 1 sub-agents **immediately on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")`; load `./rules/*.md` on-demand in parallel only when needed.
+1. **Zero Pre-Flight Tax**: Core orchestration laws and the 5-Field Handoff Packet are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md`.
+2. **Prior-Artifact Fast-Forward**: If `SCOUT-{task}.md` already exists in `<appDataDir>\brain\<conversation-id>\` (or `./reports/{topic}/`), reuse it immediately and skip Phase 1!
 
-**Skills Resolution**: When delegating, load `SKILLS.md` on-demand. Fast variant uses matrix-only (no dynamic discovery for speed optimization).
-
----
-
-## 🔀 TIERED EXECUTION
-
-| Tier       | When               | Action                       |
-| ---------- | ------------------ | ---------------------------- |
-| **TIER 1** | Antigravity 2.0 Native Sub-Agents (`define_subagent`, `invoke_subagent`, `send_message`) or `runSubagent` EXISTS | Invoke isolated sub-agent (MANDATORY) |
-| **TIER 2** | Tool MISSING       | EMBODY agent file (FALLBACK) |
-
-**Deliverables:** All deliverables in `<appDataDir>\\brain\\<conversation-id>\\` (or `./reports/{topic}/`) → Write in the same language the user communicates with you. Code comments remain in English.
-**⚠️ Paths above = base names.** Small (≤ 150 lines) → `{name}.md`. Large (> 150 lines) → `{name}/` folder.
+| Tier | When | Action |
+|------|------|--------|
+| **TIER 1** | Antigravity 2.0 Native Sub-Agents (`invoke_subagent`, `send_message`) or `runSubagent` EXISTS | Invoke isolated sub-agent (`TypeName: "self"`, `Model: "inherit"`) |
+| **TIER 2** | Tool MISSING or system error | EMBODY agent file (FALLBACK) |
 
 ---
 
 ## ⛔ ABSOLUTE PROHIBITION — NO CODE
 
-> **🔴 THIS WORKFLOW PRODUCES PLAN FILES ONLY. NO CODE.**
->
-> - ❌ NEVER write implementation code (TypeScript, Python, Rust, etc.)
-> - ❌ NEVER modify source files
-> - ❌ NEVER auto-implement plans or auto-transition to `/code`, `/cook`, `/fix`
-> - ✅ ONLY produce plan files in `<appDataDir>\\brain\\<conversation-id>\\` (or `./reports/{topic}/`)
+- ❌ **NEVER** write implementation code (TypeScript, Python, Rust, etc.) or modify application source files.
+- ❌ **NEVER** auto-transition to `/code`, `/cook`, or `/fix` without user approval.
+- ✅ **ONLY** produce `<appDataDir>\brain\<conversation-id>\PLAN-{task}.md` (or `./reports/{topic}/plans/PLAN-{task}.md` on non-Antigravity tools) in the user's input language (technical terms in English).
 
 ---
 
-## ⛔ INCREMENTAL EXECUTION (MANDATORY)
+## 🎭 Phase 1: FAST CONTEXT SCAN (`scouter`)
 
-Execute phases using **DAG Parallel Fan-Out** for independent tracks, **Direct Plan-to-Executor Dispatch** (`Model: "inherit"`), and **Stateful Warm Sub-agent Reuse** (`send_message`) per `rules/PHASES.md` (v5.5).
-
----
-
-## 🎭 Phase 1: CONTEXT SCAN
-
-| Agent | `scouter`                                              |
-| ----- | ------------------------------------------------------ |
-| Goal  | Quick context gathering                                |
-| Exit  | Relevant patterns found, integration points identified |
+| Agent | `scouter` (`TypeName: "self"`, `Model: "inherit"`) |
+|-------|----------------------------------------------------|
+| Goal | Rapidly locate exact target files (`1–5` files), existing types/interfaces, and existing test files |
+| Exit | Exact `OWNED_FILES`, `READ_ONLY_FILES`, and `Test Files` paths verified on disk |
 
 ---
 
-## 🎭 Phase 2: PLAN CREATION
+## 🎭 Phase 2: COMPACT PLAN CREATION & CLI VALIDATION (`planner`)
 
-| Agent  | `planner`                          |
-| ------ | ---------------------------------- |
-| Goal   | Create focused implementation plan |
-| Output | `<appDataDir>\\brain\\<conversation-id>\\PLAN-{task}` (or `./reports/{topic}/plans/PLAN-{task}`)   |
-| Exit   | Steps defined, approach clear      |
+| Agent | `planner` (`TypeName: "self"`, `Model: "inherit"`) |
+|-------|----------------------------------------------------|
+| Goal | Write compact, machine-parseable `PLAN-{task}.md` (`<= 100` lines) and validate via CLI |
+| Output | `<appDataDir>\brain\<conversation-id>\PLAN-{task}.md` with `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: true }` |
+| CLI Gate | Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js plan validate "<plan-path>"` (must exit `0`) |
+
+### Mandatory Compact `PLAN-{task}.md` Template (`<= 100` Lines — Compatible with `/code:fast`, `/code:hard` & `boomopen plan validate`)
+
+````markdown
+# 📋 Implementation Plan: {Task Name}
+
+> [!IMPORTANT]
+> **1-Click Execution Ready**: Click **"Proceed"** on this artifact (or reply `"proceed"` / `"tiến hành đi"` / `"/code:fast"`) to execute Wave 1 directly.
+
+## 📌 User Request (VERBATIM)
+> {Exact user request}
+
+## 🎯 Acceptance Criteria
+| ID | Given | When | Then | Verify |
+|----|-------|------|------|--------|
+| AC1 | {context} | {action} | {expected outcome} | `{exact test command}` |
+| AC2 | {edge/error case} | {invalid/boundary input} | {graceful error handling} | `{exact test command}` |
+
+## 🤝 Shared Interface Contracts (`SHARED_CONTRACT`)
+```ts
+// Exact shared DTOs / function signatures / types (or "Single-module internal change — no cross-domain boundary")
+export interface TaskPayloadDto {
+  readonly id: string;
+}
+```
+
+## Wave 1: Core Implementation (`Parallelizable: Yes | No` | `Depends On: None`)
+
+### Task 1.1 (REQ-101): {Specific atomic action}
+- **Agent**: `{canonical-role}#{shard}`
+- **Acceptance**: `AC1`, `AC2`
+- **OWNED_FILES**: `src/module/target.ts`
+- **READ_ONLY_FILES**: `src/types/index.ts`
+- **Test Files**: `tests/module/target.test.ts`
+- **Verify**: `npm test -- tests/module/target.test.ts && node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check src/module --strict-phase --no-stubs`
+
+## 💥 Blast-Radius Pre-Mortem & Rollback Manifest
+| Risk / Blast Radius | Impact | Mitigation & Locked Regression Tests | Exact Rollback Command |
+|---------------------|:------:|--------------------------------------|------------------------|
+| {Impacted callers} | L/M | Lock existing tests in `READ_ONLY_FILES` | `git checkout -- src/module/target.ts` |
+````
+
+### Mandatory Pre-Presentation CLI Gate
+Before finishing Phase 2, run:
+```bash
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js plan validate "<appDataDir>/brain/<conversation-id>/PLAN-{task}.md"
+```
+Fix any reported `OWNED_FILES` collision, `> 4` files/shard violation, or missing field before presenting to the user.
 
 ---
 
@@ -77,12 +108,7 @@ Execute phases using **DAG Parallel Fan-Out** for independent tracks, **Direct P
 
 > **WORKFLOW COMPLETE. DO NOT PROCEED FURTHER.**
 >
-> Present plan file link to user and STOP. Wait for explicit user command.
->
-> Suggested next steps (USER must explicitly choose):
-> 1. ✅ Plan Ready — `<appDataDir>\\brain\\<conversation-id>\\PLAN-{task}` (or `./reports/{topic}/plans/PLAN-{task}`)
-> 2. 🏗️ `/cook:fast` → Implement plan
-> 3. 🔍 `/plan:hard` → More detailed planning
-> 4. 🔄 Iterate → Refine plan
->
-> **⛔ DO NOT auto-transition to any workflow. YIELD control to user.**
+> Present `<appDataDir>\brain\<conversation-id>\PLAN-{task}.md` (`RequestFeedback: true`) and **STOP**:
+> 1. 🟢 **Click "Proceed" (or reply `"proceed"` / `"tiến hành đi"`)** → Execute immediately via `/code:fast` or `/code:hard` (Approved-Plan Continuation — skips redundant scouting)
+> 2. 🔍 **`/plan:hard`** → Escalate to deep 2-Wave multi-shard planning
+> 3. 🔄 **Iterate** → Tell me which task or contract to refine

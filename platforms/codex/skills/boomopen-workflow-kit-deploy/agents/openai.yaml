@@ -1,4 +1,6 @@
-display_name: "/deploy"
-short_description: "🚀 Deploy Router — Route to deployment workflows"
-brand_color: "#8B5CF6"
-allow_implicit_invocation: true
+interface:
+  display_name: "/deploy"
+  short_description: "🚀 Deploy Router — Route to pre-deployment verification, preview/staging, production release, or emergency rollback"
+  brand_color: "#8B5CF6"
+policy:
+  allow_implicit_invocation: true

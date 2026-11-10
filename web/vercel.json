@@ -1,8 +1,89 @@
 {
+  "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/installation",
+      "destination": "/installation.html"
+    },
+    {
+      "source": "/docs",
+      "destination": "/docs.html"
+    },
+    {
+      "source": "/features",
+      "destination": "/features.html"
+    },
+    {
+      "source": "/features/one-time-setup",
+      "destination": "/features/one-time-setup.html"
+    },
+    {
+      "source": "/features/sub-agent-orchestration",
+      "destination": "/features/sub-agent-orchestration.html"
+    },
+    {
+      "source": "/features/multi-platform-support",
+      "destination": "/features/multi-platform-support.html"
+    },
+    {
+      "source": "/features/matrix-skills",
+      "destination": "/features/matrix-skills.html"
+    },
+    {
+      "source": "/features/specialist-agents",
+      "destination": "/features/specialist-agents.html"
+    },
+    {
+      "source": "/features/commands-workflows",
+      "destination": "/features/commands-workflows.html"
+    },
+    {
+      "source": "/features/quality-gates",
+      "destination": "/features/quality-gates.html"
+    },
+    {
+      "source": "/features/workflow",
+      "destination": "/features/workflow.html"
+    },
+    {
+      "source": "/features/agent-teams",
+      "destination": "/features/agent-teams.html"
+    }
+  ],
+  "headers": [
+    {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+        }
+      ]
+    },
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ]
 }

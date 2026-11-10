@@ -15,6 +15,10 @@ allowed-tools:
   - Write
 ---
 
+> **Skill folder:** paths below that start with `$SKILL_DIR` are relative to the folder that contains this SKILL.md. BoomOpen installs vault skills at `~/.<tool>/skills_library/seo-image-gen` (for example `~/.claude/skills_library/seo-image-gen`, `~/.codex/skills_library/seo-image-gen` or `~/.gemini/config/skills_library/seo-image-gen`). Set it before running a command, e.g. `SKILL_DIR=~/.claude/skills_library/seo-image-gen`.
+
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/cost_tracker.py`, `scripts/generate.py`, `scripts/presets.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # SEO Image Gen: AI Image Generation for SEO Assets (Extension)
 
 Generate production-ready images for SEO use cases using Gemini's image generation
@@ -79,7 +83,6 @@ For every generation request:
 2. **Apply SEO defaults** from the use cases table above
 3. **Set aspect ratio** via `set_aspect_ratio` MCP tool
 4. **Construct Reasoning Brief** using the banana Creative Director pipeline:
-   - Load `references/prompt-engineering.md` for the 6-component system
    - Apply domain mode emphasis (Subject 30%, Style 25%, Context 15%, etc.)
    - Be SPECIFIC and VISCERAL: describe what the camera sees
 5. **Generate** via `gemini_generate_image` MCP tool
@@ -89,9 +92,9 @@ For every generation request:
 
 If the user mentions a brand or has SEO presets configured:
 ```bash
-python3 ~/.claude/skills/seo-image-gen/scripts/presets.py list
+python3 $SKILL_DIR/scripts/presets.py list
 ```
-Load matching preset and apply as defaults. Also check `references/seo-image-presets.md`
+Load matching preset and apply as defaults.
 for SEO-specific preset templates.
 
 ## Post-Generation SEO Checklist
@@ -127,7 +130,7 @@ After every successful generation, guide the user on:
 
 Image generation costs money. Be transparent:
 - Show estimated cost before generating (especially for batch)
-- Log every generation: `python3 ~/.claude/skills/seo-image-gen/scripts/cost_tracker.py log --model MODEL --resolution RES --prompt "brief"`
+- Log every generation: `python3 $SKILL_DIR/scripts/cost_tracker.py log --model MODEL --resolution RES --prompt "brief"`
 - Run `cost_tracker.py summary` if user asks about usage
 
 Approximate costs (gemini-3.1-flash):
@@ -152,8 +155,8 @@ Approximate costs (gemini-3.1-flash):
 | MCP not configured | Run `./extensions/banana/install.sh` |
 | API key invalid | New key at https://aistudio.google.com/apikey |
 | Rate limited (429) | Wait 60s, retry. Free tier: ~10 RPM / ~500 RPD |
-| `IMAGE_SAFETY` | Rephrase prompt - see `references/prompt-engineering.md` Safety section |
-| MCP unavailable | Fall back: `python3 ~/.claude/skills/seo-image-gen/scripts/generate.py --prompt "..." --aspect-ratio "16:9"` |
+| `IMAGE_SAFETY` | Rephrase the prompt to remove unsafe or restricted content |
+| MCP unavailable | Fall back: `python3 $SKILL_DIR/scripts/generate.py --prompt "..." --aspect-ratio "16:9"` |
 | Extension not installed | Show install instructions: `./extensions/banana/install.sh` |
 
 ## Cross-Skill Integration
@@ -161,17 +164,6 @@ Approximate costs (gemini-3.1-flash):
 - **seo-images** (analysis) feeds into **seo-image-gen** (generation): audit results from `/seo images` identify missing or low-quality images; use those findings to drive `/seo image-gen` commands
 - **seo-audit** spawns the seo-image-gen **agent** (not this skill) to analyze OG/social images across the site and produce a prioritized generation plan
 - **seo-schema** can consume generated images: after generation, suggest `ImageObject` schema markup pointing to the new assets
-
-## Reference Documentation
-
-Load on-demand. Do NOT load all at startup:
-- `references/prompt-engineering.md`:6-component system, domain modes, templates
-- `references/gemini-models.md`:Model specs, rate limits, capabilities
-- `references/mcp-tools.md`:MCP tool parameters and responses
-- `references/post-processing.md`:ImageMagick/FFmpeg pipeline recipes
-- `references/cost-tracking.md`:Pricing, usage tracking
-- `references/presets.md`:Brand preset management
-- `references/seo-image-presets.md`:SEO-specific preset templates
 
 ## Response Format
 

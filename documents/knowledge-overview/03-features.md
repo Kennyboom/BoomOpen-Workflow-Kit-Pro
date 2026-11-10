@@ -61,7 +61,7 @@ The same agent definitions, commands, and workflows work across 5 AI coding tool
 
 The Hybrid Skill Orchestration Layer automatically resolves and injects relevant skills based on the agent's profile and the task context. No manual skill selection required.
 
-**Scale**: 1,430+ skill modules across 19 domains (ai-ml, architecture, backend, cloud, data, design, devops, frontend, gaming, languages, management, mcp, mobile, performance, planning, quality, research, security, tools).
+**Scale**: 1,460+ skill modules across 19 domains (ai-ml, architecture, backend, cloud, data, design, devops, frontend, gaming, languages, management, mcp, mobile, performance, planning, quality, research, security, tools).
 
 **Resolution algorithm**:
 1. Parse agent profile from frontmatter
@@ -204,7 +204,7 @@ Classified error recovery system that prevents silent failures:
 | Team Configurations | 17 (51 team agents) |
 | Commands | 14 |
 | Variants | 4 (fast, hard, team) |
-| Skill Modules | 1,430+ |
+| Skill Modules | 1,460+ |
 | Skill Domains | 19 |
 | Orchestration Rules | 7 files |
 | Orchestration Laws | 10 |
@@ -228,5 +228,5 @@ Classified error recovery system that prevents silent failures:
 | Team definitions (17 teams) | [../../agents/teams/](../../agents/teams/) |
 | Commands (14 commands) | [../../commands/](../../commands/) |
 | Matrix skills (19 domains) | [../../matrix-skills/](../../matrix-skills/) |
-| Skills modules (1,430+) | [../../skills/](../../skills/) |
+| Skills modules (1,460+) | [../../skills/](../../skills/) |
 | CLI installer (platform support) | [../../cli/install.js](../../cli/install.js) |

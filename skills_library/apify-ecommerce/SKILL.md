@@ -5,6 +5,8 @@ risk: unknown
 source: community
 ---
 
+> **Skill folder:** paths below that start with `$SKILL_DIR` are relative to the folder that contains this SKILL.md. BoomOpen installs vault skills at `~/.<tool>/skills_library/apify-ecommerce` (for example `~/.claude/skills_library/apify-ecommerce`, `~/.codex/skills_library/apify-ecommerce` or `~/.gemini/config/skills_library/apify-ecommerce`). Set it before running a command, e.g. `SKILL_DIR=~/.claude/skills_library/apify-ecommerce`.
+
 # E-commerce Data Extraction
 
 Extract product data, prices, reviews, and seller information from any e-commerce platform using Apify's E-commerce Scraping Tool.
@@ -211,7 +213,7 @@ Use for seller discovery across multiple stores.
 
 ### Step 1: Set Skill Path
 ```bash
-SKILL_PATH=~/.claude/skills/apify-ecommerce
+SKILL_PATH="$SKILL_DIR"
 ```
 
 ### Step 2: Run Script

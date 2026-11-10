@@ -8,6 +8,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/uniprot_client.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # UniProt Database
 
 ## Overview

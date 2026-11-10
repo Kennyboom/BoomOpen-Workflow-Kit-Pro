@@ -192,8 +192,3 @@ hf cache rm model/gpt2           # Remove a repo from cache
 - `--revision`: Branch, tag, or commit hash
 - `--token`: Override authentication
 - `--quiet`: Output only essential info (paths/URLs)
-
-## References
-
-- **Complete command reference**: See references/commands.md
-- **Workflow examples**: See references/examples.md

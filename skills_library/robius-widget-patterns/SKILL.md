@@ -414,15 +414,3 @@ impl Widget for ItemsList {
 5. **Use `flow: Overlay` for toggle/swap patterns**
 6. **Use `set_visible()` to toggle between alternative views**
 7. **Always call `redraw(cx)` after state changes**
-
-## Reference Files
-
-- `references/widget-patterns.md` - Additional widget patterns (Robrix)
-- `references/styling-patterns.md` - Dynamic styling patterns (Robrix)
-- `references/moly-widget-patterns.md` - Moly-specific patterns
-  - `Slot` widget for runtime content replacement
-  - `MolyRoot` conditional rendering wrapper
-  - `AdaptiveView` for responsive Mobile/Desktop layouts
-  - Chat line variants (UserLine, BotLine, ErrorLine, etc.)
-  - `CommandTextInput` with action buttons
-  - Sidebar navigation with radio buttons

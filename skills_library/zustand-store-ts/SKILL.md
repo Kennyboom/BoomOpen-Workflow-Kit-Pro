@@ -12,7 +12,7 @@ Create Zustand stores following established patterns with proper TypeScript type
 
 ## Quick Start
 
-Copy the template from assets/template.ts and replace placeholders:
+Copy the template from `../zustand-store/assets/template.ts` (shipped with the sibling `zustand-store` vault skill) and replace placeholders:
 - `{{StoreName}}` → PascalCase store name (e.g., `Project`)
 - `{{description}}` → Brief description for JSDoc
 

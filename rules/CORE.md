@@ -1,10 +1,22 @@
-# ⚡ CORE RULES — SMART-HYBRID ORCHESTRATOR PROTOCOL
+# ⚡ CORE RULES — SMART-HYBRID ORCHESTRATOR & ELASTIC SWARM PROTOCOL
 
-> **VERSION**: 5.5 — Antigravity 2.0 Smart-Hybrid Edition | **LOAD**: On-demand when **Mode B** or `/cmd` is triggered | **PURPOSE**: Single source of truth for Multi-Agent Orchestration & Pragmatic 2-Tier Coding Standards
+> **VERSION**: 5.5 — Antigravity 2.0 Smart-Hybrid Edition | **LOAD**: On-demand when **Mode B** or `/cmd` is triggered | **PURPOSE**: Single source of truth for 17-Language Natural-Language Workflow Routing, Research/Design/Plan Validators (`boomopen research|design|plan`), 5-Stage Fast-Forward & 3-Wave Cook/Code Engine (`boomopen cook`), Multi-Session Autopilot Ledger, Cross-Engine Conductor (`boomopen conduct`), 4-Tier Dynamic Elastic Swarm & Pragmatic 2-Tier Coding Standards
 
 ---
 
-## 🚦 PROACTIVE SUB-AGENT FIRST GATE (TURN-1 ZERO-TAX FAN-OUT, MODE B & MODE A)
+## 🚦 PROACTIVE SUB-AGENT FIRST GATE & 4-TIER DYNAMIC ELASTIC SWARM
+
+### 🧮 Cognitive Load Sharding Law (`MAX 3–4 Heavy Files or 1 Deep Vector per Sub-Agent`)
+Never bottleneck a multi-file task inside a single overloaded sub-agent. Compute parallel sub-agent shards dynamically:
+
+$$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\left\lceil \frac{\text{Total Target Files}}{3.5} \right\rceil,\; \text{Distinct Domains},\; \text{Research Vectors}\right)\right)$$
+
+| Swarm Tier | Scope / Trigger Condition | Parallel Sub-Agents | Orchestration Action |
+|------------|---------------------------|:-------------------:|----------------------|
+| **Tier 0 — Micro Direct** | `≤ 2` already-known files, `1` domain, `0` exploration needed, no `/cmd`, no workflow intent | **`0` (Mode A)** | Primary agent executes, tests, and verifies directly under Pragmatic 2-Tier Coding Standards. |
+| **Tier 1 — Focused Triad** | `3–5` files OR `2` domains / research vectors | **`2–3` sub-agents** | Spawn `2–3` parallel sub-agents on Turn 1 (`≤ 3–4 OWNED_FILES` per agent). |
+| **Tier 2 — Elastic Swarm** | `6–12` files, `3–4` domains, OR `4–5` research/audit vectors | **`4–6` sub-agents** | Horizontally shard roles (`role#shard-1..N`), each locked to `≤ 3–4` disjoint `OWNED_FILES` + `SHARED_CONTRACT`. |
+| **Tier 3 — Hyper-Swarm** | `13+` files, repo-wide audits, OR multi-module overhauls | **`7–10+` sub-agents** *(up to `execution.maxParallelSubagents`)* | Full horizontal sharding across modules (`scouter#1..N`, `engineer#shard-1..N`, `reviewer#1..M`) so every shard owns `≤ 3–4` files. |
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────────┐
@@ -12,53 +24,58 @@
 │  • If the exact target files are NOT already known on Turn 1, OR if a task    │
 │    requires exploring/auditing/reading > 2 files across the codebase, NEVER   │
 │    crawl files sequentially in the primary agent! IMMEDIATELY spawn parallel  │
-│    subagents on Turn 1 so the parent context window stays 100% clean.         │
+│    subagent shards on Turn 1 so the parent context window stays 100% clean.   │
 ├───────────────────────────────────────────────────────────────────────────────┤
-│  🚀 FAST PARALLEL SUB-AGENTS (Turn-1 Zero-Tax Fan-Out — Without /cmd)         │
-│  • For Codebase Exploration, Repo Audits, Bug Hunts & Multi-File Fixes:       │
-│    Spawn subagents immediately on Turn 1 with 0 pre-flight rule-file reads,   │
-│    0 `define_subagent` overhead, and 0 mandatory `.md` report clutter:        │
-│    - Read-only local codebase scouting/grep/mapping:                          │
-│      `invoke_subagent(TypeName: "research", Role: "Codebase Scouter",         │
-│      Model: "inherit", Prompt: ...)`                                          │
-│    - Parallel code edits, testing, debugging, or live web research:           │
-│      `invoke_subagent(TypeName: "self", Role: "Backend Engineer" |            │
-│      "Frontend Engineer" | "QA Tester" | "Deep Researcher", Model: "inherit")`│
+│  🎻 MODE B — Explicit /cmd & 17-Language Natural-Language Workflow Routing    │
+│  • Triggered when ANY of the following is true:                               │
+│    1. User types an explicit command (/cook, /code, /autopilot, /conduct).    │
+│    2. User speaks in natural language (without /cmd) in ANY of the 17         │
+│       BoomOpen languages (`en`, `vi`, `zh-CN`, `zh-TW`, `ja`, `ko`, `es`,     │
+│       `fr`, `de`, `pt-BR`, `ru`, `hi`, `ar`, `id`, `th`, `tr`, `it` +         │
+│       semantic match) expressing a structured workflow intent:                │
+│       - Plan / Architecture ("lên kế hoạch", "plan", "制定计划", "計画")      │
+│         → Load `commands/plan-hard.md` (or `plan-team.md`)                    │
+│       - UI/UX Design ("thiết kế UI/UX", "design spec", "设计界面", "UI設計")  │
+│         → Load `commands/design-hard.md` (or `design-team.md`)                │
+│       - Deep Research ("nghiên cứu", "research", "深入研究", "徹底調査")      │
+│         → Load `commands/research-team.md` (`auto_team`) or `research-hard.md`│
+│       - Brainstorm / Ideation ("khám phá ý tưởng", "brainstorm", "头脑风暴")  │
+│         → Load `commands/brainstorm-team.md` (`auto_team`) or `-hard.md`      │
+│       - Review / Audit ("review code", "đánh giá/audit", "代码审查")          │
+│         → Load `commands/review-team.md` (or `review-hard.md`)                │
+│       - Root-Cause Debug ("debug", "tìm nguyên nhân lỗi", "排查原因")         │
+│         → Load `commands/debug-hard.md` (or `debug-team.md`)                  │
+│       - Multi-File Bug Fix ("sửa lỗi", "fix bug", "修复bug" > 2 files)        │
+│         → Load `commands/fix-hard.md` (or `fix-team.md`)                      │
+│       - Testing / QA ("viết test", "kiểm thử", "write tests", "编写测试")     │
+│         → Load `commands/test-hard.md` (or `test-team.md`)                    │
+│       - Build Feature End-to-End ("xây dựng tính năng", "build feature")      │
+│         → Load `commands/cook-hard.md` (or `cook-team.md`; check `cook state`)│
+│       - Approved-Plan Execution ("ok, em làm đi", "tiến hành đi", "proceed",  │
+│         "go ahead", "开始执行", "実行して", "진행해" after a PLAN exists)      │
+│         → Load `commands/code-hard.md` / `commands/code-team.md` + run        │
+│         `boomopen cook packets` (NEVER re-run `/plan` when approved!)         │
+│       - Multi-Session Project Autopilot ("điều hành dự án nhiều phiên/phase", │
+│         "chạy tiếp phase tiếp theo", "autopilot", "run next phase")           │
+│         → Load `commands/autopilot.md` → `autopilot-{init|run|audit}.md`      │
+│       - Cross-Engine Conductor & Multi-Engine Council ("cho cả 3 công cụ cùng │
+│         nghiên cứu/phân tích rồi tổng hợp", "multi-engine council")           │
+│         → Load `commands/conduct.md` → `conduct-{council|pipeline}.md`        │
+│       - Docs / Report / Deploy ("viết tài liệu", "báo cáo", "deploy check")   │
+│         → Load `commands/docs-core.md`, `report-hard.md`, or `deploy-check.md`│
+│  • ⛔ NEVER bypass `commands/{cmd}-{variant}.md` with ad-hoc sub-agents when  │
+│    a workflow intent matches! Read the mapped command file AND spawn Phase 1  │
+│    shards (`TypeName: "self"`, `Model: "inherit"`) in the same Turn-1 batch.  │
 ├───────────────────────────────────────────────────────────────────────────────┤
-│  🎻 MODE B — Strict Multi-Agent Orchestration & Golden Triangle (TIER 1)      │
-│  • When ANY of the following is true:                                         │
-│    1. User explicitly invokes a workflow command (/cook, /fix, /plan:hard,    │
-│       /brainstorm:hard, /review:team, /docs:core, /orchestrate, etc.).        │
-│    2. Task spans > 2 files or ≥ 2 domains (e.g., DB + Backend + Frontend).    │
-│    3. Task requires architectural design, complex cross-module debugging,     │
-│       or adversarial Golden Triangle review (:hard / :team).                  │
-│    4. Natural-Language Deep Research, Technical/Documentation Investigation,  │
-│       Competitor Analysis, or Architecture/Product Discovery ("nghiên cứu",   │
-│       "tìm hiểu sâu", "phân tích chuyên sâu", "đánh giá", "khám phá ý tưởng", │
-│       "đề xuất ý tưởng", "research", "deep dive", "analyze", "investigate",   │
-│       "brainstorm", "audit") — EVEN IF 0 code files are modified and no       │
-│       /cmd is typed → route by default (`naturalLanguageResearchTrigger =     │
-│       "auto_team"`) to `commands/research-team.md` (`/research:team`) or      │
-│       `commands/brainstorm-team.md` (`/brainstorm:team` when ideation is      │
-│       requested), or `commands/research-hard.md` / `brainstorm-hard.md`       │
-│       when `"auto_hard"`.                                                     │
-│  • Turn-1 Instant Dispatch: Do NOT waste Turn 1 reading `rules/CORE.md` +     │
-│    `rules/PHASES.md` + `rules/AGENTS.md` before spawning subagents! The       │
-│    5-Field Handoff Packet (`1. MISSION`, `2. SHARED_CONTRACT`,                │
-│    `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION`) is pre-embedded │
-│    in the entrypoint. Read `commands/{cmd}.md` AND launch Phase 1 subagents   │
-│    (`TypeName: "self"`, `Model: "inherit"`) in the same Turn-1 tool batch.    │
-├───────────────────────────────────────────────────────────────────────────────┤
-│  ⚡ MODE A — Known-Target Micro-Direct (TIER 0 — ≤ 2 Known Files, 1 Domain)   │
-│  • Strictly for simple Q&A, code explanations, or micro-edits where the       │
-│    exact 1–2 target files are already known on Turn 1, 0 exploration needed,  │
-│    no `/cmd` invoked, and NOT a research/ideation request.                    │
-│  • Action: Execute, test, and verify directly while enforcing Pragmatic       │
-│    2-Tier Coding Standards and Persistent Testing & Bug Fixing.               │
+│  🚀 AD-HOC CODEBASE Q&A FAN-OUT (Without /cmd — Pure File/Code Lookup Only)   │
+│  • Strictly reserved for open-ended codebase Q&A / file lookups across > 2    │
+│    files ("where is X defined?", "how does module Y work?") that do NOT match │
+│    any structured workflow intent above: spawn `TypeName: "research"`         │
+│    (`scouter#shard-1..N`, `Model: "inherit"`) with 0 `.md` report clutter.    │
 └───────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**In Mode B**: **YOU ARE THE ORCHESTRATOR — NOT AN IMPLEMENTER.** Delegate, coordinate, verify, and synthesize across specialist subagents.
+**In Mode B**: **YOU ARE THE ORCHESTRATOR — NOT AN IMPLEMENTER.** Shard, delegate, coordinate, verify, and synthesize across specialist subagents.
 
 ---
 
@@ -66,13 +83,13 @@
 
 | Tier / Task Type | Allowed `Model` Parameter | Rule |
 |------------------|---------------------------|------|
-| **Core Engineering, Architecture, Planning, Scouting, Debugging, Testing, Reviewing, Security, Design, Docs** | `Model: "inherit"` (or `"pro"`) | **MANDATORY DEFAULT**: Always inherit the user's selected Pro High model so quality never drops. |
+| **Core Engineering, Architecture, Planning, Scouting, Research, Ideation, Debugging, Testing, Reviewing, Security, Design, Docs** | `Model: "inherit"` (or `"pro"`) | **MANDATORY DEFAULT**: Always inherit the user's selected Pro High model so quality never drops. |
 | **Trivial Mechanical Chores Only** (raw log aggregation, simple list formatting, status ping) | `Model: "flash"` (Latest Flash High) | Permitted **strictly** when zero architectural or coding reasoning is needed. When in doubt, use `"inherit"`. |
 | **Low-Tier Model (`flash_lite`)** | **⛔ FORBIDDEN** | **NEVER use `flash_lite`** in any BoomOpen workflow. |
 
 ---
 
-## 📂 PATHS & BRAIN ARTIFACT ROUTING
+## 📂 PATHS, DETERMINISTIC CLI GATES & BRAIN ARTIFACT ROUTING
 
 ```bash
 COMMANDS  = ~/.{TOOL}/skills/boomopen-workflow-kit/commands/
@@ -84,89 +101,49 @@ ARTIFACTS = <appDataDir>\brain\<conversation-id>\ (Antigravity 2.0 default)
 REPORTS   = ./reports/{topic}/ (only for /docs or explicit repo export)
 ```
 
-**Platform Resolution** (replace `{TOOL}` with):
-| Platform | `{TOOL}` | Example Path |
-|----------|----------|--------------|
-| Cursor | `cursor` | `~/.cursor/skills/boomopen-workflow-kit/` |
-| GitHub Copilot | `copilot` | `~/.copilot/skills/boomopen-workflow-kit/` |
-| Claude Code | `claude` | `~/.claude/skills/boomopen-workflow-kit/` |
-| Gemini/Antigravity | `gemini/config` | `~/.gemini/config/skills/boomopen-workflow-kit/` |
-| Codex | `codex` | `~/.codex/skills/boomopen-workflow-kit/` |
+- **Deterministic CLI Gates (`~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js`)**:
+  - `boomopen research <validate|brief> <file.md>` — Evidence-gated `RESEARCH` / `BRAINSTORM` validator (citations, audit log, options) & compact downstream brief extractor.
+  - `boomopen design <validate|contract> <design.md>` — 4-Gate `DESIGN` validator (`DESIGN-G1..G4`) & `DESIGN_CONTRACT` extractor.
+  - `boomopen plan <validate|compile> <plan.md> [--sync-ledger]` — 5-Gate `PLAN` validator (`PLAN-G1..G5`) & ledger compiler.
+  - `boomopen cook <state|packets|verify-wave|preflight>` — 5-Stage Fast-Forward detector, 5-Field Handoff Packet emitter, & 3-Wave lock/anti-stub gate.
+  - `boomopen check <dir> --strict-phase --no-stubs` — Pragmatic 2-Tier quality, line-limit, & anti-stub/anti-skip verifier.
+  - `boomopen ledger <init|from-plan|validate|status|next|verify|audit>` & `boomopen conduct <probe|dispatch|council|status>`.
 
 ---
 
-## 🎯 COMMAND ROUTING (Triggers Mode B)
+## 🎯 COMMAND & 17-LANGUAGE NATURAL-LANGUAGE ROUTING (Triggers Mode B)
 
-| Input | File |
-|-------|------|
-| `/cook`, `/cook:hard`, `/cook:team` | `commands/cook.md` → `commands/cook-{variant}.md` |
-| `/cook:fast` | `commands/cook-fast.md` (direct) |
-| `/fix`, `/plan`, `/debug`, `/test`, `/review`, `/docs`, `/design`, `/deploy`, `/report`, `/research` | `commands/{cmd}.md` → `commands/{cmd}-{variant}.md` |
-| `/brainstorm`, `/ask`, `/code` | `commands/{cmd}.md` → `commands/{cmd}-{variant}.md` |
-| `/orchestrate`, `/save`, `/recap` | `commands/orchestrate.md`, `commands/save.md`, `commands/recap.md` |
-| `/settings`, `/config` | `commands/settings.md` (Unified Settings & Control Center: `ask_question` UI, CLI & `--ui` Web Dashboard) |
+> Full 17-language trigger matrices (`en`, `vi`, `zh-CN`, `zh-TW`, `ja`, `ko`, `es`, `fr`, `de`, `pt-BR`, `ru`, `hi`, `ar`, `id`, `th`, `tr`, `it`) live in `skills/intelligent-routing/SKILL.md`.
 
-**Variant syntax**: `/cmd:variant`, `/cmd/variant`, or `/cmd-variant` → `commands/{cmd}-{variant}.md` (e.g., `/docs/core` = `/docs:core` → `commands/docs-core.md`).
-
----
-
-## 🔀 TIERED EXECUTION, DIRECT DISPATCH & WARM SUB-AGENT REUSE
-
-| Tier | Mode / When | Action |
-|------|-------------|--------|
-| **TIER 1** | **Proactive Sub-agent First / Mode B** (Unscoped exploration, `> 2 files`, `≥ 2 domains`, NL research/ideation, or `/cmd`) | **MUST** spawn parallel sub-agents on Turn 1 (`TypeName: "self"` for 0-turn full tools + `search_web`; `TypeName: "research"` for read-only local codebase scouting; `Model: "inherit"`) + Warm Session Reuse (`send_message`) |
-| **TIER 0** | **Mode A** (`≤ 2 known files`, 1 domain, 0 exploration needed, no `/cmd`) | Execute, test, and verify directly |
-| **TIER 2** | **Mode B** fallback (tool missing/error) | EMBODY agent (shared context, fallback only) |
-
-### 🛠️ Antigravity 2.0 Native Sub-agent Primitives & Turn-1 Zero-Tax Dispatch (TIER 1)
-- **⚡ `TypeName: "self"` (0-Turn Fast-Track Default)**: Calling `invoke_subagent(TypeName: "self", Role: "<specialist>", Model: "inherit", Prompt: ...)` spawns an isolated sub-agent on Turn 1 that **immediately inherits full write tools + `run_command` + `search_web`** without needing a prior `define_subagent` turn!
-- **⚠️ `TypeName: "research"` Limitation**: Antigravity's built-in `TypeName: "research"` has **NO network access (`search_web` disabled) and NO `write_file` tool**. **ALWAYS use `TypeName: "self"`** for `researcher`, `research-team`, any sub-agent needing `search_web`, or any `scouter` that writes `SCOUT-*.md`! Use `TypeName: "research"` strictly for ephemeral read-only local codebase grep when no file output is needed.
-- `define_subagent`: Optional custom tool-scoped registration when strict read/write sandboxing is desired.
-- `invoke_subagent`: Spawn isolated sub-agents with `TypeName`, `Role`, `Prompt` (5-field Structured Handoff Packet: `1. MISSION`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION`), `Model` (`"inherit"` default; NEVER `"flash_lite"`), and `Workspace` (`inherit`, `branch`, or `share`). Record `conversationId` in the **Active Sub-agent Session Registry**.
-- `send_message`: **Warm Sub-agent Reuse** — multi-turn communication with running or completed sub-agents by `conversationId` (0s cold-start, 100% preserved file context), powered by **Reactive Async Wakeup** (never poll in a loop).
-- **Direct Plan-to-Executor Dispatch**: Once `PLAN-{feature}.md` exists in `:fast`, `:hard`, or `/orchestrate`, the Orchestrator dispatches tasks directly to execution engineers without a middleman `tech-lead` hop.
-- `manage_subagents` & `manage_task`: List, check status, or terminate subagents/background tasks.
-- Cross-platform alias: `runSubagent` (Cursor / Copilot / Claude Code compatibility).
+| Explicit `/cmd` or 17-Language Natural-Language Intent | Target Workflow File & CLI Gate |
+|--------------------------------------------------------|---------------------------------|
+| `/plan`, NL Planning & Architecture (*"lên kế hoạch"*, *"create a plan"*, *"制定计划"*, *"計画"*, *"계획"*) | `commands/plan.md` → `plan-hard.md` \| `plan-team.md` (`boomopen plan validate`) |
+| `/design`, NL UI/UX & Design Spec (*"thiết kế UI/UX"*, *"design system"*, *"设计界面"*, *"画面設計"*) | `commands/design.md` → `design-hard.md` \| `design-team.md` (`boomopen design validate`) |
+| `/research` \| `/brainstorm`, NL Deep Research & Ideation (*"nghiên cứu"*, *"brainstorm"*, *"深入研究"*) | `commands/research-team.md` \| `commands/brainstorm-team.md` (`auto_team`, `boomopen research <validate\|brief>`) |
+| `/review` \| `/debug` \| `/fix` \| `/test` (`:fast`, `:hard`, `:team`) | `commands/{review\|debug\|fix\|test}-{hard\|team}.md` (`check --strict-phase --no-stubs`) |
+| `/cook`, NL End-to-End Feature Build (*"xây dựng tính năng"*, *"build feature"*, *"开发新功能"*) | `commands/cook.md` → `cook-hard.md` \| `cook-team.md` (`boomopen cook <state\|packets\|verify-wave>`) |
+| `/code`, **Approved-Plan Continuation** (*"ok, em làm đi"*, *"proceed"*, *"开始执行"*, *"実行して"*, *"진행해"*) | `commands/code.md` → `code-hard.md` \| `code-team.md` (`boomopen cook <packets\|verify-wave>`) |
+| `/autopilot` (`:init`, `:run`, `:audit`), NL Multi-Session Project Autopilot | `commands/autopilot.md` → `autopilot-{init\|run\|audit}.md` (`boomopen ledger`) |
+| `/conduct` (`:council`, `:pipeline`), NL Cross-Engine Conductor & Multi-Engine Council | `commands/conduct.md` → `conduct-{council\|pipeline}.md` (`boomopen conduct`) |
+| `/docs`, `/report`, `/deploy`, `/ask`, `/orchestrate`, `/save`, `/recap`, `/settings` | `commands/{cmd}.md` → `commands/{cmd}-{variant}.md` |
 
 ---
 
-## 🌐 LANGUAGE
+## 🛠️ NATIVE SUB-AGENT PRIMITIVES, DIRECT DISPATCH & SCOPED WARM REUSE (`role#shard`)
 
-- Response to user → **Same as user's language**
-- Code & comments → **Always English**
-- Artifacts (`<appDataDir>\brain\<conversation-id>\`), `./reports/{topic}/`, and `./documents/` → **Same as user's input language (technical terms in English)**
-
----
-
-## 📜 ORCHESTRATION LAWS
-
-| Law | Rule | Enforcement |
-|-----|------|-------------|
-| **L1** | Zero-Latency Entry | Platform entrypoint (`GEMINI.md`) is pre-loaded; load `CORE`/`PHASES`/`AGENTS` on-demand for Mode B |
-| **L2** | Requirement Integrity | 100% fidelity, zero loss, parse EVERY requirement |
-| **L3** | Smart Threshold Gate | Mode A (≤ 2 files, 1 domain) executes directly; Mode B (> 2 files, ≥ 2 domains, `/cmd`) delegates |
-| **L4** | Quality-First Model | Default `Model: "inherit"` (Pro High); `"flash"` only for trivial chores; NEVER `"flash_lite"` |
-| **L5** | DAG & Contract-First | Run independent phases concurrently; lock `SHARED_CONTRACT` + disjoint `OWNED_FILES` before parallel coding |
-| **L6** | Language Compliance | Respond in user's lang; code/comments in English; reports/docs/artifacts in user's input lang (technical terms in English) |
-| **L7** | Direct Plan Dispatch | In Mode B, Orchestrator dispatches directly from `PLAN` to domain engineers (no middleman hop) |
-| **L8** | Warm Session Reuse | Track `Role → conversationId`; reuse warm sub-agents via `send_message` for follow-ups & fixes |
-| **L9** | Constraint Propagation | `scouter` → `planner` (`SHARED_CONTRACT`) → `engineer` (`OWNED_FILES`) chain locked |
-| **L10** | Clean Git Tree | Default transient deliverables go to `<appDataDir>\brain\<conversation-id>\` |
+- **⚡ `TypeName: "self"` (0-Turn Fast-Track Default)**: Spawns an isolated shard (`Role: "<role>#<shard>"`, `Model: "inherit"`) on Turn 1 with full `write_file` + `run_command` + `search_web` tools.
+- **⚠️ `TypeName: "research"` Limitation**: Has **NO `search_web`, NO `run_command`, and NO `write_file`** — **ALWAYS use `TypeName: "self"`** for `researcher`, `research-team`, `brainstorm-team`, or any Mode B `scouter` writing `SCOUT-*.md`!
+- **5-Field Packets & Warm Reuse**: Emit wave packets via `boomopen cook packets`, record `role#shard -> conversationId`, and reuse warm sessions via `send_message(Recipient: conversationId)` with **Reactive Async Wakeup**.
 
 ---
 
-## 📁 DELIVERABLES (BRAIN ARTIFACTS FIRST ON ANTIGRAVITY 2.0)
+## 🌐 LANGUAGE, 📜 ORCHESTRATION LAWS & 📁 DELIVERABLES
 
-| Agent | Antigravity 2.0 Brain Artifact Default | Workspace Path (Only on `/docs` or Explicit Export) |
-|-------|----------------------------------------|-----------------------------------------------------|
-| brainstormer | `<appDataDir>\brain\<conversation-id>\BRAINSTORM-{feature}.md` | `./reports/{topic}/brainstorms/BRAINSTORM-{feature}.md` |
-| researcher | `<appDataDir>\brain\<conversation-id>\RESEARCH-{feature}.md` | `./reports/{topic}/researchers/RESEARCH-{feature}.md` |
-| scouter | `<appDataDir>\brain\<conversation-id>\SCOUT-{feature}.md` | `./reports/{topic}/scouts/SCOUT-{feature}.md` |
-| designer | `<appDataDir>\brain\<conversation-id>\DESIGN-{feature}.md` | `./reports/{topic}/designs/DESIGN-{feature}.md` |
-| planner | `<appDataDir>\brain\<conversation-id>\PLAN-{feature}.md` | `./reports/{topic}/plans/PLAN-{feature}.md` |
-| reporter | `<appDataDir>\brain\<conversation-id>\REPORT-{type}-{date}.md` | `./reports/{topic}/general/REPORT-{type}-{date}.md` |
-| debugger | `<appDataDir>\brain\<conversation-id>\DEBUG-{issue}.md` | `./reports/{topic}/debugs/DEBUG-{issue}.md` |
-| tester | `<appDataDir>\brain\<conversation-id>\TEST-{feature}.md` | `./reports/{topic}/tests/TEST-{feature}.md` |
-| reviewer | `<appDataDir>\brain\<conversation-id>\REVIEW-{scope}.md` | `./reports/{topic}/reviews/REVIEW-{scope}.md` |
-| business-analyst | `<appDataDir>\brain\<conversation-id>\REQ-{feature}.md` | `./reports/{topic}/requirements/REQ-{feature}.md` |
-| performance-engineer | `<appDataDir>\brain\<conversation-id>\PERF-{component}.md` | `./reports/{topic}/performance/PERF-{component}.md` |
+- **Language**: Response & Artifacts → **Same as user's input language (technical terms in English)** | Code & comments → **Always English**.
+- **Laws L1–L10**: **(L1–L2)** Zero-Latency Entry & 100% Requirement/Ledger Integrity; **(L3–L4)** 4-Tier Elastic Swarm (`≤ 3–4` files/shard) & Quality-First `Model: "inherit"`; **(L5–L6)** 3-Wave Contract-First (`SHARED_CONTRACT` + disjoint `OWNED_FILES`) & Language Compliance; **(L7–L8)** Direct Plan Dispatch (`boomopen cook state|packets`) & Scoped Warm Reuse (`role#shard -> conversationId`); **(L9–L10)** 4-Layer Phase Ratchet (`boomopen research|design|plan validate` + `boomopen cook verify-wave` + `check --strict-phase --no-stubs` + `ledger verify` + `conduct`) & Clean Git Tree.
+
+| Agent Group | Antigravity 2.0 Brain Artifact Default | Workspace Path (Only on `/docs` or Explicit Export) |
+|-------------|----------------------------------------|-----------------------------------------------------|
+| brainstormer / researcher / scouter / council | `<appDataDir>\brain\<conversation-id>\{BRAINSTORM\|RESEARCH\|SCOUT\|COUNCIL}-{topic}.md` (**standalone `RESEARCH-{topic}.md` & `BRAINSTORM-{topic}.md` = 1 cohesive file `≤ 500` lines with `ArtifactMetadata.RequestFeedback: true` when proposing actionable next steps + validated via `boomopen research <validate\|brief>`**; `SCOUT`, `COUNCIL`, & per-shard `*-v{k}.md` notes use `UserFacing: false, RequestFeedback: false`) | `./reports/{topic}/{type_plural}/{TYPE}-{topic}.md` |
+| designer / planner / debugger / tester / reviewer | `<appDataDir>\brain\<conversation-id>\{DESIGN\|PLAN\|DEBUG\|TEST\|REVIEW}-{scope}.md` (**`PLAN-{scope}.md` & `DESIGN-{scope}.md` = 1 cohesive file `≤ 500` lines with `ArtifactMetadata.RequestFeedback: true` for 1-click "Proceed" button + validated via `boomopen plan validate` / `boomopen design <validate\|contract>` + optional `DESIGN-PREVIEW-{scope}.html`**; `DEBUG`/`TEST`/`REVIEW` use `RequestFeedback: false`) | `./reports/{topic}/{type_plural}/{TYPE}-{scope}.md` (and `./DESIGN.md`) |
+| reporter / business-analyst / perf | `<appDataDir>\brain\<conversation-id>\{REPORT\|REQ\|PERF}-{scope}.md` (`RequestFeedback: false`) | `./reports/{topic}/{general\|requirements\|performance}/{TYPE}-{scope}.md` |

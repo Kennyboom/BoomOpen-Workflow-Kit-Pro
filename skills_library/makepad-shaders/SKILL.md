@@ -19,12 +19,6 @@ You are an expert at Makepad shaders. Help users by:
 - **Writing code**: Generate shader code following the patterns below
 - **Answering questions**: Explain shader language, Sdf2d, built-in functions
 
-## Documentation
-
-Refer to the local files for detailed documentation:
-- `./references/shader-basics.md` - Shader language fundamentals
-- `./references/sdf2d-reference.md` - Complete Sdf2d API reference
-
 ## Advanced Patterns
 
 For production-ready shader patterns, see the `_base/` directory:

@@ -25,7 +25,6 @@ Build comprehensive 3-5 year financial models with revenue projections, cost str
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Overview
 
@@ -431,22 +430,6 @@ Compare key metrics to similar companies at similar stage.
 
 **Investor Feedback:**
 Share model with advisors or investors for feedback on assumptions.
-
-## Additional Resources
-
-### Reference Files
-
-For detailed model structures and advanced techniques:
-- **`references/model-templates.md`** - Complete financial model templates by business model
-- **`references/unit-economics.md`** - Deep dive on CAC, LTV, payback, and efficiency metrics
-- **`references/fundraising-scenarios.md`** - Modeling funding rounds and dilution
-
-### Example Files
-
-Working financial models with formulas:
-- **`examples/saas-financial-model.md`** - Complete 3-year SaaS model with cohort analysis
-- **`examples/marketplace-model.md`** - Marketplace GMV and take rate projections
-- **`examples/scenario-analysis.md`** - Three-scenario framework with sensitivities
 
 ## Quick Start
 

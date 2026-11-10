@@ -54,8 +54,6 @@ G.add_edges_from([(1, 3), (2, 4)])
 G.add_edge(1, 4, weight=0.8, relation='interacts')
 ```
 
-**Reference**: See `references/graph-basics.md` for comprehensive guidance on creating, modifying, examining, and managing graph structures, including working with attributes and subgraphs.
-
 ### 2. Graph Algorithms
 
 NetworkX provides extensive algorithms for network analysis:
@@ -96,8 +94,6 @@ is_connected = nx.is_connected(G)
 components = list(nx.connected_components(G))
 ```
 
-**Reference**: See `references/algorithms.md` for detailed documentation on all available algorithms including shortest paths, centrality measures, clustering, community detection, flows, matching, tree algorithms, and graph traversal.
-
 ### 3. Graph Generators
 
 Create synthetic networks for testing, simulation, or modeling:
@@ -135,8 +131,6 @@ G = nx.grid_2d_graph(m=5, n=7)
 # Random tree
 G = nx.random_tree(n=100, seed=42)
 ```
-
-**Reference**: See `references/generators.md` for comprehensive coverage of all graph generators including classic, random, lattice, bipartite, and specialized network models with detailed parameters and use cases.
 
 ### 4. Reading and Writing Graphs
 
@@ -185,8 +179,6 @@ G = nx.from_numpy_array(A)
 A = nx.to_scipy_sparse_array(G)
 G = nx.from_scipy_sparse_array(A)
 ```
-
-**Reference**: See `references/io.md` for complete documentation on all I/O formats including CSV, SQL databases, Cytoscape, DOT, and guidance on format selection for different use cases.
 
 ### 5. Visualization
 
@@ -249,8 +241,6 @@ plt.tight_layout()
 plt.savefig('network.png', dpi=300, bbox_inches='tight')
 plt.savefig('network.pdf', bbox_inches='tight')  # Vector format
 ```
-
-**Reference**: See `references/visualization.md` for extensive documentation on visualization techniques including layout algorithms, customization options, interactive visualizations with Plotly and PyVis, 3D networks, and publication-quality figure creation.
 
 ## Working with NetworkX
 
@@ -408,25 +398,6 @@ nx.write_gml(G, 'file.gml')
 nx.from_pandas_edgelist(df, 'source', 'target')
 nx.to_pandas_edgelist(G)
 ```
-
-## Resources
-
-This skill includes comprehensive reference documentation:
-
-### references/graph-basics.md
-Detailed guide on graph types, creating and modifying graphs, adding nodes and edges, managing attributes, examining structure, and working with subgraphs.
-
-### references/algorithms.md
-Complete coverage of NetworkX algorithms including shortest paths, centrality measures, connectivity, clustering, community detection, flow algorithms, tree algorithms, matching, coloring, isomorphism, and graph traversal.
-
-### references/generators.md
-Comprehensive documentation on graph generators including classic graphs, random models (Erdős-Rényi, Barabási-Albert, Watts-Strogatz), lattices, trees, social network models, and specialized generators.
-
-### references/io.md
-Complete guide to reading and writing graphs in various formats: edge lists, adjacency lists, GraphML, GML, JSON, CSV, Pandas DataFrames, NumPy arrays, SciPy sparse matrices, database integration, and format selection guidelines.
-
-### references/visualization.md
-Extensive documentation on visualization techniques including layout algorithms, customizing node and edge appearance, labels, interactive visualizations with Plotly and PyVis, 3D networks, bipartite layouts, and creating publication-quality figures.
 
 ## Additional Resources
 

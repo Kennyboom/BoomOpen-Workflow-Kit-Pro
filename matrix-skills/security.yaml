@@ -8,7 +8,7 @@
 domain: security
 name: "Security Engineering"
 description: "Threat modeling, secure coding, compliance"
-skill_count: 105
+skill_count: 106
 
 skills:
   # --------------------------------------------------------------------------
@@ -299,7 +299,7 @@ skills:
   # NEW SKILLS (Auto-cataloged 68 skills)
   # --------------------------------------------------------------------------
 
-  - skill_id: 007
+  - skill_id: "007"
     category: community
     priority_score: 6
     relevance_mapping:

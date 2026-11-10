@@ -1,4 +1,6 @@
-display_name: "/fix"
-short_description: "🔧 Fix Router — Route to issue resolution workflows"
-brand_color: "#EF4444"
-allow_implicit_invocation: true
+interface:
+  display_name: "/fix"
+  short_description: "🔧 Fix Router — Smart-Hybrid Bug Resolution Router (Approved-Debug Fast-Forward, Fail-First TDD & Persistent Verification)"
+  brand_color: "#EF4444"
+policy:
+  allow_implicit_invocation: true

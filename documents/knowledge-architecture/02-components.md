@@ -46,7 +46,7 @@ graph LR
 
     subgraph "Knowledge"
         MS["Matrix Skills<br/>(19 domains)"]
-        SK["Skill Modules<br/>(1,430+)"]
+        SK["Skill Modules<br/>(1,460+)"]
     end
 
     subgraph "Independent"
@@ -260,7 +260,7 @@ Each agent file follows a standard structure:
 | Attribute | Value |
 |-----------|-------|
 | **Name** | Matrix Skills (HSOL Static Layer) |
-| **Responsibility** | Provide a pre-curated registry of 1,430 skills across 19 domains, indexed for fitness-based resolution |
+| **Responsibility** | Provide a pre-curated registry of 1,462 skills across 19 domains, indexed for fitness-based resolution |
 | **Key Files** | `matrix-skills/_index.yaml` (central registry), `matrix-skills/_dynamic.yaml` (community skills), `matrix-skills/{domain}.yaml` (19 domain files) |
 | **Interfaces** | **Input**: Agent profile (e.g., `backend:execution`). **Output**: Sorted skill set filtered by relevance and fitness score. |
 | **Dependencies** | None — static YAML data |
@@ -297,7 +297,7 @@ Each agent file follows a standard structure:
 |-----------|-------|
 | **Name** | Skill Modules |
 | **Responsibility** | Provide domain-specific knowledge, best practices, and patterns that agents read to produce higher-quality output |
-| **Key Files** | `skills/*/SKILL.md` (1,430+ directories, each with a SKILL.md file) |
+| **Key Files** | `skills/*/SKILL.md` (1,462 (22 core in `skills/` + 1,440 in `skills_library/`) directories, each with a SKILL.md file) |
 | **Interfaces** | Read-only — agents load SKILL.md content and follow its instructions |
 | **Dependencies** | Referenced by Matrix Skills domain files; discovered by HSOL resolution or `find-skills` dynamic discovery |
 | **Structure** | Each skill is a self-contained directory with at minimum a `SKILL.md` defining best practices |
@@ -311,7 +311,7 @@ Each agent file follows a standard structure:
 | **Name** | CLI Installer |
 | **Responsibility** | Copy framework files from npm package to each platform's global directory, performing `{TOOL}` placeholder substitution |
 | **Key Files** | `cli/install.js` (main), `cli/README.md` (usage docs) |
-| **Interfaces** | **Input**: `npx boomopen-workflow-kit install [tool\|--all]`. **Output**: Files in `~/.{tool}/skills/boomopen-workflow-kit/`. |
+| **Interfaces** | **Input**: `boomopen install [tool\|--all]`. **Output**: Files in `~/.{tool}/skills/boomopen-workflow-kit/`. |
 | **Dependencies** | Node.js >=18.0.0, built-in modules only (`fs`, `path`, `os`, `readline`) |
 | **Platforms Supported** | Cursor, GitHub Copilot, Claude Code (via Antigravity path), Codex, Antigravity/Gemini |
 
@@ -319,13 +319,13 @@ Each agent file follows a standard structure:
 
 | Command | Action |
 |---------|--------|
-| `npx boomopen-workflow-kit install cursor` | Install to `~/.cursor/skills/boomopen-workflow-kit/` |
-| `npx boomopen-workflow-kit install copilot` | Install to `~/.copilot/skills/boomopen-workflow-kit/` |
-| `npx boomopen-workflow-kit install antigravity` | Install to Gemini/Antigravity path |
-| `npx boomopen-workflow-kit install codex` | Install to `~/.codex/skills/boomopen-workflow-kit/` |
-| `npx boomopen-workflow-kit install --all` | Install to all platforms |
-| `npx boomopen-workflow-kit uninstall [tool]` | Remove from specified platform |
-| `npx boomopen-workflow-kit list` | Show installed platforms |
+| `boomopen install cursor` | Install to `~/.cursor/skills/boomopen-workflow-kit/` |
+| `boomopen install copilot` | Install to `~/.copilot/skills/boomopen-workflow-kit/` |
+| `boomopen install antigravity` | Install to Gemini/Antigravity path |
+| `boomopen install codex` | Install to `~/.codex/skills/boomopen-workflow-kit/` |
+| `boomopen install --all` | Install to all platforms |
+| `boomopen uninstall [tool]` | Remove from specified platform |
+| `boomopen list` | Show installed platforms |
 
 ### Replacement Maps (from cli/install.js)
 
@@ -410,7 +410,7 @@ Each platform template directory contains platform-specific configuration files:
 | REFERENCE.md | `rules/REFERENCE.md` | Command table (14), agent table (21), NLP detection, deliverable paths |
 | PHASES.md | `rules/PHASES.md` | Phase output format (standard + Golden Triangle), requirements registry |
 | ERRORS.md | `rules/ERRORS.md` | Error classification (5 classes), recovery protocol, anti-patterns (10) |
-| _index.yaml | `matrix-skills/_index.yaml` | HSOL config, 1,430 skills, 19 domains, discovery settings |
+| _index.yaml | `matrix-skills/_index.yaml` | HSOL config, 1,476 skill entries (1,462 unique), 19 domains, discovery settings |
 | package.json | `package.json` | Version, scripts, deps, files array, engine requirements |
 | cli/install.js | `cli/install.js` | Platform configs (5), replacement maps, directory paths |
 | cook.md | `commands/cook.md` | Example router: pre-flight, routing logic, variant table |

@@ -258,13 +258,5 @@ with ServiceBusClient(
 6. **Use message batches** for high-throughput scenarios
 7. **Set `max_wait_time`** to avoid infinite blocking
 
-## Reference Files
-
-| File | Contents |
-|------|----------|
-| references/patterns.md | Competing consumers, sessions, retry patterns, request-response, transactions |
-| references/dead-letter.md | DLQ handling, poison messages, reprocessing strategies |
-| scripts/setup_servicebus.py | CLI for queue/topic/subscription management and DLQ monitoring |
-
 ## When to Use
 This skill is applicable to execute the workflow or actions described in the overview.

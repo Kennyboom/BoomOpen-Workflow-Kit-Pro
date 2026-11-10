@@ -1,21 +1,50 @@
 ---
 name: skill-seeker
-description: "Core skill used to search and discover the other 1,430+ niche skills stored in the library."
-version: "5.5"
+description: Core skill used to search and discover the 1,440 specialized library skills (1,462 total indexed skills in compact-index.json) without bloating context.
+version: "5.5.0"
 ---
 
-# Skill Seeker (v5.5 2-Step Fast Lookup)
+# Skill Seeker — 2-Step O(1) Progressive Skill Lookup (v5.5.0)
 
-The Agent has **1,430+ specialized skills** stored in the dormant skill library (`~/.{TOOL}/skills_library/`). They are not loaded into the context window by default to prevent token limit issues and context budget saturation.
+> **PURPOSE**: Discover and load specialized domain guidance from BoomOpen's **1,440 dormant library skills** (`~/.{TOOL}/skills_library/`) alongside the **22 active core skills** (`~/.{TOOL}/skills/`), totaling **1,462 indexed skills** in `matrix-skills/compact-index.json` — while keeping context consumption minimal.
 
-## When to Use
-Use this capability whenever the user asks for:
-- A niche framework, tool, or library not present in the current active skills (e.g., Ansible, Terraform, specialized AI models, hardware rules, FDA compliance rules, specific language syntax like Haskell or Rust, etc.).
-- A capability that you suspect exists but isn't explicitly listed in `<skills>`.
+---
 
-## 2-Step Fast Lookup Protocol
-1. **Step 1 — Check Pre-Compiled Compact Index First**:
-   - Inspect `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/compact-index.json` (or search by keyword in `~/.{TOOL}/skills_library/`) to locate the exact skill ID and relative path in O(1) time.
-2. **Step 2 — Load Only the Matched `SKILL.md`**:
-   - Read `~/.{TOOL}/skills_library/<skill-id>/SKILL.md` (where `{TOOL}` resolves to `gemini/config`, `claude`, `codex`, `cursor`, or `copilot`).
-   - Apply the loaded skill's rules and patterns directly to the current task.
+## 1. When to Invoke `skill-seeker`
+
+Use this 2-step lookup protocol whenever a task involves:
+- A specialized framework, cloud service, protocol, or engine not covered in sufficient depth by the 22 pre-listed core skills (e.g., Stripe webhooks, Temporal workflows, Drizzle/Supabase RLS, Better Auth, OWASP LLM Agent security, WebGPU/TSL, Unity 6 DOTS, Godot 4 shaders, Terraform/OpenTofu, Kubernetes, BigQuery, HL7/FHIR).
+- Assigning domain-specific skill pointers inside a Mode B **5-Field Handoff Packet** so specialist sub-agents (`backend-engineer#1`, `frontend-engineer#1`, `security-engineer`, etc.) load the exact `1–3` relevant `SKILL.md` files on Turn 1.
+
+---
+
+## 2. Mandatory 2-Step O(1) Lookup Protocol (`rules/SKILLS.md`)
+
+> ⛔ **ANTI-CRAWLING RULE**: **NEVER** glob or read dozens of `SKILL.md` files across `skills_library/` sequentially! Always resolve via the pre-compiled index first, then load **at most `1–3` matched `SKILL.md` files** per task/shard.
+
+### Step 1 — Query the Pre-Compiled Index (`compact-index.json` or Domain Matrix)
+1. Check the active `<skills>` list in context first (`22` core skills).
+2. If a deeper specialist skill is needed, query `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/compact-index.json` (which indexes all `22` core + `1,440` library = **`1,462` skills** with descriptions, triggers, and relative paths) using `Grep` / keyword search — or inspect the relevant domain catalog in `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/*.yaml` (`backend.yaml`, `frontend.yaml`, `security.yaml`, `ai-agents.yaml`, `cloud-devops.yaml`, `data-ml.yaml`, `mobile.yaml`, `game-dev.yaml`, `testing.yaml`).
+
+### Step 2 — Load Only the Exact Matched `SKILL.md` (`1–3` Max)
+- Read `~/.{TOOL}/skills_library/<skill-id>/SKILL.md` directly (the installer maps `~/.{TOOL}/` automatically to `~/.gemini/config/`, `~/.claude/`, `~/.codex/`, `~/.cursor/`, or `~/.copilot/`).
+- If the matched skill includes helper scripts or `references/*.md` files, load **only** the specific reference file needed for your subtask.
+
+---
+
+## 3. High-Value 2026 Library Skills Quick-Reference
+
+| Domain | High-Signal `skills_library/<skill-id>/SKILL.md` |
+|--------|--------------------------------------------------|
+| **Frontend & Visual Craft** | `anti-ai-slop-visual-craft`, `tailwind-v4-design-tokens`, `shadcn-radix-headless-composition`, `nextjs-15-react-19-patterns` |
+| **Backend, Auth & Data** | `better-auth-typescript`, `hono-trpc-typesafe-apis`, `drizzle-orm-postgres`, `stripe-billing-webhooks-2026` |
+| **Testing & Accessibility** | `vitest-msw-testing-patterns`, `wcag-22-accessibility-ergonomics`, `performance-profiling` |
+| **Security & DevSecOps** | `owasp-llm-agent-security-2025`, `vulnerability-scanner`, `terraform-opentofu-production` |
+| **Mobile & Desktop** | `tauri-v2-rust-desktop-mobile`, `expo-react-native-2026`, `flutter-riverpod-impeller` |
+| **Game Engineering** | `unity-6-dots-ecs-architecture`, `godot-4-gdscript-shaders-2d-3d`, `webgpu-wgsl-three-tsl`, `react-three-fiber-rapier-3d`, `multiplayer-netcode-colyseus`, `pixijs-v8-phaser-2d-games` |
+
+---
+
+## 4. Sub-Agent Handoff Integration
+
+When orchestrating Mode B sub-agents (`planner`, `cook`, `code`, `autopilot`), resolve the exact library skill paths once during planning/dispatch and include them in the sub-agent's **5-Field Handoff Packet** (`READ_ONLY_FILES` / Skill Pointers) so each shard loads its specialist `SKILL.md` in `1` deterministic `read_file` call with zero search overhead.

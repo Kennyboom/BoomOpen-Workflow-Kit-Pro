@@ -1,25 +1,31 @@
 ---
 name: mobile-design
-description: Mobile-first design thinking and decision-making for iOS 18 and Android Material 3 Expressive apps. Touch interaction, performance patterns, platform conventions, and Tauri v2 mobile/desktop patterns.
-allowed-tools: Read, Glob, Grep, Bash
+description: Mobile-first design thinking and decision-making for iOS 18 and Android Material 3 Expressive apps. Enforces the 6-Block DESIGN-{task}.md spec, 5-State Mobile UI Matrix, 44pt/48dp touch targets, safe-area tokens, and Tauri v2 / React Native / Flutter patterns.
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+version: 5.5.0
 ---
 
-# Mobile Design System (2026 Edition)
+# Mobile Design System (v5.5 — 2026 iOS 18 HIG & Material 3 Expressive Edition)
 
 > **Philosophy:** Touch-first. Battery-conscious. Platform-respectful. Offline-capable.
-> **Core Principle:** Mobile is NOT a small desktop. THINK mobile constraints, ASK platform choice.
+> **Core Principle:** Mobile is NOT a small desktop. Lock a 6-Block `DESIGN-{task}.md` (`<= 500` lines, `RequestFeedback: true`) and validate via `boomopen design validate` BEFORE writing mobile UI code.
 
 ---
 
 ## 🔧 Runtime Scripts & 2026 Specialized Skills
 
-**Execute these for validation:**
+**Execute these for design specification and validation:**
 
 | Script / Skill | Purpose | Path / Usage |
 |----------------|---------|--------------|
-| `scripts/mobile_audit.py` | Mobile UX & Touch Audit | `python skills/mobile-design/scripts/mobile_audit.py <project_path>` |
+| `design-spec` | 6-Block `DESIGN-{task}.md` & `DESIGN_CONTRACT` format | `../design-spec/SKILL.md` (`skills/design-spec/SKILL.md`) |
+| `boomopen design validate` | `< 50ms` static gate (`DESIGN-G1..G4`) on `DESIGN-{task}.md` | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design validate "<path-to-DESIGN.md>"` |
+| `scripts/mobile_audit.py` | Mobile UX, Touch Target (`44pt`/`48dp`) & List Perf Audit | `python ~/.{TOOL}/skills/mobile-design/scripts/mobile_audit.py <project_path>` |
 | `ios18-hig-material3-expressive` | iOS 18 HIG + Material 3 Expressive Design System | `../../skills_library/ios18-hig-material3-expressive/SKILL.md` (`skills_library/ios18-hig-material3-expressive/SKILL.md`) |
+| `wcag-22-accessibility-ergonomics` | WCAG 2.2 AA mobile ergonomics, VoiceOver/TalkBack & Dynamic Type | `../../skills_library/wcag-22-accessibility-ergonomics/SKILL.md` (`skills_library/wcag-22-accessibility-ergonomics/SKILL.md`) |
 | `tauri-v2-rust-desktop-mobile` | Tauri v2 Cross-Platform Desktop & iOS/Android Mobile | `../../skills_library/tauri-v2-rust-desktop-mobile/SKILL.md` (`skills_library/tauri-v2-rust-desktop-mobile/SKILL.md`) |
+
+> `python` means your Python 3 launcher: use `python3` on macOS/Linux, or `py -3` on Windows, if `python` is not on PATH.
 
 ---
 
@@ -335,13 +341,28 @@ For complete decision trees: [decision-trees.md](decision-trees.md)
 
 ### Before Release
 
-- [ ] **console.log removed?**
-- [ ] **SecureStore for sensitive data?**
-- [ ] **SSL pinning enabled?**
-- [ ] **Lists optimized (memo, keyExtractor)?**
-- [ ] **Memory cleanup on unmount?**
-- [ ] **Tested on low-end devices?**
-- [ ] **Accessibility labels on all interactive elements?**
+- [ ] **6-Block `DESIGN-{task}.md` validated (`boomopen design validate`)?**
+- [ ] **All 5 Mobile UI States implemented (`Default`, `Loading/Skeleton`, `Empty`, `Error/Offline`, `Disabled/Pressed`)?**
+- [ ] **Touch targets `>= 44×44pt` (iOS 18) / `>= 48×48dp` (Android M3 Expressive) with `>= 8px` gap?**
+- [ ] **Safe-area tokens (`safe-area-inset-*` / `useSafeAreaInsets`) & `min-h-dvh` applied?**
+- [ ] **console.log removed & SecureStore/Keychain used for sensitive tokens?**
+- [ ] **Lists optimized (`FlashList`/`FlatList` memo + `keyExtractor`) & `mobile_audit.py` passing?**
+
+---
+
+## 📐 6-Block `DESIGN-{task}.md` Alignment, Safe-Area Tokens & 5-State Mobile Matrix
+
+Every mobile or cross-platform UI task MUST produce `<appDataDir>\brain\<conversation-id>\DESIGN-{task}.md` (`<= 500` lines single cohesive file, `ArtifactMetadata.RequestFeedback: true`) containing:
+1. **Hit-Target & Safe-Area Tokens in `DESIGN_CONTRACT`**:
+   - Minimum interactive target tokens: `--target-ios: 44px` (`44×44pt`), `--target-android: 48px` (`48×48dp`), `--target-gap: 8px`.
+   - Safe-area insets: `padding-top: env(safe-area-inset-top)`, `padding-bottom: max(16px, env(safe-area-inset-bottom))` (or React Native `useSafeAreaInsets()` / Flutter `SafeArea`), and `min-h-dvh` for WebView/Tauri v2 shells.
+   - OLED dark surface ladder: Use `oklch(0.12 0.012 260)` (`#0A0C10`) canvas + `oklch(0.16 0.014 260)` elevated cards to prevent OLED black-smear during scrolling.
+2. **5-State Mobile Component Matrix (`DESIGN-G2`)**:
+   - **`Default / Idle`**: Primary CTA anchored in bottom thumb zone; tabular numerals (`tabular-nums`) on counters/prices.
+   - **`Loading / Skeleton`**: Native-driver shimmer skeleton + non-blocking cached data banner when revalidating.
+   - **`Empty State`**: Thumb-reachable primary action + concise illustration.
+   - **`Error / Offline State`**: Explicit offline queue status + single-tap **Retry** button in thumb zone.
+   - **`Disabled / Pressed / Focus-Visible`**: Spring press scale (`0.97`), haptic trigger (`UIImpactFeedbackGenerator` / `HapticFeedback`), and VoiceOver/TalkBack focus order.
 
 ---
 

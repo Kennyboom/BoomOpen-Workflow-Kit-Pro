@@ -416,15 +416,3 @@ async fn build_client(
 5. **Cleanup on drop**: Abort background tasks when rooms are closed
 6. **Use Cx::post_action for results**: Posted actions are handled in App::handle_actions
 7. **Use SegQueue for high-frequency updates**: Lock-free for room list updates
-
-## Reference Files
-
-- `references/matrix-client.md` - Matrix client setup and login patterns (Robrix)
-- `references/timeline-handling.md` - Matrix timeline subscription patterns (Robrix)
-- `references/moly-api-integration.md` - Moly API integration patterns
-  - OpenAI client with SSE streaming
-  - Platform-agnostic async streams
-  - MCP (Model Context Protocol) integration
-  - Tool approval flow
-  - MolyClient for local server
-  - BotContext for multi-provider support

@@ -1,3 +1,5 @@
+import { COMMAND_COUNT, findKitCommand } from './kitStats'
+
 export interface CommandVariant {
   name: string
   description: string
@@ -79,6 +81,7 @@ export const commandCategories: CommandCategory[] = [
         variants: [
           { name: 'fast', description: 'Quick review' },
           { name: 'hard', description: 'Deep review' },
+          { name: 'team', description: 'Golden Triangle adversarial review' },
         ],
         example: '/review the changes in this PR',
       },
@@ -116,8 +119,19 @@ export const commandCategories: CommandCategory[] = [
         variants: [
           { name: 'fast', description: 'Quick ideas' },
           { name: 'hard', description: 'Deep exploration' },
+          { name: 'team', description: 'Golden Triangle adversarial ideation' },
         ],
         example: '/brainstorm how should we handle real-time notifications',
+      },
+      {
+        name: '/research',
+        description: 'Deep technical research with multi-source triangulation and cited findings.',
+        variants: [
+          { name: 'fast', description: 'Quick lookup' },
+          { name: 'hard', description: 'Multi-wave deep research' },
+          { name: 'team', description: 'Golden Triangle 3-vector research' },
+        ],
+        example: '/research compare Drizzle and Prisma for edge runtimes',
       },
       {
         name: '/design',
@@ -207,6 +221,45 @@ export const commandCategories: CommandCategory[] = [
       },
     ],
   },
+  {
+    name: 'Orchestration & Control',
+    description: 'Autonomous multi-phase autopilot, multi-engine council, swarm orchestration, and unified settings',
+    icon: '🎼',
+    color: 'cyan',
+    commands: [
+      {
+        name: '/autopilot',
+        description: 'Multi-session autonomous project autopilot with persistent .boomopen/project-ledger.json tracking.',
+        variants: [
+          { name: 'init', description: 'Ingest spec docs and build Master Project DAG Ledger' },
+          { name: 'run', description: 'Execute the next pending phase end-to-end with QA gates' },
+          { name: 'audit', description: 'Audit implemented code against spec and ledger' },
+        ],
+        example: '/autopilot:init docs/PRD.md docs/ARCHITECTURE.md',
+      },
+      {
+        name: '/conduct',
+        description: 'Cross-engine conductor and parallel multi-engine council across Claude, Codex, Antigravity, Cursor, and Copilot.',
+        variants: [
+          { name: 'council', description: 'Parallel multi-engine consensus & blind peer review' },
+          { name: 'pipeline', description: 'Cross-engine Author != Critic pipeline' },
+        ],
+        example: '/conduct:council architect a zero-downtime billing migration',
+      },
+      {
+        name: '/orchestrate',
+        description: 'Dynamic elastic multi-agent swarm orchestration with cognitive load sharding (role#shard).',
+        variants: [],
+        example: '/orchestrate full-stack checkout refactor across 4 domains',
+      },
+      {
+        name: '/settings',
+        description: 'Interactive Web Control Center & CLI settings manager synced across all 5 AI platforms.',
+        variants: [],
+        example: '/settings preset smart-hybrid',
+      },
+    ],
+  },
 ]
 
 // Quick reference commands for docs page
@@ -214,12 +267,19 @@ export const quickReferenceCommands = [
   { cmd: '/cook', desc: 'Full feature implementation', variants: ':fast, :hard, :team' },
   { cmd: '/fix', desc: 'Bug fix with investigation', variants: ':fast, :hard, :team' },
   { cmd: '/test', desc: 'Generate test suites', variants: ':fast, :hard, :team' },
-  { cmd: '/review', desc: 'Code review', variants: ':fast, :hard' },
-  { cmd: '/plan', desc: 'Create implementation plan', variants: ':fast, :hard, :team' },
+  { cmd: '/review', desc: 'Code review', variants: ':fast, :hard, :team' },
+  { cmd: '/research', desc: 'Deep technical research (boomopen research)', variants: ':fast, :hard, :team' },
+  { cmd: '/brainstorm', desc: 'Orthogonal ideation & MCDA pre-mortem', variants: ':fast, :hard, :team' },
+  { cmd: '/design', desc: '6-Block UI/UX & token contract (boomopen design)', variants: ':fast, :hard, :team' },
+  { cmd: '/plan', desc: 'Contract-first blueprint (boomopen plan)', variants: ':fast, :hard, :team' },
   { cmd: '/debug', desc: 'Root cause analysis', variants: ':fast, :hard, :team' },
   { cmd: '/report', desc: 'Create/update reports and summaries', variants: ':fast, :hard, :team' },
+  { cmd: '/autopilot', desc: 'Multi-session project autopilot', variants: ':init, :run, :audit' },
+  { cmd: '/conduct', desc: 'Cross-engine conductor & council', variants: ':council, :pipeline' },
+  { cmd: '/orchestrate', desc: 'Elastic multi-agent swarm', variants: 'role#shard' },
+  { cmd: '/settings', desc: 'Unified Web UI & CLI settings', variants: 'ui, preset, set' },
   { cmd: '/docs', desc: 'Generate documentation', variants: ':core, :business, :audit' },
-  { cmd: '/deploy', desc: 'Deployment workflows', variants: ':check, :preview, :production' },
+  { cmd: '/deploy', desc: 'Deployment workflows', variants: ':check, :preview, :production, :rollback' },
 ]
 
 // Natural language detection examples
@@ -229,6 +289,8 @@ export const naturalLanguageExamples = [
   { input: '"add tests for the API"', detects: '/test' },
   { input: '"plan the refactoring"', detects: '/plan' },
   { input: '"review this code"', detects: '/review' },
+  { input: '"run multi-phase project from spec"', detects: '/autopilot' },
+  { input: '"run parallel multi-engine council"', detects: '/conduct:council' },
   { input: '"status report for sprint"', detects: '/report' },
 ]
 
@@ -236,14 +298,30 @@ export const naturalLanguageExamples = [
 export const quickStartCommands = [
   { cmd: '/cook add user authentication', desc: 'Full feature implementation' },
   { cmd: '/fix the login bug', desc: 'Bug fix with investigation' },
-  { cmd: '/test add tests for API', desc: 'Generate test suites' },
+  { cmd: '/autopilot:init docs/SPEC.md', desc: 'Multi-phase project autopilot' },
+  { cmd: '/conduct:council review architecture', desc: 'Multi-engine council consensus' },
   { cmd: '/plan redesign the database', desc: 'Create implementation plan' },
-  { cmd: '/report status report for sprint', desc: 'Create/update reports' },
+  { cmd: '/settings', desc: 'Open Unified Settings & Web UI' },
 ]
 
-// Get total command count
-export const getTotalCommands = () => {
-  return commandCategories.reduce((acc, cat) => acc + cat.commands.length, 0)
+// Keep listed variants in step with commands/<name>-<variant>.md (kit-stats.json is generated at build).
+const DEFAULT_VARIANT_DESCRIPTIONS: Record<string, string> = {
+  fast: 'Quick execution',
+  hard: 'Comprehensive',
+  team: 'Golden Triangle multi-agent execution',
 }
+for (const category of commandCategories) {
+  for (const command of category.commands) {
+    const kitCommand = findKitCommand(command.name.replace(/^\//, ''))
+    if (!kitCommand) continue
+    for (const variant of kitCommand.variants) {
+      if (command.variants.some((existing) => existing.name === variant)) continue
+      command.variants.push({ name: variant, description: DEFAULT_VARIANT_DESCRIPTIONS[variant] ?? `${variant} variant` })
+    }
+  }
+}
+
+// Total base commands shipped in commands/*.md (via kit-stats.json)
+export const getTotalCommands = (): number => COMMAND_COUNT
 
 export const totalCommands = getTotalCommands()

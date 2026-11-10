@@ -6,6 +6,8 @@ source: community
 date_added: "2026-02-27"
 ---
 
+> **Skill folder:** paths below that start with `$SKILL_DIR` are relative to the folder that contains this SKILL.md. BoomOpen installs vault skills at `~/.<tool>/skills_library/last30days` (for example `~/.claude/skills_library/last30days`, `~/.codex/skills_library/last30days` or `~/.gemini/config/skills_library/last30days`). Set it before running a command, e.g. `SKILL_DIR=~/.claude/skills_library/last30days`.
+
 # last30days: Research Any Topic from the Last 30 Days
 
 Research ANY topic across Reddit, X, and the web. Surface what people are actually discussing, recommending, and debating right now.
@@ -98,7 +100,7 @@ trap 'rm -f "$TOPIC_FILE"' EXIT
 cat <<'LAST30DAYS_TOPIC' > "$TOPIC_FILE"
 $ARGUMENTS
 LAST30DAYS_TOPIC
-python3 ~/.claude/skills/last30days/scripts/last30days.py "$(cat "$TOPIC_FILE")" --emit=compact 2>&1
+python3 $SKILL_DIR/scripts/last30days.py "$(cat "$TOPIC_FILE")" --emit=compact 2>&1
 ```
 
 The script will automatically:

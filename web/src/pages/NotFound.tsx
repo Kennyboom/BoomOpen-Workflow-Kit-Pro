@@ -4,7 +4,7 @@ import { Button, Section } from '../components/ui'
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen bg-bg-primary">
+    <div className="min-h-screen bg-bg-primary">
       <Section background="gradient" spacing="xl" className="min-h-[80vh] flex items-center">
         <div className="text-center max-w-2xl mx-auto">
           <motion.div
@@ -89,6 +89,6 @@ export default function NotFound() {
           </motion.div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

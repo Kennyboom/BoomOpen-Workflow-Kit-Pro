@@ -1,4 +1,6 @@
-display_name: "/review"
-short_description: "🔍 Review Router — Route to code review workflows"
-brand_color: "#10B981"
-allow_implicit_invocation: true
+interface:
+  display_name: "/review"
+  short_description: "🔍 Review Router — SOTA 2026 Multi-Lens Adversarial Code/Security/Perf Review, Cross-Engine Critic (Author != Critic) & 1-Click Proceed to /fix"
+  brand_color: "#10B981"
+policy:
+  allow_implicit_invocation: true

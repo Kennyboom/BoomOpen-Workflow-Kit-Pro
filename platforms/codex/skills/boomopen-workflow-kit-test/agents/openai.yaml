@@ -1,4 +1,6 @@
-display_name: "/test"
-short_description: "🧪 Test Router — Route to testing workflows"
-brand_color: "#10B981"
-allow_implicit_invocation: true
+interface:
+  display_name: "/test"
+  short_description: "🧪 Test Router — SOTA 2026 Zero-Test-Gaming Pyramid, App-Code READ_ONLY Lock, Elastic Test Shards & Deterministic CLI Verification"
+  brand_color: "#10B981"
+policy:
+  allow_implicit_invocation: true

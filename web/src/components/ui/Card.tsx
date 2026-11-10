@@ -1,5 +1,6 @@
 import { forwardRef, type HTMLAttributes, type AnchorHTMLAttributes } from 'react'
-import { cn } from '../../lib/utils'
+import { Link } from 'react-router-dom'
+import { cn, isInternalPath } from '../../lib/utils'
 
 type CardVariant = 'default' | 'elevated' | 'bordered'
 
@@ -98,6 +99,14 @@ export const Card = forwardRef<HTMLDivElement | HTMLAnchorElement, CardProps>(
 
     if (props.as === 'link') {
       const { href, ...linkProps } = rest as CardAsLink
+      // Same-site paths use client-side navigation instead of a full page reload.
+      if (isInternalPath(href)) {
+        return (
+          <Link ref={ref as React.Ref<HTMLAnchorElement>} to={href} className={classes} {...linkProps}>
+            {children}
+          </Link>
+        )
+      }
       return (
         <a
           ref={ref as React.Ref<HTMLAnchorElement>}

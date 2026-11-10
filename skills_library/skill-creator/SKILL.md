@@ -8,6 +8,8 @@ tags: "[automation, scaffolding, skill-creation, meta-skill]"
 date_added: "2026-02-27"
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`resources/templates/readme-template.md`, `resources/templates/skill-template-codex.md`, `resources/templates/skill-template-copilot.md`, `scripts/validate-skill-content.sh`, `scripts/validate-skill-yaml.sh`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # skill-creator
 
 ## Purpose
@@ -586,5 +588,3 @@ Executable utilities for skill maintenance:
 
 - **Anthropic Official Skill Development Guide:** https://github.com/anthropics/claude-plugins-official/blob/main/plugins/plugin-dev/skills/skill-development/SKILL.md
 - **Repository:** https://github.com/yourusername/cli-ai-skills
-- **Writing Style Guide:** `resources/templates/writing-style-guide.md`
-- **Progress Tracker Template:** `resources/templates/progress-tracker.md`

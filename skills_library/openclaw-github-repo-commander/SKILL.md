@@ -9,6 +9,9 @@ author: wd041216-bit
 tags: [github, git, repository, audit, cleanup, workflow, devtools, automation, code-review, security]
 tools: [claude, cursor]
 ---
+
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/repo-audit.sh`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # OpenClaw GitHub Repo Commander
 
 ## Overview

@@ -1,4 +1,6 @@
-display_name: "/design:hard"
-short_description: "⚡⚡⚡ Full Design — Complete design process with research"
-brand_color: "#EC4899"
-allow_implicit_invocation: true
+interface:
+  display_name: "/design:hard"
+  short_description: "⚡⚡⚡ Full Design — 2x faster 2-Wave parallel discovery (ui-ux-pro-max + token scout), 6-Block cohesive DESIGN spec, live HTML preview & 4-Gate CLI validation"
+  brand_color: "#EC4899"
+policy:
+  allow_implicit_invocation: true

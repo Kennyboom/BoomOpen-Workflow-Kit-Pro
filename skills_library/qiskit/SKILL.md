@@ -61,7 +61,6 @@ plot_histogram(counts)   # Results histogram
 
 ### 1. Setup and Installation
 For detailed installation, authentication, and IBM Quantum account setup:
-- **See `references/setup.md`**
 
 Topics covered:
 - Installation with uv
@@ -71,7 +70,6 @@ Topics covered:
 
 ### 2. Building Quantum Circuits
 For constructing quantum circuits with gates, measurements, and composition:
-- **See `references/circuits.md`**
 
 Topics covered:
 - Creating circuits with QuantumCircuit
@@ -83,7 +81,6 @@ Topics covered:
 
 ### 3. Primitives (Sampler and Estimator)
 For executing quantum circuits and computing results:
-- **See `references/primitives.md`**
 
 Topics covered:
 - **Sampler**: Get bitstring measurements and probability distributions
@@ -95,7 +92,6 @@ Topics covered:
 
 ### 4. Transpilation and Optimization
 For optimizing circuits and preparing for hardware execution:
-- **See `references/transpilation.md`**
 
 Topics covered:
 - Why transpilation is necessary
@@ -107,7 +103,6 @@ Topics covered:
 
 ### 5. Visualization
 For displaying circuits, results, and quantum states:
-- **See `references/visualization.md`**
 
 Topics covered:
 - Circuit drawings (text, matplotlib, LaTeX)
@@ -119,7 +114,6 @@ Topics covered:
 
 ### 6. Hardware Backends
 For running on simulators and real quantum computers:
-- **See `references/backends.md`**
 
 Topics covered:
 - IBM Quantum backends and authentication
@@ -134,7 +128,6 @@ Topics covered:
 
 ### 7. Qiskit Patterns Workflow
 For implementing the four-step quantum computing workflow:
-- **See `references/patterns.md`**
 
 Topics covered:
 - **Map**: Translate problems to quantum circuits
@@ -147,7 +140,6 @@ Topics covered:
 
 ### 8. Quantum Algorithms and Applications
 For implementing specific quantum algorithms:
-- **See `references/algorithms.md`**
 
 Topics covered:
 - **Optimization**: VQE, QAOA, Grover's algorithm
@@ -159,19 +151,6 @@ Topics covered:
 ## Workflow Decision Guide
 
 **If you need to:**
-
-- Install Qiskit or set up IBM Quantum account → `references/setup.md`
-- Build a new quantum circuit → `references/circuits.md`
-- Understand gates and circuit operations → `references/circuits.md`
-- Run circuits and get measurements → `references/primitives.md`
-- Compute expectation values → `references/primitives.md`
-- Optimize circuits for hardware → `references/transpilation.md`
-- Visualize circuits or results → `references/visualization.md`
-- Execute on IBM Quantum hardware → `references/backends.md`
-- Connect to third-party providers → `references/backends.md`
-- Implement end-to-end quantum workflow → `references/patterns.md`
-- Build specific algorithm (VQE, QAOA, etc.) → `references/algorithms.md`
-- Solve chemistry or optimization problems → `references/algorithms.md`
 
 ## Best Practices
 

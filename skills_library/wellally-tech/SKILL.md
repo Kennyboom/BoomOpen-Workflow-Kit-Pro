@@ -5,6 +5,10 @@ risk: unknown
 source: community
 ---
 
+> **Skill folder:** paths below that start with `$SKILL_DIR` are relative to the folder that contains this SKILL.md. BoomOpen installs vault skills at `~/.<tool>/skills_library/wellally-tech` (for example `~/.claude/skills_library/wellally-tech`, `~/.codex/skills_library/wellally-tech` or `~/.gemini/config/skills_library/wellally-tech`). Set it before running a command, e.g. `SKILL_DIR=~/.claude/skills_library/wellally-tech`.
+
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`knowledge-base/index.md`, `scripts/import_apple_health.py`, `scripts/import_fitbit.py`, `scripts/import_generic.py`, `scripts/import_oura.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # WellAlly Digital Health Integration
 
 Integrate multiple digital health data sources, connect to [WellAlly.tech](https://www.wellally.tech/) knowledge base, providing data import and knowledge reference for personal health management systems.
@@ -163,7 +167,7 @@ Find relevant articles from knowledge base index:
 ```javascript
 function searchKnowledgeBase(topic) {
   // Read knowledge base index
-  const kbIndex = readFile('.claude/skills/wellally-tech/knowledge-base/index.md');
+  const kbIndex = readFile(SKILL_DIR + '/knowledge-base/index.md');
 
   // Find matching articles
   const articles = kbIndex.categories.filter(cat =>
@@ -432,31 +436,31 @@ Visit [WellAlly.tech](https://www.wellally.tech/) Knowledge Base for full conten
 
 ### Knowledge Base Structure
 
-**Nutrition & Diet** (`knowledge-base/nutrition.md`)
+**Nutrition & Diet**
 - Dietary management guidelines
 - Food nutrition queries
 - Diet recommendations
 - Special dietary needs
 
-**Fitness & Exercise** (`knowledge-base/fitness.md`)
+**Fitness & Exercise**
 - Exercise tracking best practices
 - Activity recommendations
 - Exercise data interpretation
 - Training plans
 
-**Sleep Health** (`knowledge-base/sleep.md`)
+**Sleep Health**
 - Sleep quality analysis
 - Sleep improvement strategies
 - Sleep disorders overview
 - Sleep hygiene
 
-**Mental Health** (`knowledge-base/mental-health.md`)
+**Mental Health**
 - Stress management techniques
 - Mood tracking interpretation
 - Mental health resources
 - Mindfulness practice
 
-**Chronic Disease Management** (`knowledge-base/chronic-disease.md`)
+**Chronic Disease Management**
 - Hypertension monitoring
 - Diabetes management
 - COPD care

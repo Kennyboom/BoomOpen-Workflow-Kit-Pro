@@ -19,6 +19,8 @@ tools:
 - codex-cli
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`assets/apl-templates/chat-interface.json`, `assets/boilerplate/lambda_function.py`, `assets/interaction-models/pt-BR.json`, `references/smart-home-api.md`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # AMAZON ALEXA — Voz Inteligente com Claude
 
 ## Overview

@@ -93,8 +93,6 @@ df = result.collect()  # Now executes optimized query
 - Projection pushdown
 - Parallel execution
 
-For detailed concepts, load `references/core_concepts.md`.
-
 ## Common Operations
 
 ### Select
@@ -167,8 +165,6 @@ df.group_by("city").agg(
 )
 ```
 
-For detailed operation patterns, load `references/operations.md`.
-
 ## Aggregations and Window Functions
 
 ### Aggregation Functions
@@ -234,8 +230,6 @@ df = pl.read_json("file.json")
 df.write_json("output.json")
 ```
 
-For comprehensive I/O documentation, load `references/io_guide.md`.
-
 ## Transformations
 
 ### Joins
@@ -274,8 +268,6 @@ df.pivot(values="sales", index="date", columns="product")
 df.unpivot(index="id", on=["col1", "col2"])
 ```
 
-For detailed transformation examples, load `references/transformations.md`.
-
 ## Pandas Migration
 
 Polars offers significant performance improvements over pandas with a cleaner API. Key differences:
@@ -313,8 +305,6 @@ df.with_columns(
     col_b=pl.col("value") * 100,
 )
 ```
-
-For comprehensive migration guide, load `references/pandas_migration.md`.
 
 ## Best Practices
 
@@ -368,8 +358,6 @@ pl.col("x").fill_null(0)
 pl.col("x").is_null()
 pl.col("x").drop_nulls()
 ```
-
-For additional best practices and patterns, load `references/best_practices.md`.
 
 ## Resources
 

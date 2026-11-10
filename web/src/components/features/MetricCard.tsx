@@ -6,7 +6,7 @@ import { useIntersectionObserver } from '../../hooks/useIntersectionObserver'
 import { usePrefersReducedMotion } from '../../hooks/useMediaQuery'
 
 interface MetricCardProps {
-  /** Metric value (number as string, e.g., "70%", "310+") */
+  /** Metric value (number as string, e.g., "70%", "1,462", "21") */
   value: string
   /** Metric label */
   label: string
@@ -41,9 +41,10 @@ export function MetricCard({
   })
   const prefersReducedMotion = usePrefersReducedMotion()
   
-  // Extract numeric value and auto-detect suffix
-  const numericMatch = value.match(/^(\d+)(.*)$/)
-  const targetNumber = numericMatch ? parseInt(numericMatch[1], 10) : 0
+  // Extract numeric value (thousands separators allowed) and auto-detect suffix
+  const numericMatch = value.match(/^(\d[\d,]*)(.*)$/)
+  const targetNumber = numericMatch ? parseInt(numericMatch[1].replace(/,/g, ''), 10) : 0
+  const useGrouping = numericMatch ? numericMatch[1].includes(',') : false
   const detectedSuffix = suffix ?? (numericMatch ? numericMatch[2] : '')
   
   const [displayNumber, setDisplayNumber] = useState(prefersReducedMotion ? targetNumber : 0)
@@ -99,7 +100,7 @@ export function MetricCard({
       
       {/* Value */}
       <div className="text-4xl md:text-5xl font-bold gradient-text mb-2">
-        {displayNumber}
+        {useGrouping ? displayNumber.toLocaleString('en-US') : displayNumber}
         {detectedSuffix && (
           <span className="text-text-accent">{detectedSuffix}</span>
         )}

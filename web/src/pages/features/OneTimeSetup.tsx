@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
 import { Button, Card, CardContent, Badge, Section, SectionHeader } from '../../components/ui'
 import { PageSideDecorations, GradientBackground } from '../../components/decorations'
-import { SEO, pageSEO } from '../../components/seo'
 import { platforms } from '../../data'
+import { INSTALL_STEPS } from '../../data/install'
 
 const problems = [
   {
@@ -46,15 +46,14 @@ const benefits = [
 ]
 
 const howItWorks = [
-  { step: 1, title: 'Install Globally', description: 'Run the npm install command to set up BoomOpen Workflow Kit in your home directory.' },
+  { step: 1, title: 'Install Once', description: 'Clone the repository and run node cli/install.js install <tool> to set up BoomOpen Workflow Kit in your home directory.' },
   { step: 2, title: 'Open Any Project', description: 'Navigate to any project directory and start your AI coding assistant.' },
   { step: 3, title: 'Start Using Commands', description: 'Use commands like /cook, /fix, /test and let specialized agents handle the work.' },
 ]
 
 export default function OneTimeSetup() {
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <SEO {...pageSEO.oneTimeSetup} />
+    <div className="min-h-screen bg-bg-primary">
       
       {/* Hero Section */}
       <Section background="primary" spacing="xl" className="relative overflow-hidden">
@@ -131,12 +130,14 @@ export default function OneTimeSetup() {
             </div>
             <div className="px-4 py-4 font-mono text-sm md:text-base">
               <div className="mb-2">
-                <span className="text-text-muted"># Install globally</span>
+                <span className="text-text-muted"># Install from source (the kit is not published on npm)</span>
               </div>
-              <div>
-                <span className="text-text-muted">$</span>{' '}
-                <span className="text-text-accent">npm install -g @boomopen/workflow-kit</span>
-              </div>
+              {INSTALL_STEPS.map((step) => (
+                <div key={step} className="break-all">
+                  <span className="text-text-muted">$</span>{' '}
+                  <span className="text-text-accent">{step}</span>
+                </div>
+              ))}
             </div>
           </div>
         </motion.div>
@@ -256,6 +257,6 @@ export default function OneTimeSetup() {
           </div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

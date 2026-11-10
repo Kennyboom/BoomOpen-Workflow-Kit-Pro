@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { Button, Card, CardContent, Badge, Section, SectionHeader } from '../../components/ui'
 import { PageSideDecorations, GradientBackground } from '../../components/decorations'
-import { SEO, pageSEO } from '../../components/seo'
 import {
   skillDomains,
   skillInjectionExample,
@@ -13,11 +12,11 @@ import {
   totalSkills,
   totalDomains,
 } from '../../data'
+import { formatCount } from '../../data/kitStats'
 
 export default function MatrixSkills() {
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <SEO {...pageSEO.matrixSkills} />
+    <div className="min-h-screen bg-bg-primary">
 
       {/* Hero Section */}
       <Section background="primary" spacing="xl" className="relative overflow-hidden">
@@ -36,7 +35,7 @@ export default function MatrixSkills() {
               Hybrid Skill Orchestration
             </h1>
             <p className="text-body text-lg mb-8">
-              {totalSkills}+ matrix skills across {totalDomains} domains, plus on-demand community skills via find-skills.
+              {formatCount(totalSkills)} indexed matrix skills across {totalDomains} domains, plus on-demand community skills via find-skills.
               Agents get the right expertise automatically — matrix-first, dynamic when needed. Deep knowledge on demand.
             </p>
           </motion.div>
@@ -209,10 +208,10 @@ export default function MatrixSkills() {
       </Section>
 
       {/* Domain Categories */}
-      <Section background="secondary" spacing="xl">
+      <Section id="domains" background="secondary" spacing="xl">
         <SectionHeader
           title={`${totalDomains} Skill Domains`}
-          description={`${totalSkills}+ matrix skills organized by domain.`}
+          description={`${formatCount(totalSkills)} indexed matrix skills organized by domain.`}
         />
 
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -324,6 +323,6 @@ export default function MatrixSkills() {
           </div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

@@ -35,7 +35,7 @@ The project treats the **file system as the database**:
 | command_variants | `commands/{cmd}/*.md` | Markdown + YAML frontmatter | 54 | `{cmd}/{variant}` |
 | rules | `rules/*.md` | Markdown | 7 | filename (e.g., `CORE`) |
 | matrix_skill_domains | `matrix-skills/*.yaml` | YAML | 19 + 2 | filename (e.g., `backend`) |
-| skill_modules | `skills/*/SKILL.md` | Markdown | 1,430 | directory name (e.g., `nextjs-app-router`) |
+| skill_modules | `skills/*/SKILL.md` | Markdown | 1,462 (22 core in `skills/` + 1,440 in `skills_library/`) | directory name (e.g., `nextjs-app-router`) |
 | platform_configs | `cli/install.js` (TOOLS object) | JavaScript | 5 | object key (e.g., `cursor`) |
 | platform_entries | Root `*.md` | Markdown | 6 | filename (e.g., `COPILOT`) |
 
@@ -111,8 +111,8 @@ Since the AI model is the runtime, "queries" are file reads:
 |-----------|-----------|
 | Create | CLI installer copies files from npm package to `~/.{tool}/skills/boomopen-workflow-kit/` |
 | Read | AI model reads files from the installed directory at runtime |
-| Update | User runs `npm update @boomopen/workflow-kit` then `boomopen-workflow-kit install <tool>` |
-| Delete | `boomopen-workflow-kit uninstall <tool>` removes installed files |
+| Update | User runs `git pull` in the clone, then `boomopen install <tool>` (or `node cli/install.js install <tool>`) |
+| Delete | `boomopen uninstall <tool>` (or `node cli/install.js uninstall <tool>`) removes installed files |
 
 ### Why No Database
 

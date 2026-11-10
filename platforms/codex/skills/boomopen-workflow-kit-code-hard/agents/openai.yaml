@@ -1,4 +1,6 @@
-display_name: "/code:hard"
-short_description: "⚡⚡⚡ Full Development Cycle — Plan → Implement → Test → Review"
-brand_color: "#6366F1"
-allow_implicit_invocation: true
+interface:
+  display_name: "/code:hard"
+  short_description: "⚡⚡⚡ Full Code — Turn-1 Fast-Forward, 3-Wave Contract-First Implementation & Parallel Verification"
+  brand_color: "#3B82F6"
+policy:
+  allow_implicit_invocation: true

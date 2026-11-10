@@ -1,337 +1,146 @@
 #!/usr/bin/env python3
 """
-Full Verification Suite - BoomOpen Workflow Kit
-==========================================
+Full Verification Suite - BoomOpen Workflow Kit (v5.5.0)
+========================================================
 
-Runs COMPLETE validation including all checks + performance + E2E.
+Runs COMPLETE validation across security, code quality, data schemas, test suites,
+UI/UX & WCAG 2.2 AA accessibility, SEO & Core Web Vitals (LCP <= 2.5s,
+INP <= 200ms, CLS <= 0.1), Playwright E2E, mobile ergonomics, and i18n.
 Use this before deployment or major releases.
 
-Usage:
-    python scripts/verify_all.py . --url <URL>
+Usage (python3 on macOS/Linux, py on Windows also work):
+    python verify_all.py . --url <URL>
+
+Installed location: ~/.<tool>/skills/boomopen-workflow-kit/scripts/verify_all.py
 
 Includes ALL checks:
-    ✅ Security Scan (OWASP, secrets, dependencies)
-    ✅ Lint & Type Coverage
-    ✅ Schema Validation
-    ✅ Test Suite (unit + integration)
-    ✅ UX Audit (psychology, accessibility)
-    ✅ SEO & GEO Check
-    ✅ Lighthouse (Core Web Vitals)
-    ✅ Playwright E2E
-    ✅ Mobile Audit (if applicable)
-    ✅ Internationalization (i18n) Check
+    - Security Scan (OWASP Web + 2025/2026 LLM/Agentic, secrets, dependencies)
+    - API Validation & Type Coverage
+    - Database Schema Validation
+    - Test Suite (Vitest, Jest, Node --test, Pytest, Cargo, Go)
+    - UX Audit & WCAG 2.2 AA Accessibility Check
+    - SEO (INP/CWV, metadata, JSON-LD) & GEO Check
+    - Lighthouse Audit (Core Web Vitals) - opens the URL
+    - Playwright E2E - opens the URL
+    - Mobile UX & Ergonomics Audit (if applicable)
+    - Internationalization (i18n) Check
+
+Exit codes: 0 = all executed checks passed, 1 = a check failed or is missing,
+2 = invalid arguments.
 """
 
-import sys
-import subprocess
 import argparse
-from pathlib import Path
-from typing import List, Optional
+import sys
 from datetime import datetime
+from pathlib import Path
 
-# ANSI colors
-class Colors:
-    HEADER = '\033[95m'
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
+sys.dont_write_bytecode = True  # keep the installed kit free of __pycache__
 
-def print_header(text: str):
-    print(f"\n{Colors.BOLD}{Colors.CYAN}{'='*70}{Colors.ENDC}")
-    print(f"{Colors.BOLD}{Colors.CYAN}{text.center(70)}{Colors.ENDC}")
-    print(f"{Colors.BOLD}{Colors.CYAN}{'='*70}{Colors.ENDC}\n")
+from kit_checks import (  # noqa: E402
+    EXIT_USAGE, TARGET_URL, CheckSpec, is_valid_url, run_check, summarize,
+)
+from kit_console import Colors, force_utf8_output, print_error, print_header  # noqa: E402
 
-def print_step(text: str):
-    print(f"{Colors.BOLD}{Colors.BLUE}🔄 {text}{Colors.ENDC}")
+CHECK_TIMEOUT_SECONDS = 600
+REPORT_WIDTH = 70
+E2E_CATEGORY = "E2E Testing"
 
-def print_success(text: str):
-    print(f"{Colors.GREEN}✅ {text}{Colors.ENDC}")
-
-def print_warning(text: str):
-    print(f"{Colors.YELLOW}⚠️  {text}{Colors.ENDC}")
-
-def print_error(text: str):
-    print(f"{Colors.RED}❌ {text}{Colors.ENDC}")
-
-# Complete verification suite
 VERIFICATION_SUITE = [
-    # P0: Security (CRITICAL)
-    {
-        "category": "Security",
-        "checks": [
-            ("Security Scan", "skills_library/vulnerability-scanner/scripts/security_scan.py", True),
-        ]
-    },
-    
-    # P1: Code Quality (CRITICAL)
-    {
-        "category": "Code Quality",
-        "checks": [
-            ("API Validation", "skills/api-patterns/scripts/api_validator.py", False),
-            ("Type Coverage", "skills_library/lint-and-validate/scripts/type_coverage.py", False),
-        ]
-    },
-    
-    # P2: Data Layer
-    {
-        "category": "Data Layer",
-        "checks": [
-            ("Schema Validation", "skills/database-design/scripts/schema_validator.py", False),
-        ]
-    },
-    
-    # P3: Testing
-    {
-        "category": "Testing",
-        "checks": [
-            ("Test Suite", "skills/testing-patterns/scripts/test_runner.py", False),
-        ]
-    },
-    
-    # P4: UX & Accessibility
-    {
-        "category": "UX & Accessibility",
-        "checks": [
-            ("UX Audit", "skills/frontend-design/scripts/ux_audit.py", False),
-            ("Accessibility Check", "skills/frontend-design/scripts/accessibility_checker.py", False),
-        ]
-    },
-    
-    # P5: SEO & Content
-    {
-        "category": "SEO & Content",
-        "checks": [
-            ("SEO Check", "skills/seo-fundamentals/scripts/seo_checker.py", False),
-            ("GEO Check", "skills_library/geo-fundamentals/scripts/geo_checker.py", False),
-        ]
-    },
-    
-    # P6: Performance (requires URL)
-    {
-        "category": "Performance",
-        "requires_url": True,
-        "checks": [
-            ("Lighthouse Audit", "skills_library/performance-profiling/scripts/lighthouse_audit.py", True),
-        ]
-    },
-    
-    # P7: E2E Testing (requires URL)
-    {
-        "category": "E2E Testing",
-        "requires_url": True,
-        "checks": [
-            ("Playwright E2E", "skills/webapp-testing/scripts/playwright_runner.py", False),
-        ]
-    },
-    
-    # P8: Mobile (if applicable)
-    {
-        "category": "Mobile",
-        "checks": [
-            ("Mobile Audit", "skills/mobile-design/scripts/mobile_audit.py", False),
-        ]
-    },
-    
-    # P9: Internationalization
-    {
-        "category": "Internationalization",
-        "checks": [
-            ("i18n Check", "skills_library/i18n-localization/scripts/i18n_checker.py", False),
-        ]
-    },
+    ("Security", [
+        CheckSpec("Security Scan", "skills_library/vulnerability-scanner/scripts/security_scan.py", required=True),
+    ]),
+    ("Code Quality", [
+        CheckSpec("API Validation", "skills/api-patterns/scripts/api_validator.py"),
+        CheckSpec("Type Coverage", "skills_library/lint-and-validate/scripts/type_coverage.py"),
+    ]),
+    ("Data Layer", [
+        CheckSpec("Schema Validation", "skills/database-design/scripts/schema_validator.py"),
+    ]),
+    ("Testing", [
+        CheckSpec("Test Suite", "skills/testing-patterns/scripts/test_runner.py"),
+    ]),
+    ("UX & Accessibility", [
+        CheckSpec("UX Audit", "skills/frontend-design/scripts/ux_audit.py"),
+        CheckSpec("Accessibility Check", "skills/frontend-design/scripts/accessibility_checker.py"),
+    ]),
+    ("SEO & Content", [
+        CheckSpec("SEO Check", "skills/seo-fundamentals/scripts/seo_checker.py"),
+        CheckSpec("GEO Check", "skills_library/geo-fundamentals/scripts/geo_checker.py"),
+    ]),
+    ("Performance", [
+        CheckSpec("Lighthouse Audit", "skills_library/performance-profiling/scripts/lighthouse_audit.py",
+                  required=True, target=TARGET_URL),
+    ]),
+    (E2E_CATEGORY, [
+        CheckSpec("Playwright E2E", "skills/webapp-testing/scripts/playwright_runner.py", target=TARGET_URL),
+    ]),
+    ("Mobile", [
+        CheckSpec("Mobile Audit", "skills/mobile-design/scripts/mobile_audit.py"),
+    ]),
+    ("Internationalization", [
+        CheckSpec("i18n Check", "skills_library/i18n-localization/scripts/i18n_checker.py"),
+    ]),
 ]
 
-def resolve_script_path(project_path: Path, rel_path: str) -> Path:
-    """Resolve script path from project_path or kit repository root."""
-    candidate = project_path / rel_path
-    if candidate.exists():
-        return candidate
-    kit_root = Path(__file__).resolve().parent.parent
-    return kit_root / rel_path
 
-def run_script(name: str, script_path: Path, project_path: str, url: Optional[str] = None) -> dict:
-    """Run validation script"""
-    if not script_path.exists():
-        print_warning(f"{name}: Script not found, skipping")
-        return {"name": name, "passed": True, "skipped": True, "duration": 0}
-    
-    print_step(f"Running: {name}")
-    start_time = datetime.now()
-    
-    # Build command
-    cmd = ["python", str(script_path), project_path]
-    if url and ("lighthouse" in script_path.name.lower() or "playwright" in script_path.name.lower()):
-        cmd.append(url)
-    
-    # Run
-    try:
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=600  # 10 minute timeout for slow checks
-        )
-        
-        duration = (datetime.now() - start_time).total_seconds()
-        passed = result.returncode == 0
-        
-        if passed:
-            print_success(f"{name}: PASSED ({duration:.1f}s)")
-        else:
-            print_error(f"{name}: FAILED ({duration:.1f}s)")
-            if result.stderr:
-                print(f"  {result.stderr[:300]}")
-        
-        return {
-            "name": name,
-            "passed": passed,
-            "output": result.stdout,
-            "error": result.stderr,
-            "skipped": False,
-            "duration": duration
-        }
-    
-    except subprocess.TimeoutExpired:
-        duration = (datetime.now() - start_time).total_seconds()
-        print_error(f"{name}: TIMEOUT (>{duration:.0f}s)")
-        return {"name": name, "passed": False, "skipped": False, "duration": duration, "error": "Timeout"}
-    
-    except Exception as e:
-        duration = (datetime.now() - start_time).total_seconds()
-        print_error(f"{name}: ERROR - {str(e)}")
-        return {"name": name, "passed": False, "skipped": False, "duration": duration, "error": str(e)}
-
-def print_final_report(results: List[dict], start_time: datetime):
-    """Print comprehensive final report"""
-    total_duration = (datetime.now() - start_time).total_seconds()
-    
-    print_header("📊 FULL VERIFICATION REPORT")
-    
-    # Statistics
-    total = len(results)
-    passed = sum(1 for r in results if r["passed"] and not r.get("skipped"))
-    failed = sum(1 for r in results if not r["passed"] and not r.get("skipped"))
-    skipped = sum(1 for r in results if r.get("skipped"))
-    
-    print(f"Total Duration: {total_duration:.1f}s")
-    print(f"Total Checks: {total}")
-    print(f"{Colors.GREEN}✅ Passed: {passed}{Colors.ENDC}")
-    print(f"{Colors.RED}❌ Failed: {failed}{Colors.ENDC}")
-    print(f"{Colors.YELLOW}⏭️  Skipped: {skipped}{Colors.ENDC}")
-    print()
-    
-    # Category breakdown
-    print(f"{Colors.BOLD}Results by Category:{Colors.ENDC}")
-    current_category = None
-    for r in results:
-        # Print category header if changed
-        if r.get("category") and r["category"] != current_category:
-            current_category = r["category"]
-            print(f"\n{Colors.BOLD}{Colors.CYAN}{current_category}:{Colors.ENDC}")
-        
-        # Print result
-        if r.get("skipped"):
-            status = f"{Colors.YELLOW}⏭️ {Colors.ENDC}"
-        elif r["passed"]:
-            status = f"{Colors.GREEN}✅{Colors.ENDC}"
-        else:
-            status = f"{Colors.RED}❌{Colors.ENDC}"
-        
-        duration_str = f"({r.get('duration', 0):.1f}s)" if not r.get("skipped") else ""
-        print(f"  {status} {r['name']} {duration_str}")
-    
-    print()
-    
-    # Failed checks detail
-    if failed > 0:
-        print(f"{Colors.BOLD}{Colors.RED}❌ FAILED CHECKS:{Colors.ENDC}")
-        for r in results:
-            if not r["passed"] and not r.get("skipped"):
-                print(f"\n{Colors.RED}✗ {r['name']}{Colors.ENDC}")
-                if r.get("error"):
-                    error_preview = r["error"][:200]
-                    print(f"  Error: {error_preview}")
-        print()
-    
-    # Final verdict
-    if failed > 0:
-        print_error(f"VERIFICATION FAILED - {failed} check(s) need attention")
-        print(f"\n{Colors.YELLOW}💡 Tip: Fix critical (security, lint) issues first{Colors.ENDC}")
-        return False
-    else:
-        print_success("✨ ALL CHECKS PASSED - Ready for deployment! ✨")
-        return True
-
-def main():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run complete BoomOpen Workflow Kit verification suite",
+        description="Run complete BoomOpen Workflow Kit v5.5 verification suite",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python scripts/verify_all.py . --url http://localhost:3000
-  python scripts/verify_all.py . --url https://staging.example.com --no-e2e
-        """
+  python verify_all.py . --url http://localhost:3000
+  python verify_all.py . --url https://staging.example.com --no-e2e
+        """,
     )
     parser.add_argument("project", help="Project path to validate")
     parser.add_argument("--url", required=True, help="URL for performance & E2E checks")
     parser.add_argument("--no-e2e", action="store_true", help="Skip E2E tests")
-    parser.add_argument("--stop-on-fail", action="store_true", help="Stop on first failure")
-    
-    args = parser.parse_args()
-    
+    parser.add_argument("--stop-on-fail", action="store_true", help="Stop on first critical failure")
+    return parser.parse_args()
+
+
+def main() -> None:
+    force_utf8_output()
+    args = parse_args()
+
     project_path = Path(args.project).resolve()
-    
-    if not project_path.exists():
-        print_error(f"Project path does not exist: {project_path}")
-        sys.exit(1)
-    
-    print_header("🚀 BOOMOPEN WORKFLOW KIT - FULL VERIFICATION SUITE")
+    if not project_path.is_dir():
+        print_error(f"Project path is not an existing directory: {project_path}")
+        sys.exit(EXIT_USAGE)
+    if not is_valid_url(args.url):
+        print_error(f"--url must start with http:// or https:// (got: {args.url})")
+        sys.exit(EXIT_USAGE)
+
+    started = datetime.now()
+    print_header("🚀 BOOMOPEN WORKFLOW KIT - FULL VERIFICATION SUITE", REPORT_WIDTH)
     print(f"Project: {project_path}")
     print(f"URL: {args.url}")
-    print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    
-    start_time = datetime.now()
+    print(f"Started: {started.strftime('%Y-%m-%d %H:%M:%S')}")
+
     results = []
-    
-    # Run all verification categories
-    for suite in VERIFICATION_SUITE:
-        category = suite["category"]
-        requires_url = suite.get("requires_url", False)
-        
-        # Skip if requires URL and not provided
-        if requires_url and not args.url:
+    for category, checks in VERIFICATION_SUITE:
+        if args.no_e2e and category == E2E_CATEGORY:
             continue
-        
-        # Skip E2E if flag set
-        if args.no_e2e and category == "E2E Testing":
-            continue
-        
-        print_header(f"📋 {category.upper()}")
-        
-        for name, script_path, required in suite["checks"]:
-            script = resolve_script_path(project_path, script_path)
-            if not script.exists():
-                print_warning(f"{name}: Script not found ({script_path}), skipping")
-                results.append({"name": name, "passed": True, "skipped": True, "duration": 0, "category": category})
-                continue
-            result = run_script(name, script, str(project_path), args.url)
-            result["category"] = category
+        print_header(f"📋 {category.upper()}", REPORT_WIDTH)
+        for spec in checks:
+            result = run_check(spec, project_path, args.url, CHECK_TIMEOUT_SECONDS)
+            result.category = category
             results.append(result)
-            
-            # Stop on critical failure if flag set
-            if args.stop_on_fail and required and not result["passed"] and not result.get("skipped"):
-                print_error(f"CRITICAL: {name} failed. Stopping verification.")
-                print_final_report(results, start_time)
+            if args.stop_on_fail and spec.required and result.is_failure:
+                print_error(f"CRITICAL: {spec.name} failed. Stopping verification.")
+                summarize(results, "📊 FULL VERIFICATION REPORT", REPORT_WIDTH)
                 sys.exit(1)
-    
-    # Print final report
-    all_passed = print_final_report(results, start_time)
-    
+
+    total = (datetime.now() - started).total_seconds()
+    all_passed = summarize(results, "📊 FULL VERIFICATION REPORT", REPORT_WIDTH)
+    print(f"Total Duration: {total:.1f}s")
+    if all_passed:
+        print(f"{Colors.GREEN}✨ Ready for deployment ✨{Colors.ENDC}")
+    else:
+        print(f"{Colors.YELLOW}💡 Tip: Fix critical (security, lint, contract) issues first{Colors.ENDC}")
     sys.exit(0 if all_passed else 1)
+
 
 if __name__ == "__main__":
     main()

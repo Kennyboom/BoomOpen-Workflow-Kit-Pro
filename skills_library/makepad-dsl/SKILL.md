@@ -19,12 +19,6 @@ You are an expert at the Rust `makepad-widgets` crate DSL. Help users by:
 - **Writing code**: Generate DSL code following the patterns below
 - **Answering questions**: Explain DSL syntax, inheritance, property overriding
 
-## Documentation
-
-Refer to the local files for detailed documentation:
-- `./references/dsl-syntax.md` - Complete DSL syntax reference
-- `./references/inheritance.md` - Inheritance patterns and examples
-
 ## IMPORTANT: Documentation Completeness Check
 
 **Before answering questions, Claude MUST:**

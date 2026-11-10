@@ -46,7 +46,7 @@ The framework draws from several patterns without being a pure instance of any:
 | Influence | How It Manifests |
 |-----------|-----------------|
 | **Orchestrator/Choreography** | Single orchestrator delegates to specialist agents via tiered execution |
-| **Plugin Architecture** | 1,430 skill modules are independently discoverable and composable |
+| **Plugin Architecture** | 1,462 skill modules are independently discoverable and composable |
 | **Pipeline** | Commands execute as phase-sequential pipelines with exit criteria |
 | **Strategy Pattern** | Command routers select variant workflows (fast/hard/team/team) at runtime |
 | **Actor Model** | Agents communicate through append-only mailbox files, not direct calls |
@@ -95,7 +95,7 @@ graph TB
     end
 
     subgraph "SKILL LAYER — Knowledge"
-        MATRIX["Matrix Skills<br/>19 Domains · 1,430 Skills"]
+        MATRIX["Matrix Skills<br/>19 Domains · 1,462 Skills"]
         DYN["Dynamic Skills<br/>Community Discovery"]
         HSOL["HSOL Engine<br/>Fitness = 0.35×Semantic<br/>+ 0.25×Specificity<br/>+ 0.20×Trust<br/>+ 0.10×Freshness<br/>+ 0.10×Success"]
     end
@@ -168,7 +168,7 @@ The framework is organized into 5 distinct layers. Each layer has a clear respon
 
 | Attribute | Value |
 |-----------|-------|
-| **Files** | `matrix-skills/*.yaml` (19 domain files + _index.yaml + _dynamic.yaml), `skills/*/SKILL.md` (1,430+ modules) |
+| **Files** | `matrix-skills/*.yaml` (19 domain files + _index.yaml + _dynamic.yaml), `skills/*/SKILL.md` (22 core; 1,440 more in `skills_library/`) |
 | **Responsibility** | Provide domain-specific knowledge to agents based on profile matching and fitness scoring |
 | **Boundary** | Skills are read-only knowledge modules — they do not execute, call APIs, or modify state |
 | **Communicates With** | Agent Layer (upward, injected via HSOL based on agent profile) |
@@ -233,7 +233,7 @@ Additionally, 10 anti-patterns (A1–A10) are defined in `rules/ERRORS.md` as ex
 | TEAMS.md | `rules/TEAMS.md` | Golden Triangle roles (3), debate mechanism (max 3 rounds), C8 enforcement checkpoints |
 | ERRORS.md | `rules/ERRORS.md` | Error classes (E1–E4), recovery protocol, 10 anti-patterns (A1–A10) |
 | REFERENCE.md | `rules/REFERENCE.md` | Command table (14 commands), agent table (21 agents), deliverable path conventions |
-| _index.yaml | `matrix-skills/_index.yaml` | HSOL config, total skill count (1,430), discovery settings, async threshold (0.8) |
+| _index.yaml | `matrix-skills/_index.yaml` | HSOL config, total matrix entries (1,476; 1,462 unique), discovery settings, async threshold (0.8) |
 | package.json | `package.json` | Version 1.3.0, zero production deps, 5 platform install scripts, engine >=18.0.0 |
 | cli/install.js | `cli/install.js` | Platform configs (5), `{TOOL}` replacement maps, directory structure per platform |
 | cook.md | `commands/cook.md` | Example command router — routing logic, pre-flight rule loading, variant table |

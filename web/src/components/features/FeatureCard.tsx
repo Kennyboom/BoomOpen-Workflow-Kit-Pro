@@ -1,6 +1,7 @@
 import { ArrowRight, type LucideIcon } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { cn } from '../../lib/utils'
+import { Link } from 'react-router-dom'
+import { cn, isInternalPath } from '../../lib/utils'
 import { Badge } from '../ui/Badge'
 
 interface FeatureCardProps {
@@ -22,6 +23,8 @@ interface FeatureCardProps {
   className?: string
 }
 
+const MotionLink = motion.create(Link)
+
 /**
  * Feature card with icon, title, description, and arrow link
  * Gradient border appears on hover
@@ -36,9 +39,12 @@ export function FeatureCard({
   badgeVariant = 'purple',
   className,
 }: FeatureCardProps) {
+  const internal = isInternalPath(href)
+  // Same-site paths navigate client-side (no full page reload).
+  const MotionTag = internal ? MotionLink : motion.a
   return (
-    <motion.a
-      href={href}
+    <MotionTag
+      {...(internal ? { to: href } : { href })}
       className={cn(
         'group block relative h-full',
         'bg-bg-secondary rounded-xl overflow-hidden',
@@ -110,6 +116,6 @@ export function FeatureCard({
           />
         </div>
       </div>
-    </motion.a>
+    </MotionTag>
   )
 }

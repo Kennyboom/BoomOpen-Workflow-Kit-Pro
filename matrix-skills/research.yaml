@@ -18,7 +18,7 @@ skills:
     category: core
     priority: P0
     priority_score: 9
-    triggers: ["deep research", "research", "nghi?n c?u", "ph?n t?ch chuy?n s?u", "4-source triangulation", "STORM", "benchmark", "competitor teardown"]
+    triggers: ["deep research", "research", "nghiên cứu", "phân tích chuyên sâu", "4-source triangulation", "STORM", "benchmark", "competitor teardown"]
     relevance_mapping:
       agents: [researcher, brainstormer, scouter, tech-lead, business-analyst]
       profiles: ["research:*", "planning:discovery", "architecture:*"]

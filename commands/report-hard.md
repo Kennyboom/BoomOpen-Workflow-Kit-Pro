@@ -1,130 +1,122 @@
 ---
-description: ⚡ Detailed Report — Comprehensive project analysis and documentation
+description: "⚡⚡⚡ Detailed Report — Deep multi-source synthesis, existing-doc updates, or template generation with CLI Telemetry & Cohesive `REPORT-{topic}.md`"
 version: "5.5"
 category: documentation
 execution-mode: execute
 ---
 
-> **📂 Deliverable Routing (v5.5)**: On Antigravity 2.0, write transient deliverables (`BRAINSTORM`, `RESEARCH`, `SCOUT`, `DESIGN`, `PLAN`, `DEBUG`, `TEST`, `REVIEW`, `REPORT`, `MAILBOX`) to `<appDataDir>\brain\<conversation-id>\` to keep the Git tree clean (use `./reports/{topic}/` on non-Antigravity tools or when explicitly requested).
+# /report:hard — Comprehensive Evidence-Mined Project Report (`v5.5`)
 
----
-
-# /report:hard — Comprehensive Project Report
-
-> **MISSION**: Generate detailed output for **any topic** — reports, doc updates, or template-based files.
->
-> Use for: sprint reviews, technical docs, any-topic reports, updating existing files, or generating from user format/template.
+> **MISSION**: Produce an authoritative, evidence-backed deliverable for **any technical, product, or operational topic** — creating a single cohesive `REPORT-{topic}.md` (`<= 500` lines), updating existing workspace documentation, or populating a user-supplied template with **100% CLI/git/source provenance (`RPT-G1..G4`)**.
 
 <task>$ARGUMENTS</task>
 
 ---
 
-## ⚡ TURN-1 ZERO-TAX DISPATCH & ON-DEMAND RULES
+## ⚡ TURN-1 ZERO-TAX DISPATCH & PARALLEL FAN-OUT
 
-⚡ **TURN-1 ZERO-TAX DISPATCH**: Core orchestration laws and the 5-Field Handoff Packet (`1. MISSION`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION`) are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md` — route and launch Phase 1 sub-agents **immediately on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")`; load `./rules/*.md` on-demand in parallel only when needed.
+1. **Zero Pre-Flight Tax (`0-Turn` Native Dispatch)**: Core orchestration laws and the **5-Field Handoff Packet** (`1. MISSION & ACCEPTANCE CRITERIA`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION & DELIVERABLE`) are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md` — spawn Phase 1 discovery shards **immediately on Turn 1 in a single parallel batch** via `invoke_subagent(TypeName: "self", Model: "inherit")`.
+2. **Tiered Execution & Warm Session Reuse**:
 
-**Skills Resolution**: When delegating, load `SKILLS.md` on-demand for fitness calculation and dynamic discovery (hard/team variants enable find-skills).
-
----
-
-## 🔀 TIERED EXECUTION
-
-| Tier       | When               | Action                       |
-| ---------- | ------------------ | ---------------------------- |
-| **TIER 1** | Antigravity 2.0 Native Sub-Agents (`define_subagent`, `invoke_subagent`, `send_message`) or `runSubagent` EXISTS | Invoke isolated sub-agent (MANDATORY) |
-| **TIER 2** | Tool MISSING       | EMBODY agent file (FALLBACK) |
-
-**❌ Anti-Lazy**: Never use TIER 2 when TIER 1 tool available.
+| Tier | Condition | Action |
+|------|-----------|--------|
+| **TIER 1** | Native Sub-Agents (`invoke_subagent`, `send_message`) or `runSubagent` available | **MANDATORY**: Fan out parallel `scouter#report-1..k` (+ `researcher` when external context needed) on Turn 1 (`TypeName: "self"`, `Model: "inherit"`); track `role#shard -> conversationId` and reuse warm sessions via `send_message` |
+| **TIER 2** | Sub-agent tool unavailable | Load `~/.{TOOL}/skills/boomopen-workflow-kit/agents/{scouter,researcher,reporter}.md` sequentially |
 
 ---
 
-## 📁 DELIVERABLES (Reporter chooses from user intent)
+## 📁 DELIVERABLES & `ArtifactMetadata` ROUTING (`<= 500` Lines, Single File)
 
-| User intent | Reporter output |
-| ----------- | ---------------- |
-| **Create report** | New file: `<appDataDir>\brain\<conversation-id>\REPORT-{type}-{date}.md` (or `./reports/{topic}/general/REPORT-{type}-{date}` / path user asks) |
-| **Update existing** | **Edit** related files (docs, README, etc.); do **not** create new report unless also asked |
-| **From template** | New file(s) matching user format/template (e.g. after scouting source) |
+> [!IMPORTANT]
+> **SINGLE COHESIVE FILE LAW**: Never split reports into `{name}/` folders! Keep `<appDataDir>\brain\<conversation-id>\REPORT-{topic}.md` as **1 cohesive Markdown artifact (`<= 500` lines)**. Write to `./reports/{topic}/REPORT-{topic}.md` **ONLY** if explicitly requested by the user (or on non-Antigravity environments without `<appDataDir>`).
 
-| Agent      | Output (when creating)                          |
-| ---------- | ------------------------------------------------ |
-| researcher | `<appDataDir>\\brain\\<conversation-id>\\RESEARCH-{task}` (or `./reports/{topic}/researchers/RESEARCH-{task}`) (optional) |
-| scouter    | `<appDataDir>\\brain\\<conversation-id>\\SCOUT-{task}` (or `./reports/{topic}/scouts/SCOUT-{task}`) (optional)    |
-| reporter   | Per table above — create report **or** update existing **or** generate from template |
-
-All deliverables in `<appDataDir>\\brain\\<conversation-id>\\` (or `./reports/{topic}/`) → Write in the same language the user communicates with you. Code comments remain in English.
-**⚠️ Paths above = base names.** Small (≤ 150 lines) → create as `{name}.md`. Large (> 150 lines or ≥ 4 sections) → create as `{name}/` folder with `00-index.md` + section files.
+| Deliverable / Mode | Path | `ArtifactMetadata` |
+|--------------------|------|--------------------|
+| **Create Report (Default)** | `<appDataDir>\brain\<conversation-id>\REPORT-{topic}.md` (`<= 500` lines) | `Summary: "...", UserFacing: true, RequestFeedback: false` |
+| **Update Existing Mode** | Targeted workspace docs (`README.md`, `./documents/**`, etc.) | Omit (`N/A` — workspace edits) |
+| **From Template Mode** | `<appDataDir>\brain\<conversation-id>\REPORT-{topic}.md` (or user-specified path) | `Summary: "...", UserFacing: true, RequestFeedback: false` (when in Brain) |
+| **Telemetry / Recon Shards** | `<appDataDir>\brain\<conversation-id>\SCOUT-report-{1..k}.md` | `Summary: "...", UserFacing: false, RequestFeedback: false` |
+| **External Context (Optional)** | `<appDataDir>\brain\<conversation-id>\RESEARCH-report-{topic}.md` | `Summary: "...", UserFacing: false, RequestFeedback: false` |
 
 ---
 
-## ⛔ ABSOLUTE PROHIBITION — NO CODE
+## ⛔ ABSOLUTE PROHIBITION — ZERO APPLICATION CODE
 
-> **🔴 THIS WORKFLOW PRODUCES REPORTS ONLY. NO CODE.**
->
-> - ❌ NEVER write implementation code (TypeScript, Python, Rust, etc.)
-> - ❌ NEVER modify source files
-> - ❌ NEVER auto-implement findings or auto-transition to `/code`, `/cook`, `/fix`
-> - ✅ ONLY produce report/analysis files
->
-> If user wants implementation, they must EXPLICITLY invoke another workflow.
+- ❌ **NEVER** write or modify application source, schema, or test files (`READ_ONLY_FILES` lock across all codebase files; in **Update Existing** mode, edit *only* the targeted documentation files).
+- ❌ **NEVER** fabricate or estimate percentages, line counts, pass rates, or benchmark numbers.
+- ❌ **NEVER** auto-transition to `/code`, `/cook`, or `/fix` — stop after delivering the report.
+- ✅ Write deliverables in the **user's input language** (technical terms in English; escape currency dollars as `\$`).
 
 ---
 
-## ⛔ INCREMENTAL EXECUTION (MANDATORY)
+## 🎭 Phase 1: PARALLEL TELEMETRY MINING & DISCOVERY (`Turn 1` DAG Fan-Out)
 
-Execute phases using **DAG Parallel Fan-Out** for independent tracks, **Direct Plan-to-Executor Dispatch** (`Model: "inherit"`), and **Stateful Warm Sub-agent Reuse** (`send_message`) per `rules/PHASES.md` (v5.5).
+Launch independent discovery tracks **simultaneously in 1 Turn-1 batch** via `invoke_subagent(TypeName: "self", Model: "inherit")`:
 
----
+| Shard Key (`role#shard`) | Mission & Deterministic Commands | Disjoint Output (`UserFacing: false`) |
+|:-------------------------|:---------------------------------|:--------------------------------------|
+| `scouter#report-1..k` (`<= 3–4` modules/shard) | Run deterministic telemetry + deep `read_file` scan:<br/>• `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook state`<br/>• `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger status` *(if `.boomopen/project-ledger.json` exists)*<br/>• `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir>`<br/>• `git status --short` & `git log --stat -n 25` | `<appDataDir>\brain\<conversation-id>\SCOUT-report-{1..k}.md` (`RequestFeedback: false`) |
+| `researcher#report` *(optional — only if external benchmarks/standards needed)* | Gather primary external docs, benchmarks, or domain standards via `search_web` | `<appDataDir>\brain\<conversation-id>\RESEARCH-report-{topic}.md` (`RequestFeedback: false`) |
 
-## 🎭 Phase 1: RESEARCH
-
-| Agent  | `researcher`                                                |
-| ------ | ---------------------------------------------------------- |
-| Goal   | Research report scope, audience, and best practices for project/technical reports |
-| Output | `<appDataDir>\\brain\\<conversation-id>\\RESEARCH-{task}` (or `./reports/{topic}/researchers/RESEARCH-{task}`) (optional)       |
-| Exit   | Report scope and criteria defined, templates identified   |
+**Exit Criteria**: All quantitative metrics, git deltas, `boomopen` CLI outputs, and `file:line` citations captured in `SCOUT-report-*.md`.
 
 ---
 
-## 🎭 Phase 2: DEEP SCAN
+## 🎭 Phase 2: DATA SYNTHESIS & OUTPUT GENERATION (`RPT-G1..G4`)
 
-| Agent  | `scouter`                         |
-| ------ | --------------------------------- |
-| Goal   | Full codebase structural analysis |
-| Output | `<appDataDir>\\brain\\<conversation-id>\\SCOUT-{task}` (or `./reports/{topic}/scouts/SCOUT-{task}`) |
-| Exit   | Architecture and recent changes documented                 |
+| Attribute | Value |
+|-----------|-------|
+| **Agent** | `reporter` via `invoke_subagent(TypeName: "self", Model: "inherit")` |
+| **Input** | `SCOUT-report-{1..k}.md` (+ `RESEARCH-report-{topic}.md` and existing Brain `PLAN`/`TEST`/`REVIEW` artifacts) |
+| **Goal** | Cross-verify arithmetic and execute the inferred Output Mode (`Create report` / `Update existing` / `From template`) |
 
----
+### Mandatory Quality Gates (`RPT-G1..G4`)
+1. **`RPT-G1` (100% Provenance & Math Accuracy)**: Every count, ratio, pass rate, and milestone figure traces directly to Phase 1 CLI/git/file outputs.
+2. **`RPT-G2` (Executive Signal First)**: Open with a 5-bullet **Executive Summary** (`Status`, `Completed`, `Blockers/Risks`, `Key Metrics`, `Next Decisions`).
+3. **`RPT-G3` (Actionable Prioritized Recommendations)**: Every recommendation names concrete target files/commands, priority (`P0`–`P2`), effort, and expected impact (`0` vague platitudes).
+4. **`RPT-G4` (Single-File Cohesion & Rich Visuals)**: Single cohesive `REPORT-{topic}.md` (`<= 500` lines) using GitHub Alerts (`> [!IMPORTANT]`, `> [!WARNING]`), clickable `file:///` links, escaped `\$` currency, and valid Mermaid `xychart-beta` or `flowchart TD/LR` diagrams with quoted special-character labels (`id["Module (98% Pass)"]`).
 
-## 🎭 Phase 3: DATA SYNTHESIS
+### Canonical `REPORT-{topic}.md` Blueprint (Create Report Mode)
+```markdown
+# 📊 Comprehensive Report: {Topic}
+**Date**: {YYYY-MM-DD} | **Scope**: {modules / period} | **Audience**: {Engineering / Product / Leadership}
 
-| Agent       | `reporter`                                      |
-| ----------- | ------------------------------------------------ |
-| Prerequisite| **READ** RESEARCH + SCOUT outputs if present     |
-| Goal        | Aggregate data from Scouter, Plans, and History; identify discrepancies and milestones |
-| Exit        | Data synthesized, gaps and milestones identified |
+> [!IMPORTANT]
+> **Executive Summary**
+> - **Status**: {🟢 Healthy | 🟡 Needs Attention | 🔴 Critical}
+> - **Completed**: {verified deliverables, commits, milestones}
+> - **Blockers / Risks**: {evidence-backed risks}
+> - **Key Metrics**: {exact CLI/git counts}
+> - **Next Decisions**: {key decisions required}
 
----
+## 1. Methodology & Telemetry Provenance
+| Telemetry Source | Command / Artifact | Summary |
+|------------------|--------------------|---------|
+| Pipeline & Ledger | `boomopen cook state` / `boomopen ledger status` | `{verified}` |
+| Code Health | `boomopen check <dir>` | `{verified}` |
+| Git Activity | `git status` / `git log --stat` | `{verified}` |
 
-## 🎭 Phase 4: OUTPUT (create / update / from template)
+## 2. Quantitative Analysis & Visual Overview
+- KPI breakdown table + Mermaid `xychart-beta` or `flowchart TD/LR` (`id["Subsystem (Metric)"]`).
 
-| Agent | `reporter`                                                                 |
-| ----- | --------------------------------------------------------------------------- |
-| Goal  | From **user intent**: (1) create new report, (2) **update** existing files, or (3) generate from template/format |
-| Output| **Create**: `<appDataDir>\brain\<conversation-id>\REPORT-{type}-{date}.md` (or `./reports/{topic}/general/REPORT-{type}-{date}`). **Update**: edit related files. **Template**: file(s) matching user format. |
-| Exit  | Deliverable matches intent — report file, updated docs, or template-based file(s). |
+## 3. Detailed Evidence-Backed Findings
+### Finding {N}: {Title} (`Severity / Confidence`)
+- **Source Evidence**: `[basename](file:///.../path#L10-L30)` | **Impact**: {quantified}
+
+## 4. Prioritized Recommendations & Risk Matrix
+| Priority | Action | Target Files / Command | Effort | Expected Impact |
+|----------|--------|------------------------|--------|-----------------|
+| `P0`–`P2` | {concrete action} | `{verified path / CLI}` | {S/M/L} | {measurable outcome} |
+```
 
 ---
 
 ## ⛔ HARD STOP — AWAIT USER DECISION
 
 > **WORKFLOW COMPLETE. DO NOT PROCEED FURTHER.**
+> Present the deliverable link(s) per user intent and **STOP**:
+> 1. ✅ **Create Report** → `<appDataDir>\brain\<conversation-id>\REPORT-{topic}.md`
+> 2. ✅ **Update Existing** → Summary of updated workspace documentation files with `file:///` links
+> 3. ✅ **From Template** → Populated template deliverable verified against `RPT-G1..G4`
 >
-> Present deliverable file links to user and STOP. Wait for explicit user command.
->
-> Deliverable per **user intent**:
-> 1. ✅ **Create report** → `<appDataDir>\brain\<conversation-id>\REPORT-{type}-{date}.md` (or `./reports/{topic}/general/REPORT-{type}-{date}`)
-> 2. ✅ **Update existing** → Related files edited; list what was updated
-> 3. ✅ **From template** → File(s) matching user format
->
-> **⛔ DO NOT auto-transition to any workflow. YIELD control to user.**
+> **⛔ DO NOT auto-transition to any implementation workflow. YIELD control to user.**

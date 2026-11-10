@@ -1,10 +1,10 @@
 ---
-description: "📊 Intelligence Report Template + Recon Steps — Referenced by docs-core.md"
+description: "📊 Intelligence Report Template + Cross-Platform Recon Steps — Referenced by docs-core.md"
 version: "5.5"
 type: reference
 ---
 
-# Phase 1: Deep Codebase Reconnaissance — Full Protocol
+# Phase 1: Deep Codebase Reconnaissance — Full Protocol (`v5.5`)
 
 ## Step 1.0: PRE-FLIGHT — Mode Detection
 
@@ -12,11 +12,11 @@ BEFORE any scanning, check `./documents/`:
 
 | Knowledge Area | Folder Exists | Flat File Exists | Mode |
 |----------------|---------------|------------------|------|
-| knowledge-overview/ | Yes/No | Yes/No | CREATE/UPDATE/MIGRATE |
-| knowledge-architecture/ | Yes/No | Yes/No | CREATE/UPDATE/MIGRATE |
-| knowledge-domain/ | Yes/No | Yes/No | CREATE/UPDATE/MIGRATE |
-| knowledge-source-base/ | Yes/No | Yes/No | CREATE/UPDATE/MIGRATE |
-| knowledge-standards/ | Yes/No | Yes/No | CREATE/UPDATE/MIGRATE |
+| `knowledge-overview/` | Yes/No | Yes/No | CREATE/UPDATE/MIGRATE |
+| `knowledge-architecture/` | Yes/No | Yes/No | CREATE/UPDATE/MIGRATE |
+| `knowledge-domain/` | Yes/No | Yes/No | CREATE/UPDATE/MIGRATE |
+| `knowledge-source-base/` | Yes/No | Yes/No | CREATE/UPDATE/MIGRATE |
+| `knowledge-standards/` | Yes/No | Yes/No | CREATE/UPDATE/MIGRATE |
 
 Mode rules:
 - Folder exists with sub-files → **UPDATE** (check each sub-file for staleness)
@@ -27,7 +27,7 @@ Mode rules:
 - List all top-level directories and files
 - Recursively map directory tree (depth 3-4)
 - Identify entry points: `main.*`, `index.*`, `app.*`, `server.*`, `package.json`, `Dockerfile`
-- **Direct-read minimum**: README*, CHANGELOG*, package.json, at least ONE entry-point file per runtime surface
+- **Direct-read minimum**: `README*`, `CHANGELOG*`, `package.json`, at least ONE entry-point file per runtime surface
 
 ## Step 1.2: Tech Stack Detection
 - Parse package manifests for dependencies
@@ -46,10 +46,22 @@ Run targeted search passes:
 - Locate data models, API definitions, business logic
 - Map entity relationships from foreign keys, references, imports
 
-## Step 1.5: Context-Window Optimization (Large Codebases)
-- Run `bash skills/docs-core/scripts/scan-project.sh [project-root]` first
-- Read selectively: config → entry points → routes → models → tests
-- Use grep for pattern search instead of reading entire files
+## Step 1.5: Context-Window Optimization (Large Codebases — Cross-Platform)
+- Run the fast directory/manifest inventory using the native OS shell (so Windows PowerShell environments never fail if `bash` is unavailable):
+  - **macOS / Linux / Git Bash**:
+    ```bash
+    bash ~/.{TOOL}/skills_library/docs-core/scripts/scan-project.sh [project-root]
+    ```
+  - **Windows PowerShell / Cross-Platform Node.js Fallback (Zero `bash` Dependency)**:
+    ```powershell
+    Get-ChildItem -Path . -Recurse -Depth 3 -Force | Where-Object { $_.FullName -notmatch '(\\|/)(node_modules|\.git|dist|build|\.next|target|__pycache__|coverage)(\\|/|$)' } | Select-Object FullName, Mode, Length
+    ```
+    *(Or portable Node.js across all OSes)*:
+    ```bash
+    node -e "const fs=require('fs'),p=require('path'),skip=new Set(['node_modules','.git','dist','build','.next','target','__pycache__']);(function w(d,l){if(l>3)return;for(const e of fs.readdirSync(d,{withFileTypes:true})){if(skip.has(e.name))continue;const f=p.join(d,e.name);console.log((e.isDirectory()?'[D] ':'[F] ')+f);if(e.isDirectory())w(f,l+1);}})(process.argv[1]||'.',0)" [project-root]
+    ```
+- Shard large repos across parallel `scouter#1..k` shards (`≤ 3–4` heavy files per shard, `TypeName: "self"`, `Model: "inherit"`) and read selectively: `config → entry points → routes → models → tests`.
+- Use `grep_search` / `rg` for pattern discovery instead of reading entire generated or vendor files.
 
 ---
 
@@ -105,6 +117,6 @@ Run targeted search passes:
 ```
 
 ## Anti-Shallow Guardrails
-- NEVER generate content from script output alone — must verify with direct file reads
+- NEVER generate content from script output alone — must verify with direct file reads (`read_file`)
 - Each knowledge area must have at least 3 evidence files in the ledger
 - If evidence is weak, explicitly state it — do NOT guess

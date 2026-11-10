@@ -1,75 +1,93 @@
 ---
 name: research-team
-description: "3-Vector Parallel Deep-Research Golden Triangle Team (Anthropic Multi-Agent Research + Stanford STORM) — simultaneous multi-angle web/doc/codebase hunting, adversarial cross-examination, and evidence-gated synthesis"
-version: "5.5"
+team: research-team
+summary: "Elastic 3-to-6 Vector Deep-Research Golden Diamond Team (v5.5) — collision-free shard outputs (RESEARCH-{topic}-v1..k.md), Epistemic Confidence tagging, Contradiction Arbitration, Anti-Sycophancy 'When NOT to Use', HANDOFF_BRIEF, and deterministic CLI validation (boomopen research validate --mode research)"
+version: 5.5.0
+pattern: elastic-golden-diamond
 category: team-protocol
 domain: research
-roles:
+roles: [techlead, executor, reviewer]
+role_agents:
   - research-team-techlead
   - research-team-executor
   - research-team-reviewer
 deliverables:
   research: "<appDataDir>\\brain\\<conversation-id>\\RESEARCH-{topic}.md"
   scout: "<appDataDir>\\brain\\<conversation-id>\\SCOUT-{topic}.md"
+  shards: "<appDataDir>\\brain\\<conversation-id>\\RESEARCH-{topic}-v{1..k}.md"
   mailbox: "<appDataDir>\\brain\\<conversation-id>\\MAILBOX-{date}.md"
 ---
 
-# 🔬🔺 Research Team — 3-Vector Parallel Deep-Research Protocol (v5.5)
+# 🔬💎 Research Team — Elastic 3-to-6 Vector Deep-Research Protocol (v5.5)
 
-> **ARCHITECTURE**: Inspired by **Anthropic's Multi-Agent Research System** (Lead Researcher + Parallel Subagent Vector Hunting) and **Stanford STORM** (Multi-Perspective Questioning & Cross-Examination).
-> **CRITICAL UPGRADE (v5.5)**: All **3 members** of `research-team` are **active autonomous researchers** spawned via `invoke_subagent(TypeName: "self", Model: "inherit")` with full `search_web`, `read_url_content`, local manifest/codebase inspection, and `matrix-skills/compact-index.json` access. **No member is passive!**
-
----
-
-## ⚡ Mandatory Skills for All 3 Team Members
-
-Every member of `research-team` **MUST** load and enforce:
-1. `skills/deep-research/SKILL.md` — 4-Source Triangulation, 3-Wave Multi-Hop Search & Dual-Track 5-Lens Framework
-2. `skills_library/docs-seeker/SKILL.md` — Autonomous official documentation discovery (`/llms.txt`, vendor docs, GitHub releases/issues)
-3. `skills_library/research/SKILL.md` — Evidence hierarchy & quantitative trade-off matrices
-4. `rules/TEAMS.md` — Golden Triangle Mailbox, Warm Session Reuse (`send_message`), and Consensus Stamp protocol
+> **ARCHITECTURE**: Inspired by **Anthropic's Multi-Agent Research System** and **Stanford STORM**, upgraded to an **Elastic Golden Diamond (`1 Lead Architect + 3–6 Parallel Vector Shards + Epistemic Critic`)** with zero Turn-1 file collisions and deterministic CLI validation.
+> **SINGLE COHESIVE MASTER OUTPUT**: Synthesizes into **1 cohesive 6-Block `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}.md` (`<= 500` lines)** with `ArtifactMetadata: { Summary, UserFacing: true, RequestFeedback: true }` (1-click **"Proceed"** button) verified by `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js research validate "<path>" --mode research` (`RES-G1..G4`).
 
 ---
 
-## 🧭 The 3 Orthogonal Research Vectors (Turn-1 Parallel Fan-Out)
+## ⚡ Mandatory Skills & Valid Antigravity 2.0 Tooling
 
-Instead of a bottlenecked single investigator, the 3 Golden Triangle members divide the investigation into **3 orthogonal vectors** executed in parallel:
-
-| Role | Agent ID | Assigned Research Vector | Active Tooling & Hunting Scope |
-|:-----|:---------|:-------------------------|:-------------------------------|
-| **Vector 1: Chief Research Architect (Tech Lead)** | `research-team-techlead` | **Official Specs, System Architecture, Standards & Market/Theoretical Foundations** | Decomposes the topic into the Shared Task List, hunts **Official Vendor Specs, `/llms.txt`, RFCs, Architecture Whitepapers, and `./documents/`** via `search_web` + `read_url_content`, arbitrates evidence disputes, and synthesizes the final `RESEARCH-{topic}.md`. |
-| **Vector 2: Deep Documentation, SDK & Codebase Hunter (Executor)** | `research-team-executor` | **SDK APIs, Implementation Internals, `1,471+` Skills Vault & Workspace Codebase Fit** | Inspects workspace manifests (`package.json`, `Cargo.toml`, `pyproject.toml`), queries `matrix-skills/compact-index.json` (`SKILL.md`), and hunts **SDK API signatures, GitHub source/changelogs, schemas, and integration patterns** via `search_web`, producing `SCOUT-{topic}.md` + concrete code/config blueprints. |
-| **Vector 3: Adversarial Fact-Checker & Blind-Spot Hunter (Reviewer)** | `research-team-reviewer` | **Independent Verification, Quantitative Benchmarks, Post-Mortems, CVEs & Failure Modes** | Executes **independent Wave 3 `search_web` queries** to fact-check claims, hunt **real-world latency/memory/cost benchmarks, GitHub issues, breaking changes, rate limits, CVEs, and "why we migrated away" post-mortems**, and challenges any unverified claim in `MAILBOX-{date}.md`. |
+Every shard of `research-team` MUST be spawned via `invoke_subagent(TypeName: "self", Model: "inherit")` (NEVER read-only `TypeName: "research"`, which lacks `search_web` and `write_file`!) and enforce:
+1. `skills/deep-research/SKILL.md` — 4-Source Triangulation, 3-Wave Multi-Hop `search_web` Loop, Dual-Track 5-Lens Framework, and `[Confidence: HIGH|MEDIUM|LOW]` epistemic markers.
+2. `skills_library/docs-seeker/SKILL.md` & `skills_library/research/SKILL.md` — Official `/llms.txt`, RFC, GitHub release/changelog discovery, and quantitative trade-off matrices.
+3. `rules/TEAMS.md` — Scoped Warm Session Reuse (`researcher#v{k} -> conversationId` via `send_message`, max 3 rounds) and Append-Only `MAILBOX-{date}.md`.
+4. **Valid Tools Only**: `search_web`, `read_file`, `write_file`, `edit_file`, `run_command`, `invoke_subagent`, `send_message`, `ask_question`.
 
 ---
 
-## 🔄 4-Stage Execution & Cross-Examination Loop
+## 🧭 Collision-Free Elastic Execution Flow (`3–6` Vectors + Council)
 
 ```mermaid
 flowchart TD
-    S1["Stage 1: Vector Decomposition & Parallel Wave 1-2 Hunting<br/>Tech Lead (Vector 1) + Executor (Vector 2) + Reviewer (Vector 3) run in parallel"] --> S2["Stage 2: Mailbox Submission & Audit Log Merge<br/>Executor posts SUBMISSION with Vector 2 code/doc blueprints & Audit Log"]
-    S2 --> S3["Stage 3: Adversarial Wave 3 Cross-Examination<br/>Reviewer runs independent counter-queries & posts REVIEW (PASS / REVISE)"]
-    S3 -->|"Gaps or unverified claims found (<= 3 rounds)"| S2
-    S3 -->|"All 5 Lenses + >= 6 primary sources verified"| S4["Stage 4: Synthesis & Consensus Stamp<br/>Tech Lead merges Vectors 1+2+3 into RESEARCH-{topic}.md & stamps CONSENSUS"]
+    S1["💎 Stage 1 (Turn 1): Parallel Elastic Vector Deep-Hunting (Zero Write Collisions)<br/>• research-team-techlead (base-agent: researcher) -> Vector framing + Council<br/>• researcher#v1..k (3–6 shards, base-agent: researcher) -> RESEARCH-{topic}-v1..k.md + SCOUT-{topic}.md<br/>(All shard files: UserFacing: false, RequestFeedback: false)<br/>• Optional: boomopen conduct council --task research -> COUNCIL-{topic}.md"]
+    S1 --> S2["💎 Stage 2 (Turn 2): Cohesive 6-Block Master Synthesis<br/>Lead/Synthesizer merges RESEARCH-{topic}-v1..k.md (+ COUNCIL) into<br/>1 cohesive RESEARCH-{topic}.md (<= 500 lines, UserFacing: true, RequestFeedback: true)<br/>Runs: boomopen research validate <path> --mode research"]
+    S2 --> S3["💎 Stage 3 (Turns 2–3): Epistemic & Adversarial Cross-Examination (Warm send_message)<br/>• research-team-reviewer (base-agent: reviewer / Epistemic Critic)<br/>Independent Wave 3 search_web fact-check + Contradiction Audit + RES-G1..G4"]
+    S3 -->|"🔴 BLOCKER / Unverified Claim (<= 3 warm send_message rounds)"| S2
+    S3 -->|"✅ RES-G1..G4 PASS + CONSENSUS"| OUT["1-Click 'Proceed' Ready -> /brainstorm, /design, or /plan (boomopen research brief)"]
 ```
 
----
+### Role Alignment & Turn-1 Write-Collision Prevention
 
-## 📁 Deliverable Routing (Brain Artifacts First on Antigravity 2.0)
-
-| Deliverable | Default Path (Antigravity 2.0 Clean Git Tree) | Workspace Fallback |
-|:------------|:----------------------------------------------|:-------------------|
-| **Deep Research Report** | `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}.md` | `./reports/{topic}/researchers/RESEARCH-{topic}.md` |
-| **Codebase & Vault Scout** | `<appDataDir>\brain\<conversation-id>\SCOUT-{topic}.md` | `./reports/{topic}/scouts/SCOUT-{topic}.md` |
-| **Adversarial Mailbox** | `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md` | `./reports/{topic}/MAILBOX-{date}.md` |
+| Role | `base-agent` | Shard Ownership (`OWNED_FILES`) | Mission |
+|:-----|:-------------|:--------------------------------|:--------|
+| **Lead Research Architect** | `researcher` (`research-team-techlead`) | `RESEARCH-{topic}.md` (Master Synthesis) + `MAILBOX-{date}.md` | Decomposes `3–6` orthogonal vectors, runs official spec/RFC `search_web` queries (+ optional `boomopen conduct council --task research`), arbitrates contradictions, and stamps `✅ CONSENSUS`. |
+| **Elastic Vector Shards (`3–6`)** | `researcher` (`researcher#v1..k` — `research-team-executor`) | Disjoint `RESEARCH-{topic}-v{1..k}.md` + `SCOUT-{topic}.md` (`UserFacing: false`) | Triangulates workspace manifests (`read_file`), `matrix-skills/compact-index.json` (`1,462` skills), official SDK docs, and benchmarks via 3-Wave `search_web` (`1` vector per shard). |
+| **Epistemic Critic** | `reviewer` (`research-team-reviewer`) | `MAILBOX-{date}.md` (Append-only `REVIEW` / `APPROVAL`) | Runs independent Wave 3 adversarial `search_web` counter-queries (CVEs, breaking changes, post-mortems), enforces `[Confidence]` honesty, *"When NOT to Use"*, and `RES-G1..G4`. |
 
 ---
 
-## 🛡️ Hard Quality Gates Before Consensus Release
+## 🔍 4 Deterministic CLI Validation Gates (`boomopen research validate --mode research`)
 
-The Tech Lead **MUST REJECT** any team output and require another search round if ANY of the following is true:
-- [ ] Total verified sources across the team's **Research Execution Audit Log** is `< 6` primary/secondary sources.
-- [ ] Any technology/SDK recommendation lacks a pinned `2025`/`2026` version or official documentation URL.
-- [ ] `matrix-skills/compact-index.json` and workspace manifests (`package.json`, etc.) were not checked.
-- [ ] Adversarial failure modes, breaking changes, or unit-economic/benchmark numbers are missing.
-- [ ] Any member was spawned as read-only `TypeName: "research"` instead of full-capability `TypeName: "self"` (`Model: "inherit"`).
+| Gate ID | Validation Dimension | Mandatory Criteria Checked by CLI & Epistemic Critic |
+|:-------:|:---------------------|:-----------------------------------------------------|
+| **`RES-G1`** | **6-Block Cohesion & Audit Log** | Single cohesive `RESEARCH-{topic}.md` (`<= 500` lines, `RequestFeedback: true`) with `>= 6` verified sources in the Research Execution Audit Log and clickable URLs. |
+| **`RES-G2`** | **Epistemic Rigor & Contradiction Table** | Inline `[Confidence: HIGH\|MEDIUM\|LOW]` tags on claims + **Contradiction Arbitration** table resolving conflicting benchmarks/docs + pinned `2025`/`2026` versions. |
+| **`RES-G3`** | **Anti-Sycophancy & Failure Modes** | Dedicated **"When NOT to Use"** section, quantitative trade-off matrix (`>= 3` options), production failure modes, CVEs, and unit-economics/latency math. |
+| **`RES-G4`** | **Executable `HANDOFF_BRIEF` & Consensus** | Machine-readable `HANDOFF_BRIEF` ready for `boomopen research brief "<path>"` + `✅ CONSENSUS` stamp. |
+
+---
+
+## 📁 Deliverable & `ArtifactMetadata` Routing Rules (Antigravity 2.0)
+
+| Deliverable | Path | `ArtifactMetadata` Setting | Size & Collision Rule |
+|:------------|:-----|:---------------------------|:----------------------|
+| **Master Research** | `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}.md` | `UserFacing: true, RequestFeedback: true` (**1-Click "Proceed"**) | **Single cohesive file `<= 500` lines** |
+| **Vector Shards & Scout** | `RESEARCH-{topic}-v{1..k}.md`, `SCOUT-{topic}.md` | `UserFacing: false, RequestFeedback: false` | Disjoint per-shard Turn-1 outputs (`0` collisions) |
+| **Team Mailbox** | `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md` | `UserFacing: false, RequestFeedback: false` | Append-only cross-examination & consensus log |
+
+
+---
+
+## 📦 5-Field Vector Shard Handoff Packet & Hard Release Blockers
+
+Every `invoke_subagent(TypeName: "self", Model: "inherit")` dispatch inside `research-team` MUST embed:
+1. **`MISSION & ACCEPTANCE CRITERIA`**: Dedicated vector scope (`researcher#v1..k` or `research-team-reviewer` Wave 3 audit), target track (`Track A` / `Track B` / `Hybrid`), and minimum verified source threshold.
+2. **`SHARED_CONTRACT`**: Workspace runtime/framework pins, `[Confidence: HIGH|MEDIUM|LOW]` calibration rules, and T1–T4 Source Hierarchy.
+3. **`OWNED_FILES`**: Disjoint shard path (`RESEARCH-{topic}-v{k}.md` or `SCOUT-{topic}.md` with `UserFacing: false, RequestFeedback: false`; `RESEARCH-{topic}.md` owned strictly by Synthesizer).
+4. **`READ_ONLY_FILES`**: All workspace source files (`0` code edits in `/research:team`) + sibling `RESEARCH-{topic}-v*.md` shards.
+5. **`VERIFICATION & DELIVERABLE`**: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js research validate "<path>" --mode research` (`RES-G1..G4`) + `MAILBOX-{date}.md` log.
+
+### Hard Release Blockers (`research-team-techlead` MUST Reject Release If Any Fail)
+- [ ] Parallel shards wrote directly to `RESEARCH-{topic}.md` on Turn 1 or left `UserFacing: true` on intermediate `RESEARCH-{topic}-v*.md` files.
+- [ ] Master `RESEARCH-{topic}.md` exceeds `500` lines, lacks `RequestFeedback: true`, omits `[Confidence]` tags, Contradiction Arbitration, *"When NOT to Use"*, or fails `RES-G1..G4`.
+- [ ] Any API signature or flag relies on unverified parametric memory instead of clickable T1/T2 citations.

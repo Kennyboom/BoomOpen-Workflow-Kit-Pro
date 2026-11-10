@@ -1,3 +1,10 @@
+import { DOMAIN_COUNT, KIT_STATS, SKILL_COUNT, formatCount } from './kitStats'
+
+/** Skill entries in one matrix domain (0 when the domain is missing from the index). */
+function domainCount(id: string): number {
+  return KIT_STATS.domains.find((domain) => domain.id === id)?.count ?? 0
+}
+
 export interface SkillDomain {
   name: string
   count: number
@@ -5,27 +12,27 @@ export interface SkillDomain {
   examples: string[]
 }
 
-// 19 domains from matrix-skills/_index.yaml v1.1 — total 1400 skills
+// Per-domain counts come from matrix-skills/*.yaml via kit-stats.json (regenerated on every build).
 export const skillDomains: SkillDomain[] = [
-  { name: 'Backend', count: 32, icon: '⚙️', examples: ['fastapi-expert', 'django-expert', 'nodejs-best-practices'] },
-  { name: 'Frontend', count: 22, icon: '🎨', examples: ['react-expert', 'vue-expert', 'nextjs-developer'] },
-  { name: 'Architecture', count: 9, icon: '🏗️', examples: ['microservices-architect', 'api-designer', 'database-optimizer'] },
-  { name: 'Quality', count: 21, icon: '✅', examples: ['playwright-expert', 'code-review', 'debugging'] },
-  { name: 'Security', count: 35, icon: '🔒', examples: ['api-security-best-practices', 'secure-code-guardian', 'vulnerability-scanner'] },
-  { name: 'Design', count: 10, icon: '🎯', examples: ['ui-design-system', 'frontend-design', 'aesthetic'] },
-  { name: 'Planning', count: 12, icon: '📑', examples: ['brainstorming', 'plan-writing', 'sequential-thinking'] },
-  { name: 'DevOps', count: 22, icon: '🔧', examples: ['docker-expert', 'kubernetes-specialist', 'terraform-engineer'] },
-  { name: 'Data', count: 7, icon: '📊', examples: ['pandas-pro', 'sql-pro', 'postgres-pro'] },
-  { name: 'Performance', count: 1, icon: '⚡', examples: ['performance-profiling'] },
-  { name: 'Research', count: 11, icon: '🔍', examples: ['docs-seeker', 'research', 'tavily-web'] },
-  { name: 'Mobile', count: 8, icon: '📱', examples: ['react-native-expert', 'flutter-expert', 'swift-expert'] },
-  { name: 'Gaming', count: 3, icon: '🎮', examples: ['game-developer', '2d-games', '3d-games'] },
-  { name: 'Management', count: 4, icon: '📋', examples: ['agile-product-owner', 'product-manager-toolkit', 'jira-issues'] },
-  { name: 'AI/ML', count: 40, icon: '🤖', examples: ['prompt-engineering', 'rag-implementation', 'llm-app-patterns'] },
-  { name: 'Cloud', count: 11, icon: '☁️', examples: ['aws-serverless-eda', 'azure-functions', 'gcp-cloud-run'] },
-  { name: 'Languages', count: 17, icon: '📝', examples: ['typescript-pro', 'python-pro', 'golang-pro'] },
-  { name: 'Tools', count: 41, icon: '🛠️', examples: ['git-pushing', 'chrome-devtools', 'repomix'] },
-  { name: 'MCP & Agents', count: 8, icon: '🔌', examples: ['mcp-builder', 'langgraph', 'crewai'] },
+  { name: 'Backend', count: domainCount('backend'), icon: '⚙️', examples: ['fastapi-expert', 'django-expert', 'nodejs-best-practices'] },
+  { name: 'Frontend', count: domainCount('frontend'), icon: '🎨', examples: ['react-expert', 'vue-expert', 'nextjs-developer'] },
+  { name: 'Architecture', count: domainCount('architecture'), icon: '🏗️', examples: ['microservices-architect', 'api-designer', 'database-optimizer'] },
+  { name: 'Quality', count: domainCount('quality'), icon: '✅', examples: ['playwright-expert', 'code-review', 'debugging'] },
+  { name: 'Security', count: domainCount('security'), icon: '🔒', examples: ['api-security-best-practices', 'secure-code-guardian', 'vulnerability-scanner'] },
+  { name: 'Design', count: domainCount('design'), icon: '🎯', examples: ['ui-design-system', 'frontend-design', 'aesthetic'] },
+  { name: 'Planning', count: domainCount('planning'), icon: '📑', examples: ['brainstorming', 'plan-writing', 'sequential-thinking'] },
+  { name: 'DevOps', count: domainCount('devops'), icon: '🔧', examples: ['docker-expert', 'kubernetes-specialist', 'terraform-engineer'] },
+  { name: 'Data', count: domainCount('data'), icon: '📊', examples: ['pandas-pro', 'sql-pro', 'postgres-pro'] },
+  { name: 'Performance', count: domainCount('performance'), icon: '⚡', examples: ['performance-profiling'] },
+  { name: 'Research', count: domainCount('research'), icon: '🔍', examples: ['docs-seeker', 'research', 'tavily-web'] },
+  { name: 'Mobile', count: domainCount('mobile'), icon: '📱', examples: ['react-native-expert', 'flutter-expert', 'swift-expert'] },
+  { name: 'Gaming', count: domainCount('gaming'), icon: '🎮', examples: ['game-developer', '2d-games', '3d-games'] },
+  { name: 'Management', count: domainCount('management'), icon: '📋', examples: ['agile-product-owner', 'product-manager-toolkit', 'jira-issues'] },
+  { name: 'AI/ML', count: domainCount('ai_ml'), icon: '🤖', examples: ['prompt-engineering', 'rag-implementation', 'llm-app-patterns'] },
+  { name: 'Cloud', count: domainCount('cloud'), icon: '☁️', examples: ['aws-serverless-eda', 'azure-functions', 'gcp-cloud-run'] },
+  { name: 'Languages', count: domainCount('languages'), icon: '📝', examples: ['typescript-pro', 'python-pro', 'golang-pro'] },
+  { name: 'Tools', count: domainCount('tools'), icon: '🛠️', examples: ['git-pushing', 'chrome-devtools', 'repomix'] },
+  { name: 'MCP & Agents', count: domainCount('mcp'), icon: '🔌', examples: ['mcp-builder', 'langgraph', 'crewai'] },
 ]
 
 // Skill injection example (backend-engineer) — matrix + optional dynamic
@@ -131,7 +138,7 @@ export const hsolUniqueFeatures: HsolUniqueFeature[] = [
   {
     icon: '♾️',
     title: 'Infinite Ceiling',
-    description: 'Matrix (1400+) plus community skills at skills.sh — no cap on capability.',
+    description: `Matrix (${formatCount(SKILL_COUNT)} indexed skills) plus community skills at skills.sh — no cap on capability.`,
   },
 ]
 
@@ -164,6 +171,6 @@ export const skillBenefits = [
 ]
 
 export const getTotalSkills = () => skillDomains.reduce((acc, d) => acc + d.count, 0)
-// Framework total from matrix-skills/_index.yaml
-export const totalSkills = 1400
-export const totalDomains = 19
+// Framework totals from matrix-skills/compact-index.json (via kit-stats.json)
+export const totalSkills = SKILL_COUNT
+export const totalDomains = DOMAIN_COUNT

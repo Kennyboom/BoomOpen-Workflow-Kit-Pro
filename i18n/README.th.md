@@ -1,14 +1,14 @@
 <div align="center">
   <h1>⚡ BoomOpen Workflow Kit v5.5.0</h1>
-  <p><strong>ระบบปฏิบัติการ AI อัจฉริยะแบบผสมผสาน (Smart-Hybrid) ข้ามแพลตฟอร์ม — 21 เอเจนต์ผู้เชี่ยวชาญ, 17 ทีมสามเหลี่ยมทองคำ และคลังทักษะ 1,450+ รายการแบบเรียกใช้ตามต้องการ</strong></p>
+  <p><strong>ระบบปฏิบัติการ AI อัจฉริยะแบบผสมผสาน (Smart-Hybrid) ข้ามแพลตฟอร์ม — 21 เอเจนต์ผู้เชี่ยวชาญ, 18 ทีมสามเหลี่ยมทองคำ และคลังทักษะ 1,460+ รายการแบบเรียกใช้ตามต้องการ</strong></p>
 
   <p>
     <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
-    <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2017%20Teams-10b981.svg" alt="Agents: 21 Specialists + 17 Teams" /></a>
-    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-48%20Core%20%2B%201%2C450%2B%20Library-f59e0b.svg" alt="Skills: 48 Core + 1,450+ Library" /></a>
+    <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
+    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
-    <a href="../LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+    <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
   </p>
 
   <p>
@@ -34,13 +34,13 @@
 
 ## 🌟 BoomOpen Workflow Kit v5.5 คืออะไร?
 
-**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** คือระบบปฏิบัติการแบบหลายเอเจนต์ (Multi-Agent) โอเพนซอร์สที่เปลี่ยนผู้ช่วยเขียนโค้ด AI เดี่ยวๆ ให้กลายเป็นองค์กรวิศวกรรมซอฟต์แวร์ที่ทำงานประสานกันประกอบด้วย **เอเจนต์ผู้เชี่ยวชาญ 21 บทบาท (Specialist Agents)**, **ทีมตรวจสอบถ่วงดุลสามเหลี่ยมทองคำ 17 ทีม (Golden Triangle Teams)**, **ทักษะหลัก 48 รายการ (Core Skills)** และ **คลังทักษะเฉพาะทางกว่า 1,450+ รายการ (`skills_library`)**
+**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** คือระบบปฏิบัติการแบบหลายเอเจนต์ (Multi-Agent) โอเพนซอร์สที่เปลี่ยนผู้ช่วยเขียนโค้ด AI เดี่ยวๆ ให้กลายเป็นองค์กรวิศวกรรมซอฟต์แวร์ที่ทำงานประสานกันประกอบด้วย **เอเจนต์ผู้เชี่ยวชาญ 21 บทบาท (Specialist Agents)**, **ทีมตรวจสอบถ่วงดุลสามเหลี่ยมทองคำ 18 ทีม (Golden Triangle Teams)**, **ทักษะหลัก 22 รายการ (Core Skills)** และ **คลังทักษะเฉพาะทางกว่า 1,440 รายการ (`skills_library`)**
 
 แตกต่างจากเทมเพลตคำสั่งแบบตายตัวหรือเฟรมเวิร์กขนาดใหญ่ที่ทำให้เกิดความหน่วง (Cold-Start) ในทุกคำถามง่ายๆ BoomOpen v5.5 ได้เปิดตัว **ประตูคัดกรองความซับซ้อนอัจฉริยะ 2 โหมด (2-Mode Smart Complexity Threshold Gate)**:
-- **⚡ โหมด A — ประมวลผลโดยตรง (Cold-Start 0 วินาที)**: คำถาม-คำตอบทั่วไป (Q&A), การอธิบายโค้ด, การแก้บั๊กในโดเมนเดียว หรือการแก้ไขที่ชัดเจนซึ่งกระทบไฟล์ **≤ 3 ไฟล์** (และไม่ได้เรียกคำสั่ง `/cmd`) จะถูกดำเนินการ ทดสอบ และตรวจสอบ **โดยตรง** โดยเอเจนต์หลัก พร้อมบังคับใช้ **มาตรฐานการเขียนโค้ดเชิงปฏิบัติ 2 ระดับ (Pragmatic 2-Tier Coding Standards)** และ **การทดสอบและแก้ไขบั๊กอย่างต่อเนื่อง**
-- **🎻 โหมด B — การประสานงาน Multi-Agent อย่างเคร่งครัด**: ฟีเจอร์ที่ซับซ้อน (**> 3 ไฟล์** หรือ **≥ 2 โดเมน**) หรือการเรียกใช้คำสั่ง `/cmd` จะเปิดใช้งานโหมด Orchestrator เต็มรูปแบบ พร้อม **การกระจายงานขนานแบบ DAG (Parallel Fan-Out)**, **การจ่ายงานตรงจากแผนสู่วิศวกร (Direct Plan-to-Executor Dispatch)**, **การล็อกสิทธิ์ไฟล์ตามสัญญา (`SHARED_CONTRACT` + `OWNED_FILES`)** และ **การนำซับเอเจนต์ที่พร้อมใช้งานกลับมาใช้ซ้ำ (`send_message`)**
+- **⚡ โหมด A — ประมวลผลโดยตรง (Cold-Start 0 วินาที)**: คำถาม-คำตอบทั่วไป (Q&A), การอธิบายโค้ด, การแก้บั๊กในโดเมนเดียว หรือการแก้ไขที่ชัดเจนซึ่งกระทบไฟล์ **≤ 2 ไฟล์** (และไม่ได้เรียกคำสั่ง `/cmd`) จะถูกดำเนินการ ทดสอบ และตรวจสอบ **โดยตรง** โดยเอเจนต์หลัก พร้อมบังคับใช้ **มาตรฐานการเขียนโค้ดเชิงปฏิบัติ 2 ระดับ (Pragmatic 2-Tier Coding Standards)** และ **การทดสอบและแก้ไขบั๊กอย่างต่อเนื่อง**
+- **🎻 โหมด B — การประสานงาน Multi-Agent อย่างเคร่งครัด**: ฟีเจอร์ที่ซับซ้อน (**> 2 ไฟล์** หรือ **≥ 2 โดเมน**) หรือการเรียกใช้คำสั่ง `/cmd` จะเปิดใช้งานโหมด Orchestrator เต็มรูปแบบ พร้อม **การกระจายงานขนานแบบ DAG (Parallel Fan-Out)**, **การจ่ายงานตรงจากแผนสู่วิศวกร (Direct Plan-to-Executor Dispatch)**, **การล็อกสิทธิ์ไฟล์ตามสัญญา (`SHARED_CONTRACT` + `OWNED_FILES`)** และ **การนำซับเอเจนต์ที่พร้อมใช้งานกลับมาใช้ซ้ำ (`send_message`)**
 
-- **📚 คลังทักษะขนาดใหญ่ 1,450+ รายการโดยไม่เปลืองบริบท (Zero Context Bloat)**: ผสาน **48 ทักษะหลัก (`skills/`)** และ **1,450+ ทักษะเฉพาะทาง (`skills_library/`)** ที่คอมไพล์ล่วงหน้าไว้ใน `matrix-skills/compact-index.json` เพื่อการค้นหาแบบ 2 ขั้นตอน `O(1)` ช่วยให้ AI มีความเชี่ยวชาญทันทีทั้ง Backend, Frontend, Mobile, Game Dev (Unity/Unreal/Godot), AI/ML, BigQuery/Data, Cloud/DevOps และความปลอดภัย OWASP โดยไม่ทำให้หน้าต่างพรอมต์เต็ม
+- **📚 คลังทักษะขนาดใหญ่ 1,462 รายการโดยไม่เปลืองบริบท (Zero Context Bloat)**: ผสาน **22 ทักษะหลัก (`skills/`)** และ **1,440 ทักษะเฉพาะทาง (`skills_library/`)** ที่คอมไพล์ล่วงหน้าไว้ใน `matrix-skills/compact-index.json` เพื่อการค้นหาแบบ 2 ขั้นตอน `O(1)` ช่วยให้ AI มีความเชี่ยวชาญทันทีทั้ง Backend, Frontend, Mobile, Game Dev (Unity/Unreal/Godot), AI/ML, BigQuery/Data, Cloud/DevOps และความปลอดภัย OWASP โดยไม่ทำให้หน้าต่างพรอมต์เต็ม
 
 ---
 
@@ -49,8 +49,8 @@
 ```mermaid
 flowchart TD
     User["👤 คำขอของผู้ใช้ / คำสั่ง Slash"] --> Gate{"🚦 ประตูคัดกรองความซับซ้อน 2 โหมด"}
-    Gate -->|"≤ 3 ไฟล์, 1 โดเมน, ไม่มี /cmd"| ModeA["⚡ โหมด A: ประมวลผลโดยตรง (Tier 0)<br/>0s Cold-Start + มาตรฐานโค้ด 2 ระดับ"]
-    Gate -->|"> 3 ไฟล์, ≥ 2 โดเมน, หรือมี /cmd"| ModeB["🎻 โหมด B: Multi-Agent Orchestrator (Tier 1)<br/>Model: inherit (ค่าเริ่มต้น Pro High)"]
+    Gate -->|"≤ 2 ไฟล์, 1 โดเมน, ไม่มี /cmd"| ModeA["⚡ โหมด A: ประมวลผลโดยตรง (Tier 0)<br/>0s Cold-Start + มาตรฐานโค้ด 2 ระดับ"]
+    Gate -->|"> 2 ไฟล์, ≥ 2 โดเมน, หรือมี /cmd"| ModeB["🎻 โหมด B: Multi-Agent Orchestrator (Tier 1)<br/>Model: inherit"]
 
     ModeB --> FanOut["🔀 เฟส 1: กระจายงานขนาน DAG<br/>(researcher + scouter | debugger + researcher)"]
     FanOut --> Plan["📋 เฟส 2: วางแผนโดยยึดสัญญา (planner)<br/>ล็อก SHARED_CONTRACT + OWNED_FILES"]
@@ -65,13 +65,15 @@ flowchart TD
 
 ---
 
+<a id="pillars"></a>
+
 ## 🧠 6 เสาหลักสำคัญของ v5.5
 
 1. **🌐 รองรับ 5 แพลตฟอร์มอย่างสมบูรณ์แบบ (`platforms/*`)**:
    - ติดตั้งแบบ Native ชั้นหนึ่งสำหรับ **Google Antigravity 2.0 (Gemini)**, **Claude Code**, **OpenAI Codex**, **Cursor** และ **GitHub Copilot** จากสถาปัตยกรรมเดียวที่รวมเป็นหนึ่ง
 2. **📏 มาตรฐานการเขียนโค้ดเชิงปฏิบัติ 2 ระดับ (ป้องกันการหั่นไฟล์แบบไร้เหตุผล)**:
    - **ระดับที่ 1 — กฎคุณภาพและความปลอดภัยที่เข้มงวด (Zero Tolerance)**: หนึ่งไฟล์หรือฟังก์ชันรับผิดชอบหนึ่งหน้าที่ (Single Responsibility), **ห้ามใช้ `any` โดยเด็ดขาด**, **ห้ามทิ้ง `console.log` ดีบักไว้ในโค้ด Production**, ต้องมี `try/catch` และจัดการชนิดข้อผิดพลาดที่ขอบเขต async/API, ค่าคงที่ใช้ `SCREAMING_SNAKE_CASE`, DRY (`≥ 3`) และจัดเรียง import ให้สะอาด
-   - **ระดับที่ 2 — แนวทางโครงสร้างที่ยืดหยุ่น (เน้นความสอดคล้อง)**: ไฟล์ที่ทำงานหน้าที่เดียวอย่างสมบูรณ์มีเป้าหมายที่ `~200–350 บรรทัด` และยืดหยุ่นได้ถึง `~400–450 บรรทัด` (บังคับแยกเฉพาะเมื่อเกิน `>500 บรรทัด` หรือปนหลายโดเมน; ยกเว้นไฟล์ Test, Types/Schema, CLI และเอกสาร) ฟังก์ชันลอจิก `~20–40 บรรทัด` (`~40–80 บรรทัด` สำหรับ UI/Handler)
+   - **ระดับที่ 2 — แนวทางโครงสร้างที่ยืดหยุ่น (เน้นความสอดคล้อง)**: ไฟล์ที่ทำงานหน้าที่เดียวอย่างสมบูรณ์มีเป้าหมายที่ `~200–350 บรรทัด` และยืดหยุ่นได้ถึง `~400–450 บรรทัด` (บังคับแยกเฉพาะเมื่อเกิน `>500 บรรทัด` หรือปนหลายโดเมน; ยกเว้นไฟล์ Test, Types/Schema และเอกสาร) ฟังก์ชันลอจิก `~20–40 บรรทัด` (`~40–80 บรรทัด` สำหรับ UI/Handler)
 3. **🎯 จ่ายงานตรงจากแผนสู่ผู้ปฏิบัติ & นำซับเอเจนต์ที่อุ่นอยู่กลับมาใช้ซ้ำ (`send_message`)**:
    - เมื่อมี `PLAN-{feature}.md` แล้ว Orchestrator จะจ่ายงาน **โดยตรง** ไปยังวิศวกรประจำโดเมน (`backend-engineer`, `frontend-engineer`, `database-architect` ฯลฯ) โดยไม่ต้องผ่าน `tech-lead` ซ้ำซ้อน
    - ซับเอเจนต์ที่เปิดใช้งานอยู่จะถูกบันทึกไว้ใน **ทะเบียนเซสชันที่ใช้งานอยู่ (`Role → conversationId`)** และเรียกใช้ซ้ำผ่าน `send_message` ด้วย **เวลาเริ่มต้น 0 วินาที** และ **รักษาบริบทของไฟล์ไว้ได้ 100%**
@@ -79,10 +81,12 @@ flowchart TD
    - แผนงานข้ามโดเมนจะล็อก API endpoints, โครงสร้าง DTO และแบ่งสิทธิ์การเขียนไฟล์อย่างชัดเจน (`OWNED_FILES` เทียบกับ `READ_ONLY_FILES`) ก่อนสั่งรันวิศวกรพร้อมกัน เพื่อป้องกันการเขียนทับไฟล์โดยสมบูรณ์
 5. **🔍 การวิเคราะห์รากเหง้าของปัญหาด้วย 5-Whys (SPIE v3.0) & Git Tree สะอาด 100%**:
    - `debugger` วิเคราะห์บั๊กผ่านสมมติฐานอย่างน้อย 3 ข้อและห่วงโซ่สาเหตุ **5-Whys** (`ทำไมที่ 1 อาการเริ่มต้น` → `ทำไมที่ 5 รากเหง้าเชิงระบบ`) ไฟล์รายงานชั่วคราว (`PLAN`, `DEBUG`, `TEST`, `REVIEW`, `MAILBOX`) จะถูกบันทึกไว้ที่ `<appDataDir>\brain\<conversation-id>\` เพื่อให้ Git working tree สะอาด 100%
-6. **🩺 เครื่องมือวินิจฉัย CLI ในตัว (`doctor` & `check`) & ดัชนีทักษะความเร็ว O(1)**:
-   - `npm run doctor` ตรวจสอบทั้ง 5 แพลตฟอร์ม, 21 เอเจนต์, 51 ไฟล์ทีม, 72 คำสั่ง และ `matrix-skills/compact-index.json` (`1,450+` ทักษะ) ส่วน `npm run check <dir>` ตรวจสอบมาตรฐานโค้ดระดับที่ 1 และ 2 โดยอัตโนมัติ
+6. **🩺 เครื่องมือวินิจฉัย CLI ในตัว (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check` & `doctor`) & ดัชนีทักษะความเร็ว O(1)**:
+   - `npm run doctor` ตรวจสอบทั้ง 5 แพลตฟอร์ม, 21 เอเจนต์, 72 ไฟล์ทีม, 84 ไฟล์คำสั่ง (`79` เวิร์กโฟลว์ + `5` ใน `_ref/`) และ `matrix-skills/compact-index.json` (`1,462` ทักษะ) ส่วน `boomopen check <dir>` ตรวจเฉพาะกฎที่ตรวจด้วยเครื่องได้: ความยาวไฟล์, `any` แบบระบุชัดใน TypeScript และ `console.log` ที่หลงเหลือ ส่วนมาตรฐานอื่นเป็นคำสั่งสำหรับเอเจนต์ นอกจากนี้ `boomopen research`, `boomopen design`, `boomopen plan`, `boomopen cook`, `boomopen ledger` และ `boomopen conduct` ยังช่วยคอมไพล์สัญญา ชุดส่งมอบงานแต่ละรอบ และสภาหลายเอนจิน
 
 ---
+
+<a id="platforms"></a>
 
 ## 💻 แพลตฟอร์ม AI ที่รองรับ
 
@@ -111,23 +115,31 @@ npm run install:cursor        # Cursor AI Editor
 npm run install:copilot       # GitHub Copilot (VS Code)
 npm run install:all           # ติดตั้งพร้อมกันทั้ง 5 แพลตฟอร์ม
 
-# 3. ตรวจสอบความสมบูรณ์ของการติดตั้ง มาตรฐานโค้ด 2 ระดับ และรันชุดทดสอบ
+# 3. ตรวจสอบการติดตั้ง (อ่านอย่างเดียว)
 npm run doctor
-npm run check ./cli
-npm test
+npm link
+boomopen research validate path/to/RESEARCH.md
+boomopen design validate path/to/DESIGN.md
+boomopen plan validate path/to/PLAN.md
+boomopen cook preflight --plan path/to/PLAN.md
+boomopen check path/to/your/project --strict-phase --no-stubs
+boomopen ledger status
+boomopen conduct probe
 ```
+
+> ชุดเครื่องมือนี้ **ไม่ได้เผยแพร่บน npm** — ติดตั้งจากรีโพซิทอรีนี้เท่านั้น ทางเลือก: `npm link` จะเพิ่มคำสั่ง `boomopen` ลงใน PATH (ไม่มีการดาวน์โหลดจาก npm)
 
 ---
 
 ## 🎛️ ศูนย์ควบคุมการตั้งค่าและการเลือกโหมด (`/settings` Control Center)
 
-BoomOpen v5.5 มาพร้อม **ศูนย์ควบคุมแบบรวมศูนย์ไร้ความหน่วง (Zero-Latency Control Center)** ให้คุณสลับโหมดการทำงาน (`auto`, `mode_a`, `mode_b`, `team`), 4 โปรไฟล์สำเร็จรูป และ 12 การตั้งค่าระบบครบทั้ง **5 แพลตฟอร์ม** ภายใน `< 10ms` (**ความหน่วงเทิร์นแรก 0ms**):
+BoomOpen v5.5 มาพร้อม **ศูนย์ควบคุมแบบรวมศูนย์ไร้ความหน่วง (Zero-Latency Control Center)** ให้คุณสลับโหมดการทำงาน (`auto`, `mode_a`, `mode_b`, `team`), 4 โปรไฟล์สำเร็จรูป และ 20 การตั้งค่าระบบ (+ 2 ค่าจำกัดบรรทัด)ครบทั้ง **5 แพลตฟอร์ม** ภายใน `< 10ms` (**ความหน่วงเทิร์นแรก 0ms**):
 
 | โปรไฟล์ (`Preset`) | โหมดการทำงาน (`execution.mode`) | ค่าเริ่มต้น `/cmd` | การวิจัยด้วยภาษาธรรมชาติ (`naturalLanguageResearchTrigger`) | มาตรฐานโค้ด (`codingStandards`) | เหมาะสำหรับ |
 |:---|:---|:---:|:---:|:---:|:---|
-| **⚡ `smart-hybrid`** *(ค่าเริ่มต้นแนะนำ)* | **`auto`** (`≤ 3 ไฟล์` → Mode A ทันที; `> 3 ไฟล์` หรือ `/cmd` → Mode B) | `auto` | **`auto_team`** *(ส่งงานวิจัย/ระดมสมองไปยัง `/brainstorm:team` Golden Triangle อัตโนมัติ)* | `pragmatic` (`400/500` บรรทัด) | งานพัฒนา Full-Stack ประจำวัน: เร็วในงานเล็ก ลึกซึ้งในสถาปัตยกรรมที่ซับซ้อน |
+| **⚡ `smart-hybrid`** *(ค่าเริ่มต้นแนะนำ)* | **`auto`** (`≤ 2 ไฟล์` → Mode A ทันที; `> 2 ไฟล์` หรือ `/cmd` → Mode B) | `auto` | **`auto_team`** *(ส่งงานวิจัย/ระดมสมองไปยัง `/research:team` / `/brainstorm:team` Golden Triangle อัตโนมัติ)* | `pragmatic` (`400/500` บรรทัด) | งานพัฒนา Full-Stack ประจำวัน: เร็วในงานเล็ก ลึกซึ้งในสถาปัตยกรรมที่ซับซ้อน |
 | **🚀 `solo-fast`** | **`mode_a`** *(บังคับรันตรงแบบเดี่ยว ความหน่วงซับเอเจนต์ 0 วินาที)* | `fast` | `off` *(ตอบกลับในแชททันทีเว้นแต่พิมพ์ `/brainstorm`)* | `relaxed` (`600/800` บรรทัด) | งานแก้บั๊กด่วน (Hotfix), ทำต้นแบบไว, สคริปต์สั้นๆ และประหยัดโทเค็นสูงสุด |
-| **🧠 `deep-architect`** | **`mode_b`** *(บังคับใช้ Multi-Agent Mode B ในทุกภารกิจ)* | `hard` | `auto_hard` *(รันการวิจัยเชิงลึก 5 มิติ `/brainstorm:hard` อัตโนมัติ)* | `strict` (`300/400` บรรทัด) | ออกแบบสถาปัตยกรรมระบบซับซ้อน โปรเจกต์ใหม่ และการรีแฟกเตอร์ข้ามโดเมน |
+| **🧠 `deep-architect`** | **`mode_b`** *(บังคับใช้ Multi-Agent Mode B ในทุกภารกิจ)* | `hard` | `auto_hard` *(รันการวิจัยเชิงลึก 5 มิติ `/research:hard` / `/brainstorm:hard` อัตโนมัติ)* | `strict` (`300/400` บรรทัด) | ออกแบบสถาปัตยกรรมระบบซับซ้อน โปรเจกต์ใหม่ และการรีแฟกเตอร์ข้ามโดเมน |
 | **🔺 `adversarial-team`** | **`team`** *(บังคับใช้ทีมสามเหลี่ยมทองคำ 3 เอเจนต์ `:team` ทุกเวิร์กโฟลว์)* | `team` | **`auto_team`** *(3 เอเจนต์ถกเถียงและตรวจสอบข้ามกันผ่าน `MAILBOX`)* | `strict` (`300/400` บรรทัด) | ระบบโปรดักชันสำคัญยิ่งยวด งานตรวจสอบความปลอดภัย และการส่งมอบไร้ข้อผิดพลาด |
 
 ### 3 วิธีในการสลับโหมด (พิมพ์ `/settings` ในแชท, หน้าเว็บ 로컬 UI และ CLI)
@@ -142,13 +154,17 @@ BoomOpen v5.5 มาพร้อม **ศูนย์ควบคุมแบบ
 /settings mode auto | mode_a | mode_b | team  # กำหนดโหมดการทำงาน (execution.mode) โดยตรง
 
 # 2. เปิดหน้าแดชบอร์ด Web Control Center ในเครื่อง (http://127.0.0.1:4567)
-npm run settings:ui
+boomopen settings --ui
 
 # 3. คำสั่ง Terminal CLI (ระดับ Global ~/.boomopen/settings.json และระดับโปรเจกต์ ./.boomopen.json)
-npm run settings -- status
-npm run settings -- preset adversarial-team
-npm run settings -- reset
+boomopen settings status
+boomopen settings preset adversarial-team
+cd path/to/your/project
+boomopen settings set execution.mode mode_a --project
+boomopen settings reset
 ```
+
+> `--project` จะเขียน `./.boomopen.json` ในโฟลเดอร์ที่คุณรันคำสั่งเสมอ จึงต้องรันภายในโปรเจกต์ของคุณ ไม่ใช่ในโฟลเดอร์ที่โคลนชุดเครื่องมือ หากไม่ได้ใช้ `npm link` ให้แทน `boomopen` ด้วย `node /path/to/BoomOpen-Workflow-Kit/cli/install.js`
 
 ---
 
@@ -166,36 +182,42 @@ npm run settings -- reset
 | **`/design`** | `:fast`, `:hard`, `:team` | ออกแบบสถาปัตยกรรมระบบ โครงสร้างฐานข้อมูล และข้อกำหนด UI/UX (`DESIGN.md`) |
 | **`/docs`** | `:core`, `:business`, `:audit` | สร้างหรือซิงค์เอกสารสถาปัตยกรรมและเอกสารธุรกิจแบบ 2 ระดับ (`./documents/`) |
 | **`/deploy`** | `:check`, `:preview`, `:production`, `:rollback` | ตรวจสอบความพร้อมก่อนดีพลอย, สภาพแวดล้อมพรีวิว, การขึ้นระบบจริง และการย้อนกลับอย่างปลอดภัย |
+| **`/research`** | `:fast`, `:hard`, `:team` | เอ็นจินวิจัยเชิงลึกอัตโนมัติ (ตรวจสอบ 4 แหล่งข้อมูล, ค้นหา 3 ระลอก และสภา 3 เวกเตอร์) |
 | **`/brainstorm`** | `:fast`, `:hard`, `:team` | ค้นหาความต้องการด้วยวิธีโสกราตีส วิเคราะห์ข้อดีข้อเสีย และระดมสมอง |
 | **`/report`** | `:fast`, `:hard`, `:team` | สร้างรายงานสรุปเชิงบริหารและเชิงเทคนิคพร้อมตัวชี้วัดและแผนภาพ |
+| **`/autopilot`** | `:init`, `:run`, `:audit` | ตัวประสานงานโปรเจกต์อัตโนมัติข้ามเซสชันด้วย `.boomopen/project-ledger.json` และด่านคุณภาพ 4 ชั้น |
+| **`/conduct`** | `:council`, `:pipeline` | ตัวควบคุมข้ามเอนจินและสภาหลายเอนจินแบบขนาน (`boomopen conduct`) พร้อมรายงานสังเคราะห์ฉันทามติ 4 ส่วน |
 | **`/orchestrate`** | — | ประสานงานไปป์ไลน์ Multi-Agent แบบกำหนดเองข้ามหลายโดเมน |
-| **`/settings` / `/config`** | `preset`, `mode`, `set`, `ui` | ศูนย์ควบคุมรวมศูนย์: สลับโหมด `Auto` / `Mode A` / `Mode B` / `Team`, เลือก Preset หรือเปิด Web UI (`--ui`) |
+| **`/settings`** | `preset`, `mode`, `set`, `ui` | ศูนย์ควบคุมรวมศูนย์: สลับโหมด `Auto` / `Mode A` / `Mode B` / `Team`, เลือก Preset หรือเปิด Web UI (`--ui`) |
 | **`/save` / `/recap`** | — | บันทึกสถานะเซสชัน (`SESSION-HANDOVER.md`) และกู้คืนบริบททั้งหมดภายใน `< 5 วินาที` |
 
 ---
 
-## 🤖 21 เอเจนต์ผู้เชี่ยวชาญ & 17 ทีมสามเหลี่ยมทองคำ
+<a id="agents"></a>
+
+## 🤖 21 เอเจนต์ผู้เชี่ยวชาญ & 18 ทีมสามเหลี่ยมทองคำ
 
 | หมวดหมู่ | เอเจนต์ผู้เชี่ยวชาญ (`agents/*.md`) | ทีมสามเหลี่ยมทองคำ (`agents/teams/*-team/`) |
 |----------|-----------------------------------|------------------------------------------------|
 | **วิศวกรรมและการลงมือปฏิบัติ** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer`, `database-architect`, `devops-engineer` | `backend-team`, `frontend-team`, `fullstack-team`, `mobile-team`, `game-team`, `database-team`, `devops-team` |
-| **สถาปัตยกรรมและการวางแผน** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `project-team`, `design-team` |
-| **คุณภาพ ความปลอดภัย และการดีบัก** | `debugger`, `tester`, `reviewer`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `review-team`, `security-team`, `performance-team` |
+| **สถาปัตยกรรมและการวางแผน** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
+| **คุณภาพ ความปลอดภัย และการดีบัก** | `debugger`, `tester`, `reviewer`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
 | **การวิจัยและจัดการความรู้** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
 
 ---
 
-## 📚 คลังทักษะ 1,450+ รายการ (48 ทักษะหลัก + 1,450+ ทักษะไลบรารี)
+## 📚 คลังทักษะ 1,460+ รายการ (22 ทักษะหลัก + 1,440 ทักษะไลบรารี)
 
 BoomOpen มาพร้อมกับหนึ่งในระบบนิเวศทักษะวิศวกรรมซอฟต์แวร์ที่ใหญ่ที่สุดในโอเพนซอร์ส ออกแบบให้ **ใช้โทเค็นขณะว่างเป็น 0** ผ่าน **การค้นหาทักษะแบบก้าวหน้า 2 ขั้นตอน O(1)** (`<skills>` → `matrix-skills/compact-index.json` → โหลดเฉพาะไฟล์ `SKILL.md` ที่ต้องการ):
 
 | ระดับ / หมวดหมู่ทักษะ | จำนวน | ทักษะและความสามารถเด่น | กลไกการโหลด |
 |:---|:---:|:---|:---|
-| **⚡ ระดับ 1: ทักษะหลัก (`skills/`)** | **48** | `clean-code`, `systematic-debugging`, `plan-writing`, `brainstorming`, `frontend-design`, `api-patterns`, `database-design`, `testing-patterns`, `vulnerability-scanner`, `skill-seeker` | จัดทำดัชนีล่วงหน้าใน `<skills>` พร้อมใช้ทันทีใน Turn 1 |
-| **🌐 เว็บ, แบ็กเอนด์ และระบบกระจายศูนย์** | **380+** | Next.js/React 19, FastAPI, NestJS, ไมโครเซอร์วิส Go/Rust, GraphQL, gRPC, สถาปัตยกรรมขับเคลื่อนด้วยอีเวนต์ Redis/Kafka, Multi-tenant SaaS | โหลดตามต้องการผ่าน `compact-index.json` (`skills_library/`) |
-| **🤖 AI, เอเจนต์ LLM และวิศวกรรมข้อมูล** | **310+** | ไปป์ไลน์ RAG, เซิร์ฟเวอร์ LangGraph/MCP, Prompt Engineering, Vertex AI, การวิเคราะห์ BigQuery, dbt, Spark, ฐานข้อมูลเวกเตอร์ | โหลดตามต้องการผ่าน `compact-index.json` (`skills_library/`) |
-| **☁️ คลาวด์, DevOps, Kubernetes และความปลอดภัย** | **290+** | Terraform/OpenTofu, สถาปัตยกรรม AWS/GCP/Azure, Docker/K8s GitOps, ไปป์ไลน์ CI/CD, การตรวจสอบ OWASP Top 10, Zero-Trust Auth | โหลดตามต้องการผ่าน `compact-index.json` (`skills_library/`) |
-| **📱 โมบายล์, เกมเอนจิน และโดเมนเฉพาะทาง** | **450+** | iOS Swift/SwiftUI, Android Kotlin, React Native, Flutter, Unity 6, Unreal Engine 5, Godot 4, WebGL/Three.js, การเงินเชิงปริมาณ, Web3 | โหลดตามต้องการผ่าน `compact-index.json` (`skills_library/`) |
+| **⚡ ระดับ 1: ทักษะหลัก (`skills/`)** | **22** | `clean-code`, `debugger`, `plan-writing`, `brainstorming`, `frontend-design`, `frontend-architecture`, `design-spec`, `api-patterns`, `database-design`, `testing-patterns`, `skill-seeker` | จัดทำดัชนีล่วงหน้าใน `<skills>` พร้อมใช้ทันทีใน Turn 1 |
+| **🎨 การออกแบบ UI/UX, Motion และ Design Systems** | **42** | Anti-AI-Slop Visual Craft, ระบบสี OKLCH & Bento Grids, Motion v12 + CSS View Transitions, Headless Primitives (`cmdk`/`vaul`/`sonner`), Figma MCP + W3C DTCG Tokens, WCAG 2.2 AA/AAA, iOS 18 HIG & Material 3 Expressive | โหลดตามต้องการผ่าน `compact-index.json` (`matrix-skills/design.yaml`) |
+| **🌐 เว็บ, แบ็กเอนด์ และระบบกระจายศูนย์** | **390+** | Next.js/React 19, FastAPI, NestJS, ไมโครเซอร์วิส Go/Rust, GraphQL, gRPC, สถาปัตยกรรมขับเคลื่อนด้วยอีเวนต์ Redis/Kafka, Multi-tenant SaaS | โหลดตามต้องการผ่าน `compact-index.json` (`skills_library/`) |
+| **🤖 AI, เอเจนต์ LLM และวิศวกรรมข้อมูล** | **320+** | ไปป์ไลน์ RAG, เซิร์ฟเวอร์ LangGraph/MCP, Prompt Engineering, Vertex AI, การวิเคราะห์ BigQuery, dbt, Spark, ฐานข้อมูลเวกเตอร์ | โหลดตามต้องการผ่าน `compact-index.json` (`skills_library/`) |
+| **☁️ คลาวด์, DevOps, Kubernetes และความปลอดภัย** | **300+** | Terraform/OpenTofu, สถาปัตยกรรม AWS/GCP/Azure, Docker/K8s GitOps, ไปป์ไลน์ CI/CD, การตรวจสอบ OWASP Top 10, Zero-Trust Auth | โหลดตามต้องการผ่าน `compact-index.json` (`skills_library/`) |
+| **📱 โมบายล์, เกมเอนจิน และโดเมนเฉพาะทาง** | **410+** | iOS Swift/SwiftUI, Android Kotlin, React Native, Flutter, Unity 6, Unreal Engine 5, Godot 4, WebGL/Three.js, การเงินเชิงปริมาณ, Web3 | โหลดตามต้องการผ่าน `compact-index.json` (`skills_library/`) |
 
 ---
 
@@ -203,17 +225,17 @@ BoomOpen มาพร้อมกับหนึ่งในระบบนิ�
 
 ```text
 BoomOpen-Workflow-Kit/
-├── agents/                  # คำนิยามเอเจนต์ผู้เชี่ยวชาญ 21 บทบาท + 17 ทีมสามเหลี่ยมทองคำ (51 ไฟล์บทบาท)
-├── cli/                     # ตัวติดตั้ง (install.js), ตัวตรวจสุขภาพ (doctor.js), ตัวตรวจโค้ด 2 ระดับ (checker.js) และชุดทดสอบ
-├── commands/                # เวิร์กโฟลว์คำสั่ง Slash 72 รายการ (:fast, :hard, :team) + โปรโตคอล _ref/
+├── agents/                  # คำนิยามเอเจนต์ผู้เชี่ยวชาญ 21 บทบาท + 18 ทีมสามเหลี่ยมทองคำ (54 ไฟล์บทบาท)
+├── cli/                     # ตัวติดตั้ง (install.js), Doctor (doctor.js), Checker (checker.js), Settings (settings.js), research.js, design.js, plan.js, cook.js, Ledger (ledger.js) และ Conductor (conductor.js)
+├── commands/                # เวิร์กโฟลว์คำสั่ง Slash 79 รายการ (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 โปรโตคอล _ref/ (84 ไฟล์)
 ├── documents/               # เอกสารสถาปัตยกรรม โดเมน โครงสร้างโค้ด และมาตรฐานการเขียนโค้ดแบบ 2 ระดับ
 ├── i18n/                    # เอกสารหลายภาษา (คำแปล README ฉบับสมบูรณ์ใน 16 ภาษาหลัก)
-├── matrix-skills/           # เมทริกซ์ทักษะ YAML ตามโดเมน + compact-index.json ที่คอมไพล์ล่วงหน้า (1,450+ ทักษะ)
+├── matrix-skills/           # เมทริกซ์ทักษะ YAML ตามโดเมน + compact-index.json ที่คอมไพล์ล่วงหน้า (1,462 ทักษะ)
 ├── platforms/               # เทมเพลตรวมสำหรับทั้ง 5 แพลตฟอร์ม (antigravity/, claude/, codex/, copilot/, cursor/)
 ├── rules/                   # กฎโหมด B โหลดตามความต้องการ (CORE, PHASES, AGENTS, TEAMS, SKILLS, ERRORS, REFERENCE)
 ├── scripts/                 # สคริปต์ Python สำหรับทำงานอัตโนมัติและตรวจสอบ (checklist.py, verify_all.py ฯลฯ)
-├── skills/                  # ทักษะหลัก 48 รายการ (clean-code, debugger, plan-writing, frontend-design ฯลฯ)
-├── skills_library/          # คลังทักษะเฉพาะทางกว่า 1,450+ รายการที่โหลดตามความต้องการด้วยการค้นหา 2 ขั้นตอน
+├── skills/                  # ทักษะหลัก 22 รายการ (clean-code, debugger, plan-writing, frontend-design ฯลฯ)
+├── skills_library/          # คลังทักษะเฉพาะทาง 1,440 รายการที่โหลดตามความต้องการด้วยการค้นหา 2 ขั้นตอน
 └── GEMINI.md | CLAUDE.md | CODEX.md | COPILOT.md | CURSOR.md | AGENT.md
 ```
 
@@ -221,5 +243,5 @@ BoomOpen-Workflow-Kit/
 
 ## 📄 สัญญาอนุญาตและความปลอดภัย
 
-- **สัญญาอนุญาต**: เผยแพร่ภายใต้ [สัญญาอนุญาต MIT](../LICENSE) ลิขสิทธิ์ © 2026 **Kennyboom (BoomOpen)**
+- **สัญญาอนุญาต**: เผยแพร่ภายใต้ [สัญญาอนุญาต MIT](../LICENSE) ลิขสิทธิ์ © 2026 **BoomOpen Labs** สกิลของบุคคลที่สามใน `skills_library/` ยังคงใช้สัญญาอนุญาตต้นฉบับ — ดู [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)
 - **นโยบายความปลอดภัย**: โปรดดู [SECURITY.md](../SECURITY.md) สำหรับระบบป้องกันความปลอดภัยในตัวและแนวทางการรายงานช่องโหว่

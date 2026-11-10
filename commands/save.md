@@ -1,119 +1,101 @@
 ---
-description: "💾 Save Session & Project Memory — Persist context to Brain Artifacts (<appDataDir>\\brain\\<conversation-id>\\) and/or .brain/ for cross-session continuity."
+description: "💾 Save Session & Project Memory — Persist cohesive SESSION-{date}.md Brain Artifact, sync .boomopen/project-ledger.json & cook state, and update .brain/ memory"
 version: "5.5"
 category: session
 execution-mode: execute
 ---
 
-# /save — Infinite Memory & Session Keeper v5.1
+# /save — Infinite Memory, Ledger Sync & Session Keeper
 
 <context>$ARGUMENTS</context>
 
 ---
 
-## 🎯 PURPOSE
+## ⚡ PURPOSE, SUB-AGENT GATE & STORAGE ROUTING (v5.5)
 
-Combat AI context drift across sessions. Capture architectural decisions, completed tasks, active blockers, and gotchas so any future session can resume with 100% context fidelity via `/recap`.
+Combat cross-session context drift by capturing architectural decisions, completed work, active workflow stage (`cook state`), deterministic `.boomopen/project-ledger.json` progress, and next actions so any future session resumes with 100% fidelity via `/recap`, `/next`, or `/autopilot:run`.
 
-**Storage Routing (v5.1 Smart-Hybrid)**:
-1. **Antigravity 2.0 Brain Artifact (Clean Git Tree Default)**:
-   - Write `<appDataDir>\brain\<conversation-id>\SESSION-HANDOVER.md` (renders in Antigravity UI Artifact pane, zero Git working tree pollution).
-2. **Workspace `.brain/` Persistence (Cross-Conversation / Team Shared)**:
-   - Update `.brain/session.json`, `.brain/brain.json`, and `.brain/handover.md` when `.brain/` already exists in the repo OR when user wants workspace-persisted memory across new conversations.
-
----
-
-## 🔍 Phase 1: Change & Decision Analysis (Auto-Detect)
-
-1. Run `git status -s` and `git diff --stat` (modified/added files).
-2. Run `git log --oneline -5` (recent commits).
-3. Check existing `<appDataDir>\brain\<conversation-id>\` artifacts and `.brain/session.json` (if present).
-4. Classify changes:
-   - **MAJOR** (update static architecture knowledge): New module/service, DB schema change, new API endpoint, new dependency, architectural ADR.
-   - **MINOR** (update dynamic session state): Bug fix, refactor, test addition, UI polish.
-
----
-
-## 🧠 Phase 2: Update Static Knowledge (`.brain/brain.json` if workspace memory active)
-
-File: `.brain/brain.json`
-
-```json
-{
-  "meta": {
-    "schema_version": "5.1.0",
-    "last_updated": "ISO-date",
-    "project_version": "5.1.0"
-  },
-  "project": {
-    "name": "project-name",
-    "type": "web|mobile|desktop|api|cli",
-    "status": "planning|development|testing|production"
-  },
-  "tech_stack": {
-    "frontend": { "framework": "", "styling": "", "state": "" },
-    "backend": { "runtime": "", "framework": "", "orm": "" },
-    "database": { "type": "", "provider": "" }
-  },
-  "features": [
-    { "name": "", "status": "planned|in-progress|done", "phase": "" }
-  ],
-  "knowledge_items": {
-    "patterns": ["Pattern used and why"],
-    "gotchas": ["Known issues and workarounds"],
-    "conventions": ["Naming/structure conventions"]
-  }
-}
-```
+1. **0-Turn Sub-agent Scouting Gate (`> 2` Unindexed Files)**: Standard `/save` inspects Git status, CLI telemetry, and Brain Artifacts directly (`run_command`, `read_file`). If reconstructing undocumented changes requires scouting **`> 2` unfamiliar source files**, spawn parallel `scouter#1..k` immediately on Turn 1 via `invoke_subagent(TypeName: "self", Model: "inherit")` using Antigravity 2.0 tools ONLY (`read_file`, `write_file`, `edit_file`, `run_command`, `invoke_subagent`, `send_message`, `ask_question`, `search_web`).
+2. **Cohesive Single-File Brain Artifact (`<= 500` lines, Clean Git Tree)**: Write **1 single cohesive file** `<appDataDir>\brain\<conversation-id>\SESSION-{date}.md` (`<= 500` lines; never split into `{name}/` folders or write to `./reports/` by default) using `write_file` with explicit `ArtifactMetadata`:
+   ```json
+   {
+     "ArtifactMetadata": {
+       "Summary": "Session continuity snapshot with ledger cursor, cook state, completed work, architectural decisions, and next actions",
+       "UserFacing": true,
+       "RequestFeedback": false
+     }
+   }
+   ```
+3. **Deterministic Ledger & Session Telemetry Sync**:
+   ```bash
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook state --artifact-dir "<appDataDir>/brain/<conversation-id>"
+   python ~/.{TOOL}/skills/boomopen-workflow-kit/scripts/session_manager.py info .
+   ```
+   When `.boomopen/project-ledger.json` exists in the workspace, also run:
+   ```bash
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger status
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger next
+   ```
+4. **Workspace `.brain/` Persistence (Cross-Conversation / Team Shared)**: Update `.brain/session.json`, `.brain/brain.json`, and `.brain/handover.md` whenever `.brain/` already exists in the repository OR when the user requests workspace-persisted memory across new conversations.
 
 ---
 
-## 📋 Phase 3: Save Dynamic Session State & Handover Artifact
+## 🔍 Phase 1: State, Git & Ledger Analysis
 
-### 1. Brain Artifact (`<appDataDir>\brain\<conversation-id>\SESSION-HANDOVER.md`)
-Write or update `SESSION-HANDOVER.md` in the conversation's Brain Artifact directory (and `.brain/handover.md` if workspace `.brain/` is used):
+1. Run `git status -s`, `git diff --stat`, and `git log --oneline -5` (`run_command`).
+2. Inspect active workflow artifacts via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook state --artifact-dir "<appDataDir>/brain/<conversation-id>"` and `python ~/.{TOOL}/skills/boomopen-workflow-kit/scripts/session_manager.py status .`.
+3. If `.boomopen/project-ledger.json` exists, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger status` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger next` to record exact `active_cursor`, verified `REQ-xxx` count, next pending requirements, and `baseline_passed_tests`.
+4. Classify session changes:
+   - **MAJOR** (new module/service, DB schema migration, API contract update, ADR): sync static architecture knowledge (`.brain/brain.json` and `.boomopen/contracts/SHARED_CONTRACT.md` when active).
+   - **MINOR** (feature slice, bug fix, refactor, tests): sync dynamic session snapshot (`SESSION-{date}.md` and `.brain/session.json` when active).
+
+---
+
+## 📋 Phase 2: Write Cohesive `SESSION-{date}.md` Brain Artifact (`<= 500` lines)
+
+Write `<appDataDir>\brain\<conversation-id>\SESSION-{date}.md` (`ArtifactMetadata: { Summary: "Session continuity snapshot with ledger cursor, cook state, completed work, architectural decisions, and next actions", UserFacing: true, RequestFeedback: false }`, and mirror to `.brain/handover.md` if `.brain/` is active):
 
 ```markdown
-# 📋 Session Handover — {Project / Feature}
+# 📋 Session Snapshot — {Project / Feature} ({YYYY-MM-DD})
 
 > **Saved At**: {ISO-timestamp}
-> **Status**: {planning | coding | testing | debugging | completed}
+> **Workflow Cook State**: {PLAN / DESIGN / SCOUT / RESEARCH / Active Wave}
+> **Autopilot Ledger Cursor**: {current_phase_id | N/A} ({verified_reqs}/{total_reqs} REQ verified, Baseline Tests: {baseline_passed_tests})
 
-## 📍 Current Focus
-- **Feature / Task**: {name}
-- **Active Files**: {list of files}
+## 📍 Current Focus & Active Files
+- **Feature / Phase**: {name}
+- **Active Files**: {clickable file links}
 
 ## ✅ Completed This Session
-- {item 1}
-- {item 2}
+- {completed item with verification proof}
 
-## ⏳ Remaining / Next Tasks
-1. {next priority task}
-2. {follow-up task}
+## ⏳ Next Priority Actions
+1. {exact next command or pending REQ-xxx from ledger next}
+2. {follow-up verification or task}
 
 ## 🔧 Key Architectural Decisions & Gotchas
-- **Decision**: {what was chosen & why}
-- **Gotcha**: {tricky bug or constraint discovered}
+- **Decision**: {what was chosen and why}
+- **Gotcha**: {non-obvious constraint or edge case}
+
+## ⚠️ Uncommitted Changes / Active Blockers
+- {git status summary or blocker notes}
 ```
 
-### 2. Dynamic State JSON (`.brain/session.json` if workspace memory active)
+---
+
+## 🧠 Phase 3: Optional Workspace `.brain/` JSON Sync
+
+When `.brain/` workspace memory is active, keep `.brain/brain.json` (schema `"5.5.0"`, `project`, `tech_stack`, `features`, `knowledge_items`) and `.brain/session.json` synchronized via `write_file` / `edit_file`:
+
 ```json
 {
+  "schema_version": "5.5.0",
   "timestamp": "ISO-date",
-  "working_on": {
-    "feature": "Feature name",
-    "task": "Current specific task",
-    "status": "planning|coding|testing|debugging",
-    "files": ["files edited"],
-    "notes": "Important context"
-  },
-  "progress": {
-    "completed": ["Feature A"],
-    "in_progress": ["Feature B"],
-    "remaining": ["Feature C"],
-    "percentage": "75%"
-  },
-  "decisions_made": ["Key decision"],
+  "cook_state": "PLAN|DESIGN|SCOUT|IDLE",
+  "ledger_cursor": "PHASE-K|null",
+  "working_on": { "feature": "", "task": "", "status": "planning|coding|testing|debugging", "files": [] },
+  "progress": { "completed": [], "in_progress": [], "remaining": [] },
+  "decisions_made": [],
   "blockers": []
 }
 ```
@@ -122,6 +104,4 @@ Write or update `SESSION-HANDOVER.md` in the conversation's Brain Artifact direc
 
 ## ✅ Phase 4: Confirmation
 
-Output a concise summary of saved artifacts:
-- `SESSION-HANDOVER.md` (Brain Artifact) and/or `.brain/session.json` + `.brain/brain.json`
-- Tip: Run `/recap` in your next session to restore full context immediately.
+Present a concise summary with clickable links to `<appDataDir>\brain\<conversation-id>\SESSION-{date}.md` (plus `.boomopen/ROADMAP-PROGRESS.md` or `.brain/session.json` when active) and remind the user they can restore full context anytime via `/recap`, `/next`, or `/autopilot:run`.

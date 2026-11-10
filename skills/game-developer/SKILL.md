@@ -1,6 +1,8 @@
 ---
 name: game-developer
 description: Use when building game systems, implementing Unity 6/Unreal 5/Godot 4/WebGPU features, or optimizing game performance. Invoke for Unity, Unreal, Godot, WebGPU, R3F, Phaser/PixiJS, ECS, physics, networking, and performance optimization.
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+version: "5.5.0"
 triggers:
   - Unity
   - Unreal Engine
@@ -18,46 +20,45 @@ scope: implementation
 output-format: code
 ---
 
-# Game Developer (2026 Edition)
+# Game Developer — High-FPS Engine, ECS & WebGPU Architecture (v5.5.0)
 
-Senior game developer with expertise in creating high-performance gaming experiences across Unity 6, Unreal Engine 5, Godot 4, and WebGPU/3D web engines.
+> **PURPOSE**: Engineer deterministic, zero-GC, **60–120+ FPS** game systems across **Unity 6 (DOTS/ECS & Burst)**, **Unreal Engine 5 (C++ / GAS)**, **Godot 4.3+ (Typed GDScript / C#)**, and **WebGPU / Three.js TSL / React Three Fiber / PixiJS v8 / Phaser 3** — governed by **3-Wave Contract-First Sharding (`<= 3–4 OWNED_FILES`/shard)** and `boomopen check --strict-phase --no-stubs`.
 
-## Role Definition
+---
 
-You are a senior game developer with 10+ years of experience in game engine programming, graphics optimization, and multiplayer systems. You specialize in Unity 6 C# (DOTS/ECS), Unreal C++, Godot 4 GDScript, WebGPU/TSL, React Three Fiber, and cross-platform optimization. You build engaging, performant games that run smoothly at 60–120+ FPS across all target platforms.
+## 1. 3-Wave Contract-First Game Sharding (`/cook`, `/code`, `/autopilot`)
 
-## When to Use This Skill
+Complex game features span simulation data, rendering/shaders, input/UI, and netcode. Never overload a single agent with `> 4` files! Decompose into **3 deterministic waves**:
 
-- Building game systems (ECS, physics, AI, deterministic networking)
-- Implementing Unity 6, Unreal Engine 5, Godot 4, or WebGPU/Phaser/PixiJS features
-- Optimizing game performance (60+ FPS targets, zero-GC hot loops)
-- Creating multiplayer/networking architecture (client prediction, rollback, Colyseus)
-- Developing shaders (HLSL, GLSL, WGSL, TSL, Godot Shader) and graphics pipelines
-- Implementing game design patterns (object pooling, hierarchical state machines, command buffers)
+1. **Wave 1 — `SHARED_CONTRACT` Data & Simulation Schema Lock**:
+   - Lock ECS component structs, event buses, deterministic tick/command-buffer schemas, network state snapshots, and data-driven configs (`ScriptableObject`, Godot `Resource`, JSON/TOML balance tables).
+2. **Wave 2 — Parallel Domain Shards (`<= 3–4 OWNED_FILES` per `game-engineer#<shard>`)**:
+   - `game-engineer#sim`: Core gameplay loop, ECS systems, physics/collision, state machines, AI behavior trees.
+   - `game-engineer#render`: Shaders (`HLSL` / `WGSL` / `TSL` / `gdshader`), instanced meshes, VFX, LODs, audio cues.
+   - `game-engineer#net-or-ui`: Authoritative server rooms / client-side prediction & rollback (`Colyseus` / Netcode) or HUD/menus (paired with `DESIGN-{task}.md`).
+3. **Wave 3 — Frame-Budget, Determinism & CLI Verification**:
+   - Run engine/headless unit tests + `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <target_dir> --strict-phase --no-stubs` (`0` `TODO`/hollow stubs, `0` explicit `any`, `0` debug `console.log` spam in frame loops).
+   - For mobile touch HUDs or hybrid mobile wrappers, also run `python ~/.{TOOL}/skills/mobile-design/scripts/mobile_audit.py <project_path>` (`>= 44pt`/`48dp` touch controls & safe-area insets).
 
-## Core Workflow
+---
 
-1. **Analyze requirements** - Identify genre, platforms, performance targets, multiplayer needs
-2. **Design architecture** - Plan ECS/component systems, optimize for target platforms
-3. **Implement** - Build core mechanics, graphics, physics, AI, networking
-4. **Optimize** - Profile and optimize for 60+ FPS, minimize memory/battery usage
-5. **Test** - Cross-platform testing, performance validation, multiplayer stress tests
+## 2. Reference Guide (`references/`)
 
-## Reference Guide
-
-Load detailed guidance based on context:
+Load detailed engine guidance on demand:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| Unity Development | `references/unity-patterns.md` | Unity C#, MonoBehaviour, Scriptable Objects |
-| Unreal Development | `references/unreal-cpp.md` | Unreal C++, Blueprints, Actor components |
-| ECS & Patterns | `references/ecs-patterns.md` | Entity Component System, game patterns |
-| Performance | `references/performance-optimization.md` | FPS optimization, profiling, memory |
-| Networking | `references/multiplayer-networking.md` | Multiplayer, client-server, lag compensation |
+| **Unity 6 Development** | `references/unity-patterns.md` | Unity C#, MonoBehaviour, ScriptableObjects, DOTS/Burst |
+| **Unreal Engine 5 C++** | `references/unreal-cpp.md` | Unreal C++, UPROPERTY/Gameplay Ability System, Actor components |
+| **ECS & Game Patterns** | `references/ecs-patterns.md` | Entity Component System, object pooling, command/state patterns |
+| **Performance & Frame Budgets** | `references/performance-optimization.md` | 60–120 FPS frame budgets (`16.6ms` / `8.3ms`), zero-GC hot loops, draw calls |
+| **Multiplayer Networking** | `references/multiplayer-networking.md` | Authoritative servers, client prediction, snapshot interpolation, lag compensation |
 
-## 2026 Game Skill Routing (`skills_library/`)
+---
 
-Load these specialized 2026 game engineering skills when working on specific engines:
+## 3. 2026 Game Skill Routing (`skills_library/`)
+
+Load the exact matched library skill for specialized 2026 engines:
 
 | Engine / Domain | Skill Path | When to Load |
 |-----------------|------------|--------------|
@@ -68,38 +69,17 @@ Load these specialized 2026 game engineering skills when working on specific eng
 | **Multiplayer Netcode & Colyseus** | `../../skills_library/multiplayer-netcode-colyseus/SKILL.md` (`skills_library/multiplayer-netcode-colyseus/SKILL.md`) | Authoritative game servers, client-side prediction, snapshot interpolation, Colyseus rooms |
 | **PixiJS v8 & Phaser 3 2D Web Games** | `../../skills_library/pixijs-v8-phaser-2d-games/SKILL.md` (`skills_library/pixijs-v8-phaser-2d-games/SKILL.md`) | High-FPS HTML5 2D games, PixiJS v8 WebGPU renderer, Phaser 3 scenes & arcade physics |
 
-## Constraints
+---
 
-### MUST DO
-- Target 60+ FPS on all platforms
-- Use object pooling for frequent instantiation
-- Implement LOD systems for optimization
-- Profile performance regularly (CPU, GPU, memory)
-- Use async loading for resources
-- Implement proper state machines for game logic
-- Cache component references (avoid GetComponent in Update)
-- Use delta time for frame-independent movement
+## 4. Non-Negotiable Frame-Loop & Engineering Guardrails
 
-### MUST NOT DO
-- Instantiate/Destroy in tight loops or Update()
-- Skip profiling and performance testing
-- Use string comparisons for tags (use CompareTag)
-- Allocate memory in Update/FixedUpdate loops
-- Ignore platform-specific constraints (mobile, console)
-- Use Find methods in Update loops
-- Hardcode game values (use ScriptableObjects/data files)
+### ✅ MUST DO
+- **Zero-GC Per-Frame Hot Loops**: Pre-allocate scratch vectors/matrices/arrays outside `Update` / `_process` / `useFrame` / `requestAnimationFrame` — never allocate `new Vector3()` or closures inside per-frame ticks!
+- **Object Pooling & Instancing**: Pool projectiles, VFX, enemies, and audio emitters; batch static geometry and use GPU `InstancedMesh` for crowds/particles.
+- **Frame-Rate Independence & Fixed Physics**: Multiply continuous motion by `deltaTime` (clamped against tab-background spikes `Math.min(dt, 0.1)`) and run physics/netcode on deterministic fixed timesteps.
+- **Data-Driven Tuning**: Externalize speed, damage, cooldowns, and spawn curves into typed config structs/resources (`SCREAMING_SNAKE_CASE` fallback constants, zero magic numbers).
 
-## Output Templates
-
-When implementing game features, provide:
-1. Core system implementation (ECS component, MonoBehaviour, Node, or Actor)
-2. Associated data structures (ScriptableObjects, Resources, structs, configs)
-3. Performance considerations and optimizations
-4. Brief explanation of architecture decisions
-
-## Related Skills
-
-- **Performance Engineer** - Deep performance optimization
-- **Backend Developer** - Game server implementation (`multiplayer-netcode-colyseus`)
-- **Frontend Developer** - Game UI/UX implementation (`webgpu-wgsl-three-tsl`, `react-three-fiber-rapier-3d`)
-- **Mobile Developer** - Mobile game optimization
+### ❌ MUST NOT DO
+- Never call `GetComponent`, `FindObjectOfType`, `get_node`, or DOM `querySelector` inside per-frame ticks — cache references during initialization!
+- Never mutate React state (`setState`) at 60Hz inside React Three Fiber `useFrame` — mutate Three.js `ref.current` transforms directly!
+- Never trust client-reported positions, hit detection, or currency/inventory deltas in multiplayer games — enforce server authority!

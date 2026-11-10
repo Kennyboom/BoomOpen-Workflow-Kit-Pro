@@ -1,177 +1,118 @@
 ---
-description: "🔺 Team Feature — Golden Triangle parallel agent collaboration for maximum quality"
+description: "🔺 Team Feature — Elastic Golden Diamond feature lifecycle with Turn-1 Fast-Forward, 3-Wave Contract-First Execution & Parallel Adversarial QA"
 version: "5.5"
 category: engineering
 execution-mode: execute
 ---
 
-# /cook:team — Golden Triangle Feature Development
+# /cook:team — Elastic Golden Diamond End-to-End Feature Development
 
-> **MISSION**: Maximum quality feature development through adversarial collaboration.
-> Each phase spawns a **Golden Triangle** of 3 agents: Tech Lead (coordinator),
-> Executor (implementer), Reviewer (devil's advocate). Output is released ONLY
-> upon consensus after debate.
+> **MISSION**: Maximum-assurance end-to-end feature development through **Elastic Golden Diamond adversarial collaboration** (`1 Tech Lead + N Parallel Shard Executors [1..6] + M Parallel Critics/Testers [1..3]`), powered by the **Turn-1 Fast-Forward State Machine (`boomopen cook state`)**, **3-Wave Contract-First Execution (`boomopen cook packets` + `verify-wave`)**, and zero-stub CLI verification.
 
 <feature>$ARGUMENTS</feature>
 
 ---
 
-## ⛔ MANDATORY REFERENCE — READ BEFORE PROCEEDING
+## ⚡ TURN-1 FAST-FORWARD STATE MACHINE & REFERENCES
 
-> **🔴 YOU MUST READ these reference files NOW. Do NOT skip.**
->
-> 1. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/golden-triangle-protocol.md` — Tiered Execution, Mailbox, Pre-Flight, Triangle Loop
-> 2. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/convergent-analysis-loop.md` — Phase 2 detailed analysis protocol
-> 3. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/implementation-loop.md` — Phase 6 Implementation step-by-step (CRITICAL)
->
-> **Failure to read = incorrect execution. These files contain BINDING protocols.**
-
----
-
-## 📁 DELIVERABLE FILES (BRAIN ARTIFACTS FIRST ON ANTIGRAVITY 2.0)
-
-> **Antigravity 2.0 Default**: Write transient deliverables (`BRAINSTORM`, `RESEARCH`, `SCOUT`, `DESIGN`, `PLAN`, `DEBUG`, `TEST`, `REVIEW`, `REPORT`, `MAILBOX`) to `<appDataDir>\brain\<conversation-id>\` to keep the Git tree clean. Use `./reports/{topic}/` only on non-Antigravity tools or when explicitly requested.
-
-| Phase | Output |
-|-------|--------|
-| P1: Discovery | `<appDataDir>\\brain\\<conversation-id>\\BRAINSTORM-{feature}` (or `./reports/{topic}/brainstorms/BRAINSTORM-{feature}`) |
-| P2: Research | `<appDataDir>\\brain\\<conversation-id>\\RESEARCH-{feature}` (or `./reports/{topic}/researchers/RESEARCH-{feature}`) + `<appDataDir>\\brain\\<conversation-id>\\SCOUT-{feature}` (or `./reports/{topic}/scouts/SCOUT-{feature}`) |
-| P4: Design | `<appDataDir>\\brain\\<conversation-id>\\DESIGN-{feature}` (or `./reports/{topic}/designs/DESIGN-{feature}`) |
-| P5: Planning | `<appDataDir>\\brain\\<conversation-id>\\PLAN-{feature}` (or `./reports/{topic}/plans/PLAN-{feature}`) |
-| ALL Phases | `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md` (or `./reports/{topic}/MAILBOX-{date}.md`) |
-
-**⚠️ Paths = base names.** ≤ 150 lines → `{name}.md`. > 150 lines → `{name}/` folder.
+1. **Zero Pre-Flight Tax**: Core orchestration laws and the **5-Field Handoff Packet** are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md` — launch the active stage **immediately on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")` and load `commands/_ref/golden-triangle-protocol.md` + `commands/_ref/implementation-loop.md` on-demand in parallel.
+2. **⚡ Unified Turn-1 Fast-Forward State Machine (`boomopen cook state`)**:
+   Inspect `<appDataDir>\brain\<conversation-id>\` (or run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook state --artifact-dir "<appDataDir>/brain/<conversation-id>"`) on Turn 1:
+   - **1. `PLAN-{feature}.md` exists (Approved-Plan Gate)** → **Fast-Forward directly to Stage 4 (3-Wave Implementation)**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook preflight "<plan-path>"` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>" --wave 1 [--design "<design-path>"]` and **dispatch Wave 1 executor shards directly on Turn 1 without a redundant `tech-lead` re-sharding hop!**
+   - **2. `DESIGN-{feature}.md` exists (no `PLAN` yet — Approved-Design Gate)** → **Fast-Forward to Stage 3 (Planning Diamond)**: Extract `DESIGN_CONTRACT` via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design contract "<design-path>"` and invoke `planner` directly.
+   - **3. `SCOUT-{feature}.md` or `RESEARCH-{feature}.md` exists (no `DESIGN`/`PLAN` yet)** → **Fast-Forward past Stage 1 (Discovery Diamond)**.
 
 ---
 
-## 🔗 PHASE DEPENDENCIES
+## 📁 DELIVERABLE FILES (BRAIN ARTIFACTS FIRST — SINGLE COHESIVE FILES `<= 500` LINES)
 
-| Phase | Requires | Blocking |
-|-------|----------|----------|
-| P1: Requirements & Discovery | User request | No |
-| P2: Research & Patterns | P1 requirements | No |
-| P3: Database Design | Data requirements from P1/P2 | Conditional |
-| P4: Design | Scout findings from P2 | Conditional |
-| P5: Planning | RESEARCH + SCOUT + DESIGN | **YES** |
-| P6: Implementation | **PLAN file** | **YES** |
-| P7: Testing & Review | PLAN + Code + Tests | **YES** |
+> **Cohesive Single-File Rule (`<= 500` lines)**: Keep `RESEARCH-{feature}.md`, `SCOUT-{feature}.md`, `DESIGN-{feature}.md`, `PLAN-{feature}.md`, and `REVIEW-{feature}.md` as single cohesive files in `<appDataDir>\brain\<conversation-id>\` (`RequestFeedback: false` on all artifacts during autonomous `/cook:team`; NEVER split into `{name}/` folders).
 
----
-
-## 🎭 Phase 1: REQUIREMENTS & DISCOVERY — 🔺 GOLDEN TRIANGLE
-
-| Role | Agent | Mission |
-|------|-------|---------|
-| Tech Lead | `researcher` | Decompose: requirements, codebase survey, prior art |
-| Executor | `scouter` | Deep codebase analysis, map architecture, integration points |
-| Reviewer | `brainstormer` (Devil's Advocate) | Challenge: missed requirements? Unvalidated assumptions? |
-
-**Triangle Loop**: researcher decomposes → scouter surveys → brainstormer challenges
-**Deliverable**: Requirements + discovery report
-**Consensus**: ✅ CONSENSUS: researcher ✓ | scouter ✓ | brainstormer ✓
+| Stage | Brain Artifact Deliverable (`<appDataDir>\brain\<conversation-id>\`) | Deterministic CLI Gate |
+|-------|----------------------------------------------------------------------|------------------------|
+| **Stage 1: Discovery Diamond** | `SCOUT-{feature}.md` + `RESEARCH-{feature}.md` *(Skipped if present)* | — |
+| **Stage 2: UI/UX Design Diamond** | `DESIGN-{feature}.md` *(Skipped if no UI or already approved)* | `boomopen design validate "<design-path>"` |
+| **Stage 3: 3-Wave Planning Diamond** | `PLAN-{feature}.md` (+ `.boomopen/project-ledger.json` if `≥ 3` waves / `13+` files) | `boomopen plan validate "<plan-path>" [--sync-ledger]` |
+| **Stage 4: 3-Wave Implementation** | Source Code + `[x]` in `PLAN-{feature}.md` + `MAILBOX-{date}.md` | `boomopen cook verify-wave "<plan-path>" --wave <W> --run-verify` |
+| **Stage 5: Wave 3 Verification Diamond** | Unified `REVIEW-{feature}.md` (`<= 300` lines, test + security + review proof) | `boomopen check <dir> --strict-phase --no-stubs` + `ux_audit.py` |
 
 ---
 
-## 🎭 Phase 2: RESEARCH & PATTERNS — 🔺 GOLDEN TRIANGLE
+## 💎 STAGE 1: PARALLEL DISCOVERY, CODEBASE SCOUT & RESEARCH DIAMOND *(Skipped If Present)*
 
-| Role | Agent | Mission |
-|------|-------|---------|
-| Tech Lead | `researcher` | Pattern research areas, technology evaluation criteria |
-| Executor | `researcher` (self-executes) | Deep-dive patterns, libraries, best practices |
-| Reviewer | `tech-lead` (feasibility critic) | Does pattern fit codebase? Complexity justified? Simpler alternatives? |
+| Governance Pillar | Agent Shard(s) (`TypeName: "self"`, `Model: "inherit"`) | Mission |
+|-------------------|---------------------------------------------------------|---------|
+| **Lead Pillar (`[1]`)** | `researcher#lead` (`agents/researcher.md`) | Decompose feature requirements, codebase survey modules, and technical/UX vectors in `MAILBOX-{date}.md`. |
+| **Parallel Executors (`[2..6]`)** | • `scouter#1..k` (`agents/scouter.md`, `≤ 3–4` modules/shard)<br>• `researcher#1..k` (`agents/researcher.md`, `1` vector/shard) | • **`scouter#1..k`**: Map architecture, DB schemas, CSS/Tailwind tokens, reusable components, and blast radius (`SCOUT-{feature}.md`).<br>• **`researcher#1..k`**: Evaluate patterns, `1,462` skills, and `python ~/.{TOOL}/skills_library/ui-ux-pro-max/scripts/search.py "<query>" --design-system` when UI is needed (`RESEARCH-{feature}.md`). |
+| **Critic Pillar (`[1..2]`)** | `brainstormer#critic` + `tech-lead#feasibility` | Challenge missed requirements, edge cases, and over-engineering (max 2 warm `send_message` rounds). |
 
-**Deliverable**: `RESEARCH-{feature}` + `SCOUT-{feature}`
-**Consensus**: ✅ CONSENSUS: researcher ✓ | researcher(exec) ✓ | tech-lead ✓
-
----
-
-## 🎭 Phase 3: DATABASE DESIGN (IF DATA CHANGES) — 🔺 GOLDEN TRIANGLE
-
-> **Trigger**: Feature involves database changes. Skip if no data changes.
-
-| Role | Agent | Mission |
-|------|-------|---------|
-| Tech Lead | `tech-lead` | Schema design tasks, migration planning |
-| Executor | `database-architect` | Design schema, write migrations, plan indexes |
-| Reviewer | `reviewer` + security/perf lens | SQL injection, N+1 queries, missing indexes, data integrity |
-
-**Consensus**: ✅ CONSENSUS: tech-lead ✓ | database-architect ✓ | reviewer ✓
+**Consensus**: `✅ CONSENSUS (Discovery): researcher#lead ✓ | scouter+researcher ✓ | brainstormer+tech-lead ✓`
 
 ---
 
-## 🎭 Phase 4: DESIGN (IF UI NEEDED) — 🔺 GOLDEN TRIANGLE
+## 💎 STAGE 2: CONDITIONAL UI/UX DESIGN DIAMOND *(Skip If No UI or `DESIGN-{feature}.md` Exists)*
 
-> **Trigger**: Feature has UI components. Skip if backend-only.
-
-| Role | Agent | Mission |
-|------|-------|---------|
-| Tech Lead | `designer` | UI components, interaction flows, design tokens |
-| Executor | `frontend-engineer` | Design specs, component structures, responsive layouts |
-| Reviewer | `reviewer` + UX/a11y lens | WCAG 2.1 AA, keyboard nav, screen reader, mobile-first |
-
-**Deliverable**: `DESIGN-{feature}`
-**Consensus**: ✅ CONSENSUS: designer ✓ | frontend-engineer ✓ | reviewer ✓
+- *(Database schema changes are folded directly into Stage 3 `PLAN-{feature}.md` **Wave 1 (`database-architect#schema`)** — never run a duplicate pre-planning DB stage!)*
+- If UI is needed and `DESIGN-{feature}.md` does not exist:
+  - **Lead**: `design-team-techlead` (`agents/teams/design-team/techlead.md`) locks Named Aesthetic Archetype & OKLCH palette.
+  - **Executor**: `design-team-executor` (`agents/teams/design-team/executor.md`) authors the cohesive **6-Block `DESIGN-{feature}.md`** (`<= 500` lines, OKLCH `@theme inline`, 5-State Matrix, WCAG 2.2 AA, and fenced `DESIGN_CONTRACT`).
+  - **Critic**: `design-team-reviewer` (`agents/teams/design-team/reviewer.md`) runs `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design validate "<design-path>"` and audits `DESIGN-G1..G4`.
+- Extract locked contract for Stage 3: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design contract "<design-path>"`.
+- **Consensus**: `✅ CONSENSUS (Design): design-team-techlead ✓ | design-team-executor ✓ | design-team-reviewer ✓`
 
 ---
 
-## 🎭 Phase 5: PLANNING — 🔺 GOLDEN TRIANGLE
+## 💎 STAGE 3: CONTRACT-FIRST 3-WAVE PLANNING DIAMOND *(Skip If `PLAN-{feature}.md` Exists)*
 
-| Role | Agent | Mission |
-|------|-------|---------|
-| Tech Lead | `planner` | Plan creation, task ordering, effort estimation |
-| Executor | `researcher` | Fill knowledge gaps, draft plan sections |
-| Reviewer | `tech-lead` (feasibility critic) | Realistic estimates? Risks mitigated? Rollback strategy? |
+| Governance Pillar | Agent (`TypeName: "self"`, `Model: "inherit"`) | Mission |
+|-------------------|------------------------------------------------|---------|
+| **Executor** | `planner` (`agents/planner.md`) | Read `RESEARCH` + `SCOUT` (+ `DESIGN_CONTRACT`) → write cohesive **6-Block `PLAN-{feature}.md`** (`<= 500` lines) structured into **Wave 1 (Foundation Lock)** → **Wave 2 (Parallel Feature Shards `≤ 3–4` files/shard)** → run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js plan validate "<plan-path>" [--sync-ledger]`. |
+| **Critics** | `tech-lead#arch` + `security-engineer#sec` | Audit compilable `SHARED_CONTRACT` (DB migrations + DTOs + `DESIGN_CONTRACT`), disjoint `OWNED_FILES` (`≤ 3–4`/shard), additive DB rollback safety, and **2-Wave Frontend Sharding** (`Wave 1: frontend-engineer#tokens-primitives` → `Wave 2: frontend-engineer#screen-1..k`). |
 
-**Prerequisite**: **READ** RESEARCH + SCOUT + DESIGN files
-**Deliverable**: `PLAN-{feature}`
-**Consensus**: ✅ CONSENSUS: planner ✓ | researcher ✓ | tech-lead ✓
+**Consensus**: `✅ CONSENSUS (Planning): tech-lead#arch ✓ | planner ✓ | security-engineer#sec ✓`
 
 ---
 
-## 🎭 Phase 6: IMPLEMENTATION — 🔺 GOLDEN TRIANGLE (CRITICAL)
+## 💎 STAGE 4: 3-WAVE CONTRACT-FIRST IMPLEMENTATION (`commands/_ref/implementation-loop.md`)
 
-> **⛔ MANDATORY: READ `_ref/implementation-loop.md` for the full step-by-step protocol.**
+> **⚡ Zero Middleman Re-Sharding**: Because `PLAN-{feature}.md` already passed `boomopen plan validate`, do **NOT** run an extra `tech-lead` re-sharding turn! Extract deterministic 5-Field Handoff Packets directly via `boomopen cook packets` and invoke `tech-lead` solely for dispute arbitration or contract amendments.
 
-**Prerequisite**: **READ and FOLLOW** `<appDataDir>\\brain\\<conversation-id>\\PLAN-{feature}` (or `./reports/{topic}/plans/PLAN-{feature}`)
-**Pragmatic 2-Tier Coding Standards Verification (MANDATORY)**: Run `node cli/install.js check <dir>` to verify Tier 1 strict quality (0 `any`, no debug `console.log`, `try/catch` boundaries) and Tier 2 cohesive structure (`≤ 400` soft / `≤ 500` hard lines).
-**Exit Criteria**: All plan tasks implemented, `node cli/install.js check` + reviews passed, no unauthorized deviations
-**Consensus**: ✅ CONSENSUS: tech-lead ✓ | {executor} ✓ | reviewer ✓
+1. **Wave 1 — Foundation, Schema & Shared Primitives Lock**:
+   - Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>" --wave 1` and dispatch `database-architect#schema`, `backend-engineer#contracts`, and `frontend-engineer#tokens-primitives` in parallel (`TypeName: "self"`, `Model: "inherit"`).
+   - Gate Wave 1: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify`.
+2. **Wave 2 — Parallel Feature Shards (`1..6` Concurrent Executors, `≤ 3–4 OWNED_FILES`/Shard)**:
+   - Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>" --wave 2` (auto-locking Wave 1 contracts/tokens & sibling shards' files in `READ_ONLY_FILES`) and dispatch `backend-engineer#api-1..k`, `frontend-engineer#screen-1..k`, and `mobile-engineer#1..k` **in parallel in the same turn**.
+   - Gate Wave 2: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --run-verify` (route any fixes via warm `send_message` to `role#shard -> conversationId`).
 
 ---
 
-## 🎭 Phase 7: TESTING & REVIEW — 🔺 GOLDEN TRIANGLE
+## 💎 STAGE 5 (WAVE 3): PARALLEL CROSS-STACK VERIFICATION & ADVERSARIAL REVIEW DIAMOND
 
-| Role | Agent | Mission |
-|------|-------|---------|
-| Tech Lead | `tester` | Test strategy, coverage targets, acceptance verification |
-| Executor | `tester` (self-implements) | Write tests, run tests, coverage report |
-| Reviewer | `reviewer` + security/perf lens | Test gaps, missing security tests, perf benchmarks |
+| Role | Agent Shard(s) (`TypeName: "self"`, `Model: "inherit"`) | Mission |
+|------|---------------------------------------------------------|---------|
+| **Parallel Test Executors (`[1..3]`)** | `tester#unit-int`, `tester#e2e` (`agents/tester.md`) | Write and execute tests across 100% of `AC1..N` and edge cases (`≤ 3–4` test files/shard). |
+| **Parallel Adversarial Critics (`[1..2]`)** | `reviewer` (`agents/reviewer.md`) + `security-engineer` (`agents/security-engineer.md`) *(+ optional `boomopen conduct dispatch --role reviewer --engine cross_family`)* | Audit `SHARED_CONTRACT` / `DESIGN_CONTRACT` alignment, OWASP security, and run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` + portable `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <project_path>` + `accessibility_checker.py <project_path>` (when UI changed). |
+| **Arbitrator & Sign-Off (`[1]`)** | `tech-lead` (`agents/tech-lead.md`) | Route any test/critic blockers to warm `{executor#shard}` sessions via `send_message` (max 3 rounds), update `[x]` in `PLAN-{feature}.md`, and stamp unified `REVIEW-{feature}.md` (`<= 300` lines, `RequestFeedback: false`). |
 
-**PLAN CHECKPOINT VERIFICATION** (MANDATORY):
-- For EACH acceptance criterion in PLAN → write test → verify → document
-
-**Consensus**: ✅ CONSENSUS: tester ✓ | tester(exec) ✓ | reviewer ✓
+**Consensus**: `✅ CONSENSUS (Verification): tech-lead ✓ | tester#1..k ✓ | reviewer + security-engineer ✓`
 
 ---
 
 ## ✅ COMPLETION TEMPLATE
 
 ```markdown
-# 🔺 Golden Triangle Feature Report: {feature}
+# 🔺 Elastic Golden Diamond Feature Report: {feature}
 
-## Phase Results
-| Phase | Triangle | Consensus | Rounds |
-|-------|----------|-----------|--------|
-| P1: Requirements | researcher / scouter / brainstormer | ✅ | {n} |
-| P2: Research | researcher / researcher / tech-lead | ✅ | {n} |
-| P3: Database | tech-lead / database-architect / reviewer | ✅ or SKIPPED | {n} |
-| P4: Design | designer / frontend-engineer / reviewer | ✅ or SKIPPED | {n} |
-| P5: Planning | planner / researcher / tech-lead | ✅ | {n} |
-| P6: Implementation | tech-lead / {executor} / reviewer | ✅ | {n} |
-| P7: Testing | tester / tester / reviewer | ✅ | {n} |
+| Stage | Diamond Roster | CLI Gate | Status |
+|-------|----------------|----------|:------:|
+| Stage 1: Discovery | researcher#lead / scouter#1..k + researcher#1..k / brainstormer | — | ✅ / FAST-FORWARDED |
+| Stage 2: UI Design | design-team-techlead / design-team-executor / design-team-reviewer | `design validate` | ✅ / FAST-FORWARDED |
+| Stage 3: 3-Wave Plan | planner / tech-lead#arch + security-engineer#sec | `plan validate` | ✅ / FAST-FORWARDED |
+| Stage 4: Waves 1–2 Code | {executor#1..N} (Direct `cook packets` dispatch) | `cook verify-wave` | ✅ |
+| Stage 5: Wave 3 QA & Audit | tech-lead / tester#1..k / reviewer + security-engineer | `check --strict-phase` + `ux_audit.py` | ✅ |
 
 ## Next Actions
-1. ✅ **Done** — Feature complete (triangle-validated)
+1. ✅ **Done** — Feature complete and diamond-validated
 2. 🚀 `/deploy:preview` → Deploy to staging
-3. 📝 `/docs:core` → Generate documentation
+3. 📝 `/docs:core` → Update project documentation
 ```

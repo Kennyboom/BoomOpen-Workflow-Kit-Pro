@@ -20,7 +20,6 @@ Master major dependency version upgrades, compatibility analysis, staged upgrade
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Use this skill when
 
@@ -364,16 +363,6 @@ npm install --workspaces
 # Update specific workspace
 npm install package@latest --workspace=packages/app
 ```
-
-## Resources
-
-- **references/semver.md**: Semantic versioning guide
-- **references/compatibility-matrix.md**: Common compatibility issues
-- **references/staged-upgrades.md**: Incremental upgrade strategies
-- **references/testing-strategy.md**: Comprehensive testing approaches
-- **assets/upgrade-checklist.md**: Step-by-step checklist
-- **assets/compatibility-matrix.csv**: Version compatibility table
-- **scripts/audit-dependencies.sh**: Dependency audit script
 
 ## Best Practices
 

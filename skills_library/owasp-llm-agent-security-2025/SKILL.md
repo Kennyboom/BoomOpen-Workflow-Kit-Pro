@@ -1,6 +1,6 @@
 ---
 name: owasp-llm-agent-security-2025
-description: Defense-in-depth security engineering for LLM and Multi-Agent applications against the OWASP Top 10 for LLM Applications (2025): indirect prompt injection, excessive agency, SSRF, output handling, and secret redaction.
+description: "Defense-in-depth security engineering for LLM and Multi-Agent applications against the OWASP Top 10 for LLM Applications (2025): indirect prompt injection, excessive agency, SSRF, output handling, and secret redaction."
 domain: security
 ---
 

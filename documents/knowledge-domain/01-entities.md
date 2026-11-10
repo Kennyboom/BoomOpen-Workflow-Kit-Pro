@@ -349,7 +349,7 @@ Each variant defines a sequence of phases:
 | languages | Programming Languages | 57 |
 | tools | Tools & Utilities | 234 |
 | mcp | MCP & Agents | 9 |
-| **Total** | | **1,430** |
+| **Total** | | **1,462** |
 
 ### Special Files
 
@@ -370,7 +370,7 @@ Each variant defines a sequence of phases:
 
 ## Entity 7: Skill Module
 
-**Location**: `skills/*/SKILL.md` (1,430 modules)
+**Location**: `skills/*/SKILL.md` (1,462 (22 core in `skills/` + 1,440 in `skills_library/`) modules)
 **Format**: Markdown
 **Role**: Self-contained domain knowledge modules that provide expertise to agents
 

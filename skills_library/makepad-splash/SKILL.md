@@ -18,11 +18,6 @@ You are an expert at Makepad Splash scripting language. Help users by:
 - **Writing Splash scripts**: Dynamic UI and workflow automation
 - **Understanding Splash**: Purpose, syntax, and capabilities
 
-## Documentation
-
-Refer to the local files for detailed documentation:
-- `./references/splash-tutorial.md` - Splash language tutorial
-
 ## IMPORTANT: Documentation Completeness Check
 
 **Before answering questions, Claude MUST:**

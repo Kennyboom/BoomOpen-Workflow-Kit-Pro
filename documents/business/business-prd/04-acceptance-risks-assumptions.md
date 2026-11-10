@@ -15,7 +15,7 @@
 |-----------|--------|
 | **Covers** | BG-001, BR-001, BF-001 |
 | **Given** | A clean machine with Node.js 18+ and npm |
-| **When** | User runs `npm install -g @boomopen/workflow-kit && boomopen-workflow-kit install --all` |
+| **When** | User runs `git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git && cd BoomOpen-Workflow-Kit && node cli/install.js install --all` |
 | **Then** | Config files exist at all 5 platform directories (`~/.cursor/skills/boomopen-workflow-kit/`, `~/.copilot/skills/boomopen-workflow-kit/`, `~/.claude/skills/boomopen-workflow-kit/`, `~/.codex/skills/boomopen-workflow-kit/`, `~/.{TOOL}/skills/boomopen-workflow-kit/`) AND exit code is 0 AND total time ≤5 minutes |
 
 ### AC-002: Multi-Platform Parity
@@ -123,19 +123,19 @@
 | **Category** | Availability / Resilience |
 | **Description** | Dynamic skill discovery (BR-009), trust progression (BR-010), and community ecosystem growth (BG-009) depend on the external skills.sh service and `npx skills` CLI, neither of which is bundled with or controlled by the framework. |
 | **Probability** | Medium — third-party services can become unreachable, deprecated, or change APIs |
-| **Impact** | Medium — dynamic discovery degrades to no-op; matrix skills (1,430) remain functional as fallback |
+| **Impact** | Medium — dynamic discovery degrades to no-op; matrix skills (1,462) remain functional as fallback |
 | **Affected Goals** | BG-007, BG-009 |
 | **Affected Requirements** | BR-009, BR-010 |
 | **Mitigation** | Document clear fallback behavior when skills.sh is unreachable. Consider implementing a local skill registry cache. HSOL already specifies timeout-and-proceed behavior (E1 recovery). |
 | **Status** | Partially mitigated — HSOL timeout fallback documented in SKILLS.md |
 
-### RISK-003: No Automated Test Suite
+### RISK-003: Limited Automated Coverage of Framework Behavior
 
 | Attribute | Detail |
 |-----------|--------|
 | **Category** | Quality / Regression |
-| **Description** | No automated tests exist for framework behavior. The `test` script in package.json points to `cli/*.test.js` but only an example file exists (`install.test.js.example`). Orchestration law compliance (L1–L10), error recovery (E1–E4), command routing, and HSOL resolution have no automated verification. |
-| **Probability** | High — test infrastructure is absent |
+| **Description** | The CLI has `node:test` suites (`cli/*.test.js`, listed in the `test` script of package.json) covering install/uninstall safety, settings, doctor, the code checker and the destructive-command guard, all in sandboxed profiles. Orchestration law compliance (L1–L10), error recovery (E1–E4), command routing, and HSOL resolution are prompt instructions and still have no automated verification. |
+| **Probability** | Medium — CLI behavior is tested, agent behavior is not |
 | **Impact** | High — regressions in rule behavior, agent loading, or skill resolution will go undetected until a user reports them |
 | **Affected Goals** | BG-009 (quality/cadence) |
 | **Affected Requirements** | BR-012 (laws), BR-013 (error recovery) |
@@ -204,7 +204,7 @@
 | A-003 | Developers are willing to install a global npm package for AI workflow improvement | Low adoption if resistance to global installs exists | User feedback, npm download metrics |
 | A-004 | The 5 currently supported platforms represent the majority of AI coding assistant usage | Missing platforms reduce addressable market | Market share data for AI coding tools |
 | A-005 | AI models are capable of following complex multi-step Markdown instructions with sufficient fidelity | Orchestration laws violated; quality degrades | Cross-model testing (currently not performed) |
-| A-006 | The 1,430 matrix skills provide sufficient coverage for most development domains | Users frequently encounter low-fitness scenarios requiring dynamic discovery | HSOL resolution logs (not currently collected) |
+| A-006 | The 1,462 matrix skills provide sufficient coverage for most development domains | Users frequently encounter low-fitness scenarios requiring dynamic discovery | HSOL resolution logs (not currently collected) |
 | A-007 | Community skill authors will adopt the SKILL.md template and publish via skills.sh | Ecosystem growth stalls; BG-009 unachievable | skills.sh registry metrics |
 | A-008 | The Golden Triangle protocol produces measurably better output than single-agent execution | Team variant overhead is unjustified if quality delta is negligible | A/B testing (not currently planned) |
 | A-009 | Semantic-release with conventional commits provides adequate release automation | Release quality degrades if commit conventions are not followed | CI/CD pipeline monitoring |
@@ -241,6 +241,6 @@
 | Skills Rules | `rules/SKILLS.md` | HSOL resolution algorithm, dynamic discovery, trust progression |
 | Teams Rules | `rules/TEAMS.md` | Golden Triangle protocol, debate mechanism |
 | CLI installer | `cli/install.js` | Installation mechanism, platform detection |
-| Test example | `cli/install.test.js.example` | Evidence of absent test suite |
+| CLI test suites | `cli/*.test.js` | CLI behavior is tested; agent behavior is not |
 | Features documentation | `documents/knowledge-overview/03-features.md` | Performance claims, feature evidence |
 | Dynamic skills config | `matrix-skills/_dynamic.yaml` | Trust progression state tracking |

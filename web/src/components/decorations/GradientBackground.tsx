@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { usePrefersReducedMotion } from '../../hooks'
 
 export type GradientTheme = 
   | 'home'
@@ -78,6 +79,9 @@ interface GradientBackgroundProps {
 
 export function GradientBackground({ theme, className = '' }: GradientBackgroundProps) {
   const config = gradientConfigs[theme]
+  // With prefers-reduced-motion the orbs are drawn once, without the endless pulse.
+  const reduce = usePrefersReducedMotion()
+  const still = (opacity: number) => ({ opacity, scale: 1 })
 
   return (
     <div 
@@ -89,13 +93,13 @@ export function GradientBackground({ theme, className = '' }: GradientBackground
         className="absolute -top-1/4 -left-1/4 w-[800px] h-[800px] rounded-full blur-[120px]"
         style={{ backgroundColor: config.primary }}
         initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ 
+        animate={reduce ? still(0.65) : {
           opacity: [0.5, 0.8, 0.5],
           scale: [0.9, 1.1, 0.9],
         }}
         transition={{
-          duration: 8,
-          repeat: Infinity,
+          duration: reduce ? 0 : 8,
+          repeat: reduce ? 0 : Infinity,
           ease: 'easeInOut',
         }}
       />
@@ -105,13 +109,13 @@ export function GradientBackground({ theme, className = '' }: GradientBackground
         className="absolute -bottom-1/4 -right-1/4 w-[700px] h-[700px] rounded-full blur-[100px]"
         style={{ backgroundColor: config.secondary }}
         initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ 
+        animate={reduce ? still(0.55) : {
           opacity: [0.4, 0.7, 0.4],
           scale: [1, 1.15, 1],
         }}
         transition={{
-          duration: 10,
-          repeat: Infinity,
+          duration: reduce ? 0 : 10,
+          repeat: reduce ? 0 : Infinity,
           ease: 'easeInOut',
           delay: 1,
         }}
@@ -123,12 +127,12 @@ export function GradientBackground({ theme, className = '' }: GradientBackground
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[80px]"
           style={{ backgroundColor: config.accent }}
           initial={{ opacity: 0 }}
-          animate={{ 
+          animate={reduce ? { opacity: 0.4 } : {
             opacity: [0.3, 0.5, 0.3],
           }}
           transition={{
-            duration: 6,
-            repeat: Infinity,
+            duration: reduce ? 0 : 6,
+            repeat: reduce ? 0 : Infinity,
             ease: 'easeInOut',
             delay: 2,
           }}

@@ -110,8 +110,6 @@ async def get_container():
     return _cosmos_container
 ```
 
-**Full implementation**: See references/client-setup.md
-
 ### 2. Pydantic Model Hierarchy
 
 Use five-tier model pattern for clean separation:
@@ -149,8 +147,6 @@ class ProjectService:
             return None
         return self._doc_to_model(doc)
 ```
-
-**Full patterns**: See references/service-layer.md
 
 ## Core Principles
 
@@ -192,26 +188,6 @@ async def test_get_project_by_id_returns_project(mock_cosmos_container):
     assert result.id == "123"
     assert result.name == "Test"
 ```
-
-**Full testing guide**: See references/testing.md
-
-## Reference Files
-
-| File | When to Read |
-|------|--------------|
-| references/client-setup.md | Setting up Cosmos client with dual auth, SSL config, singleton pattern |
-| references/service-layer.md | Implementing full service class with CRUD, conversions, graceful degradation |
-| references/testing.md | Writing pytest tests, mocking Cosmos, integration test setup |
-| references/partitioning.md | Choosing partition keys, cross-partition queries, move operations |
-| references/error-handling.md | Handling CosmosResourceNotFoundError, logging, HTTP error mapping |
-
-## Template Files
-
-| File | Purpose |
-|------|---------|
-| assets/cosmos_client_template.py | Ready-to-use client module |
-| assets/service_template.py | Service class skeleton |
-| assets/conftest_template.py | pytest fixtures for Cosmos mocking |
 
 ## Quality Attributes (NFRs)
 

@@ -35,19 +35,18 @@
 This is the simplest method. Install once, use across all projects.
 
 ```bash
-# Step 1: Install the package globally
-npm install -g @boomopen/workflow-kit@latest
+# Step 1: Clone the repository (the kit is not published on npm)
+git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
+cd BoomOpen-Workflow-Kit
+npm link                                    # optional: puts `boomopen` on your PATH
 
-# Step 2: Verify installation
-boomopen-workflow-kit list
-
-# Step 3: Install for your AI tool(s)
-boomopen-workflow-kit install cursor        # Cursor only
-boomopen-workflow-kit install claude        # Claude Code only
-boomopen-workflow-kit install copilot       # GitHub Copilot only
-boomopen-workflow-kit install antigravity   # Antigravity/Gemini only
-boomopen-workflow-kit install codex         # Codex only
-boomopen-workflow-kit install --all         # All tools at once
+# Step 2: Install for your AI tool(s) (or: node cli/install.js install <tool>)
+boomopen install cursor        # Cursor only
+boomopen install claude        # Claude Code only
+boomopen install copilot       # GitHub Copilot only
+boomopen install antigravity   # Antigravity/Gemini only
+boomopen install codex         # Codex only
+boomopen install --all         # All tools at once
 ```
 
 ### Option B: From Source
@@ -82,7 +81,7 @@ The CLI installer copies framework files into the AI tool's global configuration
 | Codex | `~/.codex/skills/boomopen-workflow-kit/` |
 | Antigravity/Gemini | `~/.{TOOL}/skills/boomopen-workflow-kit/` |
 
-Files installed include: 21 agent definitions, 14 command workflows with variants, 7 rule files, 19 matrix-skill registries, 1,430+ skill modules, and platform-specific entry point files.
+Files installed include: 21 agent definitions, 14 command workflows with variants, 7 rule files, 19 matrix-skill registries, 1,460+ skill modules, and platform-specific entry point files.
 
 ---
 
@@ -103,8 +102,8 @@ ls ~/.claude/skills/boomopen-workflow-kit/
 ls ~/.copilot/skills/boomopen-workflow-kit/
 # Expected: same structure
 
-# List all installed tools:
-boomopen-workflow-kit list
+# List all installed tools (from your clone, or `boomopen list` after `npm link`):
+node cli/install.js list
 # Output shows which tools have BoomOpen Workflow Kit installed
 ```
 
@@ -171,22 +170,12 @@ The project uses Node.js native test runner:
 ```bash
 # Run all tests (from project root)
 npm test
-# Equivalent to: node --test cli/*.test.js
+# Runs the node:test suites listed in package.json (cli/*.test.js). Suites that run the CLI use a
+# sandboxed HOME / USERPROFILE / APPDATA under the temp folder, never your real profile.
 
-# Lint JavaScript for syntax errors
+# Check JavaScript syntax
 npm run lint
-# Equivalent to: node --check cli/install.js
-
-# Lint Markdown (requires npx)
-npm run lint:md
-# Prints the command to run manually: npx markdownlint "**/*.md" --ignore node_modules
-```
-
-Note: The test file `cli/install.test.js.example` is provided as an example template. Rename it to `cli/install.test.js` to activate it:
-
-```bash
-cp cli/install.test.js.example cli/install.test.js
-npm test
+# Runs .github/scripts/check-syntax.js over the CLI and scripts
 ```
 
 ---
@@ -195,16 +184,18 @@ npm test
 
 ### Remove from AI Tools
 
+Run these from your clone (or use `boomopen uninstall ...` after `npm link`):
+
 ```bash
 # Remove from a specific tool:
-boomopen-workflow-kit uninstall cursor
-boomopen-workflow-kit uninstall claude
-boomopen-workflow-kit uninstall copilot
-boomopen-workflow-kit uninstall antigravity
-boomopen-workflow-kit uninstall codex
+node cli/install.js uninstall cursor
+node cli/install.js uninstall claude
+node cli/install.js uninstall copilot
+node cli/install.js uninstall antigravity
+node cli/install.js uninstall codex
 
 # Remove from all tools at once:
-boomopen-workflow-kit uninstall --all
+node cli/install.js uninstall --all
 ```
 
 ### Remove from Source
@@ -216,10 +207,12 @@ cd ..
 rm -rf boomopen-workflow-kit
 ```
 
-### Remove Global Package
+### Remove the `boomopen` Link
+
+The kit is not published on npm, so there is no global package to uninstall. If you ran `npm link` in your clone, remove the link before deleting the clone:
 
 ```bash
-npm uninstall -g @boomopen/workflow-kit
+npm unlink -g @boomopen/workflow-kit
 ```
 
 ---
@@ -324,21 +317,23 @@ nvm use 18
 brew install node@18
 ```
 
-### "Permission denied" during install
+### "Permission denied" during `npm link`
 
-**Cause**: npm global directory requires elevated permissions.
+**Cause**: npm's global directory requires elevated permissions.
 
 ```bash
-# Option A: Fix npm permissions (recommended)
+# Option A: skip npm link and run the CLI from the clone
+node cli/install.js install --all
+
+# Option B: give npm a user-owned prefix, then link again
 mkdir -p ~/.npm-global
 npm config set prefix '~/.npm-global'
 echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc
 source ~/.zshrc
-npm install -g @boomopen/workflow-kit@latest
-
-# Option B: Use npx (no global install)
-npx @boomopen/workflow-kit install --all
+npm link
 ```
+
+> Never install npm packages that claim to be BoomOpen Workflow Kit: the kit is not published on npm.
 
 ### "Files not appearing in AI tool"
 
@@ -366,18 +361,15 @@ ls ~/.claude/CLAUDE.md       # Entry point for Claude Code
 ls ~/.copilot/               # Entry point for Copilot
 
 # If missing, re-run install:
-boomopen-workflow-kit install cursor   # or your tool
+boomopen install cursor   # or your tool
 ```
 
 ### "Test file not found"
 
-**Cause**: The test file is shipped as an example, not an active test.
+**Cause**: `npm test` runs the suites listed in the `test` script of `package.json`; a new `cli/<topic>.test.js` file must be added there.
 
 ```bash
-# Activate the example test:
-cp cli/install.test.js.example cli/install.test.js
-
-# Run tests:
+# Run all suites:
 npm test
 ```
 
@@ -390,5 +382,5 @@ npm test
 | Package manifest (scripts, engines, bin) | [../../package.json](../../package.json) |
 | README (installation, uninstallation) | [../../README.md](../../README.md) |
 | CLI installer (platform configs, paths) | [../../cli/install.js](../../cli/install.js) |
-| Test example | [../../cli/install.test.js.example](../../cli/install.test.js.example) |
+| Test suites (node:test) | [../../cli/install.test.js](../../cli/install.test.js), [../../cli/install-regressions.test.js](../../cli/install-regressions.test.js) |
 | Core rules (command routing) | [../../rules/CORE.md](../../rules/CORE.md) |

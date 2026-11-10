@@ -8,6 +8,8 @@ risk: unknown
 source: "https://github.com/biopython/biopython"
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`references/alignment.md`, `references/blast.md`, `references/sequence_io.md`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Biopython: Computational Molecular Biology in Python
 
 ## Overview
@@ -67,8 +69,6 @@ This skill provides comprehensive documentation organized by functionality area.
 
 ### 1. Sequence Handling (Bio.Seq & Bio.SeqIO)
 
-**Reference:** `references/sequence_io.md`
-
 Use for:
 - Creating and manipulating biological sequences
 - Reading and writing sequence files (FASTA, GenBank, FASTQ, etc.)
@@ -91,8 +91,6 @@ SeqIO.convert("input.gb", "genbank", "output.fasta", "fasta")
 
 ### 2. Alignment Analysis (Bio.Align & Bio.AlignIO)
 
-**Reference:** `references/alignment.md`
-
 Use for:
 - Pairwise sequence alignment (global and local)
 - Reading and writing multiple sequence alignments
@@ -112,8 +110,6 @@ print(alignments[0])
 ```
 
 ### 3. Database Access (Bio.Entrez)
-
-**Reference:** `references/databases.md`
 
 Use for:
 - Searching NCBI databases (PubMed, GenBank, Protein, Gene, etc.)
@@ -136,8 +132,6 @@ print(f"Found {results['Count']} results")
 
 ### 4. BLAST Operations (Bio.Blast)
 
-**Reference:** `references/blast.md`
-
 Use for:
 - Running BLAST searches via NCBI web services
 - Running local BLAST searches
@@ -159,8 +153,6 @@ for alignment in blast_record.alignments[:5]:
 ```
 
 ### 5. Structural Bioinformatics (Bio.PDB)
-
-**Reference:** `references/structure.md`
 
 Use for:
 - Parsing PDB and mmCIF structure files
@@ -186,8 +178,6 @@ print(f"Distance: {distance:.2f} Å")
 
 ### 6. Phylogenetics (Bio.Phylo)
 
-**Reference:** `references/phylogenetics.md`
-
 Use for:
 - Reading and writing phylogenetic trees (Newick, NEXUS, phyloXML)
 - Building trees from distance matrices or alignments
@@ -210,8 +200,6 @@ print(f"Distance: {distance:.3f}")
 ```
 
 ### 7. Advanced Features
-
-**Reference:** `references/advanced.md`
 
 Use for:
 - **Sequence motifs** (Bio.motifs) - Finding and analyzing motif patterns

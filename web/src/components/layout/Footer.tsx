@@ -79,7 +79,9 @@ export function Footer({ className }: FooterProps) {
               )}
             >
               <img
-                src="/assets/logo.svg"
+                src="/assets/logo.webp"
+                width={36}
+                height={32}
                 alt=""
                 className="h-8 w-auto"
                 aria-hidden="true"
@@ -224,7 +226,7 @@ export function Footer({ className }: FooterProps) {
         <div className="mt-12 pt-8 border-t border-[rgba(255,255,255,0.1)]">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-[var(--color-text-muted)]">
-              © 2026 Kennyboom. MIT License.
+              © 2026 BoomOpen Labs. MIT License.
             </p>
             <p className="text-sm text-[var(--color-text-muted)]">
               Built with{' '}

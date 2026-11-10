@@ -135,7 +135,7 @@ with open("$SUBMISSION_DIR/metadata.yaml", 'w') as f:
     yaml.dump(metadata, f, default_flow_style=False, sort_keys=False)
 
 print("Metadata updated with actual results")
-CONVERT_PREDS
+UPDATE_META
 
 # Generate submission summary
 log_info "Generating submission summary..."

@@ -91,7 +91,7 @@ boomopen-workflow-kit/                          # Project root — npm package @
 │
 ├── cli/                                  # CLI tooling — the only executable code
 │   ├── install.js                        # Main CLI entry (~600 lines, CommonJS, shebang)
-│   ├── install.test.js.example           # Example test file (not active)
+│   ├── *.test.js                         # node:test suites run by `npm test` (sandboxed HOME)
 │   └── README.md                         # CLI usage documentation
 │
 ├── platforms/                      # Platform-specific installation templates
@@ -177,7 +177,7 @@ boomopen-workflow-kit/                          # Project root — npm package @
 │   ├── ERRORS.md                         # Error recovery procedures
 │   └── REFERENCE.md                      # Quick lookup tables
 │
-├── skills/                               # 1,430 skill folders (each with SKILL.md)
+├── skills/                               # 1,462 (22 core in `skills/` + 1,440 in `skills_library/`) skill folders (each with SKILL.md)
 │   ├── 00-andruia-consultant/            # Example: Andruia consultant skill
 │   ├── 007/                              # Example: 007 skill
 │   ├── find-skills/                      # Special: dynamic skill discovery skill
@@ -234,13 +234,13 @@ Contains 14 command router files (`.md`) at the top level and corresponding subd
 Stores long-form project documentation including the HSOL design blueprint, HSOL assessment, and the knowledge source base (this folder). Files here are included in the npm package and copied during installation to `~/.{tool}/skills/boomopen-workflow-kit/documents/`.
 
 ### `matrix-skills/` — HSOL Domain Registries
-Contains 21 YAML files: `_index.yaml` (central registry with HSOL configuration and discovery settings), `_dynamic.yaml` (community-installed dynamic skills), and 19 domain-specific registries. Each domain YAML maps skills to agents by profile, priority, and relevance. The HSOL version is 1.1 with 1,430 total matrix skills.
+Contains 21 YAML files: `_index.yaml` (central registry with HSOL configuration and discovery settings), `_dynamic.yaml` (community-installed dynamic skills), and 19 domain-specific registries. Each domain YAML maps skills to agents by profile, priority, and relevance. The HSOL version is 1.1 with 1,476 total matrix skills.
 
 ### `rules/` — Orchestration Protocol
 Seven Markdown files that define the Orchestrator's "operating system." `CORE.md` (v4.1) is always loaded first and establishes the Orchestrator's identity, path conventions, and the 10 Laws. Other files are loaded on-demand: PHASES (execution order), AGENTS (tiered execution), SKILLS (HSOL resolution), TEAMS (multi-agent coordination), ERRORS (recovery), REFERENCE (lookup tables).
 
 ### `skills/` — Skill Library
-Contains 1,430 skill folders, each with at minimum a `SKILL.md` file. Skills are the atomic units of capability in the HSOL system — each defines instructions, context, and metadata for a specific technique or domain. The special `find-skills/` skill handles dynamic skill discovery from the external skills.sh registry.
+Contains 1,462 skill folders, each with at minimum a `SKILL.md` file. Skills are the atomic units of capability in the HSOL system — each defines instructions, context, and metadata for a specific technique or domain. The special `find-skills/` skill handles dynamic skill discovery from the external skills.sh registry.
 
 ### `web/` — Marketing Website
 An independent React 19 + Vite + Tailwind CSS 4 sub-project with its own `package.json`, TypeScript configuration, and ESLint setup. Deployed to Vercel with SPA rewrite rules. Uses framer-motion for animations, react-router-dom for routing, lucide-react for icons, and @xyflow/react for flow diagrams. Has a standard `src/` layout with components, pages, hooks, lib, data, styles, and types directories.
@@ -283,7 +283,7 @@ Husky v8 git hooks manager directory. Contains the internal `_/` runtime directo
 | `documents/` | 2 + knowledge-source-base | Markdown |
 | `matrix-skills/` | 21 | YAML |
 | `rules/` | 7 | Markdown |
-| `skills/` | 1,430+ | Markdown (SKILL.md each) |
+| `skills/` | 1,462 (22 core in `skills/` + 1,440 in `skills_library/`) | Markdown (SKILL.md each) |
 | `web/src/` | ~30+ | TypeScript, TSX, CSS |
 | Root files | 14 | Markdown, JSON |
 
@@ -298,7 +298,7 @@ Husky v8 git hooks manager directory. Contains the internal `_/` runtime directo
 | `.releaserc.json` | Verified semantic-release plugin chain and branch config |
 | `.gitignore` | Confirmed exclusion rules for node_modules, dist, .env, reports |
 | `AGENT-TEMPLATE.md` | Verified agent file structure with Matrix Skill Discovery frontmatter |
-| `matrix-skills/_index.yaml` | Confirmed HSOL v1.1, 1,430 matrix skills, discovery config |
+| `matrix-skills/_index.yaml` | Confirmed HSOL v1.1, 1,476 matrix skills, discovery config |
 | `rules/CORE.md` | Confirmed CORE v4.1, Orchestrator identity, path conventions |
 | `web/package.json` | Verified React 19 dependencies, Vite scripts |
 | `web/vite.config.ts` | Confirmed React + Tailwind plugins, chunk splitting |

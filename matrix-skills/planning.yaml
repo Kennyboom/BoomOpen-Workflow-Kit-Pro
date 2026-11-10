@@ -8,7 +8,7 @@
 domain: planning
 name: "Planning & Analysis"
 description: "Requirements, task breakdown, roadmaps"
-skill_count: 38
+skill_count: 39
 
 skills:
   # --------------------------------------------------------------------------
@@ -328,7 +328,7 @@ skills:
     description: "Use this skill when creating, managing, or working with Conductor tracks - the logical work units for features, bugs,..."
 
 
-  - skill_id: SPDD
+  - skill_id: spdd
     category: specialized
     priority_score: 7
     relevance_mapping:

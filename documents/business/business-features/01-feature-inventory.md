@@ -26,7 +26,7 @@
 
 **Description**: The CLI installer copies all framework files (agents, commands, rules, skills, matrix-skills) into the AI tool's global configuration directory. Install once per platform — zero per-project configuration. Supports `install --all` for batch installation across all 5 platforms.
 
-**Business Value**: Eliminates setup friction. Developers start using 21 agents and 1,430+ skills immediately on every project without any per-repository configuration. Reduces onboarding time to under 60 seconds.
+**Business Value**: Eliminates setup friction. Developers start using 21 agents and 1,460+ skills immediately on every project without any per-repository configuration. Reduces onboarding time to under 60 seconds.
 
 **Goal Mapping**: BG-001 (Global setup)
 
@@ -96,13 +96,13 @@
 
 ### BF-007 — Matrix Skill Discovery (HSOL)
 
-**Description**: The Hybrid Skill Orchestration Layer automatically resolves and injects relevant skills based on the agent's profile and task context. Resolution algorithm: parse agent profile → load inherited domains from `matrix-skills/_index.yaml` → filter by relevance → apply priority thresholds → calculate fitness scores (semantic 35%, specificity 25%, trust 20%, freshness 10%, success 10%) → return sorted skill set. 1,430+ skills across 19 domains.
+**Description**: The Hybrid Skill Orchestration Layer automatically resolves and injects relevant skills based on the agent's profile and task context. Resolution algorithm: parse agent profile → load inherited domains from `matrix-skills/_index.yaml` → filter by relevance → apply priority thresholds → calculate fitness scores (semantic 35%, specificity 25%, trust 20%, freshness 10%, success 10%) → return sorted skill set. 1,476 skills across 19 domains.
 
 **Business Value**: Eliminates manual skill selection. Agents receive precisely the knowledge they need, reducing token waste (85% savings) and improving output relevance. Skills scale independently of agent count.
 
 **Goal Mapping**: BG-005 (Token cost), BG-007 (Skill injection)
 
-**Key Files**: `rules/SKILLS.md`, `matrix-skills/_index.yaml`, `matrix-skills/*.yaml` (19 domain files), `skills/` (1,430+ modules)
+**Key Files**: `rules/SKILLS.md`, `matrix-skills/_index.yaml`, `matrix-skills/*.yaml` (19 domain files), `skills/` (22 core; 1,440 more in `skills_library/`)
 
 ---
 
@@ -172,7 +172,7 @@
 
 **Description**: When the matrix fitness score falls below 0.8 for `:hard` or `:team` variants, the `find-skills` mechanism can discover additional community skills at runtime. Discovered skills are registered in `matrix-skills/_dynamic.yaml`.
 
-**Business Value**: Extends the framework's knowledge beyond the bundled 1,430 skills. Community contributions supplement gaps in niche or emerging domains without requiring a framework release.
+**Business Value**: Extends the framework's knowledge beyond the bundled 1,462 skills. Community contributions supplement gaps in niche or emerging domains without requiring a framework release.
 
 **Goal Mapping**: BG-007 (Skill injection), BG-009 (Community ecosystem)
 
@@ -292,7 +292,7 @@
 
 ### BF-023 — CLI List Command
 
-**Description**: A CLI command to show which platforms have boomopen-workflow-kit installed, their versions, and installation status.
+**Description**: A CLI command (`boomopen list` / `node cli/install.js list`) to show which platforms have BoomOpen Workflow Kit installed, their versions, and installation status.
 
 **Business Value**: Visibility into installation state across platforms. Useful for troubleshooting and verifying multi-platform setup.
 

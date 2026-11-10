@@ -24,7 +24,7 @@ Collect just enough context to fill the template. If the user has not provided d
 If the user cannot answer, proceed with safe defaults and mark TODOs.
 
 ### 2) Draft the Blue Book
-Load `references/bluebook_template.md` and fill it with the provided details. Keep it concise, deterministic, and enforceable.
+Write the Blue Book from the provided details, covering every section listed under Quality checks below. Keep it concise, deterministic, and enforceable.
 
 ### 3) Enforce guardrails
 - Do not include secrets, tokens, or internal credentials.
@@ -43,6 +43,3 @@ Confirm the Blue Book includes:
 - Retention/deletion
 - Incident response mini-runbook
 - Security gates + go/no-go checklist
-
-## Resources
-- `references/bluebook_template.md`

@@ -247,10 +247,6 @@ uv run /opt/post_install.py && go mod download
 
 ## Reference Material
 
-For additional guidance, see:
-- `references/dockerfile-best-practices.md` - Layer optimization, multi-stage builds, architecture support
-- `references/features-vs-dockerfile.md` - When to use devcontainer features vs custom Dockerfile
-
 ---
 
 ## Adding Persistent Volumes

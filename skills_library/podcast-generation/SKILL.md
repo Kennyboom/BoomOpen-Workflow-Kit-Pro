@@ -6,6 +6,8 @@ source: community
 date_added: "2026-02-27"
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/pcm_to_wav.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Podcast Generation with GPT Realtime Mini
 
 Generate real audio narratives from text content using Azure OpenAI's Realtime API.
@@ -119,8 +121,6 @@ new Audio(audioUrl).play();
 
 ## References
 
-- **Full architecture**: See references/architecture.md for complete stack design
-- **Code examples**: See references/code-examples.md for production patterns
 - **PCM conversion**: Use scripts/pcm_to_wav.py for audio format conversion
 
 ## When to Use

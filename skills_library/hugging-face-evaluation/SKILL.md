@@ -5,6 +5,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/evaluation_manager.py`, `scripts/inspect_eval_uv.py`, `scripts/inspect_vllm_uv.py`, `scripts/lighteval_vllm_uv.py`, `scripts/run_eval_job.py`, `scripts/run_vllm_eval_job.py`, `scripts/train_sft_example.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Overview
 This skill provides tools to add structured evaluation results to Hugging Face model cards. It supports multiple methods for adding evaluation data:
 - Extracting existing evaluation tables from README content

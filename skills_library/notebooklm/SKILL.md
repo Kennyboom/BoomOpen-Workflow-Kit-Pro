@@ -6,6 +6,8 @@ source: community
 date_added: "2026-02-27"
 ---
 
+> **Skill folder:** paths below that start with `$SKILL_DIR` are relative to the folder that contains this SKILL.md. BoomOpen installs vault skills at `~/.<tool>/skills_library/notebooklm` (for example `~/.claude/skills_library/notebooklm`, `~/.codex/skills_library/notebooklm` or `~/.gemini/config/skills_library/notebooklm`). Set it before running a command, e.g. `SKILL_DIR=~/.claude/skills_library/notebooklm`.
+
 # NotebookLM Research Assistant Skill
 
 Interact with Google NotebookLM to query documentation with Gemini's source-grounded answers. Each question opens a fresh browser session, retrieves the answer exclusively from your uploaded documents, and closes.
@@ -193,7 +195,7 @@ python -m patchright install chromium
 
 ## Data Storage
 
-All data stored in `~/.claude/skills/notebooklm/data/`:
+All data stored in `$SKILL_DIR/data/`:
 - `library.json` - Notebook metadata
 - `auth_info.json` - Authentication status
 - `browser_state/` - Browser cookies and session

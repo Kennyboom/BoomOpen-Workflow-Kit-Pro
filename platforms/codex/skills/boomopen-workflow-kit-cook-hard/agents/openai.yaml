@@ -1,4 +1,6 @@
-display_name: "/cook:hard"
-short_description: "⚡⚡⚡ Full Feature — Complete feature development lifecycle"
-brand_color: "#6366F1"
-allow_implicit_invocation: true
+interface:
+  display_name: "/cook:hard"
+  short_description: "⚡⚡⚡ Full Feature — Complete feature lifecycle with Turn-1 Fast-Forward, 3-Wave Contract-First Execution & Parallel Verification"
+  brand_color: "#F59E0B"
+policy:
+  allow_implicit_invocation: true

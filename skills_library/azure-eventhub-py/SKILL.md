@@ -231,13 +231,5 @@ with producer:
 6. **Use context managers** (`with`/`async with`) for proper cleanup
 7. **Set appropriate consumer groups** for different applications
 
-## Reference Files
-
-| File | Contents |
-|------|----------|
-| references/checkpointing.md | Checkpoint store patterns, blob checkpointing, checkpoint strategies |
-| references/partitions.md | Partition management, load balancing, starting positions |
-| scripts/setup_consumer.py | CLI for Event Hub info, consumer setup, and event sending/receiving |
-
 ## When to Use
 This skill is applicable to execute the workflow or actions described in the overview.

@@ -1,206 +1,69 @@
 ---
-description: "🔺 Team Test — Golden Triangle adversarial collaboration for maximum quality testing"
+description: "🔺 Team Test — 3-Wave Zero-Test-Gaming Elastic Golden Diamond (qa-team), App-Code READ_ONLY Lock, Security/Perf Test Critic & Cross-Engine Audit"
 version: "5.5"
 category: testing
 execution-mode: execute
 ---
 
-# /test:team — Golden Triangle Test & Quality Assurance
+> **📂 Cohesive Single-File & Zero-Collision Rule (v5.5)**:
+> - **Single User-Facing Deliverable**: `<appDataDir>\brain\<conversation-id>\TEST-{scope}.md` (`<= 500` lines, zero `{name}/` folder splits!). Set `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: true }` when uncovered production defects (`[APP_DEFECT]`) are found so Antigravity 2.0's 1-click **"Proceed"** button launches `/fix:team`, or `RequestFeedback: false` when `100%` green.
+> - **Zero Multi-File Sprawl**: Never generate separate `TEST-STRATEGY`, `TEST-PLAN`, `TEST-RESULTS`, or `QA` files! Keep consolidated debate logs in `MAILBOX-{date}.md` and any shard scratch logs (`TEST-{scope}-s{k}.md`) strictly `UserFacing: false, RequestFeedback: false`.
 
-> **MISSION**: Maximum quality testing through adversarial collaboration.
-> Each phase spawns a **Golden Triangle** of 3 agents: Tech Lead (coordinator),
-> Executor (implementer), Reviewer (devil's advocate). Tests are released ONLY
-> upon consensus after debate.
+---
+
+# /test:team — 3-Wave Zero-Test-Gaming Elastic Golden Diamond (`agents/teams/qa-team/_team.md`)
+
+> **MISSION**: Achieve uncompromising production test assurance via the **3-Wave `qa-team` Elastic Golden Diamond** (`qa-team-techlead` Test Architect + parallel `qa-team-executor` `tester#<layer>` shards + `qa-team-reviewer` Adversarial Security/Perf/Mutation Test Critic), strictly locking all production source code in **`READ_ONLY_FILES`**.
 
 <scope>$ARGUMENTS</scope>
 
 ---
 
+## ⚡ TURN-1 FAST-FORWARD, TEAM ROLES & ZERO-TEST-GAMING LAW
+
+- 📖 **Team Protocol**: Follow `agents/teams/qa-team/_team.md` (`techlead.md`, `executor.md`, `reviewer.md`) and `commands/_ref/golden-triangle-protocol.md` (load on-demand; **never** block Turn 1 reading rule files!).
+- ⚠️ **Sub-Agent Rule**: Always spawn with `invoke_subagent(TypeName: "self", Model: "inherit")` and record `role#shard → conversationId` for Warm Session Reuse (`send_message`, max 3 rounds).
+- 🛡️ **Zero-Test-Gaming & `READ_ONLY_FILES` App-Code Lock**:
+  - Unless `--fix` is explicitly passed, **100% of production application source files (`src/**`, `app/**`, `server/**`) are locked in `READ_ONLY_FILES`** across all waves.
+  - Shards MUST NEVER mutate production code, weaken assertions, mock internal units under test, add `sleep()`, or use `it.skip` / `test.only` / `test.todo`! Real app bugs exposed by valid tests are logged as `[APP_DEFECT]`.
 
 ---
 
-## ⛔ MANDATORY REFERENCE — READ BEFORE PROCEEDING
+## 🎭 Wave 1 (Turn 1): RTM TEST MATRIX & SHARED HARNESS LOCK
 
-> **🔴 YOU MUST READ these reference files NOW. Do NOT skip.**
->
-> 1. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/golden-triangle-protocol.md` — Tiered Execution, Mailbox, Pre-Flight, Triangle Loop
-> 2. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/convergent-analysis-loop.md` — Convergent Analysis detailed protocol
-> 3. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/implementation-loop.md` — Implementation step-by-step (for coding phases)
->
-> **Failure to read = incorrect execution. These files contain BINDING protocols.**
-
----
-## 📁 DELIVERABLE FILES (BRAIN ARTIFACTS FIRST ON ANTIGRAVITY 2.0)
-
-> **Antigravity 2.0 Default**: Write transient deliverables (`BRAINSTORM`, `RESEARCH`, `SCOUT`, `DESIGN`, `PLAN`, `DEBUG`, `TEST`, `REVIEW`, `REPORT`, `MAILBOX`) to `<appDataDir>\brain\<conversation-id>\` to keep the Git tree clean. Use `./reports/{topic}/` only on non-Antigravity tools or when explicitly requested.
-
-| Phase / Team     | Output                                          |
-| ---------------- | ----------------------------------------------- |
-| Phase 1          | `<appDataDir>\\brain\\<conversation-id>\\TEST-STRATEGY-{scope}` (or `./reports/{topic}/tests/TEST-STRATEGY-{scope}`)      |
-| Phase 2          | `<appDataDir>\\brain\\<conversation-id>\\TEST-PLAN-{scope}` (or `./reports/{topic}/tests/TEST-PLAN-{scope}`)          |
-| Phase 3          | Test files written to codebase                  |
-| Phase 4          | `<appDataDir>\\brain\\<conversation-id>\\TEST-RESULTS-{scope}` (or `./reports/{topic}/tests/TEST-RESULTS-{scope}`)       |
-| Phase 4          | `<appDataDir>\\brain\\<conversation-id>\\QA-{scope}` (or `./reports/{topic}/qa/QA-{scope}`)                    |
-| ALL Phases       | `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md` (or `./reports/{topic}/MAILBOX-{date}.md`) |
-
-All deliverables in `<appDataDir>\\brain\\<conversation-id>\\` (or `./reports/{topic}/`) → Write in the same language the user communicates with you. Code comments remain in English.
-**⚠️ Paths above = base names.** Small (≤ 150 lines) → create as `{name}.md`. Large (> 150 lines or ≥ 4 sections) → create as `{name}/` folder with `00-index.md` + `01-*.md`, `02-*.md` section files.
+1. **Fast-Forward Context Check**: Inspect `<appDataDir>\brain\<conversation-id>\` (`node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook state --artifact-dir "<appDataDir>/brain/<conversation-id>"` if `PLAN-*.md` exists) to extract `AC1..N` and planned test paths.
+2. **Parallel Wave 1 Launch (`TypeName: "self"`, `Model: "inherit"`)**:
+   - **`qa-team-techlead` (`agents/teams/qa-team/techlead.md`, base: `tester`)**: Builds the **Requirements Traceability Matrix (`REQ -> AC -> Given/When/Then -> Assigned Shard`)**, locks disjoint Wave 2 `OWNED_FILES` (`<= 3–4` test files/shard), and publishes `[TASK_ASSIGNMENT]` to `MAILBOX-{date}.md` (`UserFacing: false, RequestFeedback: false`).
+   - **`tester#harness` (`qa-team-executor`, `<= 3–4 OWNED_FILES`: `tests/setup.*`, `tests/mocks/*`, `tests/factories.*`)**: Locks deterministic MSW v2 network boundary handlers (`skills_library/vitest-msw-testing-patterns/SKILL.md`) and test fixtures (`READ_ONLY_FILES`: all production source code).
 
 ---
 
-## 🔗 PHASE DEPENDENCIES
+## 🎭 Wave 2: PARALLEL TEST PYRAMID SHARDS (`qa-team-executor`, `<= 3–4 OWNED_FILES` / Shard)
 
-| Phase                           | Requires                            | Blocking    |
-| ------------------------------- | ----------------------------------- | ----------- |
-| P1: Test Strategy               | User scope + codebase access        | No          |
-| P2: Test Planning               | TEST-STRATEGY from P1               | **YES**     |
-| P3: Test Implementation         | TEST-PLAN from P2                   | **YES**     |
-| P4: Coverage & Verification     | Tests from P3 + code under test     | **YES**     |
-
-**⛔ Blocking**: If input missing → STOP → Create it first → Resume
+Dispatch disjoint `qa-team-executor` (`agents/teams/qa-team/executor.md`) shards concurrently (`READ_ONLY_FILES`: all production source files + Wave 1 harness):
+- **`tester#unit-1..k`**: Domain invariants, state transitions, numeric/string/date boundaries (`0, -1, max+1, null, unicode`), fake timers.
+- **`tester#integration`**: API/RPC contract schemas, DB rollback isolation, auth bypass (`expired/tampered JWT, IDOR, RBAC`), SQLi/XSS/SSRF input payloads, rate-limit & error envelopes.
+- **`tester#e2e` & `tester#a11y`** *(when web/UI)*: Critical user journeys (`playwright_runner.py`), concurrency/double-submit idempotency, keyboard navigation, and WCAG 2.2 AA (`SC 2.4.11`, `SC 2.5.8` target size, ARIA states).
 
 ---
 
-## 🎭 Phase 1: TEST STRATEGY — 🔺 GOLDEN TRIANGLE
+## 🎭 Wave 3: REAL EXECUTION & ADVERSARIAL CRITIC AUDIT (`qa-team-reviewer` via Warm `send_message`)
 
-| Role      | Agent                                | Mission                                                    |
-| --------- | ------------------------------------ | ---------------------------------------------------------- |
-| Tech Lead | `tester`                             | Decompose: test strategy, coverage targets, test types needed |
-| Executor  | `scouter`                            | Execute: analyze codebase, identify testable units, map dependencies |
-| Reviewer  | `tech-lead` (Devil's Advocate)       | Challenge: is strategy complete? Missing test categories? Over-testing? |
+Spawn **`qa-team-reviewer`** (`agents/teams/qa-team/reviewer.md`, combined `security-engineer` + `performance-engineer` lens — **zero `tester -> tester` self-handoff!**) and optionally run Cross-Engine Critic (`node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<test diff>"` when `engines.reviewer = "cross_family"`):
 
-**Triangle Loop**:
-1. `tester` decomposes into areas: test pyramid, coverage targets, framework selection, test data needs → TASK_ASSIGNMENT to `scouter`
-2. `scouter` analyzes codebase → SUBMISSION per area: testable units inventory, dependency graph, coverage gaps, complex logic paths, external deps requiring mocks
-3. `tech-lead` reviews → REVIEW: pyramid appropriate? Targets realistic? Missing categories (contract, smoke, regression)? Over-testing low-risk areas? Framework fits CI/CD?
-4. Debate loop if FAIL → max 3 rounds → ESCALATION to `tester` if unresolved
-5. `tester` synthesizes approved findings into unified test strategy
+1. **Run Deterministic Verification Suite**:
+   ```bash
+   python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <project-or-test-dir>
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <test-dir> --strict-phase --no-stubs
+   ```
+   *(Plus `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py <url-or-dir>` for E2E and `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <ui-dir>` for UI.)*
+2. **Enforce `QA-G1..G4` via Warm `send_message` (`<= 3` Rounds)**:
+   - **`QA-G1` (Zero Test Gaming)**: `0` edits to `READ_ONLY_FILES` app code; `0` `.skip`/`.only`/`.todo` or tautological `expect(true).toBe(true)` assertions.
+   - **`QA-G2` (Adversarial Security/Perf/Edge Depth)**: OWASP auth/injection/IDOR cases, concurrency/N+1 bounds, and 100% `AC` mapping verified.
+   - **`QA-G3` (Deterministic Execution)**: `0` flaky timers; every failure classified honestly as either a test bug (fixed by `tester#<shard>` via `send_message`) or a real `[APP_DEFECT]`.
+   - **`QA-G4` (Clean Test Hygiene)**: `boomopen check <test-dir> --strict-phase --no-stubs` exits `0`.
+3. **Consensus & Cohesive `TEST-{scope}.md` Synthesis (`qa-team-techlead`)**:
+   - Stamp `✅ CONSENSUS: qa-team-techlead ✓ | qa-team-executor (shards) ✓ | qa-team-reviewer ✓` in `MAILBOX-{date}.md`.
+   - Write **1 cohesive `<appDataDir>\brain\<conversation-id>\TEST-{scope}.md` (`<= 500` lines)** containing the Executive Verdict, RTM Coverage Table, `[APP_DEFECT]` Dossier (with `src/file:line` & failing trace), CLI Output Proof, and Consensus Stamp.
 
-**Deliverable**: `<appDataDir>\\brain\\<conversation-id>\\TEST-STRATEGY-{scope}` (or `./reports/{topic}/tests/TEST-STRATEGY-{scope}`)
-**Exit Criteria**: Test pyramid defined, coverage targets set, frameworks chosen, testable units mapped
-**Consensus**: ✅ CONSENSUS: tester ✓ | scouter ✓ | tech-lead ✓
-
----
-
-## 🎭 Phase 2: TEST PLANNING — 🔺 GOLDEN TRIANGLE
-
-| Role      | Agent                                | Mission                                                    |
-| --------- | ------------------------------------ | ---------------------------------------------------------- |
-| Tech Lead | `tester`                             | Decompose: test plan with specific test cases per component |
-| Executor  | `researcher`                         | Execute: research testing patterns, edge cases, boundary conditions |
-| Reviewer  | `security-engineer` (Devil's Advocate) | Challenge: security test cases missing? Edge cases not covered? Injection tests? |
-
-**Prerequisite**: **READ** `<appDataDir>\\brain\\<conversation-id>\\TEST-STRATEGY-{scope}` (or `./reports/{topic}/tests/TEST-STRATEGY-{scope}`) before starting.
-
-**Triangle Loop**:
-1. `tester` reads strategy → decomposes into: unit test cases, integration scenarios, E2E journeys, security cases, perf benchmarks → TASK_ASSIGNMENT to `researcher`
-2. `researcher` researches patterns → SUBMISSION per area: specific test cases (inputs/outputs/edges), boundary conditions, equivalence partitions, mock strategies, test data approaches
-3. `security-engineer` reviews → REVIEW: injection tests (SQL/XSS/command)? Auth bypass? IDOR/privilege escalation? Input validation (null/overflow/special chars)? Race conditions? Error message leakage?
-4. Debate loop if FAIL → max 3 rounds → ESCALATION to `tester` if unresolved
-5. `tester` synthesizes approved test cases into final test plan
-
-**Deliverable**: `<appDataDir>\\brain\\<conversation-id>\\TEST-PLAN-{scope}` (or `./reports/{topic}/tests/TEST-PLAN-{scope}`)
-**Exit Criteria**: Every component has specific test cases, edge cases documented, security scenarios covered
-**Consensus**: ✅ CONSENSUS: tester ✓ | researcher ✓ | security-engineer ✓
-
----
-
----
-
-## 🎭 Phase 3: TEST IMPLEMENTATION — 🔺 GOLDEN TRIANGLE (CRITICAL)
-
-> **THIS IS THE MOST CRITICAL PHASE.** Every step is detailed. No shortcuts.
-
-### Team Selection
-
-```
-Fullstack → Tech Lead: tester | Executor: backend-engineer then frontend-engineer | Reviewer: reviewer + perf lens
-Backend  → Tech Lead: tester | Executor: backend-engineer | Reviewer: reviewer + perf lens
-Frontend → Tech Lead: tester | Executor: frontend-engineer | Reviewer: reviewer + perf lens
-Self     → Tech Lead: tester | Executor: tester (self) | Reviewer: reviewer + perf lens
-```
-
-| Role      | Agent                                                    | Mission                                                    |
-| --------- | -------------------------------------------------------- | ---------------------------------------------------------- |
-| Tech Lead | `tester`                                                 | Load TEST-PLAN → decompose into test writing tasks → Shared Task List → coordinate all work |
-| Executor  | `tester` (self) OR `backend-engineer`/`frontend-engineer`| Follow plan EXACTLY → write tests per spec → submit via Mailbox |
-| Reviewer  | `reviewer` + `performance-engineer` lens                 | Review EVERY submission → check test quality, assertions, mocks, coverage |
-
-**Prerequisite**: **READ and FOLLOW** `<appDataDir>\\brain\\<conversation-id>\\TEST-PLAN-{scope}` (or `./reports/{topic}/tests/TEST-PLAN-{scope}`)
-
-### GOLDEN TRIANGLE IMPLEMENTATION LOOP (CRITICAL — Step by Step)
-
-
-> **⛔ See `_ref/convergent-analysis-loop.md` or `_ref/implementation-loop.md` for detailed step-by-step protocol.**
-
-
-### STRICT PLAN ADHERENCE (ENFORCED BY REVIEWER)
-
-```
-1. READ TEST PLAN FIRST — every test MUST trace to a plan test case
-2. IF test case seems wrong → STOP → ESCALATION → Tech Lead evaluates
-3. NO unauthorized test additions — Reviewer checks: "Any tests not in plan?"
-4. Unauthorized deviations → automatic FAIL: CRITICAL | "Remove or get plan amended"
-```
-
-**Exit Criteria**: All plan test cases implemented, all reviews passed, no unauthorized deviations, test suite integration verified
-**Consensus**: ✅ CONSENSUS: tester ✓ | {executor} ✓ | reviewer ✓
-
----
-
-## 🎭 Phase 4: COVERAGE & VERIFICATION — 🔺 GOLDEN TRIANGLE
-
-| Role      | Agent                                | Mission                                                    |
-| --------- | ------------------------------------ | ---------------------------------------------------------- |
-| Tech Lead | `tester`                             | Synthesize: coverage report, gap analysis, quality gate evaluation |
-| Executor  | `tester` (self-executes)             | Execute: run all tests, generate coverage report, collect metrics |
-| Reviewer  | `tech-lead` (Devil's Advocate)       | Challenge: coverage sufficient? Brittle tests? False positives? |
-
-**Triangle Loop**:
-1. `tester` (Tech Lead) decomposes: test execution, coverage analysis, quality gates, gap identification → TASK_ASSIGNMENT to self
-2. `tester` (Executor) runs full suite → SUBMISSION: pass/fail per category, coverage metrics (line/branch/function), quality gate eval, failure analysis (code bugs vs test flaws vs flaky), plan checkpoint verification
-3. `tech-lead` reviews → REVIEW: gaming metrics with trivial tests? Brittle tests? False positives? Flaky tests (shared state)? Missing negative tests? Maintainable long-term?
-4. Debate loop if FAIL → max 3 rounds → `tester` synthesizes final QA report
-
-**PLAN CHECKPOINT VERIFICATION** (if PLAN exists):
-```
-FOR EACH AC in PLAN-{scope}.md → map to test → tech-lead confirms not trivial → "AC-{id} → Test: {name} → {pass/fail}"
-```
-
-**QUALITY GATES** (all must pass for ✅):
-```
-Coverage: unit ≥ strategy target | integration: critical paths exercised | E2E: journeys pass
-Test Health: no flaky | no false positives | assertions meaningful
-Security: injection passed | auth bypass covered | input validation verified
-Performance: no regressions beyond threshold | baselines established
-```
-
-**Deliverable**: `<appDataDir>\\brain\\<conversation-id>\\TEST-RESULTS-{scope}` (or `./reports/{topic}/tests/TEST-RESULTS-{scope}`) + `<appDataDir>\\brain\\<conversation-id>\\QA-{scope}` (or `./reports/{topic}/qa/QA-{scope}`)
-**Exit Criteria**: All tests run, quality gates evaluated, coverage verified, no brittle/flaky tests, report complete
-**Consensus**: ✅ CONSENSUS: tester ✓ | tester(exec) ✓ | tech-lead ✓
-
----
-
-## ✅ COMPLETION
-
-```markdown
-# 🔺 Golden Triangle Test Report: {scope}
-
-## Phase Results
-| Phase | Triangle | Consensus | Rounds |
-|-------|----------|-----------|--------|
-| P1: Test Strategy | tester / scouter / tech-lead | ✅ | {n} |
-| P2: Test Planning | tester / researcher / security-engineer | ✅ | {n} |
-| P3: Test Implementation | tester / {executor} / reviewer | ✅ | {n} |
-| P4: Coverage & Verification | tester / tester / tech-lead | ✅ | {n} |
-
-## Summary
-Submissions: {n} | First-pass: {n} | Debates: {n} | Arbitrations: {n}
-Coverage: {pass/fail} | Health: {pass/fail} | Security: {pass/fail} | Perf: {pass/fail}
-Mailbox: `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md` (or `./reports/{topic}/MAILBOX-{date}.md`)
-
-## Next Actions
-1. ✅ **All Pass** → quality gates met (triangle-validated)
-2. ⚠️ **Partial** → failures categorized by severity
-3. 🔧 **Fix** → `/fix:team` | 📝 **Review** → `/review` | 🚀 **Deploy** → `/deploy:preview`
-```
+> **⛔ HARD STOP**: Present `[TEST-{scope}.md](file:///...)`. When `[APP_DEFECT]` items exist (`RequestFeedback: true`), clicking **"Proceed"** fast-forwards straight into `/fix:team`; when `100%` green (`RequestFeedback: false`), offer `/review:team` or `/deploy:check`.

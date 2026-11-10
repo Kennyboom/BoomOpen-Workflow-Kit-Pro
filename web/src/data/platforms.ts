@@ -1,7 +1,9 @@
+import { localInstallCommand, localUninstallCommand, type ToolId } from './install'
+
 export type PlatformStatus = 'full' | 'partial' | 'coming-soon'
 
 export interface Platform {
-  id: string
+  id: ToolId
   name: string
   icon: string
   description: string
@@ -10,7 +12,8 @@ export interface Platform {
   installPath: string
   features: string[]
   steps: string[]
-  setup: string[]
+  /** [install, uninstall] commands, run from the cloned repository. */
+  setup: [string, string]
 }
 
 export const platforms: Platform[] = [
@@ -20,7 +23,7 @@ export const platforms: Platform[] = [
     icon: '⚡',
     description: 'Full integration with Cursor IDE through .cursorrules and custom rules.',
     status: 'full',
-    configFile: '.cursor/rules/boomopen-workflow-kit.mdc',
+    configFile: '~/.cursor/CURSOR.md + ~/.cursor/rules/',
     installPath: '~/.cursor/skills/boomopen-workflow-kit/',
     features: [
       'Custom agent rules',
@@ -29,15 +32,12 @@ export const platforms: Platform[] = [
       'Sub-agent orchestration',
     ],
     steps: [
-      'Install BoomOpen Workflow Kit globally',
+      'Clone the repository and run the install command',
       'Restart Cursor IDE',
       'BoomOpen Workflow Kit auto-discovers from global path',
       'Start using /cook, /fix, /test commands',
     ],
-    setup: [
-      'boomopen-workflow-kit install cursor',
-      'boomopen-workflow-kit uninstall cursor',
-    ]
+    setup: [localInstallCommand('cursor'), localUninstallCommand('cursor')],
   },
   {
     id: 'claude',
@@ -45,7 +45,7 @@ export const platforms: Platform[] = [
     icon: '🤖',
     description: 'Native support through CLAUDE.md for seamless Claude integration.',
     status: 'full',
-    configFile: 'CLAUDE.md',
+    configFile: '~/.claude/CLAUDE.md',
     installPath: '~/.claude/skills/boomopen-workflow-kit/',
     features: [
       'Native Claude support',
@@ -54,15 +54,12 @@ export const platforms: Platform[] = [
       'Orchestration laws',
     ],
     steps: [
-      'Install BoomOpen Workflow Kit globally',
+      'Clone the repository and run the install command',
       'CLAUDE.md is auto-detected in projects',
       'Global config applies to all projects',
       'Use slash commands in any project',
     ],
-    setup: [
-      'boomopen-workflow-kit install claude',
-      'boomopen-workflow-kit uninstall claude',
-    ]
+    setup: [localInstallCommand('claude'), localUninstallCommand('claude')],
   },
   {
     id: 'copilot',
@@ -70,7 +67,7 @@ export const platforms: Platform[] = [
     icon: '🐙',
     description: 'Works with GitHub Copilot through boomopen-workflow-kit.agent.md files.',
     status: 'full',
-    configFile: 'boomopen-workflow-kit.agent.md',
+    configFile: 'VS Code prompts/boomopen-workflow-kit.agent.md + ~/.copilot/COPILOT.md',
     installPath: '~/.copilot/skills/boomopen-workflow-kit/',
     features: [
       'Copilot agents',
@@ -79,15 +76,12 @@ export const platforms: Platform[] = [
       'Skill injection',
     ],
     steps: [
-      'Install BoomOpen Workflow Kit globally',
+      'Clone the repository and run the install command',
       'Agent files are auto-detected',
       'Works with Copilot Chat',
       'Full orchestration support',
     ],
-    setup: [
-      'boomopen-workflow-kit install copilot',
-      'boomopen-workflow-kit uninstall copilot',
-    ]
+    setup: [localInstallCommand('copilot'), localUninstallCommand('copilot')],
   },
   {
     id: 'antigravity',
@@ -95,8 +89,8 @@ export const platforms: Platform[] = [
     icon: '🚀',
     description: 'Full support for Antigravity through GEMINI.md configuration.',
     status: 'full',
-    configFile: 'GEMINI.md',
-    installPath: '~/.antigravity/skills/boomopen-workflow-kit/',
+    configFile: '~/.gemini/GEMINI.md',
+    installPath: '~/.gemini/config/skills/boomopen-workflow-kit/',
     features: [
       'Gemini integration',
       'Global configuration',
@@ -104,15 +98,12 @@ export const platforms: Platform[] = [
       'Matrix skills',
     ],
     steps: [
-      'Install BoomOpen Workflow Kit globally',
+      'Clone the repository and run the install command',
       'GEMINI.md is auto-detected',
       'Global configuration applies',
       'Use all commands and workflows',
     ],
-    setup: [
-      'boomopen-workflow-kit install antigravity',
-      'boomopen-workflow-kit uninstall antigravity',
-    ]
+    setup: [localInstallCommand('antigravity'), localUninstallCommand('antigravity')],
   },
   {
     id: 'codex',
@@ -120,7 +111,7 @@ export const platforms: Platform[] = [
     icon: '💻',
     description: 'Full support for OpenAI Codex through AGENTS.md (primary) and CODEX.md compatibility.',
     status: 'full',
-    configFile: 'AGENTS.md + CODEX.md',
+    configFile: '~/.codex/AGENTS.md + ~/.codex/CODEX.md',
     installPath: '~/.codex/skills/boomopen-workflow-kit/',
     features: [
       'Codex integration',
@@ -129,15 +120,12 @@ export const platforms: Platform[] = [
       'Orchestration laws',
     ],
     steps: [
-      'Install BoomOpen Workflow Kit globally',
+      'Clone the repository and run the install command',
       'CODEX.md is auto-detected in projects',
       'Global config applies to all projects',
       'Use slash commands in any project',
     ],
-    setup: [
-      'boomopen-workflow-kit install codex',
-      'boomopen-workflow-kit uninstall codex',
-    ]
+    setup: [localInstallCommand('codex'), localUninstallCommand('codex')],
   },
 ]
 
@@ -159,7 +147,7 @@ export const platformBadges = platforms.map(p => ({
 }))
 
 // Get platform by ID
-export const getPlatformById = (id: string) => platforms.find(p => p.id === id)
+export const getPlatformById = (id: ToolId) => platforms.find(p => p.id === id)
 
 // Total platforms count
 export const totalPlatforms = platforms.length

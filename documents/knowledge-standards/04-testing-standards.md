@@ -37,13 +37,13 @@ This executes all files matching the glob `cli/*.test.js` using Node.js built-in
 | Test directory | `cli/` (co-located with source) |
 | File pattern | `*.test.js` |
 | Module system | CommonJS (`require`) |
-| Current test files | `cli/install.test.js.example` (example only, not active) |
+| Current test files | `cli/*.test.js` (listed in the `test` script of package.json) |
 
 Tests are co-located with their source files in the `cli/` directory. There is no separate `test/`, `__tests__/`, or `spec/` directory.
 
 ### Example Test File Structure
 
-The project includes one example test file at `cli/install.test.js.example`. It demonstrates the intended test structure:
+Tests use `node:test` and `node:assert/strict`. Suites that run the CLI build a fixture kit (`buildFixtureKit` in `cli/sandbox.test-helper.js`) and sandbox `HOME`, `USERPROFILE`, `APPDATA`, `LOCALAPPDATA` and `XDG_CONFIG_HOME` under the temp folder. A minimal structure:
 
 ```javascript
 const { test, describe } = require('node:test');
@@ -71,7 +71,7 @@ describe('CLI Installer', () => {
 });
 ```
 
-### Test Naming Conventions (from example)
+### Test Naming Conventions
 
 | Element | Convention | Example |
 |---------|-----------|---------|
@@ -88,17 +88,13 @@ describe('CLI Installer', () => {
 
 | Category | Status | Details |
 |----------|--------|---------|
-| Unit test example | Example file only | `cli/install.test.js.example` — not renamed, not executed by `npm test` |
-| Syntax check | Active | `npm run lint` runs `node --check cli/install.js` to validate JavaScript syntax |
+| CLI unit and end-to-end tests | Active | `cli/*.test.js` (`node:test`), run by `npm test` with sandboxed profiles |
+| Syntax check | Active | `npm run lint` runs `.github/scripts/check-syntax.js` to validate JavaScript syntax |
 
 ### What is Missing
 
 | Category | Status | Notes |
 |----------|--------|-------|
-| Active unit tests | Not present | Example file has `.example` extension; tests are placeholder stubs with `assert.ok(true, 'Test placeholder')` |
-| Function exports for testing | Not present | `cli/install.js` does not export internal functions; the example test file notes this as a blocker: "requires exporting them from install.js" |
-| Integration tests | Not present | No tests for the full install/uninstall CLI flow |
-| End-to-end tests | Not present | No tests that simulate real platform installation |
 | Web tests | Not present | No test configuration in `web/` (no Vitest, no React Testing Library) |
 | Test coverage tool | Not configured | No nyc, c8, istanbul, or `--experimental-test-coverage` flag |
 | Coverage thresholds | Not configured | No minimum coverage requirements |
@@ -113,19 +109,14 @@ describe('CLI Installer', () => {
 
 | Command | What It Does | Status |
 |---------|-------------|--------|
-| `npm test` | Runs `node --test cli/*.test.js` | Active (but no `.test.js` files exist — only `.test.js.example`) |
-| `npm run lint` | Runs `node --check cli/install.js` | Active — validates JS syntax |
-| `npm run lint:md` | Echoes a suggestion to run markdownlint | Advisory only (does not execute linting) |
+| `npm test` | Runs `node --test` on every suite listed in package.json | Active |
+| `npm run lint` | Runs `.github/scripts/check-syntax.js` | Active — validates JS syntax |
 
-### Running the Example Test
+### Adding a Test
 
-To activate the example test:
+Create `cli/<topic>.test.js` and add it to the `test` script in package.json, then run:
 
 ```bash
-# 1. Rename the example file
-mv cli/install.test.js.example cli/install.test.js
-
-# 2. Run tests
 npm test
 ```
 
@@ -168,7 +159,7 @@ The `--test` CLI flag auto-discovers and runs files matching the provided glob p
 | Source | Path |
 |--------|------|
 | Package manifest (test script) | [../../package.json](../../package.json) |
-| Example test file | [../../cli/install.test.js.example](../../cli/install.test.js.example) |
+| Example test file | [../../cli/install.test.js](../../cli/install.test.js) |
 | CLI source (no exports) | [../../cli/install.js](../../cli/install.js) |
 | Lint script (syntax check) | [../../package.json](../../package.json) — `scripts.lint` |
 | Lint:md script (advisory) | [../../package.json](../../package.json) — `scripts.lint:md` |

@@ -20,7 +20,6 @@ Production-ready Terraform module patterns for AWS, Azure, and GCP infrastructur
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Purpose
 
@@ -230,8 +229,6 @@ module "rds" {
 - `assets/vpc-module/` - Complete VPC module example
 - `assets/rds-module/` - RDS module example
 - `references/aws-modules.md` - AWS module patterns
-- `references/azure-modules.md` - Azure module patterns
-- `references/gcp-modules.md` - GCP module patterns
 
 ## Testing
 

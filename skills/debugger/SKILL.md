@@ -5,58 +5,58 @@ version: "5.5"
 priority: HIGH
 ---
 
-# 🐛 Systematic Problem Investigation Engine (SPIE v3.0)
+# 🐛 Systematic Problem Investigation Engine (`SPIE v3.0` — `v5.5`)
 
-> **CORE DIRECTIVE**: Find and eliminate the **ROOT CAUSE**, never mask symptoms. A bug fixed without understanding its causal chain will return.
-
----
-
-## 1. Golden Rules of Debugging
-
-1. **REPRODUCE BEFORE FIXING**: Never guess a fix without reliable reproduction steps or stack trace evidence.
-2. **HYPOTHESIZE → TEST → ELIMINATE**: Form ranked hypotheses and test one variable at a time.
-3. **5-WHYS TO ROOT CAUSE**: Trace backward from the visible crash/error until you find the architectural, validation, or state-management root cause.
-4. **SURGICAL FIX & CLEAN LOGGING**: Modify only what is required to fix the root cause, and remove any temporary debug `console.log` statements before finishing.
-5. **PREVENT RECURRENCE**: Every bug fix MUST be accompanied by a regression test and/or guard clause.
+> **CORE DIRECTIVE**: Prove and eliminate the **SYSTEMIC ROOT CAUSE (`Why 5`)** — never mask symptoms (`Why 1`). A bug patched without deterministic reproduction and causal proof will return.
 
 ---
 
-## 2. 5-Phase Investigation Protocol
+## 1. The 5 Iron Laws of SPIE v3.0 Debugging (`DBG-G1..G4`)
 
-### Phase 1: Evidence Gathering & Reproduction
-Capture the exact failure signature before changing any code:
-- **Exact Error & Stack Trace**: File, line number, function name, and error message verbatim.
-- **Reproduction Steps**: Minimal input/action sequence (`Given → When → Expected vs. Actual`).
-- **Blast Radius & Recent Changes**: Check callers, data flow, and recent commits (`git diff` / `git log -n 5`).
+1. **`DBG-G1` — Deterministic Reproduction First**: Capture the verbatim error, stack trace, and repeatable reproduction command/test before touching any production line.
+2. **`DBG-G2` — 5-Whys Causal Proof (`[file:line]`)**: Trace every link from crash site (`Why 1`) to systemic design/validation flaw (`Why 5`) with clickable `[basename:L10-L25](file:///...)` evidence.
+3. **`DBG-G3` — Falsify Competing Hypotheses**: Formulate `≥ 3` orthogonal hypotheses and rule out alternatives with concrete code/log counter-evidence (`Correlation ≠ Causation`).
+4. **`DBG-G4` — Blast-Radius & Clean Surgical Fix**: Audit all callers/shared state, keep pre-existing `tests/**` locked in `READ_ONLY_FILES`, write a **Fail-First (`RED → GREEN`) Regression Test**, and strip 100% of temporary debug `console.log` statements.
+5. **Bidirectional Fast-Forward**: In `/fix` workflows, always check `<appDataDir>\brain\<conversation-id>\DEBUG-{issue}.md` (or `REVIEW-{scope}.md`) first — if root cause is already proven, **skip redundant debugging** and jump straight to `RED → GREEN` fix execution!
 
-### Phase 2: 5-Whys Root Cause Analysis
-Trace the causal chain from symptom to root cause:
+---
 
+## 2. 5-Phase SPIE Investigation & Resolution Protocol
+
+### Phase 1: Symptom Capture, Bidirectional Check & Reproduction (`DBG-G1`)
+- **Prior Artifact Check**: Reuse `SCOUT-*.md` / `DEBUG-*.md` in `<appDataDir>\brain\<conversation-id>\` if already present.
+- **Exact Signature**: Record full error message, stack frames, runtime/OS versions, and recent commits (`git log --oneline -10`, `git diff`, `git log -p -S "<symbol>"`).
+- **Minimal Repro**: Isolate a single failing test or CLI/API invocation (`Given → When → Expected vs. Actual`).
+
+### Phase 2: Parallel Hypothesis Sharding (`debugger#h1..k` — `DBG-G3`)
+In Mode B (`/debug:hard`, `/debug:team`, `/fix:hard`, `/fix:team`), spawn parallel `TypeName: "self", Model: "inherit"` shards (`≤ 3–4` suspect files per shard) writing **disjoint scratch notes** (`DEBUG-{issue}-h{k}.md`, `UserFacing: false, RequestFeedback: false`) so parallel shards never overwrite each other:
+
+| Shard (`role#shard`) | Hypothesis Focus | Verification Check | Scratch File (`UserFacing: false`) |
+|----------------------|------------------|--------------------|------------------------------------|
+| `debugger#h1` | Primary stack frame & local state mutation | `read_file` + isolated repro | `DEBUG-{issue}-h1.md` |
+| `debugger#h2` | Upstream caller payload, DTO/schema or env drift | `grep_search` callers + diff | `DEBUG-{issue}-h2.md` |
+| `debugger#h3` | Async race window, cache staleness, DB pool/locks | Timing/concurrency trace | `DEBUG-{issue}-h3.md` |
+
+#### 🎼 Round-2 Cross-Engine Debug Escalation (`engines.debugger = cross_family`)
+When 2 local rounds fail to isolate a Heisenbug or deadlock, escalate to a second model family:
+```bash
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role debugger --engine cross_family --prompt "<error + stack trace + eliminated H1..Hk>"
 ```
-SYMPTOM: [Observed error / wrong behavior]
-  └── WHY 1: Why did the error occur at [File:Line]? → [Immediate cause]
-  └── WHY 2: Why did [Immediate cause] happen? → [Upstream caller / state issue]
-  └── WHY 3: Why was that state/input invalid? → [Missing validation / race condition]
-  └── WHY 4: Why was it not caught earlier? → [Missing type guard / error boundary]
-  └── WHY 5 (ROOT CAUSE): [Fundamental design/logic flaw to fix]
+
+### Phase 3: 5-Whys Root Cause Synthesis (`DBG-G2`)
+```
+SYMPTOM: [Observed crash / wrong output]
+  └── WHY 1 (Crash Site): Why did it fail at [file:line]?
+  └── WHY 2 (Proximate State): Why was that variable/payload invalid?
+  └── WHY 3 (Contract/Guard Gap): Why did boundary validation miss it?
+  └── WHY 4 (Control-Flow Flaw): Why did lifecycle/ordering permit this state?
+  └── WHY 5 (Systemic Root Cause): [Exact invariant to enforce in code + tests]
 ```
 
-### Phase 3: Ranked Hypothesis Matrix
-When multiple causes are possible, rank and test them systematically:
+### Phase 4: Fail-First (`RED`) & Surgical Fix (`GREEN`) (`/fix` Mode Only)
+- **Zero Edits in `/debug`**: During `/debug:*`, 100% of repo files remain read-only.
+- **In `/fix:*`**: Write/run a Fail-First reproduction test (`RED`) without weakening locked `READ_ONLY_FILES` regression tests → apply minimal root-cause fix within `OWNED_FILES` (`≤ 3–4` files/shard) adhering to **Pragmatic 2-Tier Standards** (`0` `any`, `0` silent `catch {}`, `0` leftover `console.log`).
 
-| # | Hypothesis | Likelihood | Verification Test | Result |
-|---|------------|:----------:|-------------------|--------|
-| H1 | `{most likely cause}` | **HIGH** | `{exact check/command}` | ✅ CONFIRMED / ❌ ELIMINATED |
-| H2 | `{secondary cause}` | **MEDIUM** | `{exact check/command}` | ⏳ / ❌ |
-| H3 | `{edge-case cause}` | **LOW** | `{exact check/command}` | ⏳ / ❌ |
-
-### Phase 4: Surgical Fix & Clean Logging Rule
-- **Surgical Scope**: Respect `OWNED_FILES` locks and apply the minimal, type-safe change that eliminates the root cause.
-- **Pragmatic 2-Tier Standards**: Never introduce explicit `any` or silent `catch {}` blocks to suppress errors.
-- **Clean Logging**: If temporary instrumentation is added during diagnosis, **remove all temporary `console.log` statements** from production code before completing the fix (use structured logger `logger.error`/`logger.debug` if persistent telemetry is required).
-
-### Phase 5: Persistent End-to-End Verification & Regression Guard
-1. **Write Regression Test**: Add a unit/integration test reproducing the exact bug scenario.
-2. **Run Full Verification**: Execute the test suite, build/typecheck, and `node cli/install.js check <dir>`.
-3. **Iterative Loop**: If the fix introduces a new error or fails a test, immediately analyze and fix it until 100% green.
-4. **Deliverable Routing**: When running in Mode B (`/debug` or `/fix`), write the structured report to `<appDataDir>\brain\<conversation-id>\DEBUG-{issue}.md` (or `./reports/{topic}/debugs/DEBUG-{issue}.md` fallback).
+### Phase 5: Persistent Verification & Cohesive `DEBUG-{issue}.md` Routing
+1. **Verify End-to-End** (`/fix`): Run test suites (`GREEN`), build/typecheck, and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`, iterating until `0` errors remain.
+2. **Cohesive Deliverable (`≤ 500` Lines — NEVER Folder-Split)**: Write `<appDataDir>\brain\<conversation-id>\DEBUG-{issue}.md` as **1 single cohesive file** (`ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: true }` on standalone `/debug` for 1-click **"Proceed"** into `/fix`; `RequestFeedback: false` inside `/fix`).

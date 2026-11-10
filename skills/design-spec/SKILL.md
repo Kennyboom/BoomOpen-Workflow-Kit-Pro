@@ -1,65 +1,64 @@
 ---
 name: design-spec
-description: How to author a DESIGN.md file — the machine-readable design-token + human-rationale format that must exist before any UI is built. Supports OKLCH perceptual color tokens + sRGB hex, surface_elevation ladders, motion spring tokens, typography, spacing, rounded, components, and WCAG 2.2 AA guardrails.
-when_to_use: "BEFORE writing any UI code (web or mobile). Read when creating or updating a project's DESIGN.md, defining design tokens, or when a UI task needs a design source-of-truth. Pair with frontend-design, anti-ai-slop-visual-craft, and oklch-bento-grid-architecture."
-allowed-tools: Read, Write, Edit, Glob, Grep
-version: 2.0.0
+description: How to author a DESIGN.md or DESIGN-{task}.md file — the machine-verifiable 6-Block design-token + UI contract format that must exist before any UI is built. Supports OKLCH perceptual color tokens + sRGB hex, surface_elevation ladders, motion spring tokens, 5-State Component Matrix, DESIGN_CONTRACT (@theme CSS + TypeScript Props), and WCAG 2.2 AA guardrails.
+when_to_use: "BEFORE writing any UI code (web or mobile). Read when running /design, creating or updating <appDataDir>\\brain\\<conversation-id>\\DESIGN-{task}.md or workspace DESIGN.md, locking DESIGN_CONTRACT for parallel frontend-engineer#shard agents, or validating via boomopen design validate."
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+version: 5.5.0
 ---
 
-# DESIGN.md Specification (v2.0 — OKLCH, Surface Elevation & WCAG 2.2 AA)
+# DESIGN.md & `DESIGN-{task}.md` Specification (v5.5 — 6-Block Machine-Verifiable Edition)
 
-> A `DESIGN.md` is the **single source of truth** for a project's visual language. Create it BEFORE building UI.
-> Two layers: machine-readable **design tokens** (YAML front matter) + human-readable **rationale** (markdown body).
-> Tokens are normative; prose gives context. Prose may use descriptive names ("Midnight Forest Green") that map to systematic token names (`primary`).
+> A `DESIGN-{task}.md` (and workspace `./DESIGN.md`) is the **single source of truth** for a project's visual language, component states, and CSS/TypeScript UI contracts. Create and validate it **BEFORE** building UI.
 >
-> _Format adapted from the [DESIGN.md spec](https://github.com/google-labs-code/design.md) (Google Labs, Apache-2.0) and W3C Design Tokens Community Group (DTCG) 2025/2026 standards._
+> **Cohesive Single-File Rule (`<= 500` Lines)**: Always write `<appDataDir>\brain\<conversation-id>\DESIGN-{task}.md` as **1 cohesive single file up to 500 lines** (NEVER split at 150 lines into a multi-file folder!) with `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: true }` so Antigravity 2.0 renders the native 1-click **"Proceed"** button. Optionally pair with `<appDataDir>\brain\<conversation-id>\DESIGN-PREVIEW-{task}.html` (`generative_ui`) for live interactive token/component previewing.
 >
-> 📚 **Reference library:** [collection.md](collection.md) — 70+ real-world `DESIGN.md` files (Airbnb, Stripe, Linear, Vercel, Apple…) to study or adapt as a starting point.
+> 📚 **Reference library:** [collection.md](collection.md) — 70+ real-world `DESIGN.md` inspirations (Linear, Stripe, Vercel, Apple, Airbnb…) + `skills_library/ui-ux-pro-max/scripts/search.py --design-system`.
 
 ---
 
-## When to produce a DESIGN.md
+## 1. Output Routing & Dual-Artifact Lifecycle
 
-This is a **hard gate** for UI work: before writing components, pages, or styles, a `DESIGN.md` must exist at the project root (or in `<appDataDir>\brain\<conversation-id>\DESIGN-{feature}.md` during Mode B orchestration). If absent, create it first from the brief; if present, read it and conform.
-
-The token block converts cleanly to/from W3C DTCG `tokens.json`, Figma variables, and Tailwind CSS v4 `@theme` config — bridging design intent and code.
+| Context | Canonical Path | `ArtifactMetadata` / Role |
+|---------|----------------|---------------------------|
+| **Mode B `/design` Spec (Primary)** | `<appDataDir>\brain\<conversation-id>\DESIGN-{task}.md` | `UserFacing: true, RequestFeedback: true` (1 cohesive file `<= 500` lines; unlocks 1-click **"Proceed"**) |
+| **Interactive Live Preview (Optional)** | `<appDataDir>\brain\<conversation-id>\DESIGN-PREVIEW-{task}.html` | Rendered via `generative_ui` skill to preview palette, typography, and 5-state interactive cards |
+| **Workspace Design System Lock** | `./DESIGN.md` (project root) | Persistent repo-level token contract synced when establishing or updating a project-wide design system |
 
 ---
 
-## 1. File structure
+## 2. The 6-Block Cohesive `DESIGN-{task}.md` Blueprint
+
+Every `DESIGN-{task}.md` (and workspace `DESIGN.md`) MUST follow this **6-Block Machine-Verifiable Structure** with unique `##` headings:
 
 ```markdown
 ---
-<YAML token front matter>
+<YAML Token Front Matter: version, name, archetype, colors, surface_elevation, typography, motion, rounded, spacing, components>
 ---
 
-# Project Name (optional title)
+# DESIGN: {Feature or Product Name}
 
-## Overview
-## Colors & Surface Elevation
-## Typography
-## Layout & Bento Architecture
-## Elevation, Borders & Specular Depth
-## Motion & Interaction Physics
-## Shapes
-## Components
-## Accessibility (WCAG 2.2 AA) & Do's and Don'ts
+## 1. Overview & Aesthetic Direction
+## 2. Colors, Surface Elevation & Typography
+## 3. Layout, Responsive Breakpoints & User Flow
+## 4. 5-State Component & Screen Matrix
+## 5. Accessibility (WCAG 2.2 AA), Motion & Do's/Don'ts
+## 🤝 Shared Design & Component Contract (DESIGN_CONTRACT)
 ```
 
-Front matter MUST begin and end with a line containing exactly `---`. Sections use `##` headings, appear in the order above, and may be omitted if irrelevant. Domain-specific sections may be added.
-
 ---
 
-## 2. Token schema (YAML front matter — 2026 OKLCH + Hex Dual Support)
+## 3. Token Schema (YAML Front Matter — 2026 OKLCH + Hex Dual Support)
 
 ```yaml
-version: "2.0"
+version: "5.5"
 name: Linear Technical Dark
 archetype: linear-technical-dark   # swiss-editorial | linear-technical-dark | luxury-minimal | tactile-neo-brutalist
 colors:
   primary: "oklch(0.68 0.18 255)"  # OKLCH preferred (or "#RRGGBB" sRGB hex)
-  primary-hover: "oklch(from var(--primary) calc(l + 0.06) c h)"
+  primary-hover: "oklch(from var(--color-primary) calc(l + 0.06) c h)"
   accent: "oklch(0.74 0.17 162)"
+  success: "oklch(0.72 0.17 152)"
+  warning: "oklch(0.78 0.16 75)"
   error: "oklch(0.64 0.21 25)"
 surface_elevation:
   canvas: "oklch(0.12 0.012 260)"
@@ -71,7 +70,7 @@ surface_elevation:
 typography:
   display-xl:
     fontFamily: Instrument Serif
-    fontSize: "clamp(2.5rem, 4.5vw + 1rem, 4.5rem)"
+    fontSize: "clamp(2.25rem, 4vw + 1rem, 4.25rem)"
     fontWeight: 600
     lineHeight: 1.08
     letterSpacing: -0.028em
@@ -112,102 +111,98 @@ components:
 
 ---
 
-## 3. Type system
+## 4. Block-by-Block Requirements (`DESIGN-G1` to `DESIGN-G4`)
 
-| Type | Accepted Formats | Example |
-|------|------------------|---------|
-| **Color** | `oklch(L C H [/ alpha])`, CSS Relative Color `oklch(from ...)`, or `#RRGGBB` sRGB hex | `"oklch(0.68 0.18 255)"`, `"#1A1C1E"` |
-| **Surface Elevation** | Stepped OKLCH lightness ladder (`canvas` → `card` → `elevated` → `overlay`) | `"oklch(0.155 0.014 260)"` |
-| **Dimension** | Number + unit (`px`/`em`/`rem`/`ch`/`dvh`) or fluid `clamp(...)` | `48px`, `clamp(2rem, 4vw, 3.5rem)` |
-| **Motion** | Spring config (`stiffness`, `damping`, `mass`) or cubic-bezier + duration | `"{ stiffness: 420, damping: 32, mass: 0.8 }"` |
-| **Token Reference** | `{path.to.token}` | `{colors.primary}`, `{surface_elevation.card}` |
-| **Typography** | Composite object (`fontFamily`, `fontSize`, `fontWeight`, `lineHeight`, `letterSpacing`, `fontFeature`) | See §2 |
-
-**Tabular Numerals Mandate:** Any token used for metrics, prices, latencies, timers, or table columns MUST set `fontFeature: "'tnum' 1"` (`font-variant-numeric: tabular-nums`).
+| Block | Mandatory Contents | Gate |
+|-------|--------------------|:----:|
+| **Block 1: Overview & Aesthetic Direction** | Named archetype (`Swiss Editorial`, `Linear Technical Dark`, `Quiet Luxury Minimal`, `Tactile Neo-Brutalist`), domain rationale, audience, and explicit Anti-Slop commitment (zero `#6366f1 -> #a855f7` or `#8b5cf6 -> #06b6d4` neon gradients). | `DESIGN-G1` |
+| **Block 2: Colors, Surface Elevation & Typography** | 60-30-10 token allocation, 4-step OKLCH surface ladder (`canvas` → `card` → `elevated` → `overlay`), 3-axis font pairing (`--font-display`, `--font-sans`, `--font-mono`), fluid `clamp()`, `45ch–68ch` measure, and `tabular-nums` on all numeric metrics/tables. | `DESIGN-G1` |
+| **Block 3: Layout, Responsive Breakpoints & User Flow** | Responsive adaptation table across **`320px` (Mobile)**, **`768px` (Tablet)**, **`1024px` (Laptop)**, and **`1440px+` (Desktop)** + `@container` queries + `min-h-dvh` + concentric border radius (`R_outer = R_inner + Padding`) + `mermaid` user/screen flow diagram. | `DESIGN-G3` |
+| **Block 4: 5-State Component & Screen Matrix** | Every screen/component MUST specify all **5 mandatory UI states**: **`Default / Idle`**, **`Loading / Skeleton`** (exact shimmer geometry), **`Empty State`** (onboarding CTA), **`Error State`** (inline `aria-invalid` / recovery retry), and **`Disabled / Focus-Visible / Success`** (`2px` focus ring + optimistic toast). | `DESIGN-G2` |
+| **Block 5: Accessibility (WCAG 2.2 AA), Motion & Do's/Don'ts** | Contrast targets (`>= 4.5:1` normal text, `>= 3:1` large text & UI borders), target size floor (`>= 24×24px` desktop web SC 2.5.8, `>= 44×44pt` iOS / `>= 48×48dp` Android), `scroll-padding-top` (`SC 2.4.11`), no `onPaste` blocking (`SC 3.3.8`), and `@media (prefers-reduced-motion: reduce)`. | `DESIGN-G3` |
+| **Block 6: `DESIGN_CONTRACT` (`## 🤝 Shared Design & Component Contract (DESIGN_CONTRACT)`)** | Machine-extractable Tailwind v4 `@theme inline` CSS block + TypeScript component props/state interfaces + 2-Wave `frontend-engineer#shard` file ownership lock table ready for `PLAN-{task}.md`. | `DESIGN-G4` |
 
 ---
 
-## 4. Sections (canonical order)
+## 5. Block 6 Template: `## 🤝 Shared Design & Component Contract (DESIGN_CONTRACT)`
 
-| # | Section | Purpose |
-|---|---------|---------|
-| 1 | **Overview** | Aesthetic archetype (`Swiss Editorial`, `Linear Technical Dark`, `Luxury Minimal`, `Tactile Neo-Brutalist`), brand personality, audience, and emotional tone. |
-| 2 | **Colors & Surface Elevation** | OKLCH or Hex palette + 4-tier surface elevation ladder (`canvas`, `card`, `elevated`, `overlay`). |
-| 3 | **Typography** | 3-Axis font pairing (`Display` + `UI Sans` + `Tabular Mono`), fluid `clamp()` scale, and `45ch–68ch` reading width constraints. |
-| 4 | **Layout & Bento Architecture** | 12-column asymmetric Bento grid rules, `@container` query breakpoints, and `min-h-dvh` viewport rules. |
-| 5 | **Elevation, Borders & Specular Depth** | `1px` hairline borders, top inner specular highlight (`inset 0 1px 0 0 oklch(1 0 0 / 0.07)`), or tonal layering. |
-| 6 | **Motion & Interaction Physics** | View Transitions API, CSS `@starting-style` / `scroll()`, `motion/react` spring parameters, and `prefers-reduced-motion` behavior. |
-| 7 | **Shapes** | Concentric border radius math (`R_outer = R_inner + Padding`) and corner treatment. |
-| 8 | **Components** | Per-atom guidance: Buttons, Inputs (`>= 16px` mobile font floor), Command Palette (`cmdk`), `<ResponsiveModal>` (`vaul` + Radix), Toasts (`sonner`). |
-| 9 | **Accessibility (WCAG 2.2 AA) & Do's and Don'ts** | Contrast (`4.5:1` text, `3:1` UI), target size (`>= 24×24px` WCAG 2.2 AA floor, `>= 44×44pt` mobile), Focus Not Obscured (`2.4.11`), and explicit Anti-AI-Slop guardrails. |
+Include this exact section in every `DESIGN-{task}.md` so `boomopen design contract <path>` (and `/plan` / `/code`) can inject it directly into `PLAN-{task}.md` (`SHARED_CONTRACT`):
 
----
+````markdown
+## 🤝 Shared Design & Component Contract (DESIGN_CONTRACT)
 
-## 5. Consumer behavior for unknown content
+### 1. CSS Design Tokens (`src/styles/globals.css` — Tailwind v4 `@theme inline`)
+```css
+@layer base {
+  :root {
+    --surface-canvas: oklch(0.985 0.004 85);
+    --surface-card: oklch(1 0 0);
+    --surface-elevated: oklch(0.96 0.006 85);
+    --border-hairline: oklch(0.20 0.015 260 / 0.10);
+    --text-primary: oklch(0.18 0.015 260);
+    --text-secondary: oklch(0.45 0.015 260);
+    --color-primary: oklch(0.56 0.18 32);
+    --color-danger: oklch(0.60 0.21 25);
+    --radius-card: 16px;
+    --radius-control: 10px;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .dark {
+    --surface-canvas: oklch(0.12 0.012 260);
+    --surface-card: oklch(0.155 0.014 260);
+    --surface-elevated: oklch(0.19 0.016 260);
+    --border-hairline: oklch(1 0 0 / 0.08);
+    --text-primary: oklch(0.95 0.008 260);
+    --text-secondary: oklch(0.68 0.012 260);
+  }
+}
 
-| Scenario | Behavior |
-|----------|----------|
-| Unknown section heading (`## Iconography`) | Preserve; do not error |
-| Unknown color token (`oklch(...)` or `#RRGGBB`) | Accept if valid CSS color |
-| Unknown typography / motion / surface token | Accept and map to CSS custom property |
-| **Duplicate section heading** (two `## Colors`) | **Error; reject the file** |
-
----
-
-## 6. Minimal 2026 example
-
-```markdown
----
-version: "2.0"
-name: Calm Clinical Scheduler
-archetype: swiss-editorial
-colors:
-  primary: "oklch(0.22 0.02 255)"
-  accent: "oklch(0.56 0.18 32)"
-  neutral: "oklch(0.975 0.006 85)"
-surface_elevation:
-  canvas: "oklch(0.975 0.006 85)"
-  card: "oklch(1 0 0)"
-  elevated: "oklch(0.95 0.008 85)"
-  border-hairline: "oklch(0.22 0.02 255 / 0.1)"
-typography:
-  h1: { fontFamily: Instrument Serif, fontSize: "clamp(2.25rem, 3.5vw, 3.5rem)", fontWeight: 600, lineHeight: 1.08 }
-  body-md: { fontFamily: Plus Jakarta Sans, fontSize: 16px, fontWeight: 400, lineHeight: 1.6 }
-  metric: { fontFamily: JetBrains Mono, fontSize: 14px, fontWeight: 500, fontFeature: "'tnum' 1" }
-motion:
-  spring-snappy: "{ stiffness: 420, damping: 32, mass: 0.8 }"
-rounded: { sm: 6px, md: 12px, lg: 20px }
-spacing: { sm: 8px, md: 16px, lg: 32px }
-components:
-  button-primary:
-    backgroundColor: "{colors.accent}"
-    rounded: "{rounded.md}"
-    padding: "10px 18px"
----
-
-# Calm Clinical Scheduler
-
-## Overview
-A calm, high-craft Swiss Editorial interface for a healthcare scheduling platform.
-Accessibility-first (WCAG 2.2 AA): crisp contrast, zero neon gradients, generous 44px touch targets.
-
-## Colors & Surface Elevation
-- **Primary (`oklch(0.22 0.02 255)`):** Deep slate ink for headlines and primary text.
-- **Accent (`oklch(0.56 0.18 32)`):** Warm terracotta used strictly for the single primary CTA per view.
-- **Canvas (`oklch(0.975 0.006 85)`):** Warm limestone paper foundation that eliminates clinical eye strain.
-
-## Accessibility (WCAG 2.2 AA) & Do's and Don'ts
-- **Do** use `font-variant-numeric: tabular-nums` on all appointment times and patient queues.
-- **Do** maintain WCAG 2.2 AA contrast (`>= 4.5:1` for body text, `>= 3:1` for borders/icons) and `>= 44×44px` mobile hit targets.
-- **Don't** use generic `#6366f1 -> #a855f7` purple gradients, 3 equal cards in a row, or `< 16px` form inputs on mobile.
+@theme inline {
+  --color-canvas: var(--surface-canvas);
+  --color-card: var(--surface-card);
+  --color-elevated: var(--surface-elevated);
+  --color-hairline: var(--border-hairline);
+  --color-brand: var(--color-primary);
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
 ```
 
+### 2. Shared Component Props & 5-State Discriminated Union (`src/types/ui-contract.ts`)
+```ts
+export type AsyncViewState<T> =
+  | { status: 'idle' }
+  | { status: 'loading'; skeletonCount?: number }
+  | { status: 'empty'; title: string; actionLabel: string }
+  | { status: 'error'; message: string; retryable: boolean }
+  | { status: 'success'; data: T };
+```
+
+### 3. 2-Wave Frontend Shard Ownership Lock
+| Wave | Agent Shard | `OWNED_FILES` (Write Lock) | `READ_ONLY_FILES` |
+|:----:|-------------|----------------------------|-------------------|
+| **Wave 1** | `frontend-engineer#tokens-primitives` | `src/styles/globals.css`, `src/types/ui-contract.ts`, `src/components/ui/*` | `DESIGN-{task}.md` |
+| **Wave 2** | `frontend-engineer#screen-1..k` | `src/features/{slice}/*`, `src/app/{route}/*` (`<= 3-4` files/shard) | `src/styles/globals.css`, `src/types/ui-contract.ts`, `src/components/ui/*` |
+````
+
 ---
 
-## Workflow
+## 6. Deterministic CLI Verification (`boomopen design validate` & `contract`)
 
-1. Read the brief and select a visual archetype (see `anti-ai-slop-visual-craft` and `frontend-design`).
-2. **ALWAYS read [collection.md](collection.md) first** — 70+ real-world `DESIGN.md` files. Find the 1–2 closest in vibe/industry to the brief and study how they structure tokens. Adapt, never blindly copy.
-3. **Write `DESIGN.md`** — YAML tokens first, then rationale prose.
-4. Build UI strictly against the tokens using Tailwind CSS v4 `@theme` and OKLCH custom properties (`oklch-bento-grid-architecture`).
-5. Audit implementation against WCAG 2.2 AA (`wcag-22-accessibility-ergonomics`) and keep `DESIGN.md` in sync.
+Before marking any `/design` workflow complete or handing off to `/plan` / `/code`, run the `< 50ms` static validator:
+
+```bash
+# 1. Validate DESIGN-G1 (Tokens & Anti-Slop), DESIGN-G2 (5-State Matrix), DESIGN-G3 (WCAG 2.2 AA & Breakpoints), DESIGN-G4 (DESIGN_CONTRACT & <= 500 lines)
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design validate "<path-to-DESIGN-task.md>"
+
+# 2. Extract the machine-parseable DESIGN_CONTRACT block for PLAN-{task}.md injection
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design contract "<path-to-DESIGN-task.md>"
+```
+
+| Gate | Rule Enforced | Failure Fix |
+|------|---------------|-------------|
+| **`DESIGN-G1`** | Valid YAML/CSS color tokens (`oklch`/`#hex`/`@theme`), typography scale, spacing/radius scale, no duplicate `##` headings, and zero banned `#6366f1 -> #a855f7` / `#8b5cf6 -> #06b6d4` slop gradients | Add missing token scales or replace banned purple-cyan gradient with an intentional OKLCH palette |
+| **`DESIGN-G2`** | Complete **5-State Component Matrix** (`Default/Idle`, `Loading/Skeleton`, `Empty State`, `Error State`, `Disabled/Focus-Visible`) | Add the 5-State table covering every designed screen/component |
+| **`DESIGN-G3`** | WCAG 2.2 AA contrast (`4.5:1` / `3:1`), hit targets (`24×24px` web / `44×44pt` mobile), `prefers-reduced-motion`, and responsive breakpoints (`320px`/`768px`/`1024px`/`1440px` + `min-h-dvh`) | Document explicit contrast ratios, target dimensions, reduced-motion behavior, and breakpoint rules |
+| **`DESIGN-G4`** | Fenced `css` (`@theme` / `--color-*`) + `ts` contract inside `DESIGN_CONTRACT` and single cohesive file `<= 500` lines | Add `## 🤝 Shared Design & Component Contract (DESIGN_CONTRACT)` and keep file `<= 500` lines |

@@ -17,7 +17,7 @@ The Framework User runs the CLI to install framework files into their AI coding 
 
 ### Steps
 
-1. User executes `boomopen-workflow-kit install <tool>` or `boomopen-workflow-kit install --all`
+1. User executes `boomopen install <tool>` or `boomopen install --all`
 2. CLI validates Node.js version (>=18)
 3. CLI validates `<tool>` against known TOOLS list (claude, copilot, cursor, codex, gemini)
 4. For each target tool:
@@ -74,7 +74,7 @@ The Framework User removes installed framework files while preserving any custom
 
 ### Steps
 
-1. User executes `boomopen-workflow-kit uninstall <tool>` or `boomopen-workflow-kit uninstall --all`
+1. User executes `node cli/install.js uninstall <tool>` or `node cli/install.js uninstall --all` (`boomopen uninstall ...` after `npm link`)
 2. CLI validates tool name(s)
 3. For each target tool:
    a. Check if installation directory exists at `~/.{tool}/skills/boomopen-workflow-kit/`

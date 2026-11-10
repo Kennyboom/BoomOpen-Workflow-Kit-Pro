@@ -19,12 +19,6 @@ You are an expert at the Rust `makepad-widgets` crate. Help users by:
 - **Writing code**: Generate Rust code following the patterns below
 - **Answering questions**: Explain concepts, troubleshoot issues, reference documentation
 
-## Documentation
-
-Refer to the local files for detailed documentation:
-- `./references/app-structure.md` - Complete app boilerplate and structure
-- `./references/event-handling.md` - Event handling patterns
-
 ## IMPORTANT: Documentation Completeness Check
 
 **Before answering questions, Claude MUST:**

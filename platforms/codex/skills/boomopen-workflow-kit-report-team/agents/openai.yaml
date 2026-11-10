@@ -1,4 +1,6 @@
-display_name: "/report:team"
-short_description: "🔺 Team Report — Golden Triangle adversarial collaboration"
-brand_color: "#14B8A6"
-allow_implicit_invocation: true
+interface:
+  display_name: "/report:team"
+  short_description: "📊💎 Team Report — 2-Stage Evidence-Mined Elastic Golden Diamond (`report-team`) with CLI Telemetry & Adversarial Metric Audit"
+  brand_color: "#10B981"
+policy:
+  allow_implicit_invocation: true

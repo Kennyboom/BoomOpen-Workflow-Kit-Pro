@@ -1,4 +1,6 @@
-display_name: "/code"
-short_description: "💻 Code Router — Route to implementation workflows"
-brand_color: "#6366F1"
-allow_implicit_invocation: true
+interface:
+  display_name: "/code"
+  short_description: "💻 Code Router — Approved-Plan & Feature Execution Router with Turn-1 Fast-Forward, Contract Extraction & 3-Wave Verification"
+  brand_color: "#3B82F6"
+policy:
+  allow_implicit_invocation: true

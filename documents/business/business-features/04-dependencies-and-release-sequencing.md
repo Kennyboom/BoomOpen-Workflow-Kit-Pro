@@ -182,7 +182,7 @@ All features on this chain must ship in order. Parallel branches (BF-005→BF-00
 
 | Feature | Description |
 |---------|-------------|
-| BF-007 | 1,430+ skills (expanded from 310+) |
+| BF-007 | 1,460+ skills (expanded from 310+) |
 | BF-013 | Dynamic Skill Discovery |
 | BF-014 | Trust Progression Lifecycle |
 
@@ -221,7 +221,7 @@ gantt
     BF-007 HSOL v2 Rewrite         :done, 2026-02-03, 1d
     BF-002 +Codex Platform         :done, 2026-03-09, 1d
     BF-006 +team Variant           :done, 2026-03-09, 1d
-    BF-007 1430+ Skills            :done, 2026-03-23, 1d
+    BF-007 1,460+ Skills            :done, 2026-03-23, 1d
     
     section Should Have
     BF-012 Error Healing           :done, 2026-01-26, 1d

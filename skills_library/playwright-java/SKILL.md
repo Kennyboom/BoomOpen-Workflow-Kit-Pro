@@ -22,11 +22,11 @@ Supporting reference files are available for deeper topics:
 
 | Topic | File |
 |-------|------|
-| Maven POM, ConfigReader, Docker/CI setup | `references/config.md` |
-| Component pattern, dropdowns, uploads, waits | `references/page-objects.md` |
-| Full assertion API, soft assertions, visual testing | `references/assertions.md` |
-| Fixtures, test data factory, auth state, retry | `references/fixtures.md` |
-| Drop-in base class templates | `templates/BaseTest.java`, `templates/BasePage.java` |
+| Maven POM, ConfigReader, Docker/CI setup | `config.md` |
+| Component pattern, dropdowns, uploads, waits | `page-objects.md` |
+| Full assertion API, soft assertions, visual testing | `assertions.md` |
+| Fixtures, test data factory, auth state, retry | `fixtures.md` |
+| Drop-in base class templates | `BaseTest.java`, `BasePage.java` |
 
 ---
 
@@ -50,7 +50,7 @@ Use this matrix to pick the right pattern before writing any code:
 
 | User Request | Approach |
 |---|---|
-| New project from scratch | Full scaffold — see `references/config.md` |
+| New project from scratch | Full scaffold — see `config.md` |
 | Single feature test | POM page class + JUnit5 test class |
 | API + UI hybrid | `APIRequestContext` alongside `Page` |
 | Cross-browser | `@MethodSource` parameterized over browser names |
@@ -70,8 +70,8 @@ src/
 ├── test/
 │   ├── java/com/company/tests/
 │   │   ├── base/
-│   │   │   ├── BaseTest.java        ← templates/BaseTest.java
-│   │   │   └── BasePage.java        ← templates/BasePage.java
+│   │   │   ├── BaseTest.java        ← BaseTest.java
+│   │   │   └── BasePage.java        ← BasePage.java
 │   │   ├── pages/
 │   │   │   └── LoginPage.java
 │   │   ├── tests/
@@ -369,7 +369,7 @@ junit.jupiter.execution.parallel.config.fixed.parallelism=4
   **Solution:** Ensure `tracing().start()` is called before test actions and `tracing().stop()` is in `@AfterEach` — not `@AfterAll`.
 
 - **Problem:** Allure report is blank or missing steps
-  **Solution:** Add the AspectJ agent to `maven-surefire-plugin` `<argLine>` in `pom.xml` — see `references/config.md` for the exact snippet.
+  **Solution:** Add the AspectJ agent to `maven-surefire-plugin` `<argLine>` in `pom.xml` — see `config.md` for the exact snippet.
 
 - **Problem:** `storageState` auth file is stale and tests redirect to login
   **Solution:** Re-run `AuthSetup` to regenerate `target/auth/user-state.json` before the suite, or add a `@BeforeAll` that conditionally refreshes it.

@@ -20,7 +20,6 @@ Implement distributed tracing with Jaeger and Tempo for request flow visibility 
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Purpose
 
@@ -102,8 +101,6 @@ services:
     environment:
       - COLLECTOR_ZIPKIN_HOST_PORT=:9411
 ```
-
-**Reference:** See `references/jaeger-setup.md`
 
 ## Application Instrumentation
 
@@ -249,8 +246,6 @@ func getUsers(ctx context.Context) ([]User, error) {
     return users, nil
 }
 ```
-
-**Reference:** See `references/instrumentation.md`
 
 ## Context Propagation
 
@@ -442,8 +437,6 @@ def process_request():
 
 ## Reference Files
 
-- `references/jaeger-setup.md` - Jaeger installation
-- `references/instrumentation.md` - Instrumentation patterns
 - `assets/jaeger-config.yaml.template` - Jaeger configuration
 
 ## Related Skills

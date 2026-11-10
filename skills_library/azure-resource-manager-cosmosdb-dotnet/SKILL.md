@@ -235,14 +235,6 @@ catch (RequestFailedException ex)
 }
 ```
 
-## Reference Files
-
-| File | When to Read |
-|------|--------------|
-| references/account-management.md | Account CRUD, failover, keys, connection strings, networking |
-| references/sql-resources.md | SQL databases, containers, stored procedures, triggers, UDFs |
-| references/throughput.md | Manual/autoscale throughput, migration between modes |
-
 ## Related SDKs
 
 | SDK | Purpose | Install |

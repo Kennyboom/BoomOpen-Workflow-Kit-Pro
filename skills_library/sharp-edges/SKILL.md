@@ -257,29 +257,6 @@ If a finding seems questionable, return to Phase 2 and probe more edge cases.
 
 **By category:**
 
-- **Cryptographic APIs**: See references/crypto-apis.md
-- **Configuration Patterns**: See references/config-patterns.md
-- **Authentication/Session**: See references/auth-patterns.md
-- **Real-World Case Studies**: See references/case-studies.md (OpenSSL, GMP, etc.)
-
-**By language** (general footguns, not crypto-specific):
-
-| Language | Guide |
-|----------|-------|
-| C/C++ | references/lang-c.md |
-| Go | references/lang-go.md |
-| Rust | references/lang-rust.md |
-| Swift | references/lang-swift.md |
-| Java | references/lang-java.md |
-| Kotlin | references/lang-kotlin.md |
-| C# | references/lang-csharp.md |
-| PHP | references/lang-php.md |
-| JavaScript/TypeScript | references/lang-javascript.md |
-| Python | references/lang-python.md |
-| Ruby | references/lang-ruby.md |
-
-See also references/language-specific.md for a combined quick reference.
-
 ## Quality Checklist
 
 Before concluding analysis:

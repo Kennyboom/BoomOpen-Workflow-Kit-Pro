@@ -840,7 +840,11 @@
       "domain": "languages",
       "priority": 7,
       "category": "specialized",
-      "path": "skills_library/fp-ts-pragmatic/SKILL.md"
+      "path": "skills_library/fp-ts-pragmatic/SKILL.md",
+      "domains": [
+        "ai-ml",
+        "languages"
+      ]
     },
     "gemini-api-dev": {
       "domain": "ai-ml",
@@ -3420,7 +3424,11 @@
       "domain": "frontend",
       "priority": 9,
       "category": "core",
-      "path": "skills/frontend-design/SKILL.md"
+      "path": "skills/frontend-design/SKILL.md",
+      "domains": [
+        "design",
+        "frontend"
+      ]
     },
     "anti-ai-slop-visual-craft": {
       "domain": "design",
@@ -3498,7 +3506,11 @@
       "domain": "frontend",
       "priority": 9,
       "category": "core",
-      "path": "skills_library/tailwind-v4-shadcn-ui/SKILL.md"
+      "path": "skills_library/tailwind-v4-shadcn-ui/SKILL.md",
+      "domains": [
+        "design",
+        "frontend"
+      ]
     },
     "ui-styling": {
       "domain": "design",
@@ -3522,49 +3534,81 @@
       "domain": "frontend",
       "priority": 6,
       "category": "community",
-      "path": "skills_library/radix-ui-design-system/SKILL.md"
+      "path": "skills_library/radix-ui-design-system/SKILL.md",
+      "domains": [
+        "design",
+        "frontend"
+      ]
     },
     "tailwind-patterns": {
       "domain": "frontend",
       "priority": 8,
       "category": "core",
-      "path": "skills_library/tailwind-patterns/SKILL.md"
+      "path": "skills_library/tailwind-patterns/SKILL.md",
+      "domains": [
+        "design",
+        "frontend"
+      ]
     },
     "react-ui-patterns": {
       "domain": "frontend",
       "priority": 8,
       "category": "expert",
-      "path": "skills_library/react-ui-patterns/SKILL.md"
+      "path": "skills_library/react-ui-patterns/SKILL.md",
+      "domains": [
+        "design",
+        "frontend"
+      ]
     },
     "scroll-experience": {
       "domain": "frontend",
       "priority": 6,
       "category": "community",
-      "path": "skills_library/scroll-experience/SKILL.md"
+      "path": "skills_library/scroll-experience/SKILL.md",
+      "domains": [
+        "design",
+        "frontend"
+      ]
     },
     "fixing-motion-performance": {
       "domain": "frontend",
       "priority": 6,
       "category": "community",
-      "path": "skills_library/fixing-motion-performance/SKILL.md"
+      "path": "skills_library/fixing-motion-performance/SKILL.md",
+      "domains": [
+        "design",
+        "frontend"
+      ]
     },
     "3d-web-experience": {
       "domain": "frontend",
       "priority": 6,
       "category": "community",
-      "path": "skills_library/3d-web-experience/SKILL.md"
+      "path": "skills_library/3d-web-experience/SKILL.md",
+      "domains": [
+        "design",
+        "frontend"
+      ]
     },
     "design-md": {
       "domain": "research",
       "priority": 6,
       "category": "community",
-      "path": "skills_library/design-md/SKILL.md"
+      "path": "skills_library/design-md/SKILL.md",
+      "domains": [
+        "design",
+        "research"
+      ]
     },
     "interactive-portfolio": {
       "domain": "tools",
       "priority": 6,
       "category": "community",
-      "path": "skills_library/interactive-portfolio/SKILL.md"
+      "path": "skills_library/interactive-portfolio/SKILL.md",
+      "domains": [
+        "design",
+        "tools"
+      ]
     },
     "ux-researcher-designer": {
       "domain": "design",
@@ -3882,7 +3926,11 @@
       "domain": "mobile",
       "priority": 8,
       "category": "specialized",
-      "path": "skills_library/expo-cicd-workflows/SKILL.md"
+      "path": "skills_library/expo-cicd-workflows/SKILL.md",
+      "domains": [
+        "devops",
+        "mobile"
+      ]
     },
     "gitlab-ci-patterns": {
       "domain": "devops",
@@ -4068,7 +4116,11 @@
       "domain": "tools",
       "priority": 6,
       "category": "community",
-      "path": "skills_library/linux-shell-scripting/SKILL.md"
+      "path": "skills_library/linux-shell-scripting/SKILL.md",
+      "domains": [
+        "devops",
+        "tools"
+      ]
     },
     "frontend-architecture": {
       "domain": "frontend",
@@ -4710,7 +4762,11 @@
       "domain": "languages",
       "priority": 6,
       "category": "community",
-      "path": "skills_library/algolia-search/SKILL.md"
+      "path": "skills_library/algolia-search/SKILL.md",
+      "domains": [
+        "frontend",
+        "languages"
+      ]
     },
     "game-development": {
       "domain": "gaming",
@@ -5426,11 +5482,11 @@
       "category": "community",
       "path": "skills_library/android-jetpack-compose-expert/SKILL.md"
     },
-    "android_ui_verification": {
+    "android-ui-verification": {
       "domain": "mobile",
       "priority": 6,
       "category": "community",
-      "path": "skills_library/android_ui_verification/SKILL.md"
+      "path": "skills_library/android-ui-verification/SKILL.md"
     },
     "app-store-optimization": {
       "domain": "mobile",
@@ -5894,11 +5950,11 @@
       "category": "community",
       "path": "skills_library/track-management/SKILL.md"
     },
-    "SPDD": {
+    "spdd": {
       "domain": "planning",
       "priority": 7,
       "category": "specialized",
-      "path": "skills_library/SPDD/SKILL.md"
+      "path": "skills_library/spdd/SKILL.md"
     },
     "vitest-msw-testing-patterns": {
       "domain": "quality",

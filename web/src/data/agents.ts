@@ -169,7 +169,7 @@ export const agents: Agent[] = [
     icon: BarChart3,
   },
   
-  // Support (7)
+  // Support (8)
   { 
     id: 'designer', 
     name: 'Designer', 

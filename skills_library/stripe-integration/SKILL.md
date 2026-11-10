@@ -20,7 +20,6 @@ Master Stripe payment processing integration for robust, PCI-compliant payment f
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Use this skill when
 
@@ -425,17 +424,6 @@ def test_payment_flow():
 
     assert confirmed.status == 'succeeded'
 ```
-
-## Resources
-
-- **references/checkout-flows.md**: Detailed checkout implementation
-- **references/webhook-handling.md**: Webhook security and processing
-- **references/subscription-management.md**: Subscription lifecycle
-- **references/customer-management.md**: Customer and payment method handling
-- **references/invoice-generation.md**: Invoicing and billing
-- **assets/stripe-client.py**: Production-ready Stripe client wrapper
-- **assets/webhook-handler.py**: Complete webhook processor
-- **assets/checkout-config.json**: Checkout configuration templates
 
 ## Best Practices
 

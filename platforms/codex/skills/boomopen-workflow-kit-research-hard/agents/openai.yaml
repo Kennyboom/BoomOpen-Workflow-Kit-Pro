@@ -1,0 +1,6 @@
+interface:
+  display_name: "/research:hard"
+  short_description: "⚡⚡⚡ Deep Research — 2-Stage Elastic Parallel 3-Wave Research, Multi-Engine Council, Contradiction Arbitration & Validated 6-Block Synthesis"
+  brand_color: "#0EA5E9"
+policy:
+  allow_implicit_invocation: true

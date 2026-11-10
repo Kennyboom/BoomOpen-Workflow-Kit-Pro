@@ -139,5 +139,3 @@ Ready-to-use templates in `resources/`:
 
 **Semgrep** (`resources/semgrep/`):
 - `python.yaml`, `javascript.yaml`, `java.yaml`, `go.yaml`, `cpp.yaml`
-
-**Report**: `resources/variant-report-template.md`

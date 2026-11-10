@@ -8,6 +8,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`references/discrete_choice.md`, `references/glm.md`, `references/linear_models.md`, `references/stats_diagnostics.md`, `references/time_series.md`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Statsmodels: Statistical Modeling and Econometrics
 
 ## Overview
@@ -199,8 +201,6 @@ Comprehensive suite of linear models for continuous outcomes with various error 
 
 **When to use:** Continuous outcome variable, want inference on coefficients, need diagnostics
 
-**Reference:** See `references/linear_models.md` for detailed guidance on model selection, diagnostics, and best practices.
-
 ### 2. Generalized Linear Models (GLM)
 
 Flexible framework extending linear models to non-normal distributions.
@@ -226,8 +226,6 @@ Flexible framework extending linear models to non-normal distributions.
 - Robust standard errors
 
 **When to use:** Non-normal outcomes, need flexible variance and link specifications
-
-**Reference:** See `references/glm.md` for family selection, link functions, interpretation, and diagnostics.
 
 ### 3. Discrete Choice Models
 
@@ -256,8 +254,6 @@ Models for categorical and count outcomes.
 - Goodness-of-fit tests
 
 **When to use:** Binary, categorical, or count outcomes
-
-**Reference:** See `references/discrete_choice.md` for model selection, interpretation, and evaluation.
 
 ### 4. Time Series Analysis
 
@@ -291,8 +287,6 @@ Comprehensive time series modeling and forecasting capabilities.
 - Forecast error variance decomposition (FEVD)
 
 **When to use:** Time-ordered data, forecasting, understanding temporal dynamics
-
-**Reference:** See `references/time_series.md` for model selection, diagnostics, and forecasting methods.
 
 ### 5. Statistical Tests and Diagnostics
 
@@ -334,8 +328,6 @@ Extensive testing and diagnostic capabilities for model validation.
 - Cluster-robust standard errors
 
 **When to use:** Validating assumptions, detecting problems, ensuring robust inference
-
-**Reference:** See `references/stats_diagnostics.md` for comprehensive testing and diagnostic procedures.
 
 ## Formula API (R-style)
 

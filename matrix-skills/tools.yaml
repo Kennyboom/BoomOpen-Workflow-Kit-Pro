@@ -8,7 +8,7 @@
 domain: tools
 name: "Tools & Utilities"
 description: "Productivity tools, document processing"
-skill_count: 237
+skill_count: 231
 
 skills:
   # --------------------------------------------------------------------------
@@ -1826,7 +1826,7 @@ skills:
     relevance_mapping:
       agents: [tech-lead, researcher, scouter, backend-engineer, frontend-engineer]
       profiles: ["*"]
-    description: "2-step O(1) compact-index discovery and on-demand loading for 1,430+ library skills"
+    description: "2-step O(1) compact-index discovery and on-demand loading for 1,460+ library skills"
 
   - skill_id: gitnexus-intelligence
     category: specialized

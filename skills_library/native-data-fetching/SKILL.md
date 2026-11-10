@@ -7,6 +7,8 @@ version: 1.0.0
 license: MIT
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`references/expo-router-loaders.md`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Expo Networking
 
 **You MUST use this skill for ANY networking work including API requests, data fetching, caching, or network debugging.**
@@ -505,4 +507,4 @@ User: "Where should I put my API key?"
 -> Client-safe keys: EXPO*PUBLIC* in .env. Secret keys: non-prefixed env vars in API routes only
 
 User: "How do I load data for a page in Expo Router?"
--> See references/expo-router-loaders.md for route-level loaders (web, SDK 55+). For native, use React Query or fetch.
+For native, use React Query or fetch.

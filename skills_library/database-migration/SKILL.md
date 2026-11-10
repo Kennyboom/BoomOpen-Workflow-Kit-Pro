@@ -20,7 +20,6 @@ Master database schema and data migrations across ORMs (Sequelize, TypeORM, Pris
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Use this skill when
 
@@ -407,16 +406,6 @@ module.exports = {
   }
 };
 ```
-
-## Resources
-
-- **references/orm-switching.md**: ORM migration guides
-- **references/schema-migration.md**: Schema transformation patterns
-- **references/data-transformation.md**: Data migration scripts
-- **references/rollback-strategies.md**: Rollback procedures
-- **assets/schema-migration-template.sql**: SQL migration templates
-- **assets/data-migration-script.py**: Data migration utilities
-- **scripts/test-migration.sh**: Migration testing script
 
 ## Best Practices
 

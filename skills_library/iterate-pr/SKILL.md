@@ -5,6 +5,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/fetch_pr_checks.py`, `scripts/fetch_pr_feedback.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Iterate on PR Until CI Passes
 
 Continuously iterate on the current branch until all CI checks pass and review feedback is addressed.

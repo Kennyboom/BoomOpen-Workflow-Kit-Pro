@@ -317,14 +317,3 @@ impl AppMain for App {
 5. **Cx::post_action()**: Use for async task results that need action handling
 6. **Scope::with_data()**: Pass shared state through widget tree
 7. **Module Registration Order**: Register base widgets before dependent modules in `live_register()`
-
-## Reference Files
-
-- `references/tokio-integration.md` - Detailed Tokio runtime patterns (Robrix)
-- `references/channel-patterns.md` - Channel communication patterns (Robrix)
-- `references/moly-async-patterns.md` - Cross-platform async patterns (Moly)
-  - `PlatformSend` trait for native/WASM compatibility
-  - `UiRunner` for async defer operations
-  - `AbortOnDropHandle` for task cancellation
-  - `ThreadToken` for non-Send types on WASM
-  - `spawn()` platform-agnostic function

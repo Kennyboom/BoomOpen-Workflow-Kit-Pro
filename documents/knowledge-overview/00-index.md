@@ -8,7 +8,7 @@
 
 ## Quick Summary
 
-BoomOpen Workflow Kit (`@boomopen/workflow-kit` v1.3.0) is a multi-agent orchestration framework that transforms a single AI coding assistant into a coordinated team of 21 specialist agents. It operates across five platforms — Cursor, GitHub Copilot, Claude Code, Codex, and Antigravity/Gemini — by installing Markdown and YAML configuration files into each tool's global directory. The framework uses a Hybrid Skill Orchestration Layer (HSOL) to dynamically resolve and inject skills from a matrix of 1,430+ skill definitions across 19 domains, requiring zero manual configuration per project.
+BoomOpen Workflow Kit (`@boomopen/workflow-kit` v1.3.0) is a multi-agent orchestration framework that transforms a single AI coding assistant into a coordinated team of 21 specialist agents. It operates across five platforms — Cursor, GitHub Copilot, Claude Code, Codex, and Antigravity/Gemini — by installing Markdown and YAML configuration files into each tool's global directory. The framework uses a Hybrid Skill Orchestration Layer (HSOL) to dynamically resolve and inject skills from a matrix of 1,460+ skill definitions across 19 domains, requiring zero manual configuration per project.
 
 The core value proposition is efficiency at scale: one-time global installation provides structured workflows for every project a developer works on. The Orchestrator pattern enforces 10 governance laws, delegates to specialist agents via 14 commands (with 4 variant strategies each), and supports sub-agent spawning for parallel task execution on compatible platforms. The project claims 70% faster time-to-production, 70% bug reduction, and 85% token cost savings.
 
@@ -47,9 +47,9 @@ Built with Node.js >=18.0.0 using only built-in modules (fs, path, os, readline)
 | Language | JavaScript (CommonJS for CLI, ESM for web) |
 | Runtime | Node.js >=18.0.0 |
 | License | MIT |
-| Author | Kennyboom |
+| Author | BoomOpen Labs |
 | Repository | https://github.com/Kennyboom/BoomOpen-Workflow-Kit |
-| npm | https://www.npmjs.com/package/@boomopen/workflow-kit |
+| npm | Not published (install from source: `git clone` + `node cli/install.js install <tool>`) |
 | Website | https://boomopen-workflow-kit-ten.vercel.app |
 | Production Dependencies | 0 (zero) |
 | Dev Dependencies | 9 (semantic-release ecosystem + husky) |
@@ -59,7 +59,7 @@ Built with Node.js >=18.0.0 using only built-in modules (fs, path, os, readline)
 | Team Configurations | 17 teams (51 team agents) |
 | Commands | 14 |
 | Command Variants | 4 (fast, hard, team) |
-| Skill Modules | 1,430+ |
+| Skill Modules | 1,460+ |
 | Skill Domains | 19 |
 | Rules | 7 |
 | Supported Platforms | 5 (Cursor, GitHub Copilot, Claude Code, Codex, Antigravity/Gemini) |
@@ -83,7 +83,7 @@ Built with Node.js >=18.0.0 using only built-in modules (fs, path, os, readline)
 
 ## Known Gaps and Open Questions
 
-1. **No automated test suite shipped** — The `cli/install.test.js.example` file is an example, not an active test. The `npm test` script (`node --test cli/*.test.js`) expects test files matching that glob but none are committed.
+1. **Agent behavior is not tested automatically** — `npm test` runs the CLI's `node:test` suites (`cli/*.test.js`: install/uninstall safety, settings, doctor, checker, hook guard) in sandboxed profiles, but orchestration rules and command routing are prompt instructions with no automated verification.
 2. **Web application not documented in knowledge-source-base** — The `web/` directory contains a full React 19 + Vite application but is not covered in the source base analysis.
 3. **Dynamic skill discovery undocumented** — The `_dynamic.yaml` file and `find-skills` mechanism are referenced in rules but lack dedicated architecture documentation.
 4. **No performance benchmarks** — The claimed metrics (70% faster, 70% fewer bugs, 85% token savings) lack published methodology or benchmark data.

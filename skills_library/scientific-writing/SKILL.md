@@ -8,6 +8,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/generate_image.py`, `scripts/generate_schematic.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Scientific Writing
 
 ## Overview
@@ -136,8 +138,6 @@ For detailed guidance, refer to the scientific-schematics and generate-image ski
 - **Results**: Present findings objectively without interpretation
 - **Discussion**: Interpret results, acknowledge limitations, propose future directions
 
-For detailed guidance on IMRAD structure, refer to `references/imrad_structure.md`.
-
 **Alternative Structures**: Support discipline-specific formats including:
 - Review articles (narrative, systematic, scoping)
 - Case reports and case series
@@ -178,7 +178,7 @@ For detailed guidance on IMRAD structure, refer to `references/imrad_structure.m
 
 ### 3. Citation and Reference Management
 
-Apply citation styles correctly across disciplines. For comprehensive style guides, refer to `references/citation_styles.md`.
+Apply citation styles correctly across disciplines.
 
 **Major Citation Styles:**
 - **AMA (American Medical Association)**: Numbered superscript citations, common in medicine
@@ -196,7 +196,7 @@ Apply citation styles correctly across disciplines. For comprehensive style guid
 
 ### 4. Figures and Tables
 
-Create effective data visualizations that enhance comprehension. For detailed best practices, refer to `references/figures_tables.md`.
+Create effective data visualizations that enhance comprehension.
 
 **When to Use Tables vs. Figures:**
 - **Tables**: Precise numerical data, complex datasets, multiple variables requiring exact values
@@ -219,7 +219,7 @@ Create effective data visualizations that enhance comprehension. For detailed be
 
 ### 5. Reporting Guidelines by Study Type
 
-Ensure completeness and transparency by following established reporting standards. For comprehensive guideline details, refer to `references/reporting_guidelines.md`.
+Ensure completeness and transparency by following established reporting standards.
 
 **Key Guidelines:**
 - **CONSORT**: Randomized controlled trials
@@ -237,7 +237,7 @@ Each guideline provides checklists ensuring all critical methodological elements
 
 ### 6. Writing Principles and Style
 
-Apply fundamental scientific writing principles. For detailed guidance, refer to `references/writing_principles.md`.
+Apply fundamental scientific writing principles.
 
 **Clarity**:
 - Use precise, unambiguous language
@@ -481,12 +481,6 @@ Outcome 3 & \meansd{18.2}{4.5} & \meansd{17.8}{4.2} & .58\signs \\
 xelatex report.tex
 ```
 
-For complete documentation, refer to:
-- `assets/scientific_report.sty`: The style package
-- `assets/scientific_report_template.tex`: Complete template example
-- `assets/REPORT_FORMATTING_GUIDE.md`: Quick reference guide
-- `references/professional_report_formatting.md`: Comprehensive formatting guide
-
 ### 9. Journal-Specific Formatting
 
 Adapt manuscripts to journal requirements:
@@ -686,24 +680,9 @@ The venue-templates skill provides:
 
 **Workflow**: First use this skill for general scientific writing principles (IMRAD, clarity, citations), then consult venue-templates for venue-specific style adaptation.
 
-## References
-
-This skill includes comprehensive reference files covering specific aspects of scientific writing:
-
-- `references/imrad_structure.md`: Detailed guide to IMRAD format and section-specific content
-- `references/citation_styles.md`: Complete citation style guides (APA, AMA, Vancouver, Chicago, IEEE)
-- `references/figures_tables.md`: Best practices for creating effective data visualizations
-- `references/reporting_guidelines.md`: Study-specific reporting standards and checklists
-- `references/writing_principles.md`: Core principles of effective scientific communication
-- `references/professional_report_formatting.md`: Guide to professional report styling with `scientific_report.sty`
-
 ## Assets
 
 This skill includes LaTeX style packages and templates for professional report formatting:
-
-- `assets/scientific_report.sty`: Professional LaTeX style package with Helvetica fonts, colored boxes, and attractive tables
-- `assets/scientific_report_template.tex`: Complete report template demonstrating all style features
-- `assets/REPORT_FORMATTING_GUIDE.md`: Quick reference guide for the style package
 
 **Key Features of `scientific_report.sty`:**
 - Helvetica font family for modern, professional appearance

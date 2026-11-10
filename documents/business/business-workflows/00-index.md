@@ -37,7 +37,7 @@ The BoomOpen Workflow Kit framework operates through **12 canonical workflows** 
 | Supported Platforms | 5 (Claude, Copilot, Cursor, Codex, Gemini) |
 | Specialist Agents | 21 |
 | Defined Teams | 17 |
-| Skill Catalog Size | 1,430 |
+| Skill Catalog Size | 1,462 |
 | Error Recovery Tiers | 4 (E1 – E4) |
 | HSOL Fitness Thresholds | 3 bands (≥0.8, 0.75–0.8, <0.75) |
 | Max Team Debate Rounds | 3 |

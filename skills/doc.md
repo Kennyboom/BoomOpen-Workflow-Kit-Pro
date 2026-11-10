@@ -1,4 +1,4 @@
-# Antigravity Skills Guide (v5.5)
+# Skills Guide
 
 > **Guide to creating and using Skills in the BoomOpen Workflow Kit**
 
@@ -9,8 +9,8 @@
 While base models (like Gemini Pro High) are powerful generalists, loading every domain rule or tool into the context window on Turn 1 causes context bloat and latency.
 
 **Antigravity Skills** solve this through **Progressive Disclosure** and the **Fast 2-Step Skill Lookup**:
-1. **Step 1 — Active Global Skills (`<skills>`)**: 48 core skills installed in `~/.gemini/config/skills/` have their YAML frontmatter (`name` + `description`) pre-indexed in `<skills>`. When a task matches, the agent reads the skill's `SKILL.md` on-demand.
-2. **Step 2 — Compact Index & Library (`matrix-skills/compact-index.json` / `skills_library`)**: 1,430+ niche domain skills are indexed in `~/.gemini/config/skills/boomopen-workflow-kit/matrix-skills/compact-index.json` and stored in `~/.gemini/config/skills_library/` for millisecond O(1) lookup when needed.
+1. **Step 1 — Active Global Skills (`<skills>`)**: 22 core skills installed in `~/.{TOOL}/skills/` have their YAML frontmatter (`name` + `description`) pre-indexed in `<skills>`. When a task matches, the agent reads the skill's `SKILL.md` on-demand.
+2. **Step 2 — Compact Index & Library (`matrix-skills/compact-index.json` / `skills_library`)**: 1,440 library skills (1,462 indexed in total) are indexed in `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/compact-index.json` and stored in `~/.{TOOL}/skills_library/` for millisecond O(1) lookup when needed.
 
 ---
 
@@ -20,8 +20,8 @@ Skills are folder-based packages placed in either the global skill directory or 
 
 | Scope | Path | Description |
 |-------|------|-------------|
-| **Global Active Skills** | `~/.gemini/config/skills/<skill-name>/` | Pre-indexed in `<skills>` across all projects |
-| **Global Dormant Library** | `~/.gemini/config/skills_library/<skill-name>/` | Searched on-demand via `compact-index.json` / `skill-seeker` |
+| **Global Active Skills** | `~/.{TOOL}/skills/<skill-name>/` | Pre-indexed in `<skills>` across all projects |
+| **Global Dormant Library** | `~/.{TOOL}/skills_library/<skill-name>/` | Searched on-demand via `compact-index.json` / `skill-seeker` |
 | **Workspace Skills** | `<workspace-root>/.gemini/skills/<skill-name>/` | Project-specific skills scoped to the current repository |
 
 ### Skill Directory Structure
@@ -41,7 +41,7 @@ my-skill/
 ### Step 1: Create the skill directory
 
 ```bash
-mkdir -p ~/.gemini/config/skills/custom-review
+mkdir -p ~/.{TOOL}/skills/custom-review
 ```
 
 ### Step 2: Create `SKILL.md`

@@ -19,7 +19,7 @@ This skill provides comprehensive guidance for developing AWS infrastructure usi
    - `mcp__aws-mcp__aws___get_regional_availability` - Check service availability
 
 2. **If AWS MCP tools are unavailable**:
-   - Guide user to configure AWS MCP: See [AWS MCP Setup Guide](../../docs/aws-mcp-setup.md)
+   - Guide user to configure AWS MCP: see the AWS MCP servers documentation (https://github.com/awslabs/mcp)
    - Help determine which option fits their environment:
      - Has uvx + AWS credentials → Full AWS MCP Server
      - No Python/credentials → AWS Documentation MCP (no auth)

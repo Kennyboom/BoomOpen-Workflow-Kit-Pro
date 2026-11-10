@@ -9,6 +9,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * True for same-site paths such as /docs or /features/x#y (not //host or external URLs).
+ */
+export function isInternalPath(href: string): boolean {
+  return href.startsWith('/') && !href.startsWith('//')
+}
+
+/**
  * Format a number with commas
  */
 export function formatNumber(num: number): string {

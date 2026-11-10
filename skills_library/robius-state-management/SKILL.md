@@ -399,15 +399,3 @@ pub fn clear_ui_cache(_cx: &mut Cx) {
 5. **User-specific persistent paths**: Separate state per user account
 6. **Sync window state, async app state**: Window geometry loads sync on UI thread
 7. **Thread-local for UI-only caches**: Use `thread_local!` with Cx parameter guard
-
-## Reference Files
-
-- `references/persistence-patterns.md` - Additional persistence patterns (Robrix)
-- `references/state-structures.md` - State structure examples (Robrix)
-- `references/moly-state-patterns.md` - Moly-specific patterns
-  - Central Store struct containing all state
-  - Async Store initialization with `load_into_app()`
-  - App state check pattern (early return if not loaded)
-  - Submodule state managers (Search, Downloads, Chats)
-  - Provider syncing status tracking
-  - Store action forwarding to submodules

@@ -1,147 +1,80 @@
 ---
-description: "🔺 Team Fix — Golden Triangle adversarial collaboration for maximum quality issue resolution"
+description: "🔺 Team Fix — 3-Stage Elastic Golden Diamond Resolution (Bidirectional DEBUG Fast-Forward, Fail-First TDD, Sharded Fix Wave & Adversarial QA)"
 version: "5.5"
 category: debugging
 execution-mode: execute
 ---
 
-# /fix:team — Golden Triangle Issue Resolution
+# /fix:team — 3-Stage Elastic Golden Diamond Issue Resolution (`v5.5`)
 
-> **MISSION**: Maximum quality issue resolution through adversarial collaboration.
-> Each phase spawns a **Golden Triangle** of 3 agents. Output is released ONLY
-> upon consensus after debate.
+> **MISSION**: Achieve maximum-assurance bug resolution on production-critical, multi-domain, or security-sensitive defects via a **3-Stage Elastic Golden Diamond**: **Stage 1 (`debug-team` SPIE Root-Cause Diamond — auto-skipped when `DEBUG-{issue}.md` already exists!)** → **Stage 2 (Fail-First `RED` Test + Disjoint `≤ 3–4 OWNED_FILES` Fix Wave)** → **Stage 3 (Parallel Adversarial QA, Security & Cross-Engine Critic Verification)**.
 
 <issue>$ARGUMENTS</issue>
 
 ---
 
-## ⛔ MANDATORY REFERENCE — READ BEFORE PROCEEDING
+## ⚡ TURN-1 ZERO-TAX DISPATCH, BIDIRECTIONAL FAST-FORWARD & REFERENCES
 
-> **🔴 YOU MUST READ these reference files NOW. Do NOT skip.**
->
-> 1. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/golden-triangle-protocol.md` — Tiered Execution, Mailbox, Pre-Flight, Triangle Loop
-> 2. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/implementation-loop.md` — Phase 4 Implementation step-by-step (CRITICAL)
->
-> **Failure to read = incorrect execution. These files contain BINDING protocols.**
-
----
-
-## 📁 DELIVERABLE FILES (BRAIN ARTIFACTS FIRST ON ANTIGRAVITY 2.0)
-
-> **Antigravity 2.0 Default**: Write transient deliverables (`BRAINSTORM`, `RESEARCH`, `SCOUT`, `DESIGN`, `PLAN`, `DEBUG`, `TEST`, `REVIEW`, `REPORT`, `MAILBOX`) to `<appDataDir>\brain\<conversation-id>\` to keep the Git tree clean. Use `./reports/{topic}/` only on non-Antigravity tools or when explicitly requested.
-
-| Phase | Output |
-|-------|--------|
-| P1: Investigation | `<appDataDir>\\brain\\<conversation-id>\\INVESTIGATION-{issue}` (or `./reports/{topic}/debugs/INVESTIGATION-{issue}`) |
-| P2: Root Cause | `<appDataDir>\\brain\\<conversation-id>\\DEBUG-{issue}` (or `./reports/{topic}/debugs/DEBUG-{issue}`) |
-| P3: Fix Planning | `<appDataDir>\\brain\\<conversation-id>\\PLAN-{issue}` (or `./reports/{topic}/plans/PLAN-{issue}`) |
-| P5: Testing | `<appDataDir>\\brain\\<conversation-id>\\QA-{issue}` (or `./reports/{topic}/qa/QA-{issue}`) |
-| ALL Phases | `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md` (or `./reports/{topic}/MAILBOX-{date}.md`) |
-
-**⚠️ Paths = base names.** ≤ 150 lines → `{name}.md`. > 150 lines → `{name}/` folder.
+1. **Zero Pre-Flight Tax**: Core orchestration laws and the 5-Field Handoff Packet are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** burn Turn 1 reading `CORE.md`, `PHASES.md`, or `_ref/*.md` alone before launching sub-agents — spawn Turn-1 shards via `invoke_subagent(TypeName: "self", Model: "inherit")` and load `commands/_ref/golden-triangle-protocol.md` + `commands/_ref/implementation-loop.md` in parallel!
+2. **⚡ BIDIRECTIONAL PRIOR-ARTIFACT FAST-FORWARD (Check First on Turn 1!)**:
+   - Inspect `<appDataDir>\brain\<conversation-id>\` (fallback `./reports/{topic}/`) for an existing **`DEBUG-{issue}.md`** (e.g., user clicked **"Proceed"** after `/debug`) or **`REVIEW-{scope}.md`** with P0/P1 defects.
+   - **If present**: **SKIP Stage 1 completely!** Reuse the proven root cause and launch **Stage 2** immediately on Turn 1!
+3. **Sub-Agent, Warm Reuse & Single-File Cohesion Rules**:
+   - Always use `TypeName: "self"`, `Model: "inherit"` (NEVER `TypeName: "research"` or `flash_lite`), record `role#shard -> conversationId`, and run all Round 2/3 debates and targeted fixes via `send_message(Recipient: conversationId)` (max `3` rounds).
+   - **Never split deliverables into `{name}/` folders!** Keep `DEBUG-{issue}.md` and `TEST-{issue}.md` as single cohesive files (`≤ 500` lines each, `RequestFeedback: false`); keep shard scratch notes (`DEBUG-{issue}-h{k}.md`) and `MAILBOX-{date}.md` at `UserFacing: false, RequestFeedback: false`.
 
 ---
 
-## 🔗 PHASE DEPENDENCIES
+## 💎 STAGE 1: SPIE v3.0 ROOT-CAUSE DIAMOND *(Skipped When `DEBUG-{issue}.md` Exists!)*
 
-| Phase | Requires | Blocking |
-|-------|----------|----------|
-| P1: Investigation | User issue report | No |
-| P2: Root Cause Analysis | P1 investigation findings | **YES** |
-| P3: Fix Planning | P2 confirmed root cause | **YES** |
-| P4: Implementation | **PLAN file** | **YES** |
-| P5: Testing & Verification | PLAN + Code changes | **YES** |
+| Pillar | Agent Shard(s) (`TypeName: "self"`, `Model: "inherit"`) | Turn-1 Parallel Mission (`Topology A`) |
+|--------|---------------------------------------------------------|----------------------------------------|
+| **Lead** | `debug-team-techlead` (`agents/teams/debug-team/techlead.md`) | Triage blast radius & frame ranked hypotheses `H1..Hk` in `MAILBOX-{date}.md`. |
+| **Executors (`[1..6]`)** | `debugger#h1..k` (`≤ 3–4` suspect files/shard, `READ_ONLY_FILES`: repo code) | Reproduce bug, trace call/state/git-blame paths → write disjoint `DEBUG-{issue}-h{k}.md` (`UserFacing: false`). `debug-team-executor` synthesizes 5-Whys + surgical fix blueprint into **`DEBUG-{issue}.md`** (`≤ 500` lines). |
+| **Critic** | `debug-team-reviewer` (`agents/teams/debug-team/reviewer.md`) | Enforce `DBG-G1..G4` (`Correlation ≠ Causation`, repro reliability, blast-radius safety) via warm `send_message` (Round 3 arbitrated by `debug-team-techlead`). |
 
----
-
-## 🎭 Phase 1: INVESTIGATION — 🔺 GOLDEN TRIANGLE
-
-| Role | Agent | Mission |
-|------|-------|---------|
-| Tech Lead | `debugger` | Triage, define investigation areas, coordinate |
-| Executor | `scouter` | Trace errors, analyze code paths, identify root cause candidates |
-| Reviewer | `researcher` (Devil's Advocate) | Challenge hypotheses, find alternative explanations |
-
-**Focus areas**: Reproduction, error tracing, code path analysis, environmental factors, recent changes (git blame)
-**Deliverable**: `INVESTIGATION-{issue}`
-**Consensus**: ✅ CONSENSUS: debugger ✓ | scouter ✓ | researcher ✓
+**Stage 1 Exit**: `✅ CONSENSUS (RCA): debug-team-techlead ✓ | debug-team-executor (h1..k) ✓ | debug-team-reviewer ✓`
 
 ---
 
-## 🎭 Phase 2: ROOT CAUSE ANALYSIS — 🔺 GOLDEN TRIANGLE
+## 🔨 STAGE 2: FAIL-FIRST REPRODUCTION (`RED`) & SHARDED SURGICAL FIX WAVE (`GREEN`)
 
-| Role | Agent | Mission |
-|------|-------|---------|
-| Tech Lead | `debugger` | Select top candidates, plan validation tasks |
-| Executor | `backend-engineer` or `frontend-engineer` | Deep-dive root cause, validate with code evidence |
-| Reviewer | `reviewer` | Verify root cause correctness, check regression risk |
-
-> Executor selection: server/API/DB bug → backend-engineer. UI/state bug → frontend-engineer.
-
-**Prerequisite**: READ `INVESTIGATION-{issue}`
-**SPIE v3.0 5-Whys Root Cause Analysis (MANDATORY)**: Trace minimum 3 ranked hypotheses and the full **5-Whys causal chain** (`Why 1 Symptom` → `Why 5 Systemic Root Cause`) with exact `[file:line]` proof.
-**Deliverable**: `DEBUG-{issue}` — confirmed 5-Whys root cause, exact fault lines, impact scope, related issues
-**Consensus**: ✅ CONSENSUS: debugger ✓ | {executor} ✓ | reviewer ✓
+Follow `commands/_ref/implementation-loop.md` (`≤ 3–4` disjoint `OWNED_FILES` per shard; existing `tests/**` locked in `READ_ONLY_FILES`):
+1. **Contract & Shard Lock**: If `DEBUG-{issue}.md` already specifies disjoint `≤ 3–4` file targets in `1` domain, dispatch directly; if cross-domain contracts change, `tech-lead` locks `SHARED_CONTRACT` + disjoint `OWNED_FILES` shards (or `PLAN-{issue}.md` for `> 6`-file refactors, `RequestFeedback: false`).
+2. **Fail-First Reproduction Test (`RED`)**: `tester#repro` (or the owning engineer shard in a dedicated new test file) writes a deterministic test that **FAILS (`RED`)** before the production patch is applied.
+3. **Parallel Surgical Fix Shards (`1..6` Domain Engineers)**:
+   - Dispatch `database-architect#schema` / `backend-engineer#contracts` (Wave 1, if needed) → parallel `backend-engineer#1..k`, `frontend-engineer#1..k`, `mobile-engineer#1..k` (Wave 2).
+   - Enforce **Pragmatic 2-Tier Coding Standards** (`0` explicit `any`, `0` leftover debug `console.log`, typed `try/catch` boundaries, `≤ 400` soft / `≤ 500` hard lines) and verify the reproduction test turns **`GREEN`** + `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` exits `0`.
 
 ---
 
-## 🎭 Phase 3: FIX PLANNING — 🔺 GOLDEN TRIANGLE
+## 🛡️ STAGE 3: ADVERSARIAL QA, SECURITY & CROSS-ENGINE VERIFICATION DIAMOND
 
-| Role | Agent | Mission |
-|------|-------|---------|
-| Tech Lead | `planner` | Plan fix steps, acceptance criteria, rollback strategy |
-| Executor | `researcher` | Research fix approaches, evaluate trade-offs |
-| Reviewer | `tech-lead` (feasibility critic) | Verify no side effects, check regression risk |
+Spawn in parallel and converge via warm `send_message` (max `3` rounds in `MAILBOX-{date}.md`):
+- **Lead (`tester#lead`) & Executors (`tester#1..k`, `≤ 3–4` test files/shard)**: Execute full unit/integration/E2E regression suites covering the root cause and all blast-radius callers → write cohesive `<appDataDir>\brain\<conversation-id>\TEST-{issue}.md` (`≤ 500` lines, `UserFacing: true, RequestFeedback: false`).
+- **Critics (`reviewer` + `security-engineer` when auth/input/DB/infra is touched)**: Audit diff against `DEBUG-{issue}.md` Why 5, verify zero symptom-masking band-aids, zero `READ_ONLY_FILES` trespass, and OWASP / WCAG (`ux_audit.py` if UI changed) compliance.
+- **🎼 Optional Cross-Engine Critic (`Author != Critic`)**: When `engines.reviewer = "cross_family"` or after a Round-2 deadlock, run:
+  ```bash
+  node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<DEBUG-{issue}.md + git diff + test output>"
+  ```
+- **Persistent Warm Auto-Repair**: Route any test, `boomopen check --strict-phase --no-stubs`, or `[CRITIQUE]` failure ONLY to the owning warm `{engineer#shard}` via `send_message(Recipient: conversationId)` until `100%` green!
 
-**Prerequisite**: READ `DEBUG-{issue}`
-**Key outputs**: Fix approaches compared (patch vs refactor), implementation tasks, rollback steps, acceptance criteria
-**Deliverable**: `PLAN-{issue}`
-**Consensus**: ✅ CONSENSUS: planner ✓ | researcher ✓ | tech-lead ✓
-
----
-
-## 🎭 Phase 4: IMPLEMENTATION — 🔺 GOLDEN TRIANGLE (CRITICAL)
-
-> **⛔ READ `_ref/implementation-loop.md` for full step-by-step protocol and team selection.**
-
-**Prerequisite**: READ and FOLLOW `PLAN-{issue}`
-**Pragmatic 2-Tier Coding Standards Verification (MANDATORY)**: Run `node cli/install.js check <dir>` to verify Tier 1 strict quality (0 `any`, no debug `console.log`, `try/catch` boundaries) and Tier 2 cohesive structure (`≤ 400` soft / `≤ 500` hard lines).
-**Exit Criteria**: All fix tasks implemented, `node cli/install.js check` + reviews passed, root cause addressed
-**Consensus**: ✅ CONSENSUS: tech-lead ✓ | {executor} ✓ | reviewer ✓
-
----
-
-## 🎭 Phase 5: TESTING & VERIFICATION — 🔺 GOLDEN TRIANGLE
-
-| Role | Agent | Mission |
-|------|-------|---------|
-| Tech Lead | `tester` | Test strategy: fix verification + regression testing |
-| Executor | `tester` (self-implements) | Write fix proofs, regression suite, coverage report |
-| Reviewer | `security-engineer` | Edge cases, security implications, no regressions |
-
-**ROOT CAUSE VERIFICATION** (MANDATORY): For EACH symptom → write test that FAILS without fix, PASSES with fix
-**REGRESSION VERIFICATION** (MANDATORY): For EACH affected component → regression test for adjacent functionality
-
-**Deliverable**: `QA-{issue}`
-**Consensus**: ✅ CONSENSUS: tester ✓ | tester(exec) ✓ | security-engineer ✓
+**Stage 3 Exit**: `✅ CONSENSUS (Fix & QA): tech-lead ✓ | {engineer#1..N} ✓ | tester#1..k + reviewer (+ security-engineer) ✓`
 
 ---
 
 ## ✅ COMPLETION TEMPLATE
 
 ```markdown
-# 🔺 Golden Triangle Issue Resolution Report: {issue}
+# 💎 Elastic Golden Diamond Fix Report: {issue}
 
-## Phase Results
-| Phase | Triangle | Consensus | Rounds |
-|-------|----------|-----------|--------|
-| P1: Investigation | debugger / scouter / researcher | ✅ | {n} |
-| P2: Root Cause | debugger / {executor} / reviewer | ✅ | {n} |
-| P3: Fix Planning | planner / researcher / tech-lead | ✅ | {n} |
-| P4: Implementation | tech-lead / {executor} / reviewer | ✅ | {n} |
-| P5: Testing | tester / tester / security-engineer | ✅ | {n} |
+| Stage | Diamond Roster | CLI / Test Gate | Consensus |
+|-------|----------------|-----------------|:---------:|
+| Stage 1: SPIE Root Cause | debug-team-techlead / debugger#h1..k / debug-team-reviewer | `DBG-G1..G4` | ✅ / FAST-FORWARDED |
+| Stage 2: RED → GREEN Fix Wave | tech-lead / {engineer#1..N} (`≤ 3–4` files/shard) | Repro `RED → GREEN` + `check --strict-phase --no-stubs` | ✅ |
+| Stage 3: Adversarial QA & Security | tester#1..k + reviewer (+ security-engineer / cross-engine) | Full Suite + Blast-Radius Audit | ✅ |
 
 ## Next Actions
-1. ✅ **Fixed** — Issue resolved (triangle-validated)
-2. 🚀 `/deploy:preview` → Deploy to staging
+1. ✅ **Fixed & Diamond-Verified** — Root cause eliminated (`DEBUG-{issue}.md` + `TEST-{issue}.md`)
+2. 🚀 **`/deploy:preview`** → Deploy verified fix to staging
 ```

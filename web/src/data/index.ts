@@ -67,8 +67,7 @@ export {
 export {
   workflowNodes,
   workflowEdges,
-  nodeTypeLegend,
-  architectureConcepts,
   type WorkflowNodeType,
   type WorkflowNodeData,
 } from './workflowArchitecture'
+export { nodeTypeLegend, architectureConcepts } from './workflowLegend'

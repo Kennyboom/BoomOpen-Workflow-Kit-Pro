@@ -6,6 +6,8 @@ source: community
 date_added: "2026-02-27"
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`references/semgrep-rules.md`, `scripts/run-sast.sh`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # SAST Configuration
 
 Static Application Security Testing (SAST) tool setup, configuration, and custom rule creation for comprehensive security scanning across multiple programming languages.

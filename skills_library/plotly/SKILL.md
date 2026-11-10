@@ -42,16 +42,12 @@ For quick, standard visualizations with sensible defaults:
 - Need automatic color encoding and legends
 - Want minimal code (1-5 lines)
 
-See reference/plotly-express.md for complete guide.
-
 ### Use Graph Objects (go)
 For fine-grained control and custom visualizations:
 - Chart types not in Plotly Express (3D mesh, isosurface, complex financial charts)
 - Building complex multi-trace figures from scratch
 - Need precise control over individual components
 - Creating specialized visualizations with custom shapes and annotations
-
-See reference/graph-objects.md for complete guide.
 
 **Note:** Plotly Express returns graph objects Figure, so you can combine approaches:
 ```python

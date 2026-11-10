@@ -1,4 +1,6 @@
-display_name: "/fix:hard"
-short_description: "⚡⚡⚡ Full Fix — Complete issue resolution with research"
-brand_color: "#EF4444"
-allow_implicit_invocation: true
+interface:
+  display_name: "/fix:hard"
+  short_description: "⚡⚡⚡ Full Fix — Bidirectional DEBUG Fast-Forward, Elastic Hypothesis Sharding, Fail-First TDD & Sharded Engineer Verification"
+  brand_color: "#EF4444"
+policy:
+  allow_implicit_invocation: true

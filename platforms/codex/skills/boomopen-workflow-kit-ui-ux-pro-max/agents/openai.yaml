@@ -1,0 +1,6 @@
+interface:
+  display_name: "/ui-ux-pro-max"
+  short_description: "🎨 UI/UX Pro Max — Empirical design intelligence (50+ styles, 97 palettes, 57 font pairings) + 2026 OKLCH @theme tokens, 6-Block DESIGN_CONTRACT & 4-Gate CLI validation"
+  brand_color: "#6366F1"
+policy:
+  allow_implicit_invocation: true

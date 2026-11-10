@@ -20,7 +20,6 @@ Master comprehensive testing strategies for smart contracts using Hardhat, Found
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Use this skill when
 
@@ -403,18 +402,6 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
 ```
-
-## Resources
-
-- **references/hardhat-setup.md**: Hardhat configuration guide
-- **references/foundry-setup.md**: Foundry testing framework
-- **references/test-patterns.md**: Testing best practices
-- **references/mainnet-forking.md**: Fork testing strategies
-- **references/contract-verification.md**: Etherscan verification
-- **assets/hardhat-config.js**: Complete Hardhat configuration
-- **assets/test-suite.js**: Comprehensive test examples
-- **assets/foundry.toml**: Foundry configuration
-- **scripts/test-contract.sh**: Automated testing script
 
 ## Best Practices
 

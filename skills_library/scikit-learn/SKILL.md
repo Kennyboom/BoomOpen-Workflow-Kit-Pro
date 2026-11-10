@@ -8,6 +8,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`references/model_evaluation.md`, `references/pipelines_and_composition.md`, `references/preprocessing.md`, `references/quick_reference.md`, `references/supervised_learning.md`, `references/unsupervised_learning.md`, `scripts/classification_pipeline.py`, `scripts/clustering_analysis.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Scikit-learn
 
 ## Overview
@@ -129,8 +131,6 @@ Comprehensive algorithms for classification and regression tasks.
 - Classification: Predicting discrete categories (spam detection, image classification, fraud detection)
 - Regression: Predicting continuous values (price prediction, demand forecasting)
 
-**See:** `references/supervised_learning.md` for detailed algorithm documentation, parameters, and usage examples.
-
 ### 2. Unsupervised Learning
 
 Discover patterns in unlabeled data through clustering and dimensionality reduction.
@@ -151,8 +151,6 @@ Discover patterns in unlabeled data through clustering and dimensionality reduct
 - Customer segmentation, anomaly detection, data visualization
 - Reducing feature dimensions, exploratory data analysis
 - Topic modeling, image compression
-
-**See:** `references/unsupervised_learning.md` for detailed documentation.
 
 ### 3. Model Evaluation and Selection
 
@@ -178,8 +176,6 @@ Tools for robust model evaluation, cross-validation, and hyperparameter tuning.
 - Finding optimal hyperparameters
 - Preventing overfitting through cross-validation
 - Understanding model behavior with learning curves
-
-**See:** `references/model_evaluation.md` for comprehensive metrics and tuning strategies.
 
 ### 4. Data Preprocessing
 
@@ -212,8 +208,6 @@ Transform raw data into formats suitable for machine learning.
 - Handling missing data systematically
 - Creating non-linear features for linear models
 
-**See:** `references/preprocessing.md` for detailed preprocessing techniques.
-
 ### 5. Pipelines and Composition
 
 Build reproducible, production-ready ML workflows.
@@ -235,8 +229,6 @@ Build reproducible, production-ready ML workflows.
 - When mixing numerical and categorical features (use ColumnTransformer)
 - When performing cross-validation with preprocessing steps
 - When hyperparameter tuning includes preprocessing parameters
-
-**See:** `references/pipelines_and_composition.md` for comprehensive pipeline patterns.
 
 ## Example Scripts
 

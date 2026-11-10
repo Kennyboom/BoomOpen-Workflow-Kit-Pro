@@ -1,5 +1,6 @@
 import { forwardRef, type ButtonHTMLAttributes, type AnchorHTMLAttributes } from 'react'
-import { cn } from '../../lib/utils'
+import { Link } from 'react-router-dom'
+import { cn, isInternalPath } from '../../lib/utils'
 
 type ButtonVariant = 'primary' | 'secondary'
 type ButtonSize = 'sm' | 'md' | 'lg'
@@ -75,6 +76,14 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
 
     if (isLink(props)) {
       const { href, ...linkProps } = rest as ButtonAsLink
+      // Same-site paths use client-side navigation; external URLs and hashes stay plain links.
+      if (isInternalPath(href)) {
+        return (
+          <Link ref={ref as React.Ref<HTMLAnchorElement>} to={href} className={classes} {...linkProps}>
+            {children}
+          </Link>
+        )
+      }
       return (
         <a
           ref={ref as React.Ref<HTMLAnchorElement>}

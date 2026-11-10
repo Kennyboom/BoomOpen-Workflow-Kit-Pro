@@ -20,7 +20,6 @@ Master comprehensive evaluation strategies for LLM applications, from automated 
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Use this skill when
 
@@ -454,17 +453,6 @@ class BenchmarkRunner:
             for metric, scores in results.items()
         }
 ```
-
-## Resources
-
-- **references/metrics.md**: Comprehensive metric guide
-- **references/human-evaluation.md**: Annotation best practices
-- **references/benchmarking.md**: Standard benchmarks
-- **references/a-b-testing.md**: Statistical testing guide
-- **references/regression-testing.md**: CI/CD integration
-- **assets/evaluation-framework.py**: Complete evaluation harness
-- **assets/benchmark-dataset.jsonl**: Example datasets
-- **scripts/evaluate-model.py**: Automated evaluation runner
 
 ## Best Practices
 

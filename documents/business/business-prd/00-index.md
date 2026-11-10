@@ -8,7 +8,7 @@
 
 ## Quick Summary
 
-This PRD defines the product requirements for **@boomopen/workflow-kit v1.3.0**, a multi-agent orchestration framework that transforms a single AI coding assistant into a coordinated team of 21 specialist agents across 5 platforms (Cursor, Copilot, Claude Code, Codex, Antigravity/Gemini). The framework provides 14 structured commands with 4 variant strategies each, a Hybrid Skill Orchestration Layer (HSOL) with 1,430+ matrix skills across 19 domains, and adversarial team collaboration via the Golden Triangle protocol. Installation is global and one-time — zero per-project configuration required.
+This PRD defines the product requirements for **@boomopen/workflow-kit v1.3.0**, a multi-agent orchestration framework that transforms a single AI coding assistant into a coordinated team of 21 specialist agents across 5 platforms (Cursor, Copilot, Claude Code, Codex, Antigravity/Gemini). The framework provides 14 structured commands with 4 variant strategies each, a Hybrid Skill Orchestration Layer (HSOL) with 1,460+ matrix skills across 19 domains, and adversarial team collaboration via the Golden Triangle protocol. Installation is global and one-time — zero per-project configuration required.
 
 The PRD covers 10 business goals (BG-001 through BG-010), 7 stakeholder types, 23 functional requirements (BR-001 through BR-023) with INVEST scoring, acceptance criteria, and a risk register addressing unvalidated performance claims, external dependencies, and testing gaps.
 
@@ -36,14 +36,14 @@ The PRD covers 10 business goals (BG-001 through BG-010), 7 stakeholder types, 2
 | Specialist Agents | 21 |
 | Team Configurations | 17 teams (Golden Triangle protocol) |
 | Commands | 14 (with 4 variant strategies each) |
-| Matrix Skills | 1,430+ across 19 domains |
+| Matrix Skills | 1,460+ across 19 domains |
 | Business Goals | 10 (BG-001 to BG-010) |
 | Requirements | 23 (BR-001 to BR-023) |
 | Stakeholder Types | 7 |
 | Production Dependencies | 0 |
 | Runtime | Node.js >= 18.0.0 |
 | License | MIT |
-| Author | Kennyboom |
+| Author | BoomOpen Labs |
 
 ---
 
@@ -104,4 +104,4 @@ The PRD covers 10 business goals (BG-001 through BG-010), 7 stakeholder types, 2
 | Core Rules | `rules/CORE.md` | Orchestration laws, tiered execution, command routing |
 | Agents directory | `agents/*.md` | 21 specialist agent definitions |
 | Commands directory | `commands/*.md` | 14 command workflow definitions |
-| Matrix Skills | `matrix-skills/_index.yaml` | 1,430+ skill entries across 19 domains |
+| Matrix Skills | `matrix-skills/_index.yaml` | 1,476 skill entries across 19 domains |

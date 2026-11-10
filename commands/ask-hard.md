@@ -1,77 +1,73 @@
 ---
-description: ⚡⚡⚡ Research Answer — Turn-1 Parallel Codebase Scouting + 3-Wave Deep Research with Evidence-Gated Synthesis
+description: ⚡⚡⚡ Research Answer — Elastic Turn-1 Parallel Sharding (scouter#1..k + researcher#1..k) with 3-Wave Evidence-Gated Synthesis
 version: "5.5"
 category: knowledge
 execution-mode: execute
 ---
 
-> **📂 Deliverable Routing (v5.5)**: On Antigravity 2.0, write transient deliverables (`RESEARCH`, `SCOUT`) to `<appDataDir>\brain\<conversation-id>\` to keep the Git tree clean (use `./reports/{topic}/` on non-Antigravity tools or when explicitly requested).
+> **📂 Deliverable & `ArtifactMetadata` Routing (v5.5)**: Keep per-shard scratch notes (`RESEARCH-{topic}-v{k}.md`, `SCOUT-{topic}-s{k}.md`, `COUNCIL-{topic}.md`) hidden from UI clutter with `ArtifactMetadata: { Summary: "...", UserFacing: false, RequestFeedback: false }`. When saving a master summary `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}.md` (`≤ 500` lines, single cohesive file — NEVER folder-split), set `UserFacing: true` (`RequestFeedback: false` for pure Q&A, or `RequestFeedback: true` when proposing an actionable architecture ready to `"Proceed"` into `/plan` or `/cook`).
 
 ---
 
-# /ask:hard — Research-Backed Answering (Turn-1 Parallel Fan-Out)
+# /ask:hard — Elastic Parallel Research-Backed Answering
 
-> **MISSION**: Provide comprehensive, evidence-backed answers by immediately spawning **`researcher` + `scouter` in parallel on Turn 1 (`TypeName: "self"`, `Model: "inherit"`)** using **4-Source Triangulation** and the **3-Wave Multi-Hop Search Protocol** — with **ZERO sequential `brainstormer` bottleneck**.
+> **MISSION**: Answer complex architectural, cross-module, and SDK/documentation questions by launching **`researcher#1..k` + `scouter#1..k` in parallel on Turn 1 (`TypeName: "self"`, `Model: "inherit"`)** using **Cognitive Load Sharding (`≤ 3–4` files or `1` vector per shard)**, **4-Source Triangulation**, and the **3-Wave Multi-Hop Search Loop**.
 
 <question>$ARGUMENTS</question>
 
 ---
 
-## ⚡ TURN-1 ZERO-TAX PARALLEL DISPATCH & SUB-AGENT RULE
+## ⚡ TURN-1 ZERO-TAX ELASTIC SHARDING & SUB-AGENT RULE
 
-⚡ **TURN-1 ZERO-TAX DISPATCH**: Core orchestration laws and the **5-Field Handoff Packet** (`1. MISSION`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION`) are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md`, and do **NOT** run a sequential `brainstormer` pre-phase — launch **Phase 1A (`researcher`)** and **Phase 1B (`scouter`)** **concurrently in a single Turn-1 tool batch** via `invoke_subagent(TypeName: "self", Model: "inherit")`.
+$$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\left\lceil \frac{\text{Total Target Files}}{3.5} \right\rceil,\; \text{Distinct Domains},\; \text{Research Vectors}\right)\right)$$
 
-> ⚠️ **CRITICAL (`TypeName: "self"` MANDATORY FOR BOTH AGENTS)**:
-> Antigravity's built-in `TypeName: "research"` has **NO network access (`search_web` disabled) and NO `write_file` tool**.
-> **ALWAYS use `invoke_subagent(TypeName: "self", Role: ..., Model: "inherit", Prompt: ...)`** for BOTH `researcher` AND `scouter`!
-
----
-
-## 🔀 TIERED EXECUTION & QUALITY-FIRST MODEL POLICY
-
-| Tier | When | Action |
-|------|------|--------|
-| **TIER 1** | Antigravity 2.0 Native Sub-Agents (`invoke_subagent`, `send_message`) or `runSubagent` EXISTS | Spawn `researcher` + `scouter` in parallel on Turn 1 with `TypeName: "self"`, `Model: "inherit"` (Pro High default; NEVER `flash_lite`) |
-| **TIER 2** | Tool MISSING or system error | EMBODY agent file (FALLBACK) |
+1. **Zero Pre-Flight Tax & `autonomous_first`**: Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md`, and do **NOT** stall on clarification menus when scope is sufficient — state explicit assumptions and launch Turn-1 parallel shards immediately!
+2. **Elastic `role#shard` Fan-Out**:
+   - **Moderate Scope (`≤ 4` files, `1–2` vectors)**: Spawn `researcher#v1` + `scouter#s1` (`2` parallel sub-agents) in a single Turn-1 batch.
+   - **Broad / Cross-Subsystem Scope (`> 4` files or `≥ 3` vectors/libraries)**: Horizontally shard into **`researcher#v1..k` + `scouter#s1..k` (`4–8` parallel sub-agents)** on Turn 1 (`≤ 3–4` heavy files or `1` deep research vector per shard) and record `role#shard -> conversationId` for Warm Session Reuse (`send_message`).
+3. **⚠️ `TypeName: "self"` Mandatory**: Antigravity's built-in `TypeName: "research"` disables `search_web`, `run_command`, and `write_file`. **ALWAYS use `invoke_subagent(TypeName: "self", Role: "<role>#<shard>", Model: "inherit", Prompt: ...)`** (NEVER `flash_lite`).
+4. **🎼 Optional Multi-Engine Council (`engines.researcher = "council"`)**: When configured or requested, also run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task research --engines <engines.councilMembers> --prompt "<question>" --output "<appDataDir>/brain/<conversation-id>/COUNCIL-{topic}.md"` on Turn 1.
 
 ---
 
-## ⚡ Phase 1 (Turn-1 Parallel Fan-Out): `researcher` (3-Wave Search) + `scouter` (Codebase & Skills)
+## 🚀 Phase 1 (Turn-1 Parallel Fan-Out): `researcher#v1..k` + `scouter#s1..k`
 
-> **🚀 TURN-1 DAG FAN-OUT DIRECTIVE**: Launch **Track 1A (`researcher`)** AND **Track 1B (`scouter`)** **concurrently in a single Turn-1 batch** (`TypeName: "self"`, `Model: "inherit"`), and join via Reactive Async Wakeup before Phase 2 Synthesis.
+> **🔒 ZERO WRITE-COLLISION RULE**: Every parallel shard MUST write to its own disjoint scratch path (`RESEARCH-{topic}-v{k}.md` / `SCOUT-{topic}-s{k}.md` with `ArtifactMetadata: { Summary: "...", UserFacing: false, RequestFeedback: false }`) — NEVER have multiple concurrent shards overwrite the same file!
 
-### 🔬 Track 1A: EXTERNAL & DOCUMENTATION DEEP RESEARCH (`researcher`)
-- **Agent**: `researcher` (`invoke_subagent(TypeName: "self", Role: "Deep Technical Researcher", Model: "inherit")`)
-- **4-Source Triangulation + 3-Wave Search Protocol (`6–10+` queries)**:
-  1. **Wave 1 (Official Docs & Version Pinning)**: Search official vendor documentation, RFCs, and changelogs (`search_web` + `read_url_content`).
-  2. **Gap Reflection**: Identify unverified behaviors, edge cases, or performance/security trade-offs.
-  3. **Wave 2 (Deep Internals, APIs & Benchmarks)**: Verify exact API contracts, schemas, and empirical benchmarks.
-  4. **Wave 3 (Adversarial Failure Modes & Issues)**: Check GitHub Issues, breaking changes, and production gotchas.
-- **Deliverable**: `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}.md` (with `Research Execution Audit Log` and clickable URLs).
+### 🔬 Track 1A: External & Official Documentation Deep Research (`researcher#v1..k`)
+- **Invocation**: `invoke_subagent(TypeName: "self", Role: "Deep Technical Researcher (researcher#v1..k)", Model: "inherit", Prompt: ...)`
+- **4-Source Triangulation + 3-Wave Search Protocol (`6–10+` queries across vectors)**:
+  1. **Wave 1 (Official Docs & Version Pinning)**: Verify vendor docs, RFCs, and changelogs (`search_web` + `read_url_content`).
+  2. **Gap Reflection**: Identify unverified internals, rate limits, concurrency traps, or migration caveats.
+  3. **Wave 2 (Deep Internals, APIs & Benchmarks)**: Confirm exact typed signatures, wire schemas, and empirical benchmarks.
+  4. **Wave 3 (Adversarial Failure Modes & Issues)**: Inspect GitHub Issues, CVEs, breaking changes, and production gotchas.
+- **Disjoint Shard Deliverable**: `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}-v{k}.md` (`UserFacing: false, RequestFeedback: false`).
 
-### 🧭 Track 1B: LOCAL CODEBASE, MANIFESTS & SKILLS VAULT ANALYSIS (`scouter`)
-- **Agent**: `scouter` (`invoke_subagent(TypeName: "self", Role: "Codebase & Skills Scouter", Model: "inherit")`)
-- **Goal**:
-  1. Inspect local manifests (`package.json`, `pyproject.toml`, `Cargo.toml`), `./documents/`, and source files (`[file:line]` links).
-  2. Query `matrix-skills/compact-index.json` (`1,471` skills) and load matching `SKILL.md` files for curated patterns.
-- **Deliverable**: `<appDataDir>\brain\<conversation-id>\SCOUT-{topic}.md` with exact `file:line` references and architecture diagrams.
+### 🧭 Track 1B: Local Codebase, Manifests & `1,462` Skills Vault (`scouter#s1..k`)
+- **Invocation**: `invoke_subagent(TypeName: "self", Role: "Codebase & Skills Scouter (scouter#s1..k)", Model: "inherit", Prompt: ...)`
+- **Responsibilities (`≤ 3–4` heavy files per shard)**:
+  1. Inspect workspace manifests (`package.json`, `pyproject.toml`, `Cargo.toml`), `./documents/`, and assigned modules (`[file:line](file:///...)` links).
+  2. Query `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/compact-index.json` (`1,462` skills) and extract curated patterns from matching `SKILL.md` files.
+- **Disjoint Shard Deliverable**: `<appDataDir>\brain\<conversation-id>\SCOUT-{topic}-s{k}.md` (or `SCOUT-{topic}.md` when `k = 1`; `UserFacing: false, RequestFeedback: false`).
 
 ---
 
-## 🎭 Phase 2: EVIDENCE-GATED SYNTHESIS (`researcher` / Orchestrator)
+## 🎭 Phase 2: CROSS-VERIFICATION & EVIDENCE-GATED SYNTHESIS
 
-| Attribute | Value |
-|-----------|-------|
-| **Prerequisite** | Combine Track 1A (`RESEARCH-{topic}.md`) + Track 1B (`SCOUT-{topic}.md`) |
-| **Deliverable** | `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}.md` (updated master artifact) + structured in-chat synthesis |
-| **Exit** | Comprehensive answer with `Research Execution Audit Log`, version-pinned code examples, clickable `file:///` & `https://` links, Mermaid diagrams, and trade-offs |
+Once all Phase 1 shards complete via **Reactive Async Wakeup**:
+1. Cross-check external SDK/protocol findings against local workspace versions and call sites (resolve any discrepancy via warm `send_message(Recipient: conversationId)`).
+2. Present a structured, high-signal synthesis in chat with clickable `file:///` + `https://` citations, version-pinned code examples, Mermaid architecture/flow diagrams, and explicit trade-offs.
+3. **Cohesive Summary Artifact (When Multi-Section Reference / Architectural Decision Is Produced)**:
+   - Write **1 cohesive single file** (`≤ 500` lines — NEVER split into `{name}/` folders) at `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}.md` (fallback `./reports/{topic}/researchers/RESEARCH-{topic}.md`):
+     - Pure informational / diagnostic Q&A → `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: false }`.
+     - Actionable architectural recommendation ready for implementation → `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: true }` and validate via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js research validate "<path>"`.
 
 ---
 
 ## ✅ COMPLETION
 
-Present the synthesized answer with:
-1. ✅ **Answered** — Question resolved with internal (`SCOUT`) + external (`RESEARCH`) evidence
-2. 🔬 **Adversarial Deep-Dive** → `/research:team` if 3-vector Golden Triangle verification is desired
-3. 📋 **Plan** → `/plan:hard` if architectural planning is needed next
-4. 💻 **Implement** → `/cook:hard` or `/code:hard` if implementation is needed
+Present the synthesized answer and offer next steps:
+1. ✅ **Answered** — Verified across local codebase (`SCOUT`) + primary external sources (`RESEARCH`)
+2. 🔺 **Adversarial Deep-Dive** → `/research:team` (`commands/research-team.md`) for `3–6` vector Golden Diamond cross-examination
+3. 📋 **Plan** → `/plan:hard` (`commands/plan-hard.md`) to turn the recommendation into a contract-locked `PLAN`
+4. 💻 **Implement** → `/cook:hard` or `/code:hard` if implementation is requested next

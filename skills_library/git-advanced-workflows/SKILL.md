@@ -20,7 +20,6 @@ Master advanced Git techniques to maintain clean history, collaborate effectivel
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Use this skill when
 
@@ -404,12 +403,3 @@ git reset --hard HEAD^
 git reflog
 git branch recovered-branch abc123
 ```
-
-## Resources
-
-- **references/git-rebase-guide.md**: Deep dive into interactive rebase
-- **references/git-conflict-resolution.md**: Advanced conflict resolution strategies
-- **references/git-history-rewriting.md**: Safely rewriting Git history
-- **assets/git-workflow-checklist.md**: Pre-PR cleanup checklist
-- **assets/git-aliases.md**: Useful Git aliases for advanced workflows
-- **scripts/git-clean-branches.sh**: Clean up merged and stale branches

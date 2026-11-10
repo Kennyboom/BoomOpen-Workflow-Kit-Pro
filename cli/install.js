@@ -1,34 +1,39 @@
 #!/usr/bin/env node
+'use strict';
 
 /**
- * BoomOpen Workflow Kit CLI Installer
- * 
- * Installs the BoomOpen Workflow Kit framework for different AI coding tools:
- * - Cursor
- * - GitHub Copilot
- * - Antigravity (Gemini)
- * - Claude Code
- * - Codex
- * 
- * Usage:
- *   npx boomopen-workflow-kit install [tool]
- *   npx boomopen-workflow-kit install --all
- *   npx boomopen-workflow-kit uninstall [tool]
- *   npx boomopen-workflow-kit list
- * 
- * Features:
- *   - Real-time progress bar with file count
- *   - Verification phase to ensure all files are written
- *   - Proper file system sync for reliability
- *   - Summary report with statistics
+ * BoomOpen Workflow Kit CLI installer for Cursor, GitHub Copilot, Antigravity (Gemini),
+ * Claude Code and Codex.
+ *
+ * The kit is not published on npm. Install from a clone:
+ *   git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git
+ *   cd BoomOpen-Workflow-Kit
+ *   node cli/install.js install <tool>      (or: npm link, then boomopen install <tool>)
+ *
+ * Safety contract (see cli/manifest.js, cli/instruction-files.js, cli/codex-config.js):
+ *   - files in folders shared with the user are tracked by sha256 in ~/.boomopen/manifests/<tool>.json;
+ *     a user's file is backed up before it is replaced and uninstall removes only unmodified kit files;
+ *   - global instruction files (CLAUDE.md, AGENTS.md, GEMINI.md, ...) get a marked kit block, the
+ *     user's own text stays;
+ *   - ~/.codex/config.toml is edited TOML-aware and never written when the result would not parse;
+ *   - the installer never writes into its own package folder: install/uninstall refuse to run from an
+ *     installed framework copy (~/.<tool>/skills/boomopen-workflow-kit/cli/install.js).
  */
 
 const fs = require('node:fs');
-const path = require('node:path');
 const os = require('node:os');
+const path = require('node:path');
 const readline = require('node:readline');
-const { buildCompactSkillIndex, runDoctor } = require('./doctor.js');
-const { runCheck } = require('./checker.js');
+
+const { buildCompactSkillIndex, runDoctor, runDoctorCli } = require('./doctor.js');
+const { KIT_VERSION } = require('./doctor-version.js');
+const { runCheck, runCheckCli } = require('./checker.js');
+const { runLedgerCli, initLedger, validateLedger, verifyPhaseGate, auditLedger } = require('./ledger.js');
+const { runPlanCli, parsePlanMarkdown, validatePlan, compilePlanToLedger } = require('./plan.js');
+const { runDesignCli, parseDesignMarkdown, validateDesign, extractDesignContract } = require('./design.js');
+const { runResearchCli, parseResearchMarkdown, validateResearch, extractResearchBrief } = require('./research.js');
+const { runCookCli, detectCookState, compileWavePackets, verifyWaveExecution, runCookPreflight } = require('./cook.js');
+const { runConductorCli, dispatchToEngine, runMultiEngineCouncil, resolveEngineForRole } = require('./conductor.js');
 const {
     loadSettings,
     saveSettings,
@@ -40,25 +45,22 @@ const {
     injectSettingsBlockIntoText,
     syncSettingsToInstalledPlatforms,
     runSettingsCommand,
-    SETTINGS_MARKER_START,
-    SETTINGS_MARKER_END,
 } = require('./settings.js');
 const { startSettingsUiServer } = require('./settings-ui.js');
+const { KIT_DIR_NAME, CORE_DIRS, ROOT_FILES, VERBATIM_DIRS, buildTools, buildPlan } = require('./tool-config.js');
+const { countFiles, listSourceFiles, renderFile } = require('./copy-engine.js');
+const { progressState, resetProgress, completeProgress, logError, printLine, warnLine } = require('./progress.js');
+const { InstallLedger, loadManifest, uninstallFromManifest, backupRoot, manifestPath } = require('./manifest.js');
+const { installedCopyProblem, migrateLegacy, recordToolDirs, kitInstructionTexts } = require('./install-ownership.js');
 const {
-    BACKUP_SUFFIX,
-    GEMINI_MARKER_START,
-    GEMINI_MARKER_END,
-    CODEX_MARKER_START,
-    CODEX_MARKER_END,
-    CODEX_DOC_FALLBACK,
-    stripMarkedBlock,
-    backupUserFile,
-    restoreOrRemoveUserFile,
-    removeIfKitOwned,
-    removeMirroredFiles,
-    removeMarkedBlockFromFile,
-    stripCodexManagedConfig,
-} = require('./user-files.js');
+    registerClaudeHook,
+    unregisterClaudeHook,
+    isClaudeHookRegistered,
+    describeManualRegistration,
+    HOOK_SCRIPT_NAME,
+} = require('./hook-registration.js');
+const { hasKitContent } = require('./instruction-files.js');
+const steps = require('./install-steps.js');
 
 // ============================================================================
 // Configuration
@@ -66,1729 +68,645 @@ const {
 
 const HOME = os.homedir();
 const ROOT = path.join(__dirname, '..');
+const HOOKS_SRC = path.join(ROOT, 'platforms', 'antigravity', 'hooks');
+const TOOLS = buildTools(HOME, ROOT);
+const TOOL_KEYS = ['cursor', 'copilot', 'antigravity', 'claude', 'codex'];
+const TOOL_ALIASES = { gemini: 'antigravity', 'claude-code': 'claude' };
+const EXIT_FAILURE = 1;
+const REPO_URL = 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git';
 
-// Platform-specific VS Code prompts folder
-function getVSCodePromptsFolder() {
-    switch (process.platform) {
-        case 'win32':
-            return path.join(process.env.APPDATA || '', 'Code', 'User', 'prompts');
-        case 'darwin':
-            return path.join(HOME, 'Library', 'Application Support', 'Code', 'User', 'prompts');
-        default:
-            return path.join(HOME, '.config', 'Code', 'User', 'prompts');
-    }
-}
-
-const TOOLS = {
-    cursor: {
-        name: 'Cursor',
-        description: 'Cursor AI Editor',
-        paths: {
-            editorHome: path.join(HOME, '.cursor'),
-            rules: path.join(HOME, '.cursor', 'rules'),
-            skills: path.join(HOME, '.cursor', 'skills'),
-            agents: path.join(HOME, '.cursor', 'agents'),
-            commands: path.join(HOME, '.cursor', 'commands'),
-            frameworkPath: path.join(HOME, '.cursor', 'skills', 'boomopen-workflow-kit'),
-        },
-        replacements: {
-            '~/.{TOOL}/skills/boomopen-workflow-kit/': '~/.cursor/skills/boomopen-workflow-kit/',
-            '{TOOL}/boomopen-workflow-kit/': 'cursor/skills/boomopen-workflow-kit/',
-            '{TOOL}': 'cursor',
-            '{HOME}': '~',
-            '~/.agent/': '~/.cursor/skills/boomopen-workflow-kit/',
-            'boomopen-workflow-kit': 'boomopen-workflow-kit',
-        },
-        assets: {
-            rules: path.join(ROOT, 'platforms', 'cursor', 'rules'),
-            cursorRules: path.join(ROOT, 'platforms', 'cursor', '.cursorrules'),
-        }
-    },
-    copilot: {
-        name: 'GitHub Copilot',
-        description: 'GitHub Copilot in VS Code',
-        paths: {
-            home: path.join(HOME, '.copilot'),
-            skills: path.join(HOME, '.copilot', 'skills'),
-            commands: path.join(HOME, '.copilot', 'commands'),
-            agents: path.join(HOME, '.copilot', 'agents'),
-            rules: path.join(HOME, '.copilot', 'rules'),
-            frameworkPath: path.join(HOME, '.copilot', 'skills', 'boomopen-workflow-kit'),
-            vsCodePrompts: getVSCodePromptsFolder(),
-        },
-        replacements: {
-            '~/.{TOOL}/skills/boomopen-workflow-kit/': '~/.copilot/skills/boomopen-workflow-kit/',
-            '{TOOL}/boomopen-workflow-kit/': 'copilot/skills/boomopen-workflow-kit/',
-            '{TOOL}': 'copilot',
-            '{HOME}': '~',
-            '~/.agent/': '~/.copilot/skills/boomopen-workflow-kit/',
-            'boomopen-workflow-kit': 'boomopen-workflow-kit',
-        },
-        assets: {
-            agentFile: path.join(ROOT, 'platforms', 'copilot', 'boomopen-workflow-kit.agent.md'),
-        }
-    },
-    antigravity: {
-        name: 'Antigravity (Gemini)',
-        description: 'Google Antigravity / Gemini',
-        paths: {
-            editorHome: path.join(HOME, '.antigravity'),
-            gemini: path.join(HOME, '.gemini'),
-            antigravity: path.join(HOME, '.gemini', 'config'),
-            skills: path.join(HOME, '.gemini', 'config', 'skills'),
-            agents: path.join(HOME, '.antigravity', 'agents'), // User accessible agents
-            globalAgents: path.join(HOME, '.gemini', 'agents'), // Global config
-            workflows: path.join(HOME, '.antigravity', 'workflows'),
-            globalWorkflows: path.join(HOME, '.gemini', 'config', 'global_workflows'),
-            frameworkPath: path.join(HOME, '.gemini', 'config', 'skills', 'boomopen-workflow-kit'),
-        },
-        replacements: {
-            '~/.{TOOL}/skills/boomopen-workflow-kit/': '~/.gemini/config/skills/boomopen-workflow-kit/',
-            '~/.gemini/config/skills/boomopen-workflow-kit/': '~/.gemini/config/skills/boomopen-workflow-kit/',
-            '~/.gemini/config/skills/agent-assistant/': '~/.gemini/config/skills/boomopen-workflow-kit/',
-            '~/.gemini/config/global_workflows/': '~/.gemini/config/global_workflows/',
-            '{TOOL}/boomopen-workflow-kit/': 'gemini/config/skills/boomopen-workflow-kit/',
-            '{TOOL}': 'gemini/config',
-            '{HOME}': '~',
-            '~/.agent/': '~/.gemini/config/skills/boomopen-workflow-kit/',
-            'boomopen-workflow-kit': 'boomopen-workflow-kit',
-        },
-        assets: {
-            geminiMd: path.join(ROOT, 'platforms', 'antigravity', 'GEMINI.md'),
-            agentFile: path.join(ROOT, 'platforms', 'antigravity', 'AntigravityGlobal.agent.md'),
-        }
-    },
-    claude: {
-        name: 'Claude Code',
-        description: 'Anthropic Claude CLI',
-        paths: {
-            home: path.join(HOME, '.claude'),
-            skills: path.join(HOME, '.claude', 'skills'),
-            commands: path.join(HOME, '.claude', 'commands'),
-            agents: path.join(HOME, '.claude', 'agents'),
-            frameworkPath: path.join(HOME, '.claude', 'skills', 'boomopen-workflow-kit'),
-        },
-        replacements: {
-            '~/.{TOOL}/skills/boomopen-workflow-kit/': '~/.claude/skills/boomopen-workflow-kit/',
-            '{TOOL}/boomopen-workflow-kit/': 'claude/skills/boomopen-workflow-kit/',
-            '{TOOL}': 'claude',
-            '{HOME}': '~',
-            '~/.agent/': '~/.claude/skills/boomopen-workflow-kit/',
-            'boomopen-workflow-kit': 'boomopen-workflow-kit',
-        },
-        assets: {
-            claudeMd: path.join(ROOT, 'platforms', 'claude', 'CLAUDE.md'),
-        }
-    },
-    codex: {
-        name: 'Codex',
-        description: 'OpenAI Codex CLI',
-        paths: {
-            home: path.join(HOME, '.codex'),
-            skills: path.join(HOME, '.codex', 'skills'),
-            commands: path.join(HOME, '.codex', 'commands'),
-            agents: path.join(HOME, '.codex', 'agents'),
-            frameworkPath: path.join(HOME, '.codex', 'skills', 'boomopen-workflow-kit'),
-        },
-        replacements: {
-            '~/.{TOOL}/skills/boomopen-workflow-kit/': '~/.codex/skills/boomopen-workflow-kit/',
-            '{TOOL}/boomopen-workflow-kit/': 'codex/skills/boomopen-workflow-kit/',
-            '{TOOL}': 'codex',
-            '{HOME}': '~',
-            '~/.agent/': '~/.codex/skills/boomopen-workflow-kit/',
-            'boomopen-workflow-kit': 'boomopen-workflow-kit',
-        },
-        assets: {
-            codexMd: path.join(ROOT, 'platforms', 'codex', 'CODEX.md'),
-            configToml: path.join(ROOT, 'platforms', 'codex', 'config.toml'),
-            agentTomlDir: path.join(ROOT, 'platforms', 'codex', 'agents'),
-            commandSkillsDir: path.join(ROOT, 'platforms', 'codex', 'skills'),
-        }
-    }
-};
-
-// Core directories to copy for boomopen-workflow-kit framework
-// Note: 'workflows' used to exist but was merged into 'rules'
-// We copy 'commands' to both 'commands' and 'workflows' for backward compatibility
-const CORE_DIRS = ['agents', 'rules', 'documents', 'commands', 'matrix-skills', 'cli'];
-
-// Root files to copy
-const ROOT_FILES = ['README.md', 'SKILL.md'];
-
+const cliOptions = { registerHooks: false };
 
 // ============================================================================
-// Utility Functions
+// Compatibility helpers (exported for tests and older callers)
 // ============================================================================
-
-/**
- * Progress tracking state
- */
-const progressState = {
-    total: 0,
-    current: 0,
-    phase: '',
-    errors: [],
-    startTime: 0,
-    copiedFiles: [],
-    removedPaths: [],
-    lastDraw: 0,          // Throttle draws
-    lastPercent: -1       // Track last drawn percent
-};
-
-// Check if stdout is a TTY (interactive terminal)
-const isTTY = process.stdout.isTTY;
-
-/**
- * Reset progress state for new operation
- */
-function resetProgress() {
-    progressState.total = 0;
-    progressState.current = 0;
-    progressState.phase = '';
-    progressState.errors = [];
-    progressState.startTime = Date.now();
-    progressState.copiedFiles = [];
-    progressState.removedPaths = [];
-    progressState.lastDraw = 0;
-    progressState.lastPercent = -1;
-}
-
-/**
- * Count total files in a directory (for progress estimation)
- */
-function countFiles(dir) {
-    if (!fs.existsSync(dir)) return 0;
-    let count = 0;
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-    for (const entry of entries) {
-        if (entry.name.startsWith('.') || entry.name === 'node_modules') continue;
-        if (entry.isSymbolicLink()) continue;
-        const fullPath = path.join(dir, entry.name);
-        if (entry.isDirectory()) {
-            count += countFiles(fullPath);
-        } else {
-            count++;
-        }
-    }
-    return count;
-}
-
-/**
- * Draw progress bar in terminal (real-time single line update)
- * @param {number} current - Current progress
- * @param {number} total - Total items
- * @param {boolean} force - Force draw regardless of throttle
- */
-function drawProgress(current, total, force = false) {
-    if (total === 0) return;
-    
-    const percent = Math.min(100, Math.round((current / total) * 100));
-    const now = Date.now();
-    
-    // Throttle: only draw every 50ms OR when percent changes OR forced
-    if (!force && percent === progressState.lastPercent && (now - progressState.lastDraw) < 50) {
-        return;
-    }
-    
-    progressState.lastDraw = now;
-    progressState.lastPercent = percent;
-    
-    const width = 40;
-    const filled = Math.round((percent / 100) * width);
-    const empty = width - filled;
-    
-    // Unicode progress bar characters
-    const filledChar = '█';
-    const emptyChar = '░';
-    
-    const bar = filledChar.repeat(filled) + emptyChar.repeat(empty);
-    const stats = `${current.toLocaleString()}/${total.toLocaleString()}`;
-    const elapsed = ((now - progressState.startTime) / 1000).toFixed(1);
-    
-    const line = `  ${bar} ${percent}% (${stats}) ${elapsed}s`;
-    
-    if (isTTY) {
-        // Real TTY: clear line and rewrite on same line
-        process.stdout.clearLine(0);
-        process.stdout.cursorTo(0);
-        process.stdout.write(line);
-    } else {
-        // Non-TTY (piped): only print on percent milestones
-        if (percent % 10 === 0 && percent !== progressState.lastPercent) {
-            console.log(line);
-        }
-    }
-}
-
-/**
- * Update progress counter (no draw - for batch updates)
- */
-function updateProgress(phase) {
-    progressState.current++;
-    progressState.phase = phase;
-    drawProgress(progressState.current, progressState.total);
-}
-
-/**
- * Complete progress bar and move to next line
- */
-function completeProgress() {
-    if (progressState.total > 0) {
-        drawProgress(progressState.total, progressState.total, true);
-        console.log(''); // New line after progress bar
-    }
-}
-
-/**
- * Log error to progress state
- */
-function logError(operation, path, error) {
-    progressState.errors.push({
-        operation,
-        path,
-        error: error.message || String(error),
-        timestamp: new Date().toISOString()
-    });
-}
 
 function ensureDir(dir) {
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
+    fs.mkdirSync(dir, { recursive: true });
 }
 
-function copyWithReplace(src, dest, replacements = {}, trackProgress = true) {
+/** Copy a tree with placeholder replacement into a folder the kit owns. @returns {number} files */
+function copyWithReplace(src, dest, replacements = {}) {
     if (!fs.existsSync(src)) return 0;
     ensureDir(dest);
-    let count = 0;
-
-    const entries = fs.readdirSync(src, { withFileTypes: true });
-    for (const entry of entries) {
-        // Skip hidden files and node_modules
-        if (entry.name.startsWith('.') || entry.name === 'node_modules') continue;
-        
-        // Skip symbolic links for security (prevents path traversal attacks)
-        if (entry.isSymbolicLink()) {
-            if (process.env.DEBUG) {
-                console.log(`  ⚠️ Skipping symlink: ${entry.name}`);
-            }
-            continue;
-        }
-
-        const srcPath = path.join(src, entry.name);
-        const destPath = path.join(dest, entry.name);
-
-        if (entry.isDirectory()) {
-            count += copyWithReplace(srcPath, destPath, replacements, trackProgress);
-        } else {
-            try {
-                // Apply replacements for text files
-                const textExtensions = ['.md', '.txt', '.json', '.mdc', '.yaml', '.yml', '.toml'];
-                const ext = path.extname(entry.name).toLowerCase();
-
-                const isSkillsLib = destPath.includes('skills_library');
-                const forceInstall = process.argv.includes('--force');
-                let alreadyUpToDate = false;
-                if (isSkillsLib && !forceInstall && fs.existsSync(destPath)) {
-                    const srcStat = fs.statSync(srcPath);
-                    const destStat = fs.statSync(destPath);
-                    alreadyUpToDate = srcStat.size === destStat.size && srcStat.mtimeMs <= destStat.mtimeMs + 1000;
-                }
-                if (!alreadyUpToDate) {
-                    if (textExtensions.includes(ext)) {
-                        let content = fs.readFileSync(srcPath, 'utf8');
-                        // Sort keys by length (longer first) to prevent partial replacements
-                        const keys = Object.keys(replacements).sort((a, b) => b.length - a.length);
-                        for (const search of keys) {
-                            content = content.replaceAll(search, replacements[search]);
-                        }
-                        const needsWrite = !fs.existsSync(destPath) || fs.readFileSync(destPath, 'utf8') !== content;
-                        if (needsWrite) {
-                            fs.writeFileSync(destPath, content, 'utf8');
-                        }
-                    } else {
-                        fs.copyFileSync(srcPath, destPath);
-                    }
-                }
-                
-                // Track copied file for verification
-                progressState.copiedFiles.push(destPath);
-                
-                // Update progress
-                if (trackProgress) {
-                    updateProgress(entry.name);
-                }
-                
-                count++;
-            } catch (e) {
-                logError('copy', srcPath, e);
-                if (process.env.DEBUG) {
-                    console.warn(`\n  ⚠️ Could not copy ${entry.name}: ${e.message}`);
-                }
-            }
-        }
-    }
-    return count;
+    return steps.copyTree(src, dest, replacements);
 }
 
-function copyFileWithReplace(src, dest, replacements = {}, trackProgress = true) {
+function copyFileWithReplace(src, dest, replacements = {}) {
     if (!fs.existsSync(src)) return false;
-
-    ensureDir(path.dirname(dest));
-
     try {
-        let content = fs.readFileSync(src, 'utf8');
-        const keys = Object.keys(replacements).sort((a, b) => b.length - a.length);
-        for (const search of keys) {
-            content = content.replaceAll(search, replacements[search]);
-        }
-        
-        // Write with fsync for reliability
-        fs.writeFileSync(dest, content, 'utf8');
-        
-        // Track copied file for verification
+        ensureDir(path.dirname(dest));
+        fs.writeFileSync(dest, renderFile(src, replacements));
         progressState.copiedFiles.push(dest);
-        
-        // Update progress
-        if (trackProgress) {
-            updateProgress(path.basename(dest));
-        }
-        
         return true;
-    } catch (e) {
-        logError('copy', src, e);
-        if (process.env.DEBUG) {
-            console.warn(`\n  ⚠️ Could not copy ${path.basename(src)}: ${e.message}`);
-        }
+    } catch (error) {
+        logError('copy', src, error);
         return false;
     }
-}
-
-/**
- * Copy a kit instruction file into a user-shared location (e.g. ~/.claude/CLAUDE.md),
- * keeping a backup of any user-authored file it replaces.
- */
-function installUserFacingFile(src, dest, replacements = {}) {
-    if (!fs.existsSync(src)) return false;
-    try {
-        const backupPath = backupUserFile(dest);
-        if (backupPath) {
-            console.log(`\n  💾 Backed up your existing ${path.basename(dest)} → ${backupPath}`);
-        }
-    } catch (e) {
-        logError('backup', dest, e);
-        console.warn(`\n  ⚠️ Could not back up ${dest} (${e.message}); leaving it untouched.`);
-        return false;
-    }
-    return copyFileWithReplace(src, dest, replacements);
-}
-
-/** Record paths removed by user-files helpers so the uninstall summary counts them. */
-function trackRemoved(paths) {
-    for (const removedPath of paths) {
-        progressState.removedPaths.push(removedPath);
-        updateProgress(`Removed ${path.basename(removedPath)}`);
-    }
-    return paths.length;
-}
-
-/** Uninstall a kit file from a user-shared location and restore the user's backup. */
-function uninstallUserFacingFile(filePath) {
-    try {
-        const outcome = restoreOrRemoveUserFile(filePath);
-        if (outcome.removed) trackRemoved([filePath]);
-        if (outcome.restored) console.log(`  ♻️  Restored your original ${filePath}`);
-        if (outcome.kept) console.log(`  ℹ️  Kept ${filePath} (modified by you after install)`);
-        return outcome.removed || outcome.restored;
-    } catch (e) {
-        logError('remove', filePath, e);
-        return false;
-    }
-}
-
-/** Remove only the files the kit copied from srcDir into a shared destDir. */
-function uninstallMirrored(srcDir, destDir) {
-    try {
-        return trackRemoved(removeMirroredFiles(srcDir, destDir));
-    } catch (e) {
-        logError('remove', destDir, e);
-        return 0;
-    }
-}
-
-function removeDir(dir, trackProgress = true) {
-    if (fs.existsSync(dir)) {
-        try {
-            fs.rmSync(dir, { recursive: true, force: true });
-            progressState.removedPaths.push(dir);
-            if (trackProgress) {
-                updateProgress(`Removed ${path.basename(dir)}`);
-            }
-            return true;
-        } catch (e) {
-            logError('remove', dir, e);
-            return false;
-        }
-    }
-    return false;
-}
-
-/**
- * Remove a single file with tracking
- */
-function removeFile(filePath, trackProgress = true) {
-    if (fs.existsSync(filePath)) {
-        try {
-            fs.unlinkSync(filePath);
-            progressState.removedPaths.push(filePath);
-            if (trackProgress) {
-                updateProgress(`Removed ${path.basename(filePath)}`);
-            }
-            return true;
-        } catch (e) {
-            logError('remove', filePath, e);
-            return false;
-        }
-    }
-    return false;
-}
-
-/**
- * Remove all subdirectories within a directory but keep files.
- * @deprecated No longer called by the installer: it also deleted user-created subfolders in
- * shared workflow directories. Kept only for backward compatibility of the module exports.
- */
-function removeSubdirectories(dir, trackProgress = true) {
-    if (!fs.existsSync(dir)) return 0;
-    let count = 0;
-    try {
-        const entries = fs.readdirSync(dir, { withFileTypes: true });
-        for (const entry of entries) {
-            if (entry.isDirectory()) {
-                if (entry.name === '_ref') continue;
-                const fullPath = path.join(dir, entry.name);
-                fs.rmSync(fullPath, { recursive: true, force: true });
-                const prefix = fullPath + path.sep;
-                progressState.copiedFiles = progressState.copiedFiles.filter(
-                    (filePath) => !filePath.startsWith(prefix)
-                );
-                if (trackProgress && process.env.DEBUG) {
-                    console.log(`  🗑️ Filtered sub-directory for Gemini: ${entry.name}`);
-                }
-                count++;
-            }
-        }
-    } catch (e) {
-        logError('removeSubdirectories', dir, e);
-    }
-    return count;
 }
 
 function formatNumber(num) {
     return num.toLocaleString();
 }
 
-/**
- * Estimate total files for installation
- */
-function estimateInstallFiles() {
-    let total = 0;
-    
-    // Count files in core directories
-    try { buildCompactSkillIndex(ROOT); } catch (err) { logError("compact-index", ROOT, err); }
-    for (const dir of CORE_DIRS) {
-        const srcDir = path.join(ROOT, dir);
-        total += countFiles(srcDir);
-    }
-    
-    // Count skills
-    const skillsDir = path.join(ROOT, 'skills');
-    total += countFiles(skillsDir);
-    
-    // Count skills library
-    const libDir = path.join(ROOT, 'skills_library');
-    if (fs.existsSync(libDir)) total += countFiles(libDir);
-    
-    // Count agents
-    const agentsDir = path.join(ROOT, 'agents');
-    total += countFiles(agentsDir);
-    
-    // Commands (copied twice - once to commands, once to workflows for backward compat)
-    const commandsDir = path.join(ROOT, 'commands');
-    total += countFiles(commandsDir) * 2;
-    
-    // Root files
-    total += ROOT_FILES.length;
-    
-    // Config files (estimate)
-    total += 5;
-    
-    return total;
-}
+// ============================================================================
+// Summary
+// ============================================================================
 
-/**
- * Verify installation by checking copied files exist
- * @returns {Object} Verification result
- */
 function verifyInstallation() {
-    const verified = [];
-    const failed = [];
-    
-    for (const filePath of progressState.copiedFiles) {
-        if (fs.existsSync(filePath)) {
-            verified.push(filePath);
-        } else {
-            failed.push(filePath);
-        }
-    }
-    
-    return {
-        total: progressState.copiedFiles.length,
-        verified: verified.length,
-        failed: failed.length,
-        failedPaths: failed,
-        success: failed.length === 0
-    };
+    const failed = progressState.copiedFiles.filter((filePath) => !fs.existsSync(filePath));
+    return { total: progressState.copiedFiles.length, failed };
 }
 
-/**
- * Print summary report
- */
-function printSummary(toolName, operation = 'install') {
+function printErrors() {
+    if (progressState.errors.length === 0) return;
+    printLine(`   ⚠️  Errors:    ${progressState.errors.length}`);
+    for (const e of progressState.errors.slice(0, 5)) printLine(`                 - ${e.operation}: ${e.path} (${e.error})`);
+    if (progressState.errors.length > 5) printLine(`                 ... and ${progressState.errors.length - 5} more`);
+}
+
+/** Print the summary; a run with errors sets a failing exit code. @returns {boolean} success */
+function printSummary(toolName, operation, extra = []) {
     const duration = ((Date.now() - progressState.startTime) / 1000).toFixed(2);
-    const verification = operation === 'install' ? verifyInstallation() : null;
-    
-    console.log('\n' + '─'.repeat(60));
-    console.log(`📊 ${operation === 'install' ? 'Installation' : 'Uninstallation'} Summary`);
-    console.log('─'.repeat(60));
-    
-    if (operation === 'install') {
-        console.log(`   Tool:        ${toolName}`);
-        console.log(`   Files:       ${formatNumber(progressState.copiedFiles.length)} copied`);
-        console.log(`   Duration:    ${duration}s`);
-        
-        if (verification) {
-            console.log(`   Verified:    ${verification.verified}/${verification.total} files`);
-            if (verification.failed > 0) {
-                console.log(`   ⚠️  Failed:    ${verification.failed} files`);
-                verification.failedPaths.slice(0, 5).forEach(p => {
-                    console.log(`                 - ${p}`);
-                });
-                if (verification.failedPaths.length > 5) {
-                    console.log(`                 ... and ${verification.failedPaths.length - 5} more`);
-                }
-            }
-        }
+    const isInstall = operation === 'install';
+    const verification = isInstall ? verifyInstallation() : null;
+    printLine('\n' + '─'.repeat(60));
+    printLine(`📊 ${isInstall ? 'Installation' : 'Uninstallation'} Summary`);
+    printLine('─'.repeat(60));
+    printLine(`   Tool:        ${toolName}`);
+    if (isInstall) {
+        printLine(`   Files:       ${formatNumber(progressState.copiedFiles.length)} written or verified`);
+        printLine(`   Verified:    ${verification.total - verification.failed.length}/${verification.total} files`);
+        for (const missing of verification.failed.slice(0, 5)) printLine(`   ⚠️  Missing:   ${missing}`);
     } else {
-        console.log(`   Tool:        ${toolName}`);
-        console.log(`   Removed:     ${formatNumber(progressState.removedPaths.length)} paths`);
-        console.log(`   Duration:    ${duration}s`);
+        printLine(`   Removed:     ${formatNumber(progressState.removedPaths.length)} paths`);
     }
-    
-    if (progressState.errors.length > 0) {
-        console.log(`   ⚠️  Errors:    ${progressState.errors.length}`);
-        progressState.errors.slice(0, 3).forEach(e => {
-            console.log(`                 - ${e.operation}: ${path.basename(e.path)} (${e.error})`);
+    printLine(`   Duration:    ${duration}s`);
+    for (const line of extra) printLine(`   ${line}`);
+    printErrors();
+    printLine('─'.repeat(60));
+
+    const success = progressState.errors.length === 0 && (!verification || verification.failed.length === 0);
+    if (success) printLine(`✅ ${isInstall ? 'Installation' : 'Uninstallation'} completed successfully!`);
+    else {
+        printLine('❌ Completed with errors (see above).');
+        process.exitCode = EXIT_FAILURE;
+    }
+    return success;
+}
+
+// ============================================================================
+// Install
+// ============================================================================
+
+function estimateTotal(plan) {
+    let total = plan.instructionFiles.length + ROOT_FILES.length + countFiles(HOOKS_SRC);
+    for (const dir of CORE_DIRS) total += countFiles(path.join(ROOT, dir));
+    total += countFiles(path.join(ROOT, 'commands'));
+    for (const copy of plan.shared) total += copy.file ? 1 : countFiles(copy.src);
+    return total + 2;
+}
+
+function createLedger(key, tool) {
+    try {
+        return new InstallLedger({
+            homeDir: HOME,
+            toolKey: key,
+            kitVersion: KIT_VERSION,
+            userFilesRestorable: !fs.existsSync(tool.paths.frameworkPath),
         });
-        if (progressState.errors.length > 3) {
-            console.log(`                 ... and ${progressState.errors.length - 3} more`);
-        }
-    }
-    
-    console.log('─'.repeat(60));
-    
-    if (operation === 'install' && verification && verification.success && progressState.errors.length === 0) {
-        syncSettingsToInstalledPlatforms(loadSettings({ homeDir: HOME }), { homeDir: HOME, repoRoot: ROOT });
-        console.log('✅ Installation completed successfully!');
-    } else if (operation === 'uninstall' && progressState.errors.length === 0) {
-        console.log('✅ Uninstallation completed successfully!');
-    } else {
-        console.log('⚠️  Operation completed with warnings. Check errors above.');
+    } catch (error) {
+        logError('manifest', manifestPath(HOME, key), error);
+        return null;
     }
 }
 
-// ============================================================================
-// Installation Functions
-// ============================================================================
-
-function installCursor() {
-    const tool = TOOLS.cursor;
-    
-    // Reset and estimate progress
-    resetProgress();
-    progressState.total = estimateInstallFiles();
-    
-    console.log(`\n📦 Installing BoomOpen Workflow Kit for ${tool.name}...`);
-    console.log(`   Estimated files: ~${formatNumber(progressState.total)}\n`);
-
+function copySharedFolders(plan, tool, ledger, notes) {
     let total = 0;
-
-    // --- 1. INSTALL EDITOR CONFIG (~/.cursor) ---
-    // 1.1 Global MDCs (Rules)
-    if (tool.assets.rules && fs.existsSync(tool.assets.rules)) {
-        total += copyWithReplace(tool.assets.rules, tool.paths.rules, tool.replacements);
-    }
-
-    // 1.2 Global Commands (Suggestions)
-    total += copyWithReplace(path.join(ROOT, 'commands'), tool.paths.commands, tool.replacements);
-
-    // --- 1.2 Global Config Files (CURSOR.md, AGENT.md, CLAUDE.md) ---
-    // We want CURSOR.md, AGENT.md, CLAUDE.md in ~/.cursor/
-    // .cursorrules from extension becomes CURSOR.md
-    if (tool.assets.cursorRules && fs.existsSync(tool.assets.cursorRules)) {
-        const destFile = path.join(tool.paths.editorHome, 'CURSOR.md');
-        if (installUserFacingFile(tool.assets.cursorRules, destFile, tool.replacements)) total++;
-    }
-
-    // AGENT.md, CLAUDE.md (user-authored copies are backed up first)
-    const globalFiles = ['AGENT.md', 'CLAUDE.md'];
-    for (const file of globalFiles) {
-        const src = path.join(ROOT, file);
-        const dest = path.join(tool.paths.editorHome, file);
-        if (installUserFacingFile(src, dest, tool.replacements)) total++;
-    }
-
-    // --- 2. INSTALL EXTENSION BRAIN (~/.cursor/skills/boomopen-workflow-kit) ---
-    // Clean install - remove old framework
-    if (fs.existsSync(tool.paths.frameworkPath)) {
-        fs.rmSync(tool.paths.frameworkPath, { recursive: true, force: true });
-    }
-    ensureDir(tool.paths.frameworkPath);
-
-    // Copy all core directories
-    for (const dir of CORE_DIRS) {
-        const srcDir = path.join(ROOT, dir);
-        if (fs.existsSync(srcDir)) {
-            total += copyWithReplace(srcDir, path.join(tool.paths.frameworkPath, dir), tool.replacements);
+    for (const copy of plan.shared) {
+        if (path.basename(copy.src) === 'skills_library' && !fs.existsSync(copy.src)) {
+            // listSourceFiles returns [] on ENOENT; never skip the vault silently.
+            warnLine('   ⚠️  skills_library/ is not bundled in this kit copy; the on-demand library skills are unavailable.');
+            notes.push('Library:     skills_library/ not bundled in this kit copy (indexed library skills unavailable)');
+            continue;
         }
+        const replacements = copy.verbatim ? null : tool.replacements;
+        if (copy.file) total += steps.copySharedFile(copy.src, copy.dest, replacements, ledger);
+        else total += steps.copyTree(copy.src, copy.dest, replacements, ledger);
     }
-
-    // Also copy 'commands' to 'workflows' for backward compatibility
-    const commandsSrc = path.join(ROOT, 'commands');
-    if (fs.existsSync(commandsSrc)) {
-        total += copyWithReplace(commandsSrc, path.join(tool.paths.frameworkPath, 'workflows'), tool.replacements);
-    }
-
-    // Copy root files (README.md, etc.)
-    for (const file of ROOT_FILES) {
-        const srcFile = path.join(ROOT, file);
-        if (fs.existsSync(srcFile)) {
-            if (copyFileWithReplace(srcFile, path.join(tool.paths.frameworkPath, file), tool.replacements)) {
-                total++;
-            }
-        }
-    }
-
-    // --- 3. INSTALL USER SKILLS (~/.cursor/skills/) ---
-    total += copyWithReplace(path.join(ROOT, 'skills'), tool.paths.skills, tool.replacements);
-
-    // --- INSTALL SKILLS LIBRARY ---
-    const libSrc = path.join(ROOT, 'skills_library');
-    if (fs.existsSync(libSrc)) {
-        const destLib = tool.paths.skills + '_library';
-        total += copyWithReplace(libSrc, destLib, tool.replacements);
-    }
-
-    // --- 4. NATIVE SUBAGENT SUPPORT (~/.cursor/agents/) ---
-    // Only copy bundled agents (merge/update)
-    total += copyWithReplace(path.join(ROOT, 'agents'), tool.paths.agents, tool.replacements);
-
-    // Complete progress bar
-    completeProgress();
-    
-    // Print summary with verification
-    printSummary(tool.name, 'install');
-    
-    console.log(`\n   📁 Paths:`);
-    console.log(`      Rules:          ${tool.paths.rules}`);
-    console.log(`      Commands:       ${tool.paths.commands}`);
-    console.log(`      Core Framework: ${tool.paths.frameworkPath}`);
-    console.log(`      Skills:         ${tool.paths.skills}`);
-    console.log(`      Native Agents:  ${tool.paths.agents}`);
-
     return total;
 }
 
-function installCopilot() {
-    const tool = TOOLS.copilot;
-    
-    // Reset and estimate progress
-    resetProgress();
-    progressState.total = estimateInstallFiles();
-    
-    console.log(`\n📦 Installing BoomOpen Workflow Kit for ${tool.name}...`);
-    console.log(`   Estimated files: ~${formatNumber(progressState.total)}\n`);
-
-    let total = 0;
-
-    // --- 1. INSTALL TO VS CODE PROMPTS & GLOBAL CONFIG ---
-    if (tool.assets.agentFile && fs.existsSync(tool.assets.agentFile)) {
-        // 1.1 Custom Prompt (VS Code) -> boomopen-workflow-kit.agent.md
-        ensureDir(tool.paths.vsCodePrompts);
-        const promptDest = path.join(tool.paths.vsCodePrompts, 'boomopen-workflow-kit.agent.md');
-        if (copyFileWithReplace(tool.assets.agentFile, promptDest, tool.replacements)) {
-            total++;
-        }
-    }
-
-    // --- 1.2 Global Config Files (COPILOT.md, AGENT.md, CLAUDE.md) ---
-    ensureDir(tool.paths.home);
-    const globalFiles = ['COPILOT.md', 'AGENT.md', 'CLAUDE.md'];
-    for (const file of globalFiles) {
-        const src = path.join(ROOT, file);
-        const dest = path.join(tool.paths.home, file);
-        if (installUserFacingFile(src, dest, tool.replacements)) total++;
-    }
-
-    // --- 2. INSTALL CORE FRAMEWORK (~/.copilot/skills/boomopen-workflow-kit) ---
-    // Clean install - remove old framework
-    if (fs.existsSync(tool.paths.frameworkPath)) {
-        fs.rmSync(tool.paths.frameworkPath, { recursive: true, force: true });
-    }
-    ensureDir(tool.paths.frameworkPath);
-
-    // Copy all core directories
-    for (const dir of CORE_DIRS) {
-        const srcDir = path.join(ROOT, dir);
-        if (fs.existsSync(srcDir)) {
-            total += copyWithReplace(srcDir, path.join(tool.paths.frameworkPath, dir), tool.replacements);
-        }
-    }
-
-    // Install commands to ~/.copilot/commands
-    if (fs.existsSync(path.join(ROOT, 'commands'))) {
-        ensureDir(tool.paths.commands);
-        total += copyWithReplace(path.join(ROOT, 'commands'), tool.paths.commands, tool.replacements);
-    }
-
-    // Also copy 'commands' to 'workflows' for backward compatibility
-    const commandsSrc = path.join(ROOT, 'commands');
-    if (fs.existsSync(commandsSrc)) {
-        total += copyWithReplace(commandsSrc, path.join(tool.paths.frameworkPath, 'workflows'), tool.replacements);
-    }
-
-    // Copy root files (README.md, etc.)
-    for (const file of ROOT_FILES) {
-        const srcFile = path.join(ROOT, file);
-        if (fs.existsSync(srcFile)) {
-            if (copyFileWithReplace(srcFile, path.join(tool.paths.frameworkPath, file), tool.replacements)) {
-                total++;
-            }
-        }
-    }
-
-    // --- 3. INSTALL USER SKILLS (~/.copilot/skills/) ---
-    total += copyWithReplace(path.join(ROOT, 'skills'), tool.paths.skills, tool.replacements);
-
-    // --- INSTALL SKILLS LIBRARY ---
-    const libSrc = path.join(ROOT, 'skills_library');
-    if (fs.existsSync(libSrc)) {
-        const destLib = tool.paths.skills + '_library';
-        total += copyWithReplace(libSrc, destLib, tool.replacements);
-    }
-
-    // --- 4. NATIVE SUBAGENT SUPPORT (~/.copilot/agents/) ---
-    ensureDir(tool.paths.agents);
-    total += copyWithReplace(path.join(ROOT, 'agents'), tool.paths.agents, tool.replacements);
-
-    // Complete progress bar
-    completeProgress();
-    
-    // Print summary with verification
-    printSummary(tool.name, 'install');
-    
-    console.log(`\n   📁 Paths:`);
-    console.log(`      VS Code Prompts: ${tool.paths.vsCodePrompts}`);
-    console.log(`      Global Config:   ${tool.paths.home}`);
-    console.log(`      Commands:        ${tool.paths.commands}`);
-    console.log(`      Core Framework:  ${tool.paths.frameworkPath}`);
-    console.log(`      Skills:          ${tool.paths.skills}`);
-    console.log(`      Native Agents:   ${tool.paths.agents}`);
-
-    return total;
-}
-
-function installAntigravity() {
-    const tool = TOOLS.antigravity;
-    
-    // Reset and estimate progress
-    resetProgress();
-    progressState.total = estimateInstallFiles() * 1.5; // Antigravity has more destinations
-    
-    console.log(`\n📦 Installing BoomOpen Workflow Kit for ${tool.name}...`);
-    console.log(`   Estimated files: ~${formatNumber(Math.round(progressState.total))}\n`);
-
-    let total = 0;
-
-    // --- 1. INSTALL EDITOR CONFIG (~/.antigravity) ---
-    // 1.1 Workflows (from commands) -> ~/.antigravity/workflows
-    ensureDir(tool.paths.workflows);
-    total += copyWithReplace(path.join(ROOT, 'commands'), tool.paths.workflows, tool.replacements);
-
-    // 1.2 Agents -> ~/.antigravity/agents
-    ensureDir(tool.paths.agents);
-    total += copyWithReplace(path.join(ROOT, 'agents'), tool.paths.agents, tool.replacements);
-
-
-    // --- 2. INSTALL PLATFORM CONFIG (~/.gemini) ---
-    ensureDir(tool.paths.gemini);
-
-    // 2.1 GEMINI.md
-    if (tool.assets.geminiMd && fs.existsSync(tool.assets.geminiMd)) {
-        const destFile = path.join(tool.paths.gemini, 'GEMINI.md');
-        // Marker-merge: user content outside the markers is preserved
-        const MARKER_START = GEMINI_MARKER_START;
-        const MARKER_END = GEMINI_MARKER_END;
-
-        let bundledContent = fs.readFileSync(tool.assets.geminiMd, 'utf8');
-        const keys = Object.keys(tool.replacements).sort((a, b) => b.length - a.length);
-        for (const search of keys) {
-            bundledContent = bundledContent.replaceAll(search, tool.replacements[search]);
-        }
-
-        const wrappedContent = `${MARKER_START}\n${bundledContent}\n${MARKER_END}`;
-        let existingContent = '';
-        if (fs.existsSync(destFile)) {
-            existingContent = fs.readFileSync(destFile, 'utf8');
-            existingContent = existingContent.replace(/<!-- AGENT-ASSISTANT-START -->[\s\S]*?<!-- AGENT-ASSISTANT-END -->\s*/g, '');
-        }
-
-        if (existingContent.includes(MARKER_START)) {
-            const regex = new RegExp(`${MARKER_START}[\\s\\S]*?${MARKER_END}`, 'g');
-            const fd = fs.openSync(destFile, 'w');
-            fs.writeSync(fd, existingContent.replace(regex, wrappedContent));
-            fs.fsyncSync(fd);
-            fs.closeSync(fd);
+function finishLedger(ledger, notes) {
+    try {
+        if (ledger.previous && progressState.errors.length > 0) {
+            // A run that failed part-way must not treat the files it could not write as stale.
+            ledger.carryForwardPrevious();
+            notes.push('Upgrade:     old kit files were not cleaned up because this run had errors');
         } else {
-            const separator = existingContent.trim() === '' ? '' : '\n\n';
-            const fd = fs.openSync(destFile, 'w');
-            fs.writeSync(fd, existingContent.trimEnd() + separator + wrappedContent + '\n');
-            fs.fsyncSync(fd);
-            fs.closeSync(fd);
+            const { removed, kept } = ledger.pruneStale();
+            if (removed.length) notes.push(`Upgrade:     removed ${removed.length} files the kit no longer ships`);
+            if (kept.length) notes.push(`Upgrade:     kept ${kept.length} files you modified that the kit no longer ships`);
         }
-        progressState.copiedFiles.push(destFile);
-        updateProgress('GEMINI.md');
-        total++;
-    }
-
-    // 2.2 Remove legacy kit copies of AGENT.md / CLAUDE.md in ~/.gemini/ (duplicate global rule
-    // discovery in Antigravity 2.0). Files the user wrote themselves are never touched.
-    const legacyGlobalFiles = ['AGENT.md', 'CLAUDE.md'];
-    for (const file of legacyGlobalFiles) {
-        try {
-            removeIfKitOwned(path.join(tool.paths.gemini, file));
-        } catch (e) {
-            logError('remove', path.join(tool.paths.gemini, file), e);
+        if (ledger.backedUp.length && ledger.restorable) {
+            notes.push(`Backups:     ${ledger.backedUp.length} of your files were saved to ${ledger.sessionBackupDir}`);
+        } else if (ledger.backedUp.length) {
+            // Upgrading a pre-manifest install: these are mostly copies the older kit release wrote.
+            notes.push(`Backups:     ${ledger.backedUp.length} previous kit copies (including any you edited) were saved to`);
+            notes.push(`             ${ledger.sessionBackupDir} (they are not put back on uninstall)`);
         }
+        ledger.save();
+    } catch (error) {
+        logError('manifest', manifestPath(HOME, ledger.toolKey), error);
     }
+}
 
-    // Remove the legacy agent-assistant skill folder (the kit's former name) and only the kit's own
-    // files from the legacy global_workflows folder (user workflows there are kept).
-    removeDir(path.join(HOME, '.gemini', 'config', 'skills', 'agent-assistant'), false);
+/**
+ * The destructive-command guard is copied into every framework folder but is opt-in:
+ * `install claude --with-hooks` registers it as a Claude Code PreToolUse hook (an existing
+ * registration is refreshed on reinstall); for Gemini CLI / Antigravity the exact manual
+ * registration is printed.
+ */
+function registerHooks(key, tool, notes) {
+    const hookPath = path.join(tool.paths.frameworkPath, 'hooks', HOOK_SCRIPT_NAME);
+    if (key === 'antigravity') {
+        notes.push(`Guard:       opt-in hook copied to ${hookPath}; to enable it:`);
+        for (const line of describeManualRegistration(hookPath)) notes.push(`             ${line}`);
+        return;
+    }
+    if (key !== 'claude') return;
+    const settingsPath = path.join(tool.paths.home, 'settings.json');
+    if (!cliOptions.registerHooks && !isClaudeHookRegistered(settingsPath)) {
+        notes.push('Guard:       opt-in hook not registered (run `boomopen install claude --with-hooks` to enable)');
+        return;
+    }
     try {
-        removeMirroredFiles(path.join(ROOT, 'commands'), path.join(HOME, '.gemini', 'antigravity', 'global_workflows'));
-    } catch (e) {
-        logError('remove', path.join(HOME, '.gemini', 'antigravity', 'global_workflows'), e);
+        registerClaudeHook(settingsPath, hookPath);
+        notes.push(`Guard:       destructive-command hook registered in ${settingsPath}`);
+    } catch (error) {
+        warnLine(`   ⚠️  Guard hook not registered: ${error instanceof Error ? error.message : String(error)}`);
+        notes.push('Guard:       NOT registered (see warning above)');
     }
-
-    // 2.3 Global Agents (~/.gemini/agents)
-    ensureDir(tool.paths.globalAgents);
-
-    // AntigravityGlobal.agent.md
-    if (tool.assets.agentFile && fs.existsSync(tool.assets.agentFile)) {
-        const destFile = path.join(tool.paths.globalAgents, 'AntigravityGlobal.agent.md');
-        if (copyFileWithReplace(tool.assets.agentFile, destFile, tool.replacements)) total++;
-    }
-
-    // Other Agents
-    total += copyWithReplace(path.join(ROOT, 'agents'), tool.paths.globalAgents, tool.replacements);
-
-
-    // --- 3. INSTALL EXTENSION BRAIN (~/.gemini/config) ---
-    // 3.1 Global Workflows (~/.gemini/config/global_workflows)
-    ensureDir(tool.paths.globalWorkflows);
-    total += copyWithReplace(path.join(ROOT, 'commands'), tool.paths.globalWorkflows, tool.replacements);
-    // 3.2 Core Framework (~/.gemini/config/skills/boomopen-workflow-kit)
-    if (fs.existsSync(tool.paths.frameworkPath)) {
-        fs.rmSync(tool.paths.frameworkPath, { recursive: true, force: true });
-    }
-    ensureDir(tool.paths.frameworkPath);
-
-    for (const dir of CORE_DIRS) {
-        const srcDir = path.join(ROOT, dir);
-        if (fs.existsSync(srcDir)) {
-            total += copyWithReplace(srcDir, path.join(tool.paths.frameworkPath, dir), tool.replacements);
-        }
-    }
-
-    // Backward compat workflows
-    const commandsSrc = path.join(ROOT, 'commands');
-    if (fs.existsSync(commandsSrc)) {
-        total += copyWithReplace(commandsSrc, path.join(tool.paths.frameworkPath, 'workflows'), tool.replacements);
-    }
-
-    for (const file of ROOT_FILES) {
-        const srcFile = path.join(ROOT, file);
-        if (fs.existsSync(srcFile)) {
-            if (copyFileWithReplace(srcFile, path.join(tool.paths.frameworkPath, file), tool.replacements)) total++;
-        }
-    }
-
-    // 3.3 Skills (~/.gemini/config/skills)
-    total += copyWithReplace(path.join(ROOT, 'skills'), tool.paths.skills, tool.replacements);
-
-    // --- INSTALL SKILLS LIBRARY ---
-    const libSrc = path.join(ROOT, 'skills_library');
-    if (fs.existsSync(libSrc)) {
-        const destLib = tool.paths.skills + '_library';
-        total += copyWithReplace(libSrc, destLib, tool.replacements);
-    }
-
-    // Complete progress bar
-    completeProgress();
-    
-    // Print summary with verification
-    printSummary(tool.name, 'install');
-    
-    console.log(`\n   📁 Paths:`);
-    console.log(`      Editor Config:   ${tool.paths.editorHome}`);
-    console.log(`      Platform Config: ${tool.paths.gemini}`);
-    console.log(`      Extension Brain: ${tool.paths.antigravity}`);
-
-    return total;
 }
 
-function installClaude() {
-    const tool = TOOLS.claude;
-    
-    // Reset and estimate progress
-    resetProgress();
-    progressState.total = estimateInstallFiles();
-    
-    console.log(`\n📦 Installing BoomOpen Workflow Kit for ${tool.name}...`);
-    console.log(`   Estimated files: ~${formatNumber(progressState.total)}\n`);
+function syncSettings() {
+    try {
+        // null = global settings only, so a workspace ./.boomopen.json never leaks into global entry files.
+        syncSettingsToInstalledPlatforms(null, { homeDir: HOME });
+    } catch (error) {
+        logError('settings-sync', path.join(HOME, '.boomopen'), error);
+    }
+}
 
+/**
+ * Older releases also wrote into ~/.gemini/antigravity/global_workflows and a skill folder named
+ * after the kit's former name. Only byte-identical kit copies are removed there.
+ */
+function cleanupAntigravityLegacy(tool) {
+    const legacyWorkflows = path.join(tool.paths.gemini, 'antigravity', 'global_workflows');
+    try {
+        steps.removeIdenticalCopies(path.join(ROOT, 'commands'), legacyWorkflows, tool.replacements);
+    } catch (error) {
+        logError('legacy-workflows', legacyWorkflows, error);
+    }
+    const legacySkill = path.join(tool.paths.skills, 'agent-assistant');
+    const looksLikeKit = ['SKILL.md', 'rules', 'agents'].every((name) => fs.existsSync(path.join(legacySkill, name)));
+    if (!looksLikeKit) return;
+    try {
+        fs.rmSync(legacySkill, { recursive: true, force: true });
+    } catch (error) {
+        logError('legacy-skill', legacySkill, error);
+    }
+}
+
+function printPaths(tool) {
+    printLine('\n   📁 Paths:');
+    for (const [label, value] of Object.entries(tool.paths)) printLine(`      ${label.padEnd(15)} ${value}`);
+}
+
+/** Install the kit for one tool. @returns {number} files written */
+function installTool(key) {
+    const tool = TOOLS[key];
+    const plan = buildPlan(key, tool, ROOT);
+    resetProgress(estimateTotal(plan));
+    printLine(`\n📦 Installing BoomOpen Workflow Kit v${KIT_VERSION} for ${tool.name}...`);
+    printLine(`   Estimated files: ~${formatNumber(progressState.total)}\n`);
+
+    const notes = [];
     let total = 0;
-
-    // --- 1. INSTALL GLOBAL CONFIG (~/.claude) ---
-    ensureDir(tool.paths.home);
-
-    // 1.1 Global Config Files (CLAUDE.md, AGENT.md)
-    if (tool.assets.claudeMd && fs.existsSync(tool.assets.claudeMd)) {
-        const destFile = path.join(tool.paths.home, 'CLAUDE.md');
-        if (installUserFacingFile(tool.assets.claudeMd, destFile, tool.replacements)) total++;
+    const ledger = createLedger(key, tool);
+    if (ledger) {
+        migrateLegacy({ key, tool, ledger, notes, root: ROOT, homeDir: HOME });
+        recordToolDirs(plan, tool, ledger);
+        total += steps.installInstructionFiles(plan.instructionFiles, tool.replacements);
+        steps.uninstallInstructionFiles(plan.legacyInstructionFiles, kitInstructionTexts(tool, plan, ROOT));
+        total += steps.installFramework(tool.paths.frameworkPath, ROOT, CORE_DIRS, ROOT_FILES, HOOKS_SRC, tool.replacements, VERBATIM_DIRS);
+        total += copySharedFolders(plan, tool, ledger, notes);
+        if (key === 'codex' && steps.mergeCodexConfigFile(tool.assets.configToml, path.join(tool.paths.home, 'config.toml'))) total++;
+        if (key === 'antigravity') cleanupAntigravityLegacy(tool);
+        finishLedger(ledger, notes);
+        registerHooks(key, tool, notes);
+        syncSettings();
     }
-
-    // Copy AGENT.md as well
-    const agentMdSrc = path.join(ROOT, 'AGENT.md');
-    if (installUserFacingFile(agentMdSrc, path.join(tool.paths.home, 'AGENT.md'), tool.replacements)) total++;
-
-    // 1.2 Commands (~/.claude/commands)
-    ensureDir(tool.paths.commands);
-    total += copyWithReplace(path.join(ROOT, 'commands'), tool.paths.commands, tool.replacements);
-
-    // 1.3 Native Agents (~/.claude/agents)
-    ensureDir(tool.paths.agents);
-    total += copyWithReplace(path.join(ROOT, 'agents'), tool.paths.agents, tool.replacements);
-
-    // --- 2. INSTALL CORE FRAMEWORK (~/.claude/skills/boomopen-workflow-kit) ---
-    if (fs.existsSync(tool.paths.frameworkPath)) {
-        fs.rmSync(tool.paths.frameworkPath, { recursive: true, force: true });
-    }
-    ensureDir(tool.paths.frameworkPath);
-
-    for (const dir of CORE_DIRS) {
-        const srcDir = path.join(ROOT, dir);
-        if (fs.existsSync(srcDir)) {
-            total += copyWithReplace(srcDir, path.join(tool.paths.frameworkPath, dir), tool.replacements);
-        }
-    }
-
-    // Copy backward compat workflows
-    const commandsSrc = path.join(ROOT, 'commands');
-    if (fs.existsSync(commandsSrc)) {
-        total += copyWithReplace(commandsSrc, path.join(tool.paths.frameworkPath, 'workflows'), tool.replacements);
-    }
-
-    // Copy root files
-    for (const file of ROOT_FILES) {
-        const srcFile = path.join(ROOT, file);
-        if (fs.existsSync(srcFile)) {
-            if (copyFileWithReplace(srcFile, path.join(tool.paths.frameworkPath, file), tool.replacements)) total++;
-        }
-    }
-
-    // --- 3. INSTALL SKILLS (~/.claude/skills) ---
-    total += copyWithReplace(path.join(ROOT, 'skills'), tool.paths.skills, tool.replacements);
-
-    // --- INSTALL SKILLS LIBRARY ---
-    const libSrc = path.join(ROOT, 'skills_library');
-    if (fs.existsSync(libSrc)) {
-        const destLib = tool.paths.skills + '_library';
-        total += copyWithReplace(libSrc, destLib, tool.replacements);
-    }
-
-    // Complete progress bar
     completeProgress();
-    
-    // Print summary with verification
-    printSummary(tool.name, 'install');
-    
-    console.log(`\n   📁 Paths:`);
-    console.log(`      Home:     ${tool.paths.home}`);
-    console.log(`      Commands: ${tool.paths.commands}`);
-    console.log(`      Skills:   ${tool.paths.skills}`);
-
-    return total;
-}
-
-function mergeCodexConfig(templatePath, userConfigPath) {
-    // Read template
-    const template = fs.readFileSync(templatePath, 'utf8');
-
-    // Read existing user config or empty string
-    let userConfig = '';
-    if (fs.existsSync(userConfigPath)) {
-        // Keep the pristine pre-install config so uninstall can restore the user's own values
-        try {
-            const backupPath = backupUserFile(userConfigPath, {
-                isKitOwned: (text) => text.includes(CODEX_MARKER_START),
-            });
-            if (backupPath) console.log(`   💾 Backed up your existing config.toml → ${backupPath}`);
-        } catch (e) {
-            logError('backup', userConfigPath, e);
-            console.warn(`   ⚠️ Could not back up ${userConfigPath} (${e.message}); leaving it untouched.`);
-            return false;
-        }
-        userConfig = fs.readFileSync(userConfigPath, 'utf8');
-    }
-
-    // Our marker: lines between start and end markers
-    const markerStart = CODEX_MARKER_START;
-    const markerEnd = CODEX_MARKER_END;
-
-    // Remove old boomopen-workflow-kit sections from user config
-    userConfig = stripMarkedBlock(userConfig, markerStart, markerEnd).text;
-
-    // Update or add project_doc_fallback_filenames in user config
-    const docFallback = CODEX_DOC_FALLBACK;
-    if (userConfig.includes('project_doc_fallback_filenames')) {
-        userConfig = userConfig.replace(/project_doc_fallback_filenames\s*=\s*\[.*?\]/s, docFallback);
-    } else {
-        // Prepend before first section header or at end of top-level keys
-        const firstSection = userConfig.indexOf('\n[');
-        if (firstSection !== -1) {
-            userConfig = userConfig.substring(0, firstSection) + '\n' + docFallback + '\n' + userConfig.substring(firstSection);
-        } else {
-            userConfig = userConfig.trimEnd() + '\n' + docFallback + '\n';
-        }
-    }
-
-    // Build our managed block
-    let managedBlock = `\n${markerStart}\n`;
-    managedBlock += '# Managed by BoomOpen Workflow Kit — do not edit manually\n\n';
-
-    // Add [features] if not present
-    if (!userConfig.includes('[features]')) {
-        managedBlock += '[features]\nmulti_agent = true\n\n';
-    } else if (!userConfig.includes('multi_agent')) {
-        // Need to add multi_agent to existing [features]
-        userConfig = userConfig.replace('[features]', '[features]\nmulti_agent = true');
-    }
-
-    // Add agents config (always from template)
-    // Extract everything from [agents] onward in template
-    const agentsSectionMatch = template.match(/(\[agents\][\s\S]*)/);
-    if (agentsSectionMatch) {
-        managedBlock += agentsSectionMatch[1] + '\n';
-    }
-
-    managedBlock += `${markerEnd}\n`;
-
-    // Append managed block to user config
-    const finalConfig = userConfig.trimEnd() + '\n' + managedBlock;
-
-    // Write with fsync
-    fs.writeFileSync(userConfigPath, finalConfig, 'utf8');
-
-    return true;
-}
-
-function installCodex() {
-    const tool = TOOLS.codex;
-    
-    // Reset and estimate progress
-    resetProgress();
-    progressState.total = estimateInstallFiles();
-    
-    console.log(`\n📦 Installing BoomOpen Workflow Kit for ${tool.name}...`);
-    console.log(`   Estimated files: ~${formatNumber(progressState.total)}\n`);
-
-    let total = 0;
-
-    // --- 1. INSTALL GLOBAL CONFIG (~/.codex) ---
-    ensureDir(tool.paths.home);
-
-    // 1.1 Global Config Files (AGENTS.md, CODEX.md, AGENT.md)
-    if (tool.assets.codexMd && fs.existsSync(tool.assets.codexMd)) {
-        const destFile = path.join(tool.paths.home, 'CODEX.md');
-        if (installUserFacingFile(tool.assets.codexMd, destFile, tool.replacements)) total++;
-
-        // Codex discovers global instructions from ~/.codex/AGENTS.md.
-        const agentsDestFile = path.join(tool.paths.home, 'AGENTS.md');
-        if (installUserFacingFile(tool.assets.codexMd, agentsDestFile, tool.replacements)) total++;
-    }
-
-    // Copy AGENT.md as well
-    const agentMdSrc = path.join(ROOT, 'AGENT.md');
-    if (installUserFacingFile(agentMdSrc, path.join(tool.paths.home, 'AGENT.md'), tool.replacements)) total++;
-
-    // 1.2 Codex-native TOML agent configs (~/.codex/agents/)
-    ensureDir(tool.paths.agents);
-    if (tool.assets.agentTomlDir && fs.existsSync(tool.assets.agentTomlDir)) {
-        total += copyWithReplace(tool.assets.agentTomlDir, tool.paths.agents, tool.replacements);
-        console.log(`   ✅ Installed ${fs.readdirSync(tool.assets.agentTomlDir).filter(f => f.endsWith('.toml')).length} Codex agent roles (TOML)`);
-    }
-
-    // 1.3 Merge config.toml (agents + features into user config)
-    if (tool.assets.configToml && fs.existsSync(tool.assets.configToml)) {
-        const userConfigPath = path.join(tool.paths.home, 'config.toml');
-        if (mergeCodexConfig(tool.assets.configToml, userConfigPath)) {
-            total++;
-            console.log(`   ✅ Merged agent config into ${userConfigPath}`);
-        }
-    }
-
-    // 1.4 Commands (~/.codex/commands — for backward compat)
-    ensureDir(tool.paths.commands);
-    total += copyWithReplace(path.join(ROOT, 'commands'), tool.paths.commands, tool.replacements);
-
-    // --- 2. INSTALL CORE FRAMEWORK (~/.codex/skills/boomopen-workflow-kit) ---
-    if (fs.existsSync(tool.paths.frameworkPath)) {
-        fs.rmSync(tool.paths.frameworkPath, { recursive: true, force: true });
-    }
-    ensureDir(tool.paths.frameworkPath);
-
-    for (const dir of CORE_DIRS) {
-        const srcDir = path.join(ROOT, dir);
-        if (fs.existsSync(srcDir)) {
-            total += copyWithReplace(srcDir, path.join(tool.paths.frameworkPath, dir), tool.replacements);
-        }
-    }
-
-    // Copy backward compat workflows
-    const commandsSrc = path.join(ROOT, 'commands');
-    if (fs.existsSync(commandsSrc)) {
-        total += copyWithReplace(commandsSrc, path.join(tool.paths.frameworkPath, 'workflows'), tool.replacements);
-    }
-
-    // Copy root files
-    for (const file of ROOT_FILES) {
-        const srcFile = path.join(ROOT, file);
-        if (fs.existsSync(srcFile)) {
-            if (copyFileWithReplace(srcFile, path.join(tool.paths.frameworkPath, file), tool.replacements)) total++;
-        }
-    }
-
-    // --- 3. INSTALL SKILLS (~/.codex/skills) ---
-    total += copyWithReplace(path.join(ROOT, 'skills'), tool.paths.skills, tool.replacements);
-
-    // --- INSTALL SKILLS LIBRARY ---
-    const libSrc = path.join(ROOT, 'skills_library');
-    if (fs.existsSync(libSrc)) {
-        const destLib = tool.paths.skills + '_library';
-        total += copyWithReplace(libSrc, destLib, tool.replacements);
-    }
-
-    // 3.1 Install Codex-specific command skills (from platforms/codex/skills/)
-    if (tool.assets.commandSkillsDir && fs.existsSync(tool.assets.commandSkillsDir)) {
-        total += copyWithReplace(tool.assets.commandSkillsDir, tool.paths.skills, tool.replacements);
-        const cmdSkillCount = fs.readdirSync(tool.assets.commandSkillsDir)
-            .filter(f => fs.statSync(path.join(tool.assets.commandSkillsDir, f)).isDirectory()).length;
-        console.log(`   ✅ Installed ${cmdSkillCount} command skills (Codex-native)`);
-    }
-
-    // Complete progress bar
-    completeProgress();
-    
-    // Print summary with verification
-    printSummary(tool.name, 'install');
-    
-    console.log(`\n   📁 Paths:`);
-    console.log(`      Home:      ${tool.paths.home}`);
-    console.log(`      Agents:    ${tool.paths.agents} (TOML configs)`);
-    console.log(`      Commands:  ${tool.paths.commands}`);
-    console.log(`      Skills:    ${tool.paths.skills}`);
-    console.log(`      Framework: ${tool.paths.frameworkPath}`);
-
+    printSummary(tool.name, 'install', notes);
+    printPaths(tool);
     return total;
 }
 
 // ============================================================================
-// Uninstall Functions
+// Uninstall
 // ============================================================================
 
-/**
- * Shared uninstall prologue: reset progress and print the banner.
- */
-function beginUninstall(tool, estimatedOps) {
-    resetProgress();
-    progressState.total = estimatedOps;
-    console.log(`\n🗑️  Uninstalling BoomOpen Workflow Kit from ${tool.name}...`);
-    console.log(`   Only files shipped by the kit are removed; your own files are kept.\n`);
+function isInstalled(key, tool, plan) {
+    if (fs.existsSync(tool.paths.frameworkPath) || fs.existsSync(manifestPath(HOME, key))) return true;
+    return plan.instructionFiles.some(({ dest }) => hasKitContent(dest));
 }
 
-/**
- * Shared uninstall epilogue: summary + preserved-skills note.
- */
-function finishUninstall(tool, removed) {
-    completeProgress();
-    printSummary(tool.name, 'uninstall');
-    console.log(`\n   ℹ️  User skills preserved at: ${tool.paths.skills}`);
-    return removed;
-}
-
-function uninstallCursor() {
-    const tool = TOOLS.cursor;
-    beginUninstall(tool, 10);
+/** Pre-manifest installs: remove identical kit copies, move anything else to a backup folder. */
+function removeWithoutManifest(key, tool, plan, notes) {
+    const backupDir = path.join(backupRoot(HOME, key), `uninstall-${new Date().toISOString().replace(/[:.]/g, '-')}`);
     let removed = 0;
-
-    // 1. Kit rules + global instruction files (user originals are restored from backup)
-    removed += uninstallMirrored(tool.assets.rules, tool.paths.rules);
-    for (const file of ['CURSOR.md', 'AGENT.md', 'CLAUDE.md']) {
-        if (uninstallUserFacingFile(path.join(tool.paths.editorHome, file))) removed++;
+    let moved = 0;
+    for (const copy of plan.shared) {
+        const result = steps.removeUnmanifestedCopies(copy.src, copy.dest, copy.verbatim ? null : tool.replacements, backupDir);
+        removed += result.removed;
+        moved += result.moved;
     }
-
-    // 2. Commands and native agents: only the files the kit copied
-    removed += uninstallMirrored(path.join(ROOT, 'commands'), tool.paths.commands);
-    removed += uninstallMirrored(path.join(ROOT, 'agents'), tool.paths.agents);
-
-    // 3. Core framework (kit-owned folder)
-    if (removeDir(tool.paths.frameworkPath)) removed++;
-
-    return finishUninstall(tool, removed);
+    notes.push(`Legacy:      no install manifest; removed ${removed} unchanged kit files`);
+    if (moved) notes.push(`Legacy:      ${moved} kit-named files differed and were moved to ${backupDir}`);
 }
 
-function uninstallCopilot() {
-    const tool = TOOLS.copilot;
-    beginUninstall(tool, 10);
-    let removed = 0;
-
-    // 1. Kit prompt file in VS Code prompts (kit-named)
-    if (removeFile(path.join(tool.paths.vsCodePrompts, 'boomopen-workflow-kit.agent.md'))) removed++;
-
-    // 2. Core framework (kit-owned folder)
-    if (removeDir(tool.paths.frameworkPath)) removed++;
-
-    // 3. Commands and native agents: only the files the kit copied
-    removed += uninstallMirrored(path.join(ROOT, 'commands'), tool.paths.commands);
-    removed += uninstallMirrored(path.join(ROOT, 'agents'), tool.paths.agents);
-
-    // 4. Global instruction files (user originals are restored from backup)
-    for (const file of ['AGENT.md', 'COPILOT.md', 'CLAUDE.md']) {
-        if (uninstallUserFacingFile(path.join(tool.paths.home, file))) removed++;
-    }
-
-    return finishUninstall(tool, removed);
-}
-
-function uninstallAntigravity() {
-    const tool = TOOLS.antigravity;
-    beginUninstall(tool, 12);
-    let removed = 0;
-    const commandsSrc = path.join(ROOT, 'commands');
-    const agentsSrc = path.join(ROOT, 'agents');
-
-    // 1. Editor config (~/.antigravity): only the kit's workflows and agents
-    removed += uninstallMirrored(commandsSrc, tool.paths.workflows);
-    removed += uninstallMirrored(agentsSrc, tool.paths.agents);
-
-    // 2. ~/.gemini/GEMINI.md: strip only the kit's marked block, keep the user's own rules
-    const geminiMd = path.join(tool.paths.gemini, 'GEMINI.md');
+function removeSharedFiles(key, tool, plan, notes) {
+    let result = null;
     try {
-        let status = removeMarkedBlockFromFile(geminiMd, GEMINI_MARKER_START, GEMINI_MARKER_END);
-        if (status === 'updated') {
-            // The settings block may have been injected outside the kit block; drop it too.
-            const settingsStatus = removeMarkedBlockFromFile(geminiMd, SETTINGS_MARKER_START, SETTINGS_MARKER_END);
-            if (settingsStatus === 'deleted') status = 'deleted';
-        }
-        if (status === 'deleted') removed += trackRemoved([geminiMd]);
-        if (status === 'updated') {
-            removed++;
-            console.log(`  ✂️  Removed the kit block from ${geminiMd} (your content kept)`);
-        }
-    } catch (e) {
-        logError('remove', geminiMd, e);
+        result = uninstallFromManifest(HOME, key);
+    } catch (error) {
+        logError('manifest', manifestPath(HOME, key), error);
+        return;
     }
-
-    // Legacy kit copies of AGENT.md / CLAUDE.md in ~/.gemini (user-authored ones are kept)
-    for (const file of ['AGENT.md', 'CLAUDE.md']) {
-        if (uninstallUserFacingFile(path.join(tool.paths.gemini, file))) removed++;
+    if (!result) {
+        removeWithoutManifest(key, tool, plan, notes);
+        return;
     }
-
-    // 3. Global agents (~/.gemini/agents): kit agents + the kit's orchestrator agent file
-    if (removeFile(path.join(tool.paths.globalAgents, 'AntigravityGlobal.agent.md'))) removed++;
-    removed += uninstallMirrored(agentsSrc, tool.paths.globalAgents);
-
-    // 4. Extension brain: kit workflows + core framework (kit-owned folder)
-    removed += uninstallMirrored(commandsSrc, tool.paths.globalWorkflows);
-    if (removeDir(tool.paths.frameworkPath)) removed++;
-
-    return finishUninstall(tool, removed);
+    progressState.removedPaths.push(...result.removed);
+    if (result.restored.length) notes.push(`Restored:    ${result.restored.length} of your files the kit had replaced`);
+    if (result.kept.length) {
+        notes.push(`Kept:        ${result.kept.length} kit files you modified after install, e.g. ${result.kept[0]}`);
+    }
 }
 
-function uninstallClaude() {
-    const tool = TOOLS.claude;
-    beginUninstall(tool, 6);
-    let removed = 0;
-
-    // 1. Global instruction files (user originals are restored from backup)
-    for (const file of ['CLAUDE.md', 'AGENT.md']) {
-        if (uninstallUserFacingFile(path.join(tool.paths.home, file))) removed++;
-    }
-
-    // 2. Commands and native agents: only the files the kit copied
-    removed += uninstallMirrored(path.join(ROOT, 'commands'), tool.paths.commands);
-    removed += uninstallMirrored(path.join(ROOT, 'agents'), tool.paths.agents);
-
-    // 3. Core framework (kit-owned folder)
-    if (removeDir(tool.paths.frameworkPath)) removed++;
-
-    return finishUninstall(tool, removed);
-}
-
-/**
- * Remove the kit's managed block (and the keys it rewrote) from ~/.codex/config.toml so the
- * remaining config never points at deleted agent TOMLs.
- */
-function uninstallCodexConfig(tool) {
-    const configPath = path.join(tool.paths.home, 'config.toml');
-    const backupPath = configPath + BACKUP_SUFFIX;
-    if (!fs.existsSync(configPath)) return 0;
-    try {
-        const original = fs.existsSync(backupPath) ? fs.readFileSync(backupPath, 'utf8') : null;
-        const current = fs.readFileSync(configPath, 'utf8');
-        const cleaned = stripCodexManagedConfig(current, original);
-        if (cleaned === current) return 0;
-        if (cleaned === '') {
-            fs.unlinkSync(configPath);
-            trackRemoved([configPath]);
-            return 1;
-        }
-        fs.writeFileSync(configPath, cleaned, 'utf8');
-        console.log(`  ✂️  Removed the kit's agent config from ${configPath}`);
-        if (original !== null) console.log(`  ℹ️  Your pre-install config is kept at ${backupPath}`);
-        return 1;
-    } catch (e) {
-        logError('remove', configPath, e);
+function uninstallTool(key) {
+    const tool = TOOLS[key];
+    const plan = buildPlan(key, tool, ROOT);
+    resetProgress(plan.instructionFiles.length + plan.shared.length + 2);
+    printLine(`\n🗑️  Uninstalling BoomOpen Workflow Kit from ${tool.name}...`);
+    if (!isInstalled(key, tool, plan)) {
+        printLine('   ℹ️  Not installed — nothing to remove.');
         return 0;
     }
-}
+    printLine('   Only files written by the kit are removed; your own files are kept.\n');
 
-function uninstallCodex() {
-    const tool = TOOLS.codex;
-    beginUninstall(tool, 8);
-    let removed = 0;
-
-    // 1. Global instruction files (user originals are restored from backup)
-    for (const file of ['CODEX.md', 'AGENTS.md', 'AGENT.md']) {
-        if (uninstallUserFacingFile(path.join(tool.paths.home, file))) removed++;
+    const notes = [];
+    const instructionPaths = plan.instructionFiles.map((f) => f.dest).concat(plan.legacyInstructionFiles);
+    steps.uninstallInstructionFiles(instructionPaths, kitInstructionTexts(tool, plan, ROOT));
+    if (key === 'codex') steps.unmergeCodexConfigFile(path.join(tool.paths.home, 'config.toml'));
+    if (key === 'claude') {
+        try {
+            if (unregisterClaudeHook(path.join(tool.paths.home, 'settings.json')) === 'removed') notes.push('Guard:       hook removed from settings.json');
+        } catch (error) {
+            logError('hook', path.join(tool.paths.home, 'settings.json'), error);
+        }
     }
-
-    // 2. config.toml managed block first, so Codex never references removed agent TOMLs
-    removed += uninstallCodexConfig(tool);
-
-    // 3. Commands, agent TOMLs and Codex command skills: only the files the kit copied
-    removed += uninstallMirrored(path.join(ROOT, 'commands'), tool.paths.commands);
-    removed += uninstallMirrored(tool.assets.agentTomlDir, tool.paths.agents);
-    removed += uninstallMirrored(tool.assets.commandSkillsDir, tool.paths.skills);
-
-    // 4. Core framework (kit-owned folder)
-    if (removeDir(tool.paths.frameworkPath)) removed++;
-
-    return finishUninstall(tool, removed);
+    // The framework goes first so the folders the kit created around it can be pruned when empty.
+    try {
+        fs.rmSync(tool.paths.frameworkPath, { recursive: true, force: true });
+        progressState.removedPaths.push(tool.paths.frameworkPath);
+    } catch (error) {
+        logError('remove', tool.paths.frameworkPath, error);
+    }
+    removeSharedFiles(key, tool, plan, notes);
+    completeProgress();
+    printSummary(tool.name, 'uninstall', notes);
+    return progressState.removedPaths.length;
 }
-
 
 // ============================================================================
-// CLI Interface
+// CLI
 // ============================================================================
 
 function printBanner() {
-    console.log(`
-╔═══════════════════════════════════════════════════════════════╗
-║                                                               ║
-║   🤖 BoomOpen Workflow Kit Framework Installer                      ║
-║                                                               ║
-║   Multi-agent orchestration for AI coding assistants          ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
-`);
+    const title = `BoomOpen Workflow Kit v${KIT_VERSION} — Installer`;
+    const subtitle = 'Multi-agent orchestration for AI coding assistants';
+    const width = 63;
+    const row = (text) => `║   ${text.padEnd(width - 3)}║`;
+    printLine(['', `╔${'═'.repeat(width)}╗`, row(title), row(subtitle), `╚${'═'.repeat(width)}╝`, ''].join('\n'));
+}
+
+/**
+ * Folder that `settings --project` writes into. `npm --prefix <kit> run settings -- ... --project`
+ * runs with the kit as cwd, so only then is npm's INIT_CWD (the caller's folder) used. Child
+ * processes inherit INIT_CWD, so it is never trusted when the CLI runs from any other folder.
+ */
+function settingsCwd() {
+    const fromNpmScript = /^settings(:|$)/.test(process.env.npm_lifecycle_event || '');
+    const initCwd = process.env.INIT_CWD;
+    if (fromNpmScript && initCwd && path.resolve(process.cwd()) === path.resolve(ROOT)) return initCwd;
+    return process.cwd();
 }
 
 function printUsage() {
-    console.log(`
-Usage: npx boomopen-workflow-kit <command> [options]
+    printLine(`
+Usage: boomopen <command> [options]
+   or: node cli/install.js <command> [options]
 
 Commands:
-  install [tool]     Install for a specific tool (cursor, copilot, antigravity, claude, codex)
-  install --all      Install for all supported tools
-  uninstall [tool]   Uninstall from a specific tool
-  settings [subcmd]  Configure workflow presets, execution mode, or launch Web UI (--ui)
-  doctor             Run framework health & entrypoint diagnostics
-  check [dir]        Audit source files against Pragmatic 2-Tier Coding Standards
-  list               List supported tools and installation status
-  help               Show this help message
+  install <tool>     Install for one tool: ${TOOL_KEYS.join(', ')}
+  install --all      Install for every supported tool
+  uninstall <tool>   Remove the kit from one tool (or --all); your own files are kept
+  list               Show supported tools and what is installed
+  settings [subcmd]  Presets, execution mode, sync, or the local Web UI (settings --ui); see "settings help"
+  doctor             Kit source and installed-platform health checks (read-only)
+  check [dir]        Audit source files against the Pragmatic 2-Tier Coding Standards
+  cook [subcmd]      State detection, wave handoff packets & post-wave verification (see "cook help")
+  research [subcmd]  Validate RESEARCH/BRAINSTORM.md (4 gates) & extract HANDOFF_BRIEF (see "research help")
+  design [subcmd]    Validate DESIGN.md (4 gates) & extract DESIGN_CONTRACT (see "design help")
+  plan [subcmd]      Validate PLAN.md (5 gates) & compile to project-ledger.json (see "plan help")
+  ledger [subcmd]    Multi-phase project ledger, phase verification gate, and RTM audit (see "ledger help")
+  conduct [subcmd]   Multi-engine conductor & parallel council consensus (see "conduct help")
+  help               Show this help
+
+Options:
+  --all              With install/uninstall: every supported tool
+  --with-hooks       Also register the opt-in destructive-command guard (Claude Code PreToolUse hook)
+  --force            Accepted for compatibility (files are always compared by content)
+  -v, --version      Print the kit version
+  -h, --help         Show this help
+
+Install from source (the kit is not published on npm):
+  git clone ${REPO_URL}
+  cd BoomOpen-Workflow-Kit
+  node cli/install.js install claude      (or: npm link, then boomopen install claude)
 
 Examples:
-  npx boomopen-workflow-kit install cursor
-  npx boomopen-workflow-kit install --all
-  npx boomopen-workflow-kit settings preset adversarial-team
-  npx boomopen-workflow-kit settings --ui --port 4567
-  npx boomopen-workflow-kit uninstall copilot
-  npx boomopen-workflow-kit list
+  boomopen install cursor
+  boomopen install claude --with-hooks
+  boomopen install --all
+  boomopen settings preset adversarial-team
+  boomopen uninstall copilot
 `);
 }
 
 function listTools() {
-    console.log('\n📋 Supported Tools:\n');
-
-    for (const [key, tool] of Object.entries(TOOLS)) {
-        // Check for the frameworkPath path which all tools now have
-        const installed = fs.existsSync(tool.paths.frameworkPath);
-        const status = installed ? '✅ Installed' : '⬚ Not installed';
-
-        console.log(`  ${key.padEnd(12)} ${tool.name.padEnd(25)} ${status}`);
-
-        if (installed) {
-            // Show installation details
-            const details = [];
-            if (key === 'cursor') {
-                if (fs.existsSync(path.join(tool.paths.rules, 'boomopen-workflow-kit.mdc'))) {
-                    details.push('rules');
-                }
-            }
-            if (key === 'copilot') {
-                if (fs.existsSync(path.join(tool.paths.vsCodePrompts, 'boomopen-workflow-kit.agent.md'))) {
-                    details.push('VS Code prompts');
-                }
-            }
-            if (key === 'antigravity') {
-                const geminiPath = path.join(tool.paths.gemini, 'GEMINI.md');
-                if (fs.existsSync(geminiPath)) {
-                    const content = fs.readFileSync(geminiPath, 'utf8');
-                    if (content.includes('boomopen-workflow-kit-START')) {
-                        details.push('GEMINI.md');
-                    }
-                }
-            }
-            if (key === 'claude') {
-                if (fs.existsSync(path.join(tool.paths.home, 'CLAUDE.md'))) {
-                    details.push('CLAUDE.md');
-                }
-            }
-            if (key === 'codex') {
-                if (fs.existsSync(path.join(tool.paths.home, 'AGENTS.md'))) {
-                    details.push('AGENTS.md');
-                }
-                if (fs.existsSync(path.join(tool.paths.home, 'CODEX.md'))) {
-                    details.push('CODEX.md');
-                }
-            }
-            if (details.length > 0) {
-                console.log(`               ${' '.padEnd(25)} (${details.join(', ')})`);
-            }
+    printLine('\n📋 Supported Tools:\n');
+    for (const key of TOOL_KEYS) {
+        const tool = TOOLS[key];
+        let manifest = null;
+        let manifestProblem = null;
+        try {
+            manifest = loadManifest(HOME, key);
+        } catch (error) {
+            manifestProblem = error instanceof Error ? error.message : String(error);
+            process.exitCode = EXIT_FAILURE;
         }
+        const plan = buildPlan(key, tool, ROOT);
+        // Same rule as uninstall: framework folder, manifest or kit content in an entry file.
+        const installed = Boolean(manifestProblem) || isInstalled(key, tool, plan);
+        const complete = fs.existsSync(tool.paths.frameworkPath);
+        const version = manifest && manifest.kitVersion ? ` (v${manifest.kitVersion})` : '';
+        let status = '⬚ Not installed';
+        if (installed) status = complete ? `✅ Installed${version}` : `⚠️  Partly installed${version} (framework folder missing — reinstall)`;
+        printLine(`  ${key.padEnd(12)} ${tool.name.padEnd(25)} ${status}`);
+        if (manifestProblem) warnLine(`  ${' '.repeat(38)} ⚠️  manifest unreadable: ${manifestProblem}`);
+        if (!installed) continue;
+        const files = plan.instructionFiles.filter(({ dest }) => hasKitContent(dest)).map(({ dest }) => path.basename(dest));
+        let tracked = 'no manifest (pre-v5.5 install)';
+        if (manifestProblem) tracked = 'manifest unreadable (see above)';
+        else if (manifest) tracked = `${formatNumber(Object.keys(manifest.files).length)} tracked files`;
+        printLine(`  ${' '.repeat(38)} ${[...files, tracked].join(', ')}`);
     }
-    console.log('');
+    printLine('');
+}
+
+function resolveToolKey(name) {
+    const key = TOOL_ALIASES[name] || name;
+    return TOOL_KEYS.includes(key) ? key : null;
 }
 
 async function promptToolSelection() {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-
-    return new Promise((resolve) => {
-        console.log('\n📋 Select tools to install:\n');
-        console.log('  1. Cursor');
-        console.log('  2. GitHub Copilot');
-        console.log('  3. Antigravity (Gemini)');
-        console.log('  4. Claude Code');
-        console.log('  5. Codex');
-        console.log('  6. All tools');
-        console.log('  0. Cancel\n');
-
-        rl.question('Enter your choice (0-6): ', (answer) => {
-            rl.close();
-            resolve(answer.trim());
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    printLine('\n📋 Select tools to install:\n');
+    TOOL_KEYS.forEach((key, i) => printLine(`  ${i + 1}. ${TOOLS[key].name}`));
+    printLine(`  ${TOOL_KEYS.length + 1}. All tools`);
+    printLine('  0. Cancel\n');
+    try {
+        return await new Promise((resolve) => {
+            rl.question(`Enter your choice (0-${TOOL_KEYS.length + 1}): `, (answer) => resolve(answer.trim()));
+            rl.on('close', () => resolve(''));
         });
-    });
+    } finally {
+        rl.close();
+    }
 }
 
 async function interactiveInstall() {
-    const choice = await promptToolSelection();
-
-    switch (choice) {
-        case '1':
-            installCursor();
-            break;
-        case '2':
-            installCopilot();
-            break;
-        case '3':
-            installAntigravity();
-            break;
-        case '4':
-            installClaude();
-            break;
-        case '5':
-            installCodex();
-            break;
-        case '6':
-            installCursor();
-            installCopilot();
-            installAntigravity();
-            installClaude();
-            installCodex();
-            break;
-        case '0':
-            console.log('\n❌ Installation cancelled.\n');
-            break;
-        default:
-            console.log('\n❌ Invalid choice. Please enter 0-6.\n');
-    }
-}
-
-// ============================================================================
-// Main Entry Point
-// ============================================================================
-
-async function main() {
-    const args = process.argv.slice(2);
-    const command = args[0]?.toLowerCase();
-    const target = args[1]?.toLowerCase();
-
-    printBanner();
-
-    if (!command || command === 'help' || command === '--help' || command === '-h') {
+    if (!process.stdin.isTTY) {
         printUsage();
+        warnLine('❌ No tool given and no interactive terminal: run `boomopen install <tool>` or `install --all`.');
+        process.exitCode = EXIT_FAILURE;
         return;
     }
+    const choice = await promptToolSelection();
+    const index = Number(choice);
+    if (choice === '0') return printLine('\n❌ Installation cancelled.\n');
+    if (Number.isInteger(index) && index >= 1 && index <= TOOL_KEYS.length) return void installTool(TOOL_KEYS[index - 1]);
+    if (index === TOOL_KEYS.length + 1) return void runForAll(installTool, 'install');
+    warnLine(`\n❌ Invalid choice "${choice}". Please enter 0-${TOOL_KEYS.length + 1}.\n`);
+    process.exitCode = EXIT_FAILURE;
+    return undefined;
+}
 
+function runForAll(fn, operation) {
     const startTime = Date.now();
-    let totalFiles = 0;
+    let total = 0;
+    for (const key of TOOL_KEYS) total += fn(key);
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    printLine('\n' + '═'.repeat(60));
+    printLine(`${operation === 'install' ? '🎉 All installations' : '✅ All uninstallations'} finished${process.exitCode ? ' (with errors)' : ''}.`);
+    if (operation === 'install') printLine(`   Total files: ${formatNumber(total)}`);
+    printLine(`   Total time:  ${duration}s`);
+    printLine('═'.repeat(60) + '\n');
+}
 
+async function runToolCommand(command, target, flags) {
+    const problem = installedCopyProblem(ROOT, TOOLS);
+    if (problem) {
+        warnLine(`❌ Cannot ${command}: ${problem}.`);
+        warnLine(`   Run it from a clone of the kit: git clone ${REPO_URL}`);
+        warnLine(`   then: cd BoomOpen-Workflow-Kit && node cli/install.js ${command} <tool>`);
+        process.exitCode = EXIT_FAILURE;
+        return undefined;
+    }
+    const fn = command === 'install' ? installTool : uninstallTool;
+    if (flags.has('--all') || target === 'all') return runForAll(fn, command);
+    if (!target) {
+        if (command === 'install') return interactiveInstall();
+        warnLine(`❌ Please specify a tool: ${TOOL_KEYS.join(', ')}, or --all`);
+        process.exitCode = EXIT_FAILURE;
+        return undefined;
+    }
+    const key = resolveToolKey(target);
+    if (!key) {
+        warnLine(`❌ Unknown tool: ${target}\n   Supported tools: ${TOOL_KEYS.join(', ')}`);
+        process.exitCode = EXIT_FAILURE;
+        return undefined;
+    }
+    fn(key);
+    return undefined;
+}
+
+/** Split argv: the command, its positional arguments and flags (flags may appear anywhere). */
+function parseArgs(argv) {
+    const commandIndex = argv.findIndex((arg) => !arg.startsWith('-'));
+    const command = commandIndex === -1 ? null : argv[commandIndex].toLowerCase();
+    const rest = commandIndex === -1 ? [] : argv.slice(commandIndex + 1);
+    const flags = new Set(argv.filter((arg) => arg.startsWith('-')).map((arg) => arg.toLowerCase()));
+    const positional = rest.filter((arg) => !arg.startsWith('-')).map((arg) => arg.toLowerCase());
+    return { command, rest, flags, positional };
+}
+
+async function main(argv = process.argv.slice(2)) {
+    const { command, rest, flags, positional } = parseArgs(argv);
+    const isSettings = command === 'settings' || command === 'config';
+    const isConduct = command === 'conduct' || command === 'conductor';
+    // These subcommands parse their own options, including --help.
+    const ownsHelp = isSettings || isConduct || command === 'doctor' || command === 'check' || command === 'ledger' || command === 'plan' || command === 'design' || command === 'research' || command === 'cook';
+    if (!isSettings && (flags.has('--version') || flags.has('-v'))) return printLine(KIT_VERSION);
+    if (flags.has('--with-hooks')) cliOptions.registerHooks = true;
+
+    if (!command || command === 'help' || ((flags.has('--help') || flags.has('-h')) && !ownsHelp)) {
+        printBanner();
+        return printUsage();
+    }
+    if (command === 'install' || command === 'uninstall') {
+        printBanner();
+        return runToolCommand(command, positional[0], flags);
+    }
     switch (command) {
-        case 'install':
-            if (target === '--all' || target === 'all') {
-                console.log('🚀 Installing for all supported tools...');
-                console.log('   This may take a moment. Progress will be shown for each tool.\n');
-                totalFiles += installCursor();
-                totalFiles += installCopilot();
-                totalFiles += installAntigravity();
-                totalFiles += installClaude();
-                totalFiles += installCodex();
-                
-                const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-                console.log('\n' + '═'.repeat(60));
-                console.log('🎉 All installations complete!');
-                console.log(`   Total files: ${formatNumber(totalFiles)}`);
-                console.log(`   Total time:  ${duration}s`);
-                console.log('═'.repeat(60) + '\n');
-            } else if (target === 'cursor') {
-                installCursor();
-            } else if (target === 'copilot') {
-                installCopilot();
-            } else if (target === 'antigravity' || target === 'gemini') {
-                installAntigravity();
-            } else if (target === 'claude' || target === 'claude-code') {
-                installClaude();
-            } else if (target === 'codex') {
-                installCodex();
-            } else if (!target) {
-                await interactiveInstall();
-            } else {
-                console.log(`❌ Unknown tool: ${target}`);
-                console.log('   Supported tools: cursor, copilot, antigravity, claude, codex');
-            }
-            break;
-
-        case 'uninstall':
-            if (target === '--all' || target === 'all') {
-                console.log('🗑️  Uninstalling from all tools...\n');
-                uninstallCursor();
-                uninstallCopilot();
-                uninstallAntigravity();
-                uninstallClaude();
-                uninstallCodex();
-                
-                const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-                console.log('\n' + '═'.repeat(60));
-                console.log('✅ All uninstallations complete!');
-                console.log(`   Total time: ${duration}s`);
-                console.log('═'.repeat(60) + '\n');
-            } else if (target === 'cursor') {
-                uninstallCursor();
-            } else if (target === 'copilot') {
-                uninstallCopilot();
-            } else if (target === 'antigravity' || target === 'gemini') {
-                uninstallAntigravity();
-            } else if (target === 'claude' || target === 'claude-code') {
-                uninstallClaude();
-            } else if (target === 'codex') {
-                uninstallCodex();
-            } else {
-                console.log(`❌ Please specify a tool: cursor, copilot, antigravity, claude, codex, or --all`);
-            }
-            break;
-
         case 'list':
-            listTools();
-            break;
-
+            return listTools();
         case 'doctor': {
-            const report = runDoctor({ repoRoot: ROOT, homeDir: HOME });
-            if (!report.healthy) process.exitCode = 1;
-            break;
+            // --platform, --source-only, --rebuild-index, --help
+            const code = runDoctorCli(rest, { repoRoot: ROOT, homeDir: HOME });
+            if (code !== 0) process.exitCode = code;
+            return undefined;
         }
-
         case 'check': {
-            const checkDir = process.argv[3] || process.cwd();
-            const report = runCheck(checkDir);
-            if (!report.passed) process.exitCode = 1;
-            break;
+            // [dir], --ignore, --no-gitignore, --strict-phase, --help
+            const code = runCheckCli(rest, { cwd: process.cwd(), homeDir: HOME });
+            if (code !== 0) process.exitCode = code;
+            return undefined;
         }
-
+        case 'cook': {
+            // state, packets, verify-wave, preflight, --help
+            const code = runCookCli(rest, { cwd: process.cwd(), homeDir: HOME });
+            if (code !== 0) process.exitCode = code;
+            return undefined;
+        }
+        case 'research': {
+            // validate, brief, --mode, --out, --json, --help
+            const code = runResearchCli(rest, { cwd: process.cwd(), homeDir: HOME });
+            if (code !== 0) process.exitCode = code;
+            return undefined;
+        }
+        case 'design': {
+            // validate, contract, --out, --json, --help
+            const code = runDesignCli(rest, { cwd: process.cwd(), homeDir: HOME });
+            if (code !== 0) process.exitCode = code;
+            return undefined;
+        }
+        case 'plan': {
+            // validate, compile, --sync-ledger, --help
+            const code = runPlanCli(rest, { cwd: process.cwd(), homeDir: HOME });
+            if (code !== 0) process.exitCode = code;
+            return undefined;
+        }
+        case 'ledger': {
+            // init, from-plan, validate, status, next, verify, audit, --help
+            const code = runLedgerCli(rest, { cwd: process.cwd(), homeDir: HOME });
+            if (code !== 0) process.exitCode = code;
+            return undefined;
+        }
+        case 'conduct':
+        case 'conductor': {
+            // probe, dispatch, council, status, --help
+            const code = await runConductorCli(rest, { cwd: process.cwd(), homeDir: HOME });
+            if (code !== 0) process.exitCode = code;
+            return undefined;
+        }
         case 'settings':
-        case 'config': {
-            await runSettingsCommand(args.slice(1), { homeDir: HOME, cwd: process.cwd(), repoRoot: ROOT });
-            break;
-        }
-
+        case 'config':
+            await runSettingsCommand(rest, { homeDir: HOME, cwd: settingsCwd(), repoRoot: ROOT });
+            return undefined;
         default:
-            console.log(`❌ Unknown command: ${command}`);
+            warnLine(`❌ Unknown command: ${command}`);
             printUsage();
+            process.exitCode = EXIT_FAILURE;
+            return undefined;
     }
 }
 
 if (require.main === module) {
-    main().catch(console.error);
+    main().catch((error) => {
+        warnLine(`❌ ${error instanceof Error ? error.stack || error.message : String(error)}`);
+        process.exitCode = EXIT_FAILURE;
+    });
 }
 
 module.exports = {
     TOOLS,
+    TOOL_KEYS,
     ROOT_FILES,
+    CORE_DIRS,
+    KIT_DIR_NAME,
     ensureDir,
     copyWithReplace,
     copyFileWithReplace,
-    removeDir,
-    removeFile,
-    removeSubdirectories,
     countFiles,
+    listSourceFiles,
+    installTool,
+    uninstallTool,
+    parseArgs,
+    main,
     buildCompactSkillIndex,
     runDoctor,
     runCheck,
+    runCookCli,
+    detectCookState,
+    compileWavePackets,
+    verifyWaveExecution,
+    runCookPreflight,
+    runResearchCli,
+    parseResearchMarkdown,
+    validateResearch,
+    extractResearchBrief,
+    runDesignCli,
+    parseDesignMarkdown,
+    validateDesign,
+    extractDesignContract,
+    runPlanCli,
+    parsePlanMarkdown,
+    validatePlan,
+    compilePlanToLedger,
+    runLedgerCli,
+    initLedger,
+    validateLedger,
+    verifyPhaseGate,
+    auditLedger,
+    runConductorCli,
+    dispatchToEngine,
+    runMultiEngineCouncil,
+    resolveEngineForRole,
     loadSettings,
     saveSettings,
     setSettingByKey,
@@ -1801,6 +719,3 @@ module.exports = {
     runSettingsCommand,
     startSettingsUiServer,
 };
-
-
-

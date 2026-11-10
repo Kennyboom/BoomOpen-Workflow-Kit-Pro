@@ -5,6 +5,8 @@ risk: unknown
 source: community
 ---
 
+> **Skill folder:** paths below that start with `$SKILL_DIR` are relative to the folder that contains this SKILL.md. BoomOpen installs vault skills at `~/.<tool>/skills_library/food-database-query` (for example `~/.claude/skills_library/food-database-query`, `~/.codex/skills_library/food-database-query` or `~/.gemini/config/skills_library/food-database-query`). Set it before running a command, e.g. `SKILL_DIR=~/.claude/skills_library/food-database-query`.
+
 # 食物数据库查询技能
 
 **技能名称**: Food Database Query
@@ -773,7 +775,7 @@ RDA_FEMALE = {
 - 数据库: `data/food-database.json`
 - 分类: `data/food-categories.json`
 - 命令: `.claude/commands/nutrition.md`
-- 技能: `.claude/skills/food-database-query/SKILL.md`
+- 技能: `$SKILL_DIR/SKILL.md`
 
 ### 性能优化
 - 数据库索引 (食物名称、分类)

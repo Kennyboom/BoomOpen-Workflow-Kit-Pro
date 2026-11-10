@@ -20,7 +20,6 @@ Production-ready templates for common DeFi protocols including staking, AMMs, go
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Use this skill when
 
@@ -437,18 +436,6 @@ contract FlashLoanReceiver is IFlashLoanReceiver {
     }
 }
 ```
-
-## Resources
-
-- **references/staking.md**: Staking mechanics and reward distribution
-- **references/liquidity-pools.md**: AMM mathematics and pricing
-- **references/governance-tokens.md**: Governance and voting systems
-- **references/lending-protocols.md**: Lending/borrowing implementation
-- **references/flash-loans.md**: Flash loan security and use cases
-- **assets/staking-contract.sol**: Production staking template
-- **assets/amm-contract.sol**: Full AMM implementation
-- **assets/governance-token.sol**: Governance system
-- **assets/lending-protocol.sol**: Lending platform template
 
 ## Best Practices
 

@@ -45,22 +45,22 @@ Skip this skill
 
 ## Language Selection
 
-Based on the file extension or language context, refer to the appropriate guide:
+Supported languages, by file extension:
 
-| Language   | File Extensions                   | Guide                                                    |
-| ---------- | --------------------------------- | -------------------------------------------------------- |
-| C, C++     | `.c`, `.h`, `.cpp`, `.cc`, `.hpp` | references/compiled.md         |
-| Go         | `.go`                             | references/compiled.md         |
-| Rust       | `.rs`                             | references/compiled.md         |
-| Swift      | `.swift`                          | references/swift.md               |
-| Java       | `.java`                           | references/vm-compiled.md   |
-| Kotlin     | `.kt`, `.kts`                     | references/kotlin.md             |
-| C#         | `.cs`                             | references/vm-compiled.md   |
-| PHP        | `.php`                            | references/php.md                   |
-| JavaScript | `.js`, `.mjs`, `.cjs`             | references/javascript.md     |
-| TypeScript | `.ts`, `.tsx`                     | references/javascript.md     |
-| Python     | `.py`                             | references/python.md             |
-| Ruby       | `.rb`                             | references/ruby.md                 |
+| Language   | File Extensions                   |
+| ---------- | --------------------------------- |
+| C, C++     | `.c`, `.h`, `.cpp`, `.cc`, `.hpp` |
+| Go         | `.go`                             |
+| Rust       | `.rs`                             |
+| Swift      | `.swift`                          |
+| Java       | `.java`                           |
+| Kotlin     | `.kt`, `.kts`                     |
+| C#         | `.cs`                             |
+| PHP        | `.php`                            |
+| JavaScript | `.js`, `.mjs`, `.cjs`             |
+| TypeScript | `.ts`, `.tsx`                     |
+| Python     | `.py`                             |
+| Ruby       | `.rb`                             |
 
 ## Quick Start
 
@@ -143,8 +143,6 @@ export PATH="/opt/homebrew/opt/openjdk@21/bin:$PATH"
 # For .NET tools (add to ~/.zshrc)
 export PATH="$HOME/.dotnet/tools:$PATH"
 ```
-
-See references/vm-compiled.md for detailed setup instructions and troubleshooting.
 
 ## Quick Reference
 

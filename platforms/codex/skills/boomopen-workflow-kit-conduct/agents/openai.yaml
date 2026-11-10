@@ -1,0 +1,6 @@
+interface:
+  display_name: "/conduct"
+  short_description: "🎼 Cross-Engine Autonomous Conductor & Multi-Engine Council — Orchestrate Claude Code, OpenAI Codex, Antigravity, Cursor, and Copilot in Role-Division Pipelines or Parallel Multi-Engine Councils with 4-Part Consensus Synthesis."
+  brand_color: "#6366F1"
+policy:
+  allow_implicit_invocation: true

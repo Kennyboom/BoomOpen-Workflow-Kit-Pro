@@ -1,4 +1,6 @@
-display_name: "/fix:team"
-short_description: "🔺 Team Fix — Golden Triangle adversarial collaboration"
-brand_color: "#EF4444"
-allow_implicit_invocation: true
+interface:
+  display_name: "/fix:team"
+  short_description: "🔺 Team Fix — 3-Stage Elastic Golden Diamond Resolution (Bidirectional DEBUG Fast-Forward, Fail-First TDD, Sharded Fix Wave & Adversarial QA)"
+  brand_color: "#EF4444"
+policy:
+  allow_implicit_invocation: true

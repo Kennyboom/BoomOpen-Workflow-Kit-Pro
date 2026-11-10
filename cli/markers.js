@@ -20,6 +20,8 @@ const CODEX_MARKER_END = '# === boomopen-workflow-kit END ===';
 const KIT_HEADER_PATTERNS = [
     /^#\s+\S+\.md\s+—\s+.*(?:Orchestrator Instructions|BoomOpen Workflow Kit)/,
     /^name:\s*BoomOpen Workflow Kit\b/,
+    // platforms/antigravity/GEMINI.md: "# ⚡ BoomOpen Workflow Kit v5.5 — GEMINI/ANTIGRAVITY ..."
+    /^#\s+(?:⚡\s*)?BoomOpen Workflow Kit v\d+(?:\.\d+)*\s+—/,
 ];
 const KIT_HEADER_SCAN_LINES = 4;
 

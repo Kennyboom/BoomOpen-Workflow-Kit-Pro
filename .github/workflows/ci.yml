@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cli:
+    name: CLI (${{ matrix.os }}, Node ${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      # The CLI and its tests use only Node built-ins, so no `npm ci` is needed here.
+      - name: Unit and integration tests
+        run: npm test
+      - name: JavaScript syntax check
+        run: npm run lint
+      # doctor needs at least one installed platform, so install Claude Code into a
+      # throwaway home first (never the runner's real profile folders).
+      - name: Kit health check (sandboxed HOME)
+        shell: bash
+        run: |
+          SANDBOX="$RUNNER_TEMP/boomopen-home"
+          mkdir -p "$SANDBOX/appdata" "$SANDBOX/localappdata" "$SANDBOX/.config"
+          export HOME="$SANDBOX" USERPROFILE="$SANDBOX" APPDATA="$SANDBOX/appdata" \
+                 LOCALAPPDATA="$SANDBOX/localappdata" XDG_CONFIG_HOME="$SANDBOX/.config"
+          node cli/install.js install claude
+          node cli/install.js doctor
+          node cli/install.js uninstall claude
+      - name: Coding-standards check
+        run: node cli/install.js check .
+
+  syntax:
+    name: Python and shell syntax (helpers and skills vault)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          # Oldest Python the helper scripts support.
+          python-version: '3.10'
+      # compile() only: nothing is executed and no __pycache__ is written. The two
+      # {{placeholder}} code templates under */assets/template.py are not valid Python by design.
+      - name: Python syntax (3.10 floor)
+        run: |
+          find scripts skills skills_library -name '*.py' ! -path '*/assets/template.py' -print0             | xargs -0 python -B -c 'import sys; [compile(open(f, encoding="utf-8").read(), f, "exec") for f in sys.argv[1:]]'
+      - name: Shell syntax
+        run: find scripts skills skills_library -name '*.sh' -print0 | xargs -0 -n1 bash -n
+      - name: Third-party notices are current
+        run: node .github/scripts/third-party-notices.js --check
+
+  web:
+    name: Website (${{ matrix.os }}, Node ${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        # Vite 7 requires Node ^20.19.0 || >=22.12.0, so Node 18 is not part of this matrix.
+        node: [20, 22]
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Type-check and build
+        run: npm run build
+
+  package:
+    name: npm tarball smoke test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Packs the tarball (no lifecycle scripts, nothing is published), extracts it,
+      # then runs doctor and install/uninstall claude against a sandboxed HOME.
+      - name: Pack, extract, doctor, install
+        run: npm run test:pack

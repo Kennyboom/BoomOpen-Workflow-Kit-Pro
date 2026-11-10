@@ -52,7 +52,7 @@ Skill Authors can create and publish domain skills to the community ecosystem. T
 
 - **Profile**: Software developer using one or more AI coding assistants daily
 - **Need**: Reduce repetitive prompt engineering; get consistent, high-quality AI outputs across projects
-- **Touchpoints**: CLI installer (`boomopen-workflow-kit install`), slash commands (`/cook`, `/fix`, `/plan`), natural language (the framework detects intent)
+- **Touchpoints**: CLI installer (`boomopen install`), slash commands (`/cook`, `/fix`, `/plan`), natural language (the framework detects intent)
 - **Goals served**: BG-001 (one-time setup), BG-003 (faster delivery), BG-004 (fewer bugs), BG-005 (lower token cost), BG-006 (structured workflows)
 
 ### Secondary: Team/Organization Lead
@@ -110,7 +110,7 @@ Skill Authors can create and publish domain skills to the community ecosystem. T
 | Platform coverage | 5/5 platforms | install.js platform config count | Validated — 5 platforms configured in source |
 | Specialist agent coverage | 21 agents with unique profiles | agents/ directory file count and frontmatter audit | Validated — 21 agent files present |
 | Command coverage | 14 commands × 4 variants | commands/ directory audit | Validated — 14 commands with variant subdirectories |
-| Matrix skill coverage | 1,430+ skills across 19 domains | matrix-skills/ YAML entry count | Validated — 19 domain YAML files present |
+| Matrix skill coverage | 1,460+ skills across 19 domains | matrix-skills/ YAML entry count | Validated — 19 domain YAML files present |
 | Team adoption rate | ≥80% within 30 days | Survey or usage telemetry | No measurement mechanism exists |
 | Community skills published | ≥50 within 12 months of v1.0 | skills.sh registry count | No measurement mechanism exists |
 

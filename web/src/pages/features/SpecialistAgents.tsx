@@ -3,13 +3,11 @@ import { Button, Card, CardContent, Badge, Section, SectionHeader } from '../../
 import { AgentCard } from '../../components/features'
 import { Terminal } from '../../components/terminal'
 import { PageSideDecorations, GradientBackground } from '../../components/decorations'
-import { SEO, pageSEO } from '../../components/seo'
 import { agentCategories, categoryBadgeMap, totalAgents, agentCollaboration } from '../../data'
 
 export default function SpecialistAgents() {
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <SEO {...pageSEO.specialistAgents} />
+    <div className="min-h-screen bg-bg-primary">
       
       {/* Hero Section */}
       <Section background="primary" spacing="xl" className="relative overflow-hidden">
@@ -83,7 +81,7 @@ export default function SpecialistAgents() {
             command=""
             title="backend-engineer.md"
             showPrompt={false}
-            showCopy={true}
+            showCopy={false}
           >
             <div className="space-y-2 text-sm">
               <div className="text-text-muted"># Agent Definition: backend-engineer</div>
@@ -151,6 +149,6 @@ export default function SpecialistAgents() {
           </div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

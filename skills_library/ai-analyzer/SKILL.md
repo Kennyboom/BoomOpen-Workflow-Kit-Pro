@@ -6,6 +6,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/generate_ai_report.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # AI健康分析器
 
 基于AI技术的综合健康分析系统，提供智能健康洞察、风险预测和个性化建议。

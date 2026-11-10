@@ -1,0 +1,6 @@
+interface:
+  display_name: "/refactor"
+  short_description: "Code Surgeon v3 — SOLID audit, code smell detection, Fowler's catalog techniques, health scoring, performance-safe refactoring with before/after metrics."
+  brand_color: "#6366F1"
+policy:
+  allow_implicit_invocation: true

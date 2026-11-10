@@ -5,6 +5,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/scan_skill.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Skill Security Scanner
 
 Scan agent skills for security issues before adoption. Detects prompt injection, malicious code, excessive permissions, secret exposure, and supply chain risks.
@@ -186,11 +188,3 @@ Example assessments:
 - **Medium**: Medium-confidence findings or minor permission concerns
 - **Low**: Only best-practice suggestions
 - **Clean**: No findings after thorough analysis
-
-## Reference Files
-
-| File | Purpose |
-|------|---------|
-| `references/prompt-injection-patterns.md` | Injection patterns, jailbreaks, obfuscation techniques, false positive guide |
-| `references/dangerous-code-patterns.md` | Script security patterns: exfiltration, shells, credential theft, eval/exec |
-| `references/permission-analysis.md` | Tool risk tiers, least privilege methodology, common skill permission profiles |

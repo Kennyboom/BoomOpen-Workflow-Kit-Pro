@@ -1,160 +1,155 @@
 ---
 name: deep-research
-description: "Autonomous multi-hop deep research engine using the 4-Source Triangulation Protocol, 3-Wave Iterative Search Loop, Stanford STORM multi-perspective decomposition, Dual-Track 5-Lens analysis, and Evidence-Gated reporting."
+description: "Autonomous multi-hop deep research engine using 4-Source Triangulation, 3-Wave Iterative Search, Contradiction Arbitration, Anti-Sycophancy Red-Teaming, and the 6-Block CLI-Validated RESEARCH Blueprint (v5.5.0)."
 license: MIT
 version: "5.5.0"
 ---
 
-# 🔬 Autonomous Deep-Research Engine (2026 SOTA)
+# 🔬 Autonomous Deep-Research Engine (v5.5.0 — 6-Block CLI-Validated SOTA)
 
-> **Zero-Guesswork, Multi-Hop Autonomous Research Protocol**
-> Never rely on stale training-cutoff memory or single-pass search summaries. Execute structured multi-wave triangulation across workspace manifests, the `1,471+` local skills vault, official `/llms.txt` & vendor specifications, and empirical production benchmarks.
-
----
-
-## 1. When to Activate This Skill
-
-Activate `deep-research` whenever a task involves:
-- Deep technical discovery, architecture evaluation, or SDK/API comparison (`/research`, `/research:hard`, `/research:team`)
-- Product, market, SaaS, or game ideation and competitive teardowns (`/brainstorm:hard`, `/brainstorm:team`)
-- Investigating unfamiliar libraries, 2025–2026 breaking changes, RFCs, or CVE advisories
-- Resolving high-stakes architectural trade-offs before `/plan` or `/cook`
+> **Zero-Guesswork, Anti-Sycophancy Multi-Hop Research Protocol**
+> Never rely on stale training-cutoff memory, single-pass search summaries, or sycophantic premise confirmation. Triangulate across workspace manifests, the `1,462` local skills vault, live official vendor documentation (`search_web`), and empirical production benchmarks — then validate the resulting single-file 6-Block `RESEARCH-{topic}.md` via `boomopen research validate`.
 
 ---
 
-## 2. Engine 1: The 4-Source Triangulation Protocol
+## 1. When to Activate & Artifact Routing Rules
 
-Every deep-research execution MUST triangulate across four authoritative evidence tiers before synthesizing conclusions:
+Activate `deep-research` for `/research` (`:fast`, `:hard`, `:team`), Stage 1 discovery in `/brainstorm` / `/plan` / `/design`, unfamiliar 2025–2026 SDK/RFC/CVE investigations, and high-stakes architecture evaluations.
 
-| Tier | Source Category | How to Query / Inspect | Purpose |
+| Execution Context | Target Brain Artifact Path | Mandatory `ArtifactMetadata` | Size & Cohesion Rule |
+|-------------------|----------------------------|------------------------------|----------------------|
+| **Parallel Vector Shard (`researcher#v1..k`, `k > 1`)** | `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}-v{1..k}.md` | `{ Summary: "...", UserFacing: false, RequestFeedback: false }` | Disjoint per-vector file (`<= 350` lines) — never overwrite sibling shards! |
+| **Standalone `/research` Master Report** | `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}.md` | `{ Summary: "...", UserFacing: true, RequestFeedback: true }` | **1 single cohesive file (`<= 500` lines)** — NEVER split into `{name}/` folders! |
+| **Stage 1 Input Inside `/plan` or `/brainstorm`** | `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}.md` | `{ Summary: "...", UserFacing: true, RequestFeedback: false }` | **1 single cohesive file (`<= 500` lines)** consumed by Stage 2 synthesizer |
+
+> **⚠️ Antigravity 2.0 Sub-Agent Rule**: Built-in `TypeName: "research"` has **NO `search_web` and NO `write_file`**. Always spawn research shards via `invoke_subagent(TypeName: "self", Model: "inherit")`.
+
+---
+
+## 2. Engine 1: The 4-Source Triangulation Protocol & Claim Confidence Law
+
+Every investigation MUST triangulate across four authoritative evidence tiers:
+
+| Tier | Source Category | How to Inspect / Query | Purpose |
 |:----:|-----------------|------------------------|---------|
-| **1** | **Workspace Manifests & `./documents/`** | Read `package.json`, `tsconfig.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, and `./documents/*.md` | Pin exact installed framework/runtime versions and architectural constraints so recommendations fit the repo. |
-| **2** | **`1,471+` Local Skills Vault** | Lookup `matrix-skills/compact-index.json` → read matching `skills/*/SKILL.md` or `skills_library/*/SKILL.md` | Harvest battle-tested 2026 architectural blueprints and anti-patterns in milliseconds. |
-| **3** | **Official Docs, `/llms.txt`, RFCs & Changelogs** | `search_web` with `domain` filter + `docs-seeker` patterns (`llms.txt`, `llms-full.txt`, `site:github.com/<org>/<repo>/releases`) | Verify ground-truth APIs, exact configuration schemas, deprecation notices, and latest stable versions. |
-| **4** | **Empirical Benchmarks & Production Post-Mortems** | `search_web` targeting TechEmpower, Artificial Analysis, LMArena, CVEs/GHSA, and engineering post-mortems | Validate real-world p95/p99 latency, memory overhead, throughput, token/cloud costs, and failure modes. |
+| **Tier 1** | **Workspace Manifests & `./documents/`** | Read `package.json`, `tsconfig.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `./documents/*.md` | Pin installed versions, runtime targets, and repo constraints first. |
+| **Tier 2** | **`1,462` Local Skills Vault** | Search `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/compact-index.json` → read top `1–3` `SKILL.md` files | Harvest curated 2026 architecture blueprints and anti-patterns. |
+| **Tier 3** | **Official Docs, `/llms.txt`, RFCs & Changelogs** | `search_web` with vendor `domain` filter (`llms.txt`, `llms-full.txt`, GitHub `/releases`) | Verify ground-truth APIs, exact config schemas, deprecations, and `2025`/`2026` versions. |
+| **Tier 4** | **Empirical Benchmarks, CVEs & Post-Mortems** | `search_web` targeting TechEmpower, Artificial Analysis, GHSA/CVEs, GitHub Issues, post-mortems | Validate real-world `p95/p99` latency, memory, `$/1k DAU` cost, and production failure modes. |
 
-> **Triangulation Law**: Any architectural claim supported by only 1 source must be marked `[Confidence: LOW — Single-Source]`. Critical recommendations require `≥ 2` independent tiers (`[Confidence: HIGH]`).
+- **Inline Claim-Evidence-Confidence Tagging Law**:
+  - `[Confidence: HIGH]` — Corroborated by `>= 2` independent tiers including `Tier 1` or `Tier 3` primary proof.
+  - `[Confidence: MEDIUM]` — Backed by `1` authoritative tier or secondary benchmarks with minor version/env caveats.
+  - `[Confidence: LOW]` — Single-source community report or unverified extrapolation (never base a `MUST` decision solely on `LOW`).
 
 ---
 
-## 3. Engine 2: The 3-Wave Iterative Multi-Hop Search Loop
-
-Never stop after a single generic search query. Execute a disciplined **3-Wave Multi-Hop Loop** with an explicit **Gap Reflection Gate** between waves:
+## 3. Engine 2: The 3-Wave Iterative Multi-Hop Search & Anti-Sycophancy Loop
 
 ```mermaid
 flowchart LR
-    W1["🌊 Wave 1: Broad & Official Spec Discovery\n(3–4 targeted queries)"] --> G1{"🧠 Gap Reflection Gate\nWhat specs, metrics, or edge cases are still unknown?"}
-    G1 --> W2["🌊 Wave 2: Multi-Hop Internals, APIs & Benchmarks\n(3–5 deep-dive queries)"]
-    W2 --> G2{"🛡️ Adversarial Gate\nWhere does this break in production?"}
-    G2 --> W3["🌊 Wave 3: Counter-Evidence, Breaking Changes & CVEs\n(2–3 red-team queries)"]
-    W3 --> SYN["📊 Evidence-Gated Synthesis & Audit Log"]
+    W1["🌊 Wave 1: Landscape & Official Specs\n(3–4 queries + Tier 1/2 reads)"] --> G1{"🧠 Gap & Anti-Sycophancy Gate\nWhat metrics are missing? Does a simpler baseline win?"}
+    G1 --> W2["🌊 Wave 2: Multi-Hop APIs & Benchmarks\n(3–5 targeted queries)"]
+    W2 --> G2{"🛡️ Adversarial Red-Team Gate\nWhere does this fail or drift by version?"}
+    G2 --> W3["🌊 Wave 3: Breaking Changes, CVEs & Post-Mortems\n(2–3 counter-queries)"]
+    W3 --> VAL["✅ 6-Block Synthesis + boomopen research validate"]
 ```
 
-### Wave 1 — Broad Landscape & Official Spec Discovery (`3–4 queries`)
-- Identify the current **2026 latest stable release**, official vendor documentation domain, and core architectural model.
-- Check for `/llms.txt` or `/llms-full.txt` indexes and official migration guides.
-- Example Wave 1 batch:
-  1. `search_web(query: "<tech> latest release version architecture 2026", domain: "<vendor-domain>")`
-  2. `search_web(query: "site:<vendor-domain> llms.txt OR changelog 2025 2026")`
-  3. `search_web(query: "<tech A> vs <tech B> vs <tech C> architecture comparison 2026")`
-
-### 🧠 Gap Reflection Gate (Mandatory Checkpoint)
-Before launching Wave 2, pause and explicitly evaluate:
-1. **Unresolved Technical Unknowns**: Which API signatures, lifecycle hooks, or config flags were missing from Wave 1?
-2. **Missing Quantitative Data**: What latency, memory, bundle size, or pricing numbers are still unverified?
-3. **Version Drift**: Did any Wave 1 result reference deprecated pre-2025 syntax?
-
-### Wave 2 — Multi-Hop Internals, Schemas & Benchmarks (`3–5 queries`)
-- Follow specific symbols, RFC numbers, GitHub issues/PRs, or benchmark suites discovered in Wave 1.
-- Extract concrete TypeScript/Python/Rust/Go signatures, schema definitions, and quantitative benchmark metrics.
-- Example Wave 2 batch:
-  1. `search_web(query: "<library> <exact function/hook> TypeScript signature parameters", domain: "<vendor-domain>")`
-  2. `search_web(query: "site:github.com/<org>/<repo>/releases breaking changes migration")`
-  3. `search_web(query: "<tech> p99 latency memory throughput benchmark 2025 2026")`
-
-### Wave 3 — Adversarial Counter-Evidence & Failure Modes (`2–3 queries`)
-- Actively try to **disprove** your preferred option:
-  1. `search_web(query: "<library/tech> (\"breaking changes\" OR \"memory leak\" OR \"bottleneck\" OR \"limitations\") 2025 2026")`
-  2. `search_web(query: "<library A> vs <library B> (\"switched from\" OR \"post-mortem\" OR \"why we moved\")")`
-  3. `search_web(query: "<library/tech> (CVE OR GHSA OR \"security advisory\" OR \"vulnerability\")")`
+1. **Wave 1 — Landscape, Version Pinning & Official Spec Discovery (`3–4` queries)**:
+   - Pin latest `2025`/`2026` stable release, `/llms.txt`, and workspace manifest compatibility.
+2. **🧠 Gap Reflection & Anti-Sycophancy Premise Gate (Mandatory Checkpoint)**:
+   - Identify missing API signatures, schemas, or `p95`/cost metrics.
+   - **Null-Hypothesis Red-Team Check**: Actively test whether the user's proposed library/architecture is overkill, deprecated, or inferior to a simpler baseline (e.g., native platform API, existing repo dependency, single Postgres instance vs. premature distributed stack).
+3. **Wave 2 — Multi-Hop Internals, Schemas & Quantitative Benchmarks (`3–5` queries)**:
+   - Extract exact TypeScript/Python/Rust/Go signatures, configuration blueprints, and `p50/p95/p99` + cost numbers.
+4. **Wave 3 — Adversarial Counter-Evidence, Breaking Changes & CVEs (`2–3` queries)**:
+   - Query `"{tech}" ("breaking changes" OR "memory leak" OR "rate limit" OR "limitations") 2025 2026`, `"{tech A}" vs "{tech B}" ("switched from" OR "post-mortem")`, and `"{tech}" (CVE OR GHSA OR vulnerability)`.
 
 ---
 
-## 4. Engine 3: Stanford STORM Multi-Perspective Decomposition
+## 4. Engine 3: Elastic STORM Sharding (`researcher#v1..k`) & Multi-Engine Council
 
-When running `/research:hard`, `/research:team`, or `/brainstorm:team`, decompose the topic into **3 orthogonal specialist vectors** executed in parallel via `invoke_subagent(TypeName: "self", Model: "inherit")`:
-
-| Vector | Specialist Persona | Core Investigation Mandate |
-|--------|--------------------|----------------------------|
-| **Vector 1** | **Official Specs & Systems Architect** | Authoritative specifications, RFCs, distributed systems trade-offs, scalability ceilings, and long-term vendor/OSS health. |
-| **Vector 2** | **SDK, Codebase & Integration Engineer** | Exact API contracts, type safety, local workspace compatibility, minimal reproducible code patterns, and migration friction. |
-| **Vector 3** | **Adversarial Fact-Checker & Red-Team Critic** | Counter-evidence, production failure stories, hidden cloud/token costs, lock-in traps, CVEs, and edge-case bottlenecks. |
-
-### 5-Field Handoff Packet for Parallel Research Sub-Agents
-When spawning the 3 STORM vectors on Turn 1, include:
-1. **`MISSION & ACCEPTANCE CRITERIA`**: Exact research vector, required quantitative metrics, and 3-Wave search mandate.
-2. **`SHARED_CONTRACT`**: Target topic, workspace runtime constraints (from Tier 1 manifests), and evaluation criteria.
-3. **`OWNED_FILES`**: `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}-{vector}.md` (or return structured findings via `send_message`).
-4. **`READ_ONLY_FILES`**: Workspace source files and `./documents/*`.
-5. **`VERIFICATION & DELIVERABLE`**: Mandatory `Research Execution Audit Log` with `≥ 2` independent source tiers per claim.
+- **Turn-1 Parallel Vector Sharding**: In `/research:hard` and `/research:team`, decompose into `3–6` orthogonal vectors (`researcher#v1` Official Specs/Architecture, `researcher#v2` SDK/Codebase/Vault Blueprints, `researcher#v3` Adversarial Benchmarks/CVEs/Post-Mortems, plus optional `researcher#v4..6` per competitor cluster or subsystem), writing disjoint `RESEARCH-{topic}-v{1..k}.md` files (`UserFacing: false`) and reusing warm `conversationId`s via `send_message`.
+- **Cross-Engine Parallel Council (`boomopen conduct council`)**: When `engines.researcher = "council"` or `/conduct:council` is invoked, run:
+  ```bash
+  node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task research --prompt "<research mission>"
+  ```
+  and merge the 4-Part Consensus Synthesis (`Unanimous Consensus`, `Unique Blind-Spot Insights`, `Contradictions & Arbitration`, `Final Verdict`) into Block 1 & Block 3.
 
 ---
 
-## 5. Engine 4: Dual-Track 5-Lens Analysis Framework
+## 5. Engine 4: Dual-Track 5-Lens Analytical Framework
 
-Select the analytical track that matches user intent (or combine both for full-stack product engineering):
-
-### Track A — Product, Market & Game Ideation (`5 Lenses`)
-1. **Core Value & User/Player Loop**: Compelling hook, retention loop, UX ergonomics, and jobs-to-be-done.
-2. **Market & Competitor Teardown**: Direct/indirect competitors, feature parity matrix, and differentiation wedge.
-3. **Technical Feasibility & Stack Fit**: Architecture blueprint, build vs. buy decisions, and latency/platform constraints.
-4. **Monetization, Unit Economics & Growth**: Pricing tiers, COGS/inference cost per user, viral/distribution mechanics.
-5. **Execution Risks & Phased MVP Scope**: Top 3 existential risks, mitigations, and strict Day-1 MVP vs. Phase-2 cutline.
-
-### Track B — Deep Technical, SDK & System Architecture (`5 Lenses`)
-1. **Architectural Fit & Trade-off Matrix**: Weighted comparison across candidate solutions (Throughput, DX, Ecosystem, Lock-in).
-2. **API / Schema Contract & Type Safety**: Concrete interfaces, data models, validation rules, and error semantics.
-3. **Performance, Latency & Resource Profile**: Empirical p50/p95/p99 latency, memory footprint, cold-start, and bundle impact.
-4. **Security, Compliance & Supply-Chain Posture**: Authn/Authz model, OWASP/CVE history, sandboxing, and data privacy.
-5. **Day-2 Operations, Observability & Migration Path**: Upgrade path, rollback safety, OpenTelemetry hooks, and CI/CD testability.
+- **Track A — Product, Market, SaaS & Game Ideation**:
+  - **A1**: Core Loop & Behavioral Hook (Trigger → Action → Variable Reward → Investment; D1/D7/D30 retention)
+  - **A2**: Target Audience, JTBD & 4-Forces Switching Analysis
+  - **A3**: Competitive Landscape Matrix (`>= 5` real benchmarks, fatal user complaints & differentiation wedge)
+  - **A4**: Monetization & Unit Economics at Scale (`1k CCU / 10k DAU` → `100k` server + bandwidth + AI token math)
+  - **A5**: Execution Risks, Distribution (`K-factor`) & Day-1 MVP Cutline
+- **Track B — Deep Technical, SDK & System Architecture**:
+  - **B1**: Core Architecture, Internals & Execution Model (data flow, concurrency, wire protocol)
+  - **B2**: Official API Surface, Pinned Version Matrix & Compilable Code Blueprints
+  - **B3**: Empirical Performance, `p50/p95/p99` Latency, Memory & Cost Profile
+  - **B4**: Workspace Integration, Auth/OWASP/CVE Posture & Zero-Downtime Migration Path
+  - **B5**: Day-2 Operations, OpenTelemetry Observability, Testability & Lock-In Exit Cost
 
 ---
 
-## 6. Evidence-Gated Report Schema (Mandatory Output Structure)
+## 6. Canonical 6-Block `RESEARCH-{topic}.md` Schema & CLI Gate (`<= 500` Lines)
 
-Write transient research deliverables to `<appDataDir>\brain\<conversation-id>\RESEARCH-{topic}.md` (or `./reports/{topic}/` only when explicitly requested):
+Every master `RESEARCH-{topic}.md` MUST include all **6 Blocks** in a single cohesive file (`<= 500` lines) and pass deterministic CLI validation before completion:
+
+```bash
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js research validate "<path-to-RESEARCH-topic.md>" --mode research
+```
 
 ```markdown
-# 🔬 Deep Research Report: [Topic]
-**Date**: YYYY-MM-DD | **Track**: [Track A / Track B / Hybrid] | **Confidence**: [HIGH / MEDIUM / LOW]
+# 🔬 Deep Research Report: {Topic}
 
-## 1. Executive Verdict & TL;DR Recommendation
-- **Primary Recommendation**: [Clear decision + 3-bullet justification]
-- **When NOT to Use**: [Explicit boundary conditions where an alternative wins]
+> **Track**: {Track A | Track B | Hybrid} | **Overall Confidence**: {HIGH | MEDIUM | LOW} | **Pinned Target**: `{pkg@vX.Y.Z}`
 
-## 2. 4-Source Triangulation & Comparative Matrix
-| Criterion / Metric | Option A (Recommended) | Option B | Option C | Source Tier & Evidence |
-|--------------------|------------------------|----------|----------|------------------------|
-| Latest 2026 Version | `vX.Y.Z` | `vA.B.C` | `vM.N.P` | Tier 3 (Official Releases) |
-| p99 Latency / Perf | `...` | `...` | `...` | Tier 4 (Benchmarks) |
-| DX & Workspace Fit | `...` | `...` | `...` | Tier 1 & Tier 2 |
+## 1. Executive Verdict & Scope
+- **Primary Verdict**: {Clear recommendation + quantitative justification} `[Confidence: HIGH]` `[Tier 1, Tier 3]`
+- **Pinned Version Matrix** (`Workspace Tier 1` vs `Latest Stable Tier 3`) + **Research Execution Audit Log** (`Waves 1–3`, `>= 6` verified sources)
 
-## 3. Deep-Dive 5-Lens Analysis
+## 2. 5-Lens Findings
 ### Lens 1 .. Lens 5
-[Concrete technical/product analysis, architecture Mermaid diagram, and verified 2026 code/config snippets]
+- {Detailed findings with inline `[Confidence: HIGH|MEDIUM|LOW]` + `[Tier 1..4]` tags and verified `2025`/`2026` code/config snippets}
 
-## 4. Adversarial Risks, Breaking Changes & Failure Modes
-| Risk / Edge Case | Severity | Empirical Evidence / CVE / Post-Mortem | Concrete Mitigation |
-|------------------|----------|----------------------------------------|---------------------|
+## 3. Contradiction Arbitration, Comparison Matrix & Architecture Diagram
+### Contradiction & Version-Drift Arbitration Table
+| Disputed Claim / Drift | Source A (`Tier`) | Source B (`Tier`) | Arbitrated Truth & Version Scope |
+| ---------------------- | ----------------- | ----------------- | -------------------------------- |
+| `{Claim conflict}`     | `{Vendor docs}`   | `{GitHub issue}`  | `{Verified resolution}`          |
 
-## 5. Actionable Implementation Blueprint
-- **Exact Packages & Versions**: `...`
-- **Step-by-Step Integration / Migration Plan**: `...`
+### Weighted Comparison Matrix (`>= 2` Rows; `>= 3` Track B / `>= 5` Track A)
+| Option / Competitor | Version | Perf / Latency | Cost at Scale | Repo Fit | Key Trade-Off | Verdict |
+| ------------------- | ------- | -------------- | ------------- | -------- | ------------- | ------- |
+| **Option A**        | `vX.Y`  | `...`          | `...`         | `High`   | `...`         | ✅ Win  |
+| **Option B**        | `vA.B`  | `...`          | `...`         | `Medium` | `...`         | ❌ Skip |
 
-## 6. Research Execution Audit Log (Mandatory)
-| Wave | Query / Source Target | Tier (`1–4`) | Key Evidence & Quantitative Fact Extracted | Confidence |
-|:----:|-----------------------|:------------:|--------------------------------------------|:----------:|
-| W1 | `...` | Tier 3 | `...` | HIGH |
-| W2 | `...` | Tier 2/3 | `...` | HIGH |
-| W3 | `...` | Tier 4 | `...` | MEDIUM |
+```mermaid
+flowchart LR
+  Input["Caller / Event"] --> Core["Recommended Architecture"] --> Output["Verified State"]
+```
+
+## 4. Anti-Sycophancy "When NOT to Use" & Failure Modes
+- **When NOT to Use (Premise Red-Team)**: {Concrete conditions where the simpler baseline or alternative wins}
+- **Failure Modes, Breaking Changes & Mitigations Table** (`Failure Mode | Trigger | Impact | Countermeasure`)
+
+## 5. Clickable Citation Registry
+1. [{Source Title}](https://...) — `{Version/Date, extracted fact}` (`Tier 3/4`)
+2. [{Workspace File}](file:///...) — `{Local version/pattern}` (`Tier 1/2`)
+
+## 6. Downstream Handoff Brief (HANDOFF_BRIEF)
+```yaml
+HANDOFF_BRIEF:
+  mode: research
+  recommended_decision: "{Winning choice}"
+  pinned_packages: ["{pkg@vX.Y.Z}"]
+  matched_vault_skills: ["skills_library/{skill-id}/SKILL.md"]
+  candidate_shared_contract: "{Core types / schemas / tokens for Wave 1}"
+  hard_constraints_and_bans: ["{Deprecated APIs or anti-patterns to block}"]
+  open_decisions: ["{0–2 high-leverage questions if any}"]
+```
 ```

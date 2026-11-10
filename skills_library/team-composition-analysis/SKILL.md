@@ -25,7 +25,6 @@ Design optimal team structures, hiring plans, compensation strategies, and equit
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Overview
 
@@ -384,16 +383,6 @@ Example:
 1 PM × $162K × 100% = $162K
 Total: $1.1M
 ```
-
-## Additional Resources
-
-### Reference Files
-- **`references/compensation-benchmarks.md`** - Detailed salary data by role, level, and location
-- **`references/equity-calculator.md`** - Equity sizing formulas and dilution scenarios
-
-### Example Files
-- **`examples/seed-stage-hiring-plan.md`** - Complete hiring plan for seed-stage SaaS company
-- **`examples/org-chart-evolution.md`** - Organizational design from 5 to 50 people
 
 ## Quick Start
 

@@ -5,13 +5,13 @@ import { TerminalAnimated } from '../components/terminal'
 import { MetricCard, PlatformBadge, PlatformGrid, FeatureCard } from '../components/features'
 import { HeroSideDecorations } from '../components/hero'
 import { GradientBackground } from '../components/decorations'
-import { SEO, pageSEO } from '../components/seo'
 import { heroMetrics, quickStats, featureCards, platformBadges } from '../data'
+import { AGENT_COUNT, SKILL_COUNT, WORKFLOW_COUNT, formatCount } from '../data/kitStats'
+import { QUICK_INSTALL_ONE_LINER } from '../data/install'
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <SEO {...pageSEO.home} />
+    <div className="min-h-screen bg-bg-primary">
       
       {/* Hero Section */}
       <section className="relative flex min-h-[90vh] flex-col items-center justify-center px-6 overflow-hidden">
@@ -26,8 +26,9 @@ export default function HomePage() {
           className="absolute inset-0 z-[1] pointer-events-none"
           aria-hidden="true"
         >
-          <div className="w-full h-full max-w-6xl mx-auto opacity-60 md:opacity-70 [&_circle[tabindex]]:pointer-events-auto">
+          <div className="w-full h-full max-w-6xl mx-auto opacity-60 md:opacity-70 [&_circle[data-hit-area]]:pointer-events-auto">
             <NeuralNetwork 
+              decorative
               metrics={heroMetrics}
               animationDelay={0.5}
             />
@@ -42,9 +43,11 @@ export default function HomePage() {
         >
           {/* Logo */}
           <motion.img
-            src="/assets/logo.svg"
+            src="/assets/logo.webp"
+            width={96}
+            height={87}
             alt="BoomOpen Workflow Kit Logo"
-            className="mx-auto mb-6 h-20 w-20 md:h-24 md:w-24"
+            className="mx-auto mb-6 h-20 w-20 object-contain md:h-24 md:w-24"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -57,9 +60,9 @@ export default function HomePage() {
 
           {/* Tagline */}
           <p className="mb-8 text-xl text-text-secondary md:text-2xl max-w-3xl mx-auto">
-            A collection of <span className="text-text-accent font-semibold">21 Agents</span>,{' '}
-            <span className="text-gradient-orange font-semibold">1400+ Skills</span>, and{' '}
-            <span className="text-gradient-purple font-semibold">50+ Workflows</span> that transform 
+            A collection of <span className="text-text-accent font-semibold">{AGENT_COUNT} Agents</span>,{' '}
+            <span className="text-gradient-orange font-semibold">{formatCount(SKILL_COUNT)} Skills</span>, and{' '}
+            <span className="text-gradient-purple font-semibold">{WORKFLOW_COUNT} Workflows</span> that transform 
             your AI assistant into a specialized development team.
           </p>
 
@@ -71,8 +74,8 @@ export default function HomePage() {
             transition={{ duration: 0.5, delay: 0.6 }}
           >
             <TerminalAnimated
-              command="npm install -g @boomopen/workflow-kit"
-              speed={40}
+              command={QUICK_INSTALL_ONE_LINER}
+              speed={20}
               delay={1000}
             />
           </motion.div>
@@ -229,6 +232,6 @@ export default function HomePage() {
           </div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

@@ -347,15 +347,3 @@ if let ItemAction::Selected(item_id) = action.as_widget_action().cast() {
 5. **Always call `SignalToUI::set_ui_signal()`**: After posting actions from async
 6. **Centralize in App::handle_actions**: Keep action handling in one place
 7. **Use descriptive action names**: `MessageAction::Reply` not `MessageAction::Action1`
-
-## Reference Files
-
-- `references/action-patterns.md` - Additional action patterns (Robrix)
-- `references/event-handling.md` - Event handling reference (Robrix)
-- `references/moly-action-patterns.md` - Moly-specific patterns
-  - Store-based action forwarding
-  - Timer-based retry pattern
-  - Radio button navigation
-  - External link handling
-  - Platform-conditional actions (#[cfg])
-  - UiRunner event handling

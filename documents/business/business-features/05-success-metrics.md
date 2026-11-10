@@ -85,7 +85,7 @@
 
 | KPI | Baseline | Target | Measurement | Status |
 |-----|----------|--------|-------------|--------|
-| Skill count | 0 | 1,430+ | Count directories in `skills/` | ✅ VALIDATED |
+| Skill count | 0 | 1,462 (22 core in `skills/` + 1,440 in `skills_library/`) | Count directories in `skills/` | ✅ VALIDATED |
 | Domain count | 0 | 19 | Count YAML files in `matrix-skills/` (excluding meta files) | ✅ VALIDATED |
 | Token cost savings | Generic AI prompting | 85% savings | Compare prompt token usage with/without HSOL skill injection | ⚠️ SELF-REPORTED |
 | Fitness threshold | N/A | ≥ 0.8 for skill inclusion | Verify threshold in `rules/SKILLS.md` | 📐 STRUCTURAL |

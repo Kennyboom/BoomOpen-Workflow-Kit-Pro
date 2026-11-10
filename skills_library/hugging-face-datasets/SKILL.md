@@ -5,6 +5,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`examples/diverse_training_examples.json`, `examples/training_examples.json`, `scripts/dataset_manager.py`, `scripts/sql_manager.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Overview
 This skill provides tools to manage datasets on the Hugging Face Hub with a focus on creation, configuration, content management, and SQL-based data manipulation. It is designed to complement the existing Hugging Face MCP server by providing dataset editing and querying capabilities.
 
@@ -59,9 +61,6 @@ The skill includes two Python scripts that use PEP 723 inline dependency managem
 > **All paths are relative to the directory containing this SKILL.md
 file.**
 > Scripts are run with: `uv run scripts/script_name.py [arguments]`
-
-- `scripts/dataset_manager.py` - Dataset creation and management
-- `scripts/sql_manager.py` - SQL-based dataset querying and transformation
 
 ### Prerequisites
 - `uv` package manager installed

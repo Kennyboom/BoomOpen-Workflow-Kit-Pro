@@ -11,7 +11,7 @@
   /* Text colors */
   --color-text-primary: #ffffff;
   --color-text-secondary: #a0a0a0;
-  --color-text-muted: #666666;
+  --color-text-muted: #8f8f8f; /* 4.7:1 on #252525, 6.1:1 on #0a0a0a (WCAG AA) */
   --color-text-accent: #00ff88;
   
   /* Brand gradient colors */
@@ -80,6 +80,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Keep #hash targets clear of the fixed header (h-16 / md:h-18) */
+  scroll-padding-top: 5rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

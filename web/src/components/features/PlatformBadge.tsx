@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Check, type LucideIcon } from 'lucide-react'
-import { cn } from '../../lib/utils'
+import { Link } from 'react-router-dom'
+import { cn, isInternalPath } from '../../lib/utils'
 
 interface PlatformBadgeProps {
   /** Platform name */
@@ -94,11 +95,15 @@ export function PlatformBadge({
   )
 
   if (href) {
-    return (
-      <a 
-        href={href} 
-        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary rounded-xl"
-      >
+    const linkClasses =
+      'block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary rounded-xl'
+    // Same-site paths use client-side navigation instead of a full page reload.
+    return isInternalPath(href) ? (
+      <Link to={href} className={linkClasses}>
+        {content}
+      </Link>
+    ) : (
+      <a href={href} className={linkClasses}>
         {content}
       </a>
     )
@@ -117,7 +122,7 @@ interface PlatformGridProps {
 
 export function PlatformGrid({ children, className }: PlatformGridProps) {
   return (
-    <div className={cn('grid grid-cols-2 md:grid-cols-4 gap-6', className)}>
+    <div className={cn('grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6', className)}>
       {children}
     </div>
   )

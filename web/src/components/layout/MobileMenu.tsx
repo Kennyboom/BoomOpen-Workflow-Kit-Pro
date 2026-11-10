@@ -28,6 +28,17 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     prevPathname.current = location.pathname
   }, [location.pathname, isOpen, onClose])
 
+  // Return focus to the element that opened the menu (the hamburger button) when it closes.
+  const returnFocusRef = useRef<HTMLElement | null>(null)
+  useEffect(() => {
+    if (!isOpen) return undefined
+    returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    return () => {
+      const target = returnFocusRef.current
+      if (target && target.isConnected) target.focus()
+    }
+  }, [isOpen])
+
   // Focus trap and keyboard handling
   useEffect(() => {
     if (!isOpen) return
@@ -108,6 +119,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               'z-50 md:hidden',
               'flex flex-col'
             )}
+            id="mobile-menu"
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation menu"
@@ -305,7 +317,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             {/* Footer */}
             <div className="p-4 border-t border-[var(--color-border-primary)]">
               <p className="text-sm text-[var(--color-text-muted)] text-center">
-                © 2026 Kennyboom. MIT License.
+                © 2026 BoomOpen Labs. MIT License.
               </p>
             </div>
           </motion.div>

@@ -1,0 +1,6 @@
+interface:
+  display_name: "/deep-audit"
+  short_description: "Ruthless Inspector v2 — Deep logic audit of documentation BEFORE code. 10 Audit Dimensions, Crash Testing, Data Flow Tracing, Cross-module Dependency Verification, and Scoring Matrix. Finds LOGIC holes, not just TEXT holes."
+  brand_color: "#6366F1"
+policy:
+  allow_implicit_invocation: true

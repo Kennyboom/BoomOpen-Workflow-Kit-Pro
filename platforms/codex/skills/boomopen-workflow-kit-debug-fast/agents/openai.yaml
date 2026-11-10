@@ -1,4 +1,6 @@
-display_name: "/debug:fast"
-short_description: "⚡ Quick Debug — Fast diagnosis for simple bugs"
-brand_color: "#EF4444"
-allow_implicit_invocation: true
+interface:
+  display_name: "/debug:fast"
+  short_description: "⚡ Quick Debug — Mode A Direct (≤ 2 Known Files) or Single-Wave SPIE 5-Whys Root Cause Trace with 1-Click Proceed to /fix"
+  brand_color: "#EF4444"
+policy:
+  allow_implicit_invocation: true

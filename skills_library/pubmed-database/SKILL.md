@@ -8,6 +8,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`references/api_reference.md`, `references/common_queries.md`, `references/search_syntax.md`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # PubMed Database
 
 ## Overview

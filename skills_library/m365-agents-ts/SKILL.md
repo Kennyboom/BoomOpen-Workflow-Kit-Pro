@@ -165,12 +165,6 @@ window.WebChat.renderWebChat({
 4. Reuse CopilotStudioClient instances and cache tokens in your token provider.
 5. Validate invoke payloads before logging or persisting feedback.
 
-## Reference Files
-
-| File | Contents |
-| --- | --- |
-| references/acceptance-criteria.md | Import paths, hosting pipeline, streaming, and Copilot Studio patterns |
-
 ## Reference Links
 
 | Resource | URL |

@@ -304,11 +304,5 @@ except ConnectionError as e:
     print(f"Connection error: {e}")
 ```
 
-## References
-
-- **Detailed API Reference**: See references/api-reference.md
-- **Complete Examples**: See references/examples.md
-- **All Models & Types**: See references/models.md
-
 ## When to Use
 This skill is applicable to execute the workflow or actions described in the overview.

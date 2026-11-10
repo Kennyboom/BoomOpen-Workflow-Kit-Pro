@@ -6,6 +6,8 @@ source: community
 date_added: "2026-02-27"
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`references/data-preparation.md`, `references/model-training.md`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # ML Pipeline Workflow
 
 Complete end-to-end MLOps pipeline orchestration from data preparation through model deployment.
@@ -20,7 +22,6 @@ Complete end-to-end MLOps pipeline orchestration from data preparation through m
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Overview
 

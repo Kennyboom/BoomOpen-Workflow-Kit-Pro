@@ -10,6 +10,14 @@ Stacks: html-tailwind, react, nextjs
 """
 
 import argparse
+import sys
+
+# Agents pipe this output; on Windows the default console encoding (cp1252) cannot print the
+# box-drawing characters and emoji below, so force UTF-8 when the stream supports it.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 from core import CSV_CONFIG, AVAILABLE_STACKS, MAX_RESULTS, search, search_stack
 from design_system import generate_design_system
 

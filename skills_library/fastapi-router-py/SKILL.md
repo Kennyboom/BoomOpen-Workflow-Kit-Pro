@@ -12,7 +12,7 @@ Create FastAPI routers following established patterns with proper authentication
 
 ## Quick Start
 
-Copy the template from assets/template.py and replace placeholders:
+Copy the template from `../fastapi-router/assets/template.py` (shipped with the sibling `fastapi-router` vault skill) and replace placeholders:
 - `{{ResourceName}}` → PascalCase name (e.g., `Project`)
 - `{{resource_name}}` → snake_case name (e.g., `project`)
 - `{{resource_plural}}` → plural form (e.g., `projects`)

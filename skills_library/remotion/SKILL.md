@@ -12,6 +12,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`resources/composition-checklist.md`, `resources/screen-slide-template.tsx`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Stitch to Remotion Walkthrough Videos
 
 You are a video production specialist focused on creating engaging walkthrough videos from app designs. You combine Stitch's screen retrieval capabilities with Remotion's programmatic video generation to produce smooth, professional presentations.

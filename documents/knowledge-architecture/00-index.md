@@ -8,7 +8,7 @@
 
 ## Quick Summary
 
-BoomOpen Workflow Kit is a **plugin-based orchestrator framework** where the AI model itself is the runtime. Rather than shipping executable code, the framework distributes Markdown and YAML instruction files that AI coding assistants read and follow as their operating protocol. The architecture centers on a single Orchestrator (defined in platform entry points) that delegates work to 21 specialist agents through 14 command routers, governed by 10 immutable orchestration laws and a Hybrid Skill Orchestration Layer (HSOL) that resolves and injects 1,430 skills across 19 domains.
+BoomOpen Workflow Kit is a **plugin-based orchestrator framework** where the AI model itself is the runtime. Rather than shipping executable code, the framework distributes Markdown and YAML instruction files that AI coding assistants read and follow as their operating protocol. The architecture centers on a single Orchestrator (defined in platform entry points) that delegates work to 21 specialist agents through 14 command routers, governed by 10 immutable orchestration laws and a Hybrid Skill Orchestration Layer (HSOL) that resolves and injects 1,462 skills across 19 domains.
 
 The system deploys identically to 5 platforms (Cursor, GitHub Copilot, Claude Code, Codex, Antigravity/Gemini) through a CLI installer that performs `{TOOL}` placeholder substitution. At runtime, the AI reads CORE.md as its operating system, loads rules on demand, routes user commands to workflow variants, and executes phase-sequential pipelines where each phase delegates to a specialist agent via tiered execution (sub-agent isolation preferred, shared-context embodiment as fallback). For high-stakes work, the `:team` variant activates a Golden Triangle of 3 agents (Tech Lead + Executor + Reviewer) with adversarial debate capped at 3 rounds.
 
@@ -38,7 +38,7 @@ graph TB
     end
 
     subgraph "Skill Layer"
-        MATRIX["Matrix Skills<br/>19 Domains · 1,430 Skills"]
+        MATRIX["Matrix Skills<br/>19 Domains · 1,462 Skills"]
         DYNAMIC["Dynamic Skills<br/>Community Discovery"]
         HSOL["HSOL Engine<br/>Fitness Scoring"]
     end
@@ -98,7 +98,7 @@ graph TB
 | Workflow Variants | 4 per command (fast, hard, team) |
 | Individual Agents | 21 across 5 categories (meta, execution, validation, research, support) |
 | Team Configurations | 17 teams × 3 roles = 51 team agents |
-| Skill Modules | 1,430 matrix + dynamic community skills |
+| Skill Modules | 1,462 matrix + dynamic community skills |
 | Skill Domains | 19 YAML domain files |
 | Error Classes | 5 (E1, E1b, E2, E3, E4) |
 | Execution Tiers | 2 (sub-agent isolation, shared-context embodiment) |

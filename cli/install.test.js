@@ -1,21 +1,36 @@
+/**
+ * In-process behaviour tests for the CLI modules.
+ *
+ * Hermetic by construction: before any kit module is loaded, HOME / USERPROFILE / APPDATA /
+ * LOCALAPPDATA / XDG_CONFIG_HOME point at a temp folder, so os.homedir(), the installer's TOOLS
+ * paths and the VS Code prompts folder all resolve inside the sandbox. Nothing is written into the
+ * repository (the last test verifies that for the generated compact index).
+ *
+ * Content/size lint of the Markdown files lives in docs-content.test.js; the hook corpus in
+ * hook-guard.test.js; real install/uninstall runs in user-files.test.js, install-cli.test.js and
+ * cli-e2e.test.js; Codex config merging in codex-config.test.js.
+ */
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const {
-  TOOLS,
-  ROOT_FILES,
-  buildCompactSkillIndex,
-  runDoctor,
-  runCheck,
-  startSettingsUiServer,
-} = require('./install.js');
-const {
-  SOFT_FILE_LINES,
-  HARD_FILE_LINES,
-  inspectSourceFile,
-} = require('./checker.js');
+  REPO_ROOT,
+  tempDir,
+  removeDir,
+  sandboxEnv,
+  listFiles,
+} = require('./sandbox.test-helper.js');
+
+const SANDBOX_HOME = tempDir('boomopen-test-home-');
+Object.assign(process.env, sandboxEnv(SANDBOX_HOME));
+process.on('exit', () => removeDir(SANDBOX_HOME));
+
+const { TOOLS, ROOT_FILES, ensureDir, copyWithReplace } = require('./install.js');
+const { buildCompactSkillIndex, runDoctor } = require('./doctor.js');
+const { SOFT_FILE_LINES, HARD_FILE_LINES, inspectSourceFile, runCheck } = require('./checker.js');
 const {
   SETTINGS_MARKER_START,
   SETTINGS_MARKER_END,
@@ -34,403 +49,253 @@ const {
   syncSettingsToInstalledPlatforms,
   runSettingsCommand,
 } = require('./settings.js');
+const { startSettingsUiServer } = require('./settings-ui.js');
 
-const REPO_ROOT = path.resolve(__dirname, '..');
+const KIT_VERSION = require('../package.json').version;
+const COMPACT_INDEX_PATH = path.join(REPO_ROOT, 'matrix-skills', 'compact-index.json');
+const KIT_ENTRY_HEADER = '# ENTRY.md — BoomOpen Workflow Kit Orchestrator Instructions';
+const REPO_SOURCE_CHECK_PREFIXES = ['platforms/', 'rules/', 'commands/', 'agents/', 'i18n/', 'skills/', 'matrix-skills/'];
+const KIT_SOURCE_DIRS = ['cli', 'platforms', 'scripts'];
 
-test('All 5 TOOLS (antigravity, claude, codex, copilot, cursor) use platforms/<tool> assets that exist on disk', () => {
-  const expectedTools = ['cursor', 'copilot', 'antigravity', 'claude', 'codex'];
-  for (const toolKey of expectedTools) {
+function fileFingerprint(filePath) {
+  if (!fs.existsSync(filePath)) return null;
+  const stat = fs.statSync(filePath);
+  const hash = crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
+  return { hash, mtimeMs: stat.mtimeMs };
+}
+
+/** `count` newline-terminated lines, the way every real source file ends. */
+function sourceLines(count, eol = '\n') {
+  return Array.from({ length: count }, (_, i) => `const line${i} = ${i};`).join(eol) + eol;
+}
+
+const COMPACT_INDEX_BEFORE = fileFingerprint(COMPACT_INDEX_PATH);
+
+// ---------------------------------------------------------------------------
+// Installer configuration
+// ---------------------------------------------------------------------------
+
+test('TOOLS: all 5 platforms ship their assets from platforms/<tool> and resolve inside the sandboxed home', () => {
+  for (const toolKey of ['cursor', 'copilot', 'antigravity', 'claude', 'codex']) {
     const tool = TOOLS[toolKey];
-    assert.ok(tool, `TOOLS.${toolKey} should exist`);
-    assert.ok(tool.assets, `TOOLS.${toolKey}.assets should exist`);
+    assert.ok(tool && tool.assets, `TOOLS.${toolKey}.assets should exist`);
     for (const [assetName, assetPath] of Object.entries(tool.assets)) {
-      assert.ok(
-        assetPath.includes(path.join('platforms', toolKey)),
-        `Expected ${toolKey}.${assetName} (${assetPath}) to reside under platforms/${toolKey}`
-      );
-      assert.ok(
-        fs.existsSync(assetPath),
-        `Expected asset ${toolKey}.${assetName} to exist at ${assetPath}`
-      );
+      assert.ok(assetPath.includes(path.join('platforms', toolKey)), `${toolKey}.${assetName} must live in platforms/${toolKey}`);
+      assert.ok(fs.existsSync(assetPath), `asset ${toolKey}.${assetName} missing at ${assetPath}`);
+    }
+    for (const [key, value] of Object.entries(tool.paths)) {
+      assert.ok(value.startsWith(SANDBOX_HOME), `TOOLS.${toolKey}.paths.${key} escaped the sandbox: ${value}`);
     }
   }
-
-  const ag = TOOLS.antigravity;
   assert.ok(
-    ag.paths.frameworkPath.endsWith(
-      path.join('.gemini', 'config', 'skills', 'boomopen-workflow-kit')
-    )
+    TOOLS.antigravity.paths.frameworkPath.endsWith(path.join('.gemini', 'config', 'skills', 'boomopen-workflow-kit'))
   );
-  assert.equal(ag.replacements['{TOOL}'], 'gemini/config');
+  assert.equal(TOOLS.antigravity.replacements['{TOOL}'], 'gemini/config');
+  assert.ok(ROOT_FILES.includes('README.md') && ROOT_FILES.includes('SKILL.md'));
 });
 
-test('ROOT_FILES includes SKILL.md and README.md', () => {
-  assert.ok(ROOT_FILES.includes('README.md'));
-  assert.ok(ROOT_FILES.includes('SKILL.md'));
-});
-
-test('All 5 platform entrypoints and templates enforce v5.5 Smart-Hybrid, Pragmatic 2-Tier Standards, and flat command routing', () => {
-  const entryFiles = [
-    'GEMINI.md',
-    'CLAUDE.md',
-    'CODEX.md',
-    'COPILOT.md',
-    'CURSOR.md',
-    'AGENT.md',
-    'platforms/antigravity/GEMINI.md',
-    'platforms/antigravity/AntigravityGlobal.agent.md',
-    'platforms/claude/CLAUDE.md',
-    'platforms/codex/CODEX.md',
-    'platforms/copilot/boomopen-workflow-kit.agent.md',
-    'platforms/cursor/.cursorrules',
-    'platforms/cursor/rules/boomopen-workflow-kit.mdc',
-  ];
-
-  for (const relPath of entryFiles) {
-    const fullPath = path.join(REPO_ROOT, relPath);
-    assert.ok(fs.existsSync(fullPath), `Expected ${relPath} to exist`);
-    const content = fs.readFileSync(fullPath, 'utf8');
-    const lineCount = content.split(/\r?\n/).length;
-    assert.ok(
-      lineCount <= 220,
-      `Expected ${relPath} to be <= 220 lines, got ${lineCount}`
-    );
-    assert.ok(content.includes('v5.5'), `Expected ${relPath} to include v5.5`);
-    assert.ok(content.includes('MODE A'), `Expected ${relPath} to include MODE A`);
-    assert.ok(content.includes('MODE B'), `Expected ${relPath} to include MODE B`);
-    assert.ok(
-      content.includes('Pragmatic 2-Tier') || content.includes('PRAGMATIC 2-TIER'),
-      `Expected ${relPath} to include Pragmatic 2-Tier Coding Standards`
-    );
-    assert.ok(
-      content.includes(SETTINGS_MARKER_START) && content.includes(SETTINGS_MARKER_END),
-      `Expected ${relPath} to contain BOOMOPEN-SETTINGS-START/END markers`
-    );
-    assert.ok(
-      !content.includes('0 subagent cold-start latency, 0 extra rule file reads, 0 report file clutter'),
-      `Expected ${relPath} not to contain legacy solo-bias phrase`
-    );
-    assert.ok(
-      !content.includes('commands/{cmd}/{variant}.md') &&
-        !content.includes('commands/{cmd}/team.md') &&
-        !content.includes('commands/{cmd}/hard.md'),
-      `Expected ${relPath} not to contain legacy nested command paths`
-    );
-  }
-});
-
-test('Zero files in repository contain legacy code-assistants, Antigravity Kit, personal paths, or leaked secrets', () => {
-  assert.ok(
-    !fs.existsSync(path.join(REPO_ROOT, 'code-assistants')),
-    'Legacy code-assistants directory must not exist'
-  );
-  assert.ok(
-    !fs.existsSync(path.join(REPO_ROOT, 'global_replace.py')),
-    'Scratch global_replace.py must not exist at root'
-  );
-  assert.ok(
-    !fs.existsSync(path.join(REPO_ROOT, 'test-boom')),
-    'Scratch test-boom directory must not exist at root'
-  );
-  assert.ok(
-    fs.existsSync(path.join(REPO_ROOT, 'SECURITY.md')),
-    'SECURITY.md must exist at repository root'
-  );
-
-  const dirsToScan = [
-    'agents',
-    'cli',
-    'commands',
-    'documents',
-    'i18n',
-    'platforms',
-    'rules',
-    'scripts',
-    'skills',
-    'web/src',
-  ];
-  const rootFilesToScan = [
-    'package.json',
-    'LICENSE',
-    'SECURITY.md',
-    'README.md',
-    'SKILL.md',
-    'CHANGELOG.md',
-    'AGENT.md',
-    'AGENT-TEMPLATE.md',
-    'CLAUDE.md',
-    'CODEX.md',
-    'COPILOT.md',
-    'CURSOR.md',
-    'GEMINI.md',
-  ];
-
-  function walk(dir) {
-    if (!fs.existsSync(dir)) return [];
-    let out = [];
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      const full = path.join(dir, entry.name);
-      if (entry.isDirectory()) out = out.concat(walk(full));
-      else if (/\.(md|js|ts|tsx|json|py|toml|yaml|yml|mdc)$/i.test(entry.name)) out.push(full);
+test('copyWithReplace applies placeholder replacements and skips node_modules and symlinks', (t) => {
+  const dir = tempDir('boomopen-copy-');
+  try {
+    const src = path.join(dir, 'src');
+    const dest = path.join(dir, 'dest', 'nested');
+    fs.mkdirSync(path.join(src, 'node_modules', 'pkg'), { recursive: true });
+    fs.mkdirSync(path.join(src, 'sub'), { recursive: true });
+    fs.writeFileSync(path.join(src, 'guide.md'), 'read ~/.{TOOL}/skills/boomopen-workflow-kit/SKILL.md\n');
+    fs.writeFileSync(path.join(src, 'sub', 'data.json'), '{"tool":"{TOOL}"}');
+    fs.writeFileSync(path.join(src, 'node_modules', 'pkg', 'index.js'), 'module.exports = 1;');
+    const outside = path.join(dir, 'outside.md');
+    fs.writeFileSync(outside, 'secret');
+    let symlinkCreated = true;
+    try {
+      fs.symlinkSync(outside, path.join(src, 'link.md'), 'file');
+    } catch {
+      symlinkCreated = false; // Windows without Developer Mode cannot create symlinks
     }
-    return out;
+
+    ensureDir(dest);
+    assert.ok(fs.statSync(dest).isDirectory(), 'ensureDir creates nested folders');
+    assert.doesNotThrow(() => ensureDir(dest), 'ensureDir is idempotent');
+
+    const replacements = {
+      '~/.{TOOL}/skills/boomopen-workflow-kit/': '~/.claude/skills/boomopen-workflow-kit/',
+      '{TOOL}': 'claude',
+    };
+    const copied = copyWithReplace(src, dest, replacements, false);
+    assert.equal(copied, 2);
+    assert.equal(fs.readFileSync(path.join(dest, 'guide.md'), 'utf8'), 'read ~/.claude/skills/boomopen-workflow-kit/SKILL.md\n');
+    assert.equal(fs.readFileSync(path.join(dest, 'sub', 'data.json'), 'utf8'), '{"tool":"claude"}');
+    assert.equal(fs.existsSync(path.join(dest, 'node_modules')), false, 'node_modules is never copied');
+    if (symlinkCreated) assert.equal(fs.existsSync(path.join(dest, 'link.md')), false, 'symlinks are never followed');
+    else t.diagnostic('symlink case skipped: this OS user cannot create symlinks');
+    assert.equal(copyWithReplace(path.join(dir, 'missing'), dest, {}, false), 0, 'missing source copies nothing');
+  } finally {
+    removeDir(dir);
   }
+});
 
-  const allFiles = [
-    ...rootFilesToScan.map((f) => path.join(REPO_ROOT, f)).filter((f) => fs.existsSync(f)),
-    ...dirsToScan.flatMap((d) => walk(path.join(REPO_ROOT, d))),
-  ];
+// ---------------------------------------------------------------------------
+// Compact skill index (never regenerated inside the repository)
+// ---------------------------------------------------------------------------
 
-  // Build patterns dynamically so this test file itself doesn't trigger self-matches
-  const forbiddenChecks = [
-    { label: 'code-assistants', regex: /code-assistants/ },
-    { label: 'Antigravity Kit', regex: /antigravity\s+kit/i },
-    { label: 'Personal user path', regex: new RegExp('Kel' + 'ly\\s+Cla' + 'rk', 'i') },
-    { label: 'Personal Windows user path', regex: /C:\\Users\\[A-Za-z]/ },
-    { label: 'Legacy author NamCH', regex: /\bNamCH\b/ },
-    { label: 'Legacy scope @namch', regex: /@namch\b/i },
-    { label: 'Legacy repo hainamchung', regex: /hainamchung/i },
-    { label: 'Legacy repo anthropics/boomopen-workflow-kit', regex: /anthropics\/boomopen-workflow-kit/i },
-    { label: 'Secret token pattern', regex: /(?:ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AIza[0-9A-Za-z-_]{35}|AKIA[0-9A-Z]{16}|BEGIN RSA PRIVATE KEY|BEGIN OPENSSH PRIVATE KEY)/ },
-  ];
-
-  assert.ok(
-    !new RegExp('Kel' + 'ly\\s+Cla' + 'rk', 'i').test(fs.readFileSync(__filename, 'utf8')),
-    'Expected cli/install.test.js not to contain personal user path'
-  );
-
-  for (const file of allFiles) {
-    if (file.endsWith('install.test.js') || file.endsWith('doctor.js')) continue;
-    const content = fs.readFileSync(file, 'utf8');
-    const rel = path.relative(REPO_ROOT, file);
-    for (const chk of forbiddenChecks) {
-      assert.ok(
-        !chk.regex.test(content),
-        `Expected ${rel} not to match forbidden pattern: ${chk.label}`
-      );
+test('buildCompactSkillIndex output matches the committed matrix-skills/compact-index.json (built in a temp copy)', () => {
+  const tmpRoot = tempDir('boomopen-index-');
+  try {
+    fs.cpSync(path.join(REPO_ROOT, 'matrix-skills'), path.join(tmpRoot, 'matrix-skills'), { recursive: true });
+    fs.rmSync(path.join(tmpRoot, 'matrix-skills', 'compact-index.json'), { force: true });
+    // Only the core skill folder names matter (they decide skills/ vs skills_library/ paths).
+    for (const entry of fs.readdirSync(path.join(REPO_ROOT, 'skills'), { withFileTypes: true })) {
+      if (entry.isDirectory()) fs.mkdirSync(path.join(tmpRoot, 'skills', entry.name), { recursive: true });
     }
+
+    const result = buildCompactSkillIndex(tmpRoot);
+    assert.ok(result.outputPath.startsWith(tmpRoot), 'the index is written where it was asked to be');
+    assert.ok(result.count >= 1000, `Expected >= 1000 skills, got ${result.count}`);
+    const generated = JSON.parse(fs.readFileSync(result.outputPath, 'utf8'));
+    const committed = JSON.parse(fs.readFileSync(COMPACT_INDEX_PATH, 'utf8'));
+    assert.equal(generated.version, KIT_VERSION, 'index version follows package.json');
+    assert.equal(committed.version, KIT_VERSION, 'committed index version follows package.json');
+    assert.equal(generated.skills['api-patterns'].domain, 'backend');
+    assert.deepEqual(
+      committed.skills,
+      generated.skills,
+      'committed compact-index.json is stale: regenerate it from matrix-skills/*.yaml'
+    );
+    assert.equal(committed.totalSkills, generated.totalSkills);
+  } finally {
+    removeDir(tmpRoot);
   }
 });
 
-test('All rules/*.md files are <= 300 lines, pure BoomOpen v5.5, and enforce Intelligent Work Distribution', () => {
-  const rulesDir = path.join(REPO_ROOT, 'rules');
-  const ruleFiles = fs.readdirSync(rulesDir).filter((f) => f.endsWith('.md')).sort();
-  assert.deepEqual(ruleFiles, [
-    'AGENTS.md',
-    'CORE.md',
-    'ERRORS.md',
-    'PHASES.md',
-    'REFERENCE.md',
-    'SKILLS.md',
-    'TEAMS.md',
-  ]);
-  for (const file of ruleFiles) {
-    const content = fs.readFileSync(path.join(rulesDir, file), 'utf8');
-    const lineCount = content.split(/\r?\n/).length;
-    assert.ok(
-      lineCount <= 300,
-      `Expected rules/${file} to be <= 300 lines, got ${lineCount}`
-    );
-    assert.ok(
-      !content.includes('agent-assistant'),
-      `Expected rules/${file} not to contain legacy 'agent-assistant'`
-    );
-  }
-  const agentsContent = fs.readFileSync(path.join(rulesDir, 'AGENTS.md'), 'utf8');
-  assert.ok(agentsContent.includes('QUALITY-FIRST MODEL POLICY'));
-  assert.ok(agentsContent.includes('Direct Plan-to-Executor Dispatch'));
-  assert.ok(agentsContent.includes('Active Sub-agent Session Registry'));
-  assert.ok(agentsContent.includes('OWNED_FILES'));
-  assert.ok(agentsContent.includes('SHARED_CONTRACT'));
-});
+// ---------------------------------------------------------------------------
+// Pragmatic 2-Tier checker (fixtures end with a newline, like real files)
+// ---------------------------------------------------------------------------
 
-test('commands/ directory has only flat *.md files + _ref/ and all files are <= 450 lines', () => {
-  const commandsDir = path.join(REPO_ROOT, 'commands');
-  const entries = fs.readdirSync(commandsDir, { withFileTypes: true });
-  const subdirs = entries.filter((e) => e.isDirectory()).map((e) => e.name);
-  assert.deepEqual(subdirs, ['_ref'], 'commands/ should only contain _ref subdirectory');
-
-  const mdFiles = entries.filter((e) => e.isFile() && e.name.endsWith('.md')).map((e) => e.name);
-  for (const file of mdFiles) {
-    const content = fs.readFileSync(path.join(commandsDir, file), 'utf8');
-    const lineCount = content.split(/\r?\n/).length;
-    assert.ok(
-      lineCount <= 450,
-      `Expected commands/${file} to be <= 450 lines, got ${lineCount}`
-    );
-  }
-});
-
-test('buildCompactSkillIndex generates matrix-skills/compact-index.json with >= 1000 skills', () => {
-  const result = buildCompactSkillIndex(REPO_ROOT);
-  assert.ok(result.count >= 1000, `Expected >= 1000 skills, got ${result.count}`);
-  assert.ok(fs.existsSync(result.outputPath));
-  const data = JSON.parse(fs.readFileSync(result.outputPath, 'utf8'));
-  assert.equal(data.version, '5.5.0');
-  assert.ok(data.skills['api-patterns']);
-  assert.equal(data.skills['api-patterns'].domain, 'backend');
-});
-
-test('Pragmatic 2-Tier checker allows 320-line cohesive file, warns at 420 lines, and errors >500 lines or on explicit any', () => {
+test(`checker counts lines like wc -l: ${SOFT_FILE_LINES}/${HARD_FILE_LINES} are allowed, one more warns/errors (LF and CRLF)`, () => {
   assert.equal(SOFT_FILE_LINES, 400);
   assert.equal(HARD_FILE_LINES, 500);
+  for (const eol of ['\n', '\r\n']) {
+    const label = JSON.stringify(eol);
+    const atSoft = inspectSourceFile('/project/src/a.ts', '/project', sourceLines(SOFT_FILE_LINES, eol));
+    assert.deepEqual([atSoft.violations.length, atSoft.warnings.length], [0, 0], `${label}: exactly ${SOFT_FILE_LINES} lines is clean`);
 
-  const cohesive320 = Array.from({ length: 320 }, (_, i) => `const line${i} = ${i};`).join('\n');
-  const res320 = inspectSourceFile('/project/src/userService.ts', '/project', cohesive320);
-  assert.equal(res320.violations.length, 0);
-  assert.equal(res320.warnings.length, 0);
+    const overSoft = inspectSourceFile('/project/src/a.ts', '/project', sourceLines(SOFT_FILE_LINES + 1, eol));
+    assert.deepEqual([overSoft.violations.length, overSoft.warnings.length], [0, 1], `${label}: ${SOFT_FILE_LINES + 1} lines warns`);
+    assert.match(overSoft.warnings[0], new RegExp(`\\b${SOFT_FILE_LINES + 1} lines`));
 
-  const soft420 = Array.from({ length: 420 }, (_, i) => `const line${i} = ${i};`).join('\n');
-  const res420 = inspectSourceFile('/project/src/orderService.ts', '/project', soft420);
-  assert.equal(res420.violations.length, 0);
-  assert.equal(res420.warnings.length, 1);
+    const atHard = inspectSourceFile('/project/src/a.ts', '/project', sourceLines(HARD_FILE_LINES, eol));
+    assert.equal(atHard.violations.length, 0, `${label}: exactly ${HARD_FILE_LINES} lines is not a hard error`);
 
-  const hard510 = Array.from({ length: 510 }, (_, i) => `const line${i} = ${i};`).join('\n');
-  const res510 = inspectSourceFile('/project/src/godModule.ts', '/project', hard510);
-  assert.equal(res510.violations.length, 1);
-
-  const test600 = Array.from({ length: 600 }, (_, i) => `const line${i} = ${i};`).join('\n');
-  const resTest = inspectSourceFile('/project/src/userService.test.ts', '/project', test600);
-  assert.equal(resTest.violations.length, 0);
-  assert.equal(resTest.warnings.length, 0);
-
-  const badAny = 'export function parsePayload(input: any): string { return String(input); }';
-  const resAny = inspectSourceFile('/project/src/parser.ts', '/project', badAny);
-  assert.equal(resAny.violations.length, 1);
-});
-
-test('runDoctor and runCheck pass on repository and modular CLI files', () => {
-  const doctorReport = runDoctor({ repoRoot: REPO_ROOT, silent: true });
-  assert.equal(
-    doctorReport.healthy,
-    true,
-    `Doctor checks failed: ${JSON.stringify(doctorReport.checks.filter((c) => !c.passed))}`
-  );
-
-  const checkReport = runCheck(path.join(REPO_ROOT, 'cli'), { silent: true });
-  assert.equal(
-    checkReport.passed,
-    true,
-    `Code check failed: ${checkReport.violations.join(', ')}`
-  );
-  assert.ok(checkReport.scannedFiles >= 4);
-});
-
-test('Destructive command hook blocks root deletions and allows safe commands', async () => {
-  const hookPath = path.join(
-    REPO_ROOT,
-    'platforms',
-    'antigravity',
-    'hooks',
-    'validate-tool-call.mjs'
-  );
-  assert.ok(fs.existsSync(hookPath));
-  const { evaluateCommand } = await import(`file://${hookPath.replace(/\\/g, '/')}`);
-  assert.equal(evaluateCommand('rm -rf /').allowed, false);
-  assert.equal(evaluateCommand('npm test').allowed, true);
-});
-
-test('All 16 i18n/README.<lang>.md files exist, have full 9-section content, and are linked from root README.md', () => {
-  const expectedLangs = [
-    'vi', 'zh-CN', 'zh-TW', 'ja', 'ko', 'es', 'fr', 'de',
-    'pt-BR', 'ru', 'hi', 'ar', 'id', 'th', 'tr', 'it',
-  ];
-  const expectedCommands = [
-    '/cook', '/code', '/plan', '/fix', '/debug', '/test', '/review',
-    '/design', '/docs', '/deploy', '/brainstorm', '/report', '/orchestrate', '/save',
-  ];
-  const expectedPlatforms = [
-    'Antigravity (Gemini)',
-    'Claude Code',
-    'OpenAI Codex',
-    'Cursor',
-    'GitHub Copilot',
-  ];
-
-  const rootReadme = fs.readFileSync(path.join(REPO_ROOT, 'README.md'), 'utf8');
-  assert.ok(
-    !rootReadme.includes('## 🇻🇳 Tài Liệu Tiếng Việt') &&
-      !rootReadme.includes('Xem Video Bản Tiếng Việt'),
-    'Expected root README.md to be 100% pure English without embedded Vietnamese sections'
-  );
-  const rootPBlocks = rootReadme.match(/<p>[\s\S]*?<\/p>/g) || [];
-  for (const pBlock of rootPBlocks) {
-    assert.ok(
-      !/\]\(\.\//.test(pBlock) && !/\*\*[^*]+\*\*/.test(pBlock),
-      'Expected root README.md <p> blocks to use pure HTML <a>/<b> tags instead of raw Markdown'
-    );
+    const overHard = inspectSourceFile('/project/src/a.ts', '/project', sourceLines(HARD_FILE_LINES + 1, eol));
+    assert.equal(overHard.violations.length, 1, `${label}: ${HARD_FILE_LINES + 1} lines is a hard error`);
+    assert.match(overHard.violations[0], new RegExp(`\\b${HARD_FILE_LINES + 1} lines`));
   }
 
-  for (const lang of expectedLangs) {
-    const relLink = `<a href="./i18n/README.${lang}.md">`;
-    assert.ok(
-      rootReadme.includes(relLink),
-      `Expected root README.md to link to ${relLink} via valid HTML <a> tag`
-    );
+  const unterminated = sourceLines(HARD_FILE_LINES).trimEnd();
+  assert.equal(inspectSourceFile('/project/src/a.ts', '/project', unterminated).violations.length, 0);
+  assert.equal(inspectSourceFile('/project/src/a.ts', '/project', '').violations.length, 0);
+});
 
-    const filePath = path.join(REPO_ROOT, 'i18n', `README.${lang}.md`);
-    assert.ok(fs.existsSync(filePath), `Expected i18n/README.${lang}.md to exist`);
+test('checker exempts test files from size limits and flags explicit any in TypeScript', () => {
+  const resTest = inspectSourceFile('/project/src/userService.test.ts', '/project', sourceLines(600));
+  assert.deepEqual([resTest.violations.length, resTest.warnings.length], [0, 0]);
 
-    const content = fs.readFileSync(filePath, 'utf8');
-    const lineCount = content.split(/\r?\n/).length;
-    assert.ok(
-      lineCount >= 130 && lineCount <= 450,
-      `Expected i18n/README.${lang}.md to have between 130 and 450 lines, got ${lineCount}`
-    );
-    assert.ok(
-      content.includes('```mermaid') && content.includes('flowchart TD'),
-      `Expected i18n/README.${lang}.md to include Mermaid architecture flowchart`
-    );
-    assert.ok(
-      content.includes('<a href="../README.md">🇬🇧 English</a>'),
-      `Expected i18n/README.${lang}.md to link back to ../README.md using valid HTML <a> tag`
-    );
-    const pBlocks = content.match(/<p>[\s\S]*?<\/p>/g) || [];
-    for (const pBlock of pBlocks) {
-      assert.ok(
-        !/\]\(\.\.?\//.test(pBlock) && !/\*\*[^*]+\*\*/.test(pBlock),
-        `Expected i18n/README.${lang}.md <p> blocks to use pure HTML <a>/<b> tags`
-      );
-    }
-    if (lang !== 'vi') {
-      assert.ok(
-        !content.includes('Xem Bản Tiếng Việt') &&
-          !content.includes('## 🎬 Official Launch Trailer') &&
-          !content.includes('## 🎛️ Unified Settings & Mode Selection'),
-        `Expected i18n/README.${lang}.md to have fully localized trailer & settings headers without Vietnamese/English mix`
-      );
-    }
+  const badAny = 'export function parsePayload(input: any): string { return String(input); }\n';
+  assert.equal(inspectSourceFile('/project/src/parser.ts', '/project', badAny).violations.length, 1);
+  const typed = 'export function parsePayload(input: unknown): string { return String(input); }\n';
+  assert.equal(inspectSourceFile('/project/src/parser.ts', '/project', typed).violations.length, 0);
+});
 
-    for (const cmd of [...expectedCommands, '/settings']) {
-      assert.ok(
-        content.includes(cmd),
-        `Expected i18n/README.${lang}.md to document command ${cmd}`
-      );
-    }
+test('codingStandards presets: strict 300/400 and relaxed 600/800 boundaries are exact', () => {
+  assert.deepEqual(CODING_STANDARDS_PRESETS.strict, {
+    softFileLines: 300,
+    hardFileLines: 400,
+    forbidExplicitAny: true,
+    warnConsoleLog: true,
+  });
+  assert.deepEqual(CODING_STANDARDS_PRESETS.relaxed, {
+    softFileLines: 600,
+    hardFileLines: 800,
+    forbidExplicitAny: true,
+    warnConsoleLog: false,
+  });
+  const inspect = (lines, preset) => inspectSourceFile('/project/src/mod.ts', '/project', sourceLines(lines), preset);
+  assert.deepEqual([inspect(300, 'strict').violations.length, inspect(300, 'strict').warnings.length], [0, 0]);
+  assert.deepEqual([inspect(301, 'strict').violations.length, inspect(301, 'strict').warnings.length], [0, 1]);
+  assert.equal(inspect(400, 'strict').violations.length, 0);
+  assert.equal(inspect(401, 'strict').violations.length, 1);
+  assert.deepEqual([inspect(450, 'relaxed').violations.length, inspect(450, 'relaxed').warnings.length], [0, 0]);
+  assert.deepEqual([inspect(650, 'relaxed').violations.length, inspect(650, 'relaxed').warnings.length], [0, 1]);
+  assert.equal(inspect(801, 'relaxed').violations.length, 1);
+});
 
-    for (const plat of expectedPlatforms) {
-      assert.ok(
-        content.includes(plat),
-        `Expected i18n/README.${lang}.md to include platform ${plat}`
-      );
-    }
+test(`runCheck passes on the whole repository (same as \`boomopen check .\`) and fails on an oversized file`, () => {
+  const repoReport = runCheck(REPO_ROOT, { silent: true, homeDir: SANDBOX_HOME, cwd: REPO_ROOT });
+  assert.equal(repoReport.passed, true, `boomopen check . failed: ${repoReport.violations.join(', ')}`);
+  for (const dir of KIT_SOURCE_DIRS) {
+    const report = runCheck(path.join(REPO_ROOT, dir), { silent: true, homeDir: SANDBOX_HOME, cwd: REPO_ROOT });
+    assert.equal(report.passed, true, `boomopen check ${dir}/ failed: ${report.violations.join(', ')}`);
+    assert.ok(report.scannedFiles >= 1, `${dir}/ should contain source files`);
+  }
+  assert.ok(repoReport.scannedFiles > 100, `expected the repo-wide scan to cover the kit and web sources, got ${repoReport.scannedFiles}`);
+
+  const project = tempDir('boomopen-check-');
+  try {
+    fs.mkdirSync(path.join(project, 'src'));
+    fs.writeFileSync(path.join(project, 'src', 'ok.ts'), sourceLines(HARD_FILE_LINES));
+    assert.equal(runCheck(project, { silent: true }).passed, true);
+    fs.writeFileSync(path.join(project, 'src', 'big.ts'), sourceLines(HARD_FILE_LINES + 1));
+    const failing = runCheck(project, { silent: true });
+    assert.equal(failing.passed, false);
+    assert.equal(failing.violations.length, 1);
+  } finally {
+    removeDir(project);
   }
 });
 
-test('Unified Settings schema defaults naturalLanguageResearchTrigger to auto_team and covers all 12 settings across 4 categories', () => {
-  assert.equal(DEFAULT_SETTINGS.version, '5.5.0');
+// ---------------------------------------------------------------------------
+// Doctor (always against a sandboxed home, never the developer's profile)
+// ---------------------------------------------------------------------------
+
+test('runDoctor with an empty sandboxed home: kit source checks pass, missing installs are reported', () => {
+  const emptyHome = tempDir('boomopen-doctor-home-');
+  try {
+    const report = runDoctor({ repoRoot: REPO_ROOT, homeDir: emptyHome, cwd: emptyHome, silent: true });
+    const sourceChecks = report.checks.filter((c) => REPO_SOURCE_CHECK_PREFIXES.some((p) => c.name.startsWith(p)));
+    assert.ok(sourceChecks.length >= 5, `expected the kit source checks, got ${JSON.stringify(report.checks.map((c) => c.name))}`);
+    const failedSource = sourceChecks.filter((c) => !c.passed);
+    assert.deepEqual(failedSource, [], `kit source checks failed: ${JSON.stringify(failedSource)}`);
+    assert.equal(report.healthy, false, 'nothing is installed in an empty home, so doctor must not report healthy');
+    const homeFiles = listFiles(emptyHome);
+    assert.deepEqual(homeFiles, [], 'doctor is read-only');
+  } finally {
+    removeDir(emptyHome);
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Settings engine
+// ---------------------------------------------------------------------------
+
+test('Settings schema: version follows package.json, smart-hybrid defaults and 20 enum settings', () => {
+  assert.equal(DEFAULT_SETTINGS.version, KIT_VERSION);
   assert.equal(DEFAULT_SETTINGS.preset, 'smart-hybrid');
   assert.equal(DEFAULT_SETTINGS.execution.modeAThresholdFiles, 2);
+  assert.equal(DEFAULT_SETTINGS.execution.swarmScaling, 'elastic');
+  assert.equal(DEFAULT_SETTINGS.execution.maxParallelSubagents, 8);
   assert.ok(ALLOWED_ENUMS['execution.modeAThresholdFiles'].includes(2));
   assert.equal(DEFAULT_SETTINGS.workflows.naturalLanguageResearchTrigger, 'auto_team');
 
   const mdBlock = renderActiveSettingsMarkdown(DEFAULT_SETTINGS);
+  assert.ok(mdBlock.startsWith(SETTINGS_MARKER_START) && mdBlock.endsWith(SETTINGS_MARKER_END));
   assert.ok(mdBlock.includes('Proactive Sub-agent First'));
   assert.ok(mdBlock.includes('Turn 1'));
 
-  const expected12Keys = [
+  const expected20Keys = [
     'execution.mode',
     'execution.modeAThresholdFiles',
+    'execution.swarmScaling',
+    'execution.maxParallelSubagents',
     'workflows.defaultVariant',
     'workflows.naturalLanguageResearchTrigger',
     'models.subagentPolicy',
@@ -441,38 +306,31 @@ test('Unified Settings schema defaults naturalLanguageResearchTrigger to auto_te
     'verification.level',
     'deliverables.routing',
     'language.response',
+    'engines.researcher',
+    'engines.planner',
+    'engines.coder',
+    'engines.debugger',
+    'engines.reviewer',
+    'engines.councilMembers',
   ];
-
-  const enumKeys = Object.keys(ALLOWED_ENUMS).filter((k) => k !== 'preset');
-  assert.deepEqual(enumKeys, expected12Keys);
-  for (const key of expected12Keys) {
+  assert.deepEqual(Object.keys(ALLOWED_ENUMS).filter((k) => k !== 'preset'), expected20Keys);
+  for (const key of expected20Keys) {
     const val = getSettingByKey(DEFAULT_SETTINGS, key);
-    assert.ok(
-      ALLOWED_ENUMS[key].includes(val),
-      `Expected DEFAULT_SETTINGS.${key} (${val}) to be in ALLOWED_ENUMS[${key}]`
-    );
+    assert.ok(ALLOWED_ENUMS[key].includes(val), `DEFAULT_SETTINGS.${key} (${val}) not in ALLOWED_ENUMS`);
   }
-
-  assert.deepEqual(Object.keys(PRESETS), [
-    'smart-hybrid',
-    'solo-fast',
-    'deep-architect',
-    'adversarial-team',
-  ]);
-  assert.equal(PRESETS['smart-hybrid'].workflows.naturalLanguageResearchTrigger, 'auto_team');
+  assert.deepEqual(Object.keys(PRESETS), ['smart-hybrid', 'solo-fast', 'deep-architect', 'adversarial-team']);
   assert.equal(PRESETS['solo-fast'].execution.mode, 'mode_a');
   assert.equal(PRESETS['deep-architect'].execution.mode, 'mode_b');
   assert.equal(PRESETS['adversarial-team'].execution.mode, 'team');
-  assert.equal(PRESETS['adversarial-team'].workflows.naturalLanguageResearchTrigger, 'auto_team');
+  for (const preset of Object.values(PRESETS)) assert.equal(preset.version, KIT_VERSION);
 });
 
-test('2-Tier Settings persistence (global + project), 4 presets, setSettingByKey, and resetSettings work in isolated temp dir', async () => {
-  const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'boomopen-test-'));
+test('Settings persistence (global + project), presets, set and reset work in an isolated temp dir', async () => {
+  const tmpRoot = tempDir('boomopen-settings-');
   const homeDir = path.join(tmpRoot, 'home');
   const cwd = path.join(tmpRoot, 'workspace');
   fs.mkdirSync(homeDir, { recursive: true });
   fs.mkdirSync(cwd, { recursive: true });
-
   try {
     const initial = loadSettings({ homeDir, cwd });
     assert.equal(initial.preset, 'smart-hybrid');
@@ -484,12 +342,7 @@ test('2-Tier Settings persistence (global + project), 4 presets, setSettingByKey
       assert.equal(applied.settings.execution.mode, PRESETS[presetName].execution.mode);
     }
 
-    const customGlobal = setSettingByKey('execution.mode', 'mode_b', {
-      homeDir,
-      cwd,
-      scope: 'global',
-      sync: false,
-    });
+    const customGlobal = setSettingByKey('execution.mode', 'mode_b', { homeDir, cwd, scope: 'global', sync: false });
     assert.equal(customGlobal.settings.preset, 'custom');
     assert.equal(customGlobal.settings.execution.mode, 'mode_b');
 
@@ -505,205 +358,156 @@ test('2-Tier Settings persistence (global + project), 4 presets, setSettingByKey
 
     resetSettings({ homeDir, cwd, scope: 'project', sync: false });
     assert.ok(!fs.existsSync(path.join(cwd, '.boomopen.json')));
-    assert.equal(loadSettings({ homeDir, cwd }).execution.mode, 'mode_b');
+    assert.equal(loadSettings({ homeDir, cwd }).execution.mode, 'mode_b', 'project reset keeps global settings');
 
     resetSettings({ homeDir, cwd, scope: 'global', sync: false });
     assert.equal(loadSettings({ homeDir, cwd }).preset, 'smart-hybrid');
     assert.equal(loadSettings({ homeDir, cwd }).execution.mode, 'auto');
 
-    const cmdGet = await runSettingsCommand(
-      ['get', 'workflows.naturalLanguageResearchTrigger', '--json'],
-      { homeDir, cwd, silent: true }
-    );
+    const cmdGet = await runSettingsCommand(['get', 'workflows.naturalLanguageResearchTrigger', '--json'], {
+      homeDir,
+      cwd,
+      silent: true,
+    });
     assert.equal(cmdGet.value, 'auto_team');
   } finally {
-    fs.rmSync(tmpRoot, { recursive: true, force: true });
+    removeDir(tmpRoot);
   }
 });
 
-test('renderActiveSettingsMarkdown and syncSettingsToInstalledPlatforms hot-sync all 5 simulated platforms in os.tmpdir()', () => {
-  const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), 'boomopen-sync-'));
+/**
+ * Every instruction file the installer writes with a settings block, derived from the installer's
+ * own TOOLS paths (so APPDATA/XDG-based locations such as the VS Code prompts folder are included).
+ */
+function installedEntrypoints() {
+  const p = (tool) => TOOLS[tool].paths;
+  return {
+    antigravity: [
+      path.join(p('antigravity').gemini, 'GEMINI.md'),
+      path.join(p('antigravity').globalAgents, 'AntigravityGlobal.agent.md'),
+    ],
+    claude: [path.join(p('claude').home, 'CLAUDE.md'), path.join(p('claude').home, 'AGENT.md')],
+    codex: [
+      path.join(p('codex').home, 'AGENTS.md'),
+      path.join(p('codex').home, 'CODEX.md'),
+      path.join(p('codex').home, 'AGENT.md'),
+    ],
+    cursor: [
+      path.join(p('cursor').editorHome, 'CURSOR.md'),
+      path.join(p('cursor').rules, 'boomopen-workflow-kit.mdc'),
+      path.join(p('cursor').editorHome, 'AGENT.md'),
+      path.join(p('cursor').editorHome, 'CLAUDE.md'),
+    ],
+    copilot: [
+      path.join(p('copilot').home, 'COPILOT.md'),
+      path.join(p('copilot').home, 'AGENT.md'),
+      path.join(p('copilot').home, 'CLAUDE.md'),
+      path.join(p('copilot').vsCodePrompts, 'boomopen-workflow-kit.agent.md'),
+    ],
+  };
+}
+
+test('syncSettingsToInstalledPlatforms updates every installer-written entrypoint (incl. VS Code prompt) and no user file', () => {
+  const entrypoints = installedEntrypoints();
+  const kitText = `${KIT_ENTRY_HEADER}\n\n${renderActiveSettingsMarkdown(DEFAULT_SETTINGS)}\n\n## Rules\n`;
+  const userOwned = path.join(SANDBOX_HOME, '.codex', 'my-notes.md');
   try {
-    const platformFiles = [
-      path.join(tmpHome, '.gemini', 'GEMINI.md'),
-      path.join(tmpHome, '.claude', 'CLAUDE.md'),
-      path.join(tmpHome, '.codex', 'CODEX.md'),
-      path.join(tmpHome, '.cursor', 'CURSOR.md'),
-      path.join(tmpHome, '.copilot', 'COPILOT.md'),
-    ];
-    for (const file of platformFiles) {
-      fs.mkdirSync(path.dirname(file), { recursive: true });
-      fs.writeFileSync(
-        file,
-        `# ENTRY.md — BoomOpen Workflow Kit Orchestrator Instructions\n\n${renderActiveSettingsMarkdown(DEFAULT_SETTINGS)}\n\n## Rules\n`,
-        'utf8'
-      );
+    for (const [tool, files] of Object.entries(entrypoints)) {
+      const frameworkPath = TOOLS[tool].paths.frameworkPath;
+      fs.mkdirSync(frameworkPath, { recursive: true });
+      fs.writeFileSync(path.join(frameworkPath, 'SKILL.md'), '# BoomOpen Workflow Kit\n');
+      for (const file of files) {
+        fs.mkdirSync(path.dirname(file), { recursive: true });
+        fs.writeFileSync(file, kitText, 'utf8');
+      }
     }
-    // A user's own file (no kit signature) for a tool where the kit is not installed
-    const userOwned = path.join(tmpHome, '.codex', 'AGENTS.md');
-    fs.writeFileSync(userOwned, '# My own Codex rules\n', 'utf8');
+    fs.writeFileSync(userOwned, '# My own Codex notes\n', 'utf8');
 
-    const report = syncSettingsToInstalledPlatforms(PRESETS['adversarial-team'], {
-      homeDir: tmpHome,
-    });
-    assert.equal(report.updatedFiles.length, 5);
-    assert.equal(fs.readFileSync(userOwned, 'utf8'), '# My own Codex rules\n', 'user-owned files are never touched');
-    assert.deepEqual(report.platforms, {
-      antigravity: true,
-      claude: true,
-      codex: true,
-      cursor: true,
-      copilot: true,
-    });
+    const report = syncSettingsToInstalledPlatforms(PRESETS['adversarial-team'], { homeDir: SANDBOX_HOME });
+    assert.deepEqual(report.platforms, { antigravity: true, claude: true, codex: true, cursor: true, copilot: true });
+    assert.equal(fs.readFileSync(userOwned, 'utf8'), '# My own Codex notes\n', 'user files are never touched');
 
-    for (const file of platformFiles) {
+    const stale = Object.values(entrypoints)
+      .flat()
+      .filter((file) => !fs.readFileSync(file, 'utf8').includes('**Active Preset**: `adversarial-team`'));
+    assert.deepEqual(stale.map((f) => path.relative(SANDBOX_HOME, f)), [], 'installed entrypoints left stale');
+    for (const file of Object.values(entrypoints).flat()) {
       const updated = fs.readFileSync(file, 'utf8');
-      assert.ok(updated.includes('**Active Preset**: `adversarial-team`'));
-      assert.ok(updated.includes('**Execution Mode (`execution.mode`)**: `team`'));
-      assert.ok(updated.includes('`naturalLanguageResearchTrigger = auto_team`'));
+      assert.ok(updated.includes('**Execution Mode (`execution.mode`)**: `team`'), file);
+      assert.equal(updated.split(SETTINGS_MARKER_START).length, 2, `${file} must hold exactly one settings block`);
     }
 
-    const injectedWithoutMarkers = injectSettingsBlockIntoText(
-      '# Title\n\n---\n\n## Content\n',
-      PRESETS['solo-fast']
-    );
-    assert.ok(injectedWithoutMarkers.includes(SETTINGS_MARKER_START));
-    assert.ok(injectedWithoutMarkers.includes('**Active Preset**: `solo-fast`'));
+    const injected = injectSettingsBlockIntoText('# Title\n\n---\n\n## Content\n', PRESETS['solo-fast']);
+    assert.ok(injected.includes(SETTINGS_MARKER_START));
+    assert.ok(injected.includes('**Active Preset**: `solo-fast`'));
   } finally {
-    fs.rmSync(tmpHome, { recursive: true, force: true });
+    for (const dir of ['.gemini', '.claude', '.codex', '.cursor', '.copilot', 'AppData', '.config', 'Library']) {
+      removeDir(path.join(SANDBOX_HOME, dir));
+    }
   }
 });
 
-test('Local Web Control Center (startSettingsUiServer on ephemeral port 0) serves HTML and REST API endpoints cleanly', async () => {
-  const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'boomopen-webui-'));
+test('Settings Web UI (port 0) serves HTML and the REST API, and rejects cross-origin writes', async () => {
+  const tmpRoot = tempDir('boomopen-webui-');
   const homeDir = path.join(tmpRoot, 'home');
   const cwd = path.join(tmpRoot, 'workspace');
   fs.mkdirSync(homeDir, { recursive: true });
   fs.mkdirSync(cwd, { recursive: true });
-
-  const { server, url, port } = await startSettingsUiServer({
-    port: 0,
-    openBrowser: false,
-    silent: true,
-    homeDir,
-    cwd,
-  });
-
+  const { server, url, port } = await startSettingsUiServer({ port: 0, openBrowser: false, silent: true, homeDir, cwd });
+  let token = '';
+  const postJson = (route, body, headers = {}) =>
+    fetch(`${url}${route}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-BoomOpen-Token': token, ...headers },
+      body: JSON.stringify(body),
+    });
   try {
     assert.ok(port > 0, 'Expected ephemeral port > 0');
-
     const htmlRes = await fetch(`${url}/`);
     assert.equal(htmlRes.status, 200);
     const html = await htmlRes.text();
-    assert.ok(html.includes('BOOMOPEN v5.5 — UNIFIED SETTINGS & CONTROL CENTER'));
-    assert.ok(html.includes('Save & Sync to All 5 Platforms'));
+    assert.ok(html.includes('UNIFIED SETTINGS & CONTROL CENTER'));
+    token = /const TOKEN = "([0-9a-f]+)"/.exec(html)[1];
+    assert.equal((await fetch(`${url}/api/settings`)).status, 403, 'API calls without the session token are refused');
 
-    const getRes = await fetch(`${url}/api/settings`);
-    assert.equal(getRes.status, 200);
-    const getData = await getRes.json();
+    const getData = await (await fetch(`${url}/api/settings`, { headers: { 'X-BoomOpen-Token': token } })).json();
     assert.equal(getData.ok, true);
     assert.equal(getData.settings.preset, 'smart-hybrid');
-    assert.equal(getData.settings.workflows.naturalLanguageResearchTrigger, 'auto_team');
+    assert.ok(getData.descriptions && getData.descriptions['execution.mode']);
 
-    const presetRes = await fetch(`${url}/api/preset`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ preset: 'adversarial-team', scope: 'global' }),
-    });
-    assert.equal(presetRes.status, 200);
-    const presetData = await presetRes.json();
+    const crossSite = await postJson('/api/preset', { preset: 'solo-fast', scope: 'global' }, { Origin: 'http://evil.example' });
+    assert.equal(crossSite.status, 403, 'a cross-origin page must not change settings');
+    assert.equal(loadSettings({ homeDir, cwd }).preset, 'smart-hybrid');
+
+    const presetData = await (await postJson('/api/preset', { preset: 'adversarial-team', scope: 'global' })).json();
     assert.equal(presetData.ok, true);
-    assert.equal(presetData.settings.preset, 'adversarial-team');
     assert.equal(presetData.settings.execution.mode, 'team');
 
-    const postSettingsRes = await fetch(`${url}/api/settings`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const postData = await (
+      await postJson('/api/settings', {
         scope: 'global',
-        settings: {
-          execution: { mode: 'mode_a', modeAThresholdFiles: 5 },
-          workflows: { naturalLanguageResearchTrigger: 'auto_hard' },
-        },
-      }),
-    });
-    assert.equal(postSettingsRes.status, 200);
-    const postSettingsData = await postSettingsRes.json();
-    assert.equal(postSettingsData.ok, true);
-    assert.equal(postSettingsData.settings.execution.mode, 'mode_a');
-    assert.equal(postSettingsData.settings.execution.modeAThresholdFiles, 5);
-    assert.equal(postSettingsData.settings.workflows.naturalLanguageResearchTrigger, 'auto_hard');
+        settings: { execution: { mode: 'mode_a', modeAThresholdFiles: 5 }, workflows: { naturalLanguageResearchTrigger: 'auto_hard' } },
+      })
+    ).json();
+    assert.equal(postData.ok, true);
+    assert.equal(postData.settings.execution.mode, 'mode_a');
+    assert.equal(postData.settings.execution.modeAThresholdFiles, 5);
+    assert.equal(postData.settings.workflows.naturalLanguageResearchTrigger, 'auto_hard');
 
-    const resetRes = await fetch(`${url}/api/reset`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ scope: 'global' }),
-    });
-    assert.equal(resetRes.status, 200);
-    const resetData = await resetRes.json();
+    const resetData = await (await postJson('/api/reset', { scope: 'global' })).json();
     assert.equal(resetData.ok, true);
     assert.equal(resetData.settings.preset, 'smart-hybrid');
-    assert.equal(resetData.settings.workflows.naturalLanguageResearchTrigger, 'auto_team');
   } finally {
     await new Promise((resolve) => server.close(resolve));
-    fs.rmSync(tmpRoot, { recursive: true, force: true });
+    removeDir(tmpRoot);
   }
 });
 
-test('Dynamic codingStandards in inspectSourceFile enforces strict (300/400) vs relaxed (600/800) thresholds', () => {
-  assert.deepEqual(CODING_STANDARDS_PRESETS.strict, {
-    softFileLines: 300,
-    hardFileLines: 400,
-    forbidExplicitAny: true,
-    warnConsoleLog: true,
-  });
-  assert.deepEqual(CODING_STANDARDS_PRESETS.relaxed, {
-    softFileLines: 600,
-    hardFileLines: 800,
-    forbidExplicitAny: true,
-    warnConsoleLog: false,
-  });
+// ---------------------------------------------------------------------------
+// Hermeticity guard (keep last)
+// ---------------------------------------------------------------------------
 
-  const code350 = Array.from({ length: 350 }, (_, i) => `const x${i} = ${i};`).join('\n');
-  const strict350 = inspectSourceFile('/project/src/mod.ts', '/project', code350, 'strict');
-  assert.equal(strict350.violations.length, 0);
-  assert.equal(strict350.warnings.length, 1);
-
-  const code450 = Array.from({ length: 450 }, (_, i) => `const x${i} = ${i};`).join('\n');
-  const strict450 = inspectSourceFile('/project/src/mod.ts', '/project', code450, 'strict');
-  assert.equal(strict450.violations.length, 1);
-
-  const relaxed450 = inspectSourceFile('/project/src/mod.ts', '/project', code450, 'relaxed');
-  assert.equal(relaxed450.violations.length, 0);
-  assert.equal(relaxed450.warnings.length, 0);
-
-  const code650 = Array.from({ length: 650 }, (_, i) => `const x${i} = ${i};`).join('\n');
-  const relaxed650 = inspectSourceFile('/project/src/mod.ts', '/project', code650, 'relaxed');
-  assert.equal(relaxed650.violations.length, 0);
-  assert.equal(relaxed650.warnings.length, 1);
+test('the test run did not rewrite matrix-skills/compact-index.json or touch the real home', () => {
+  assert.deepEqual(fileFingerprint(COMPACT_INDEX_PATH), COMPACT_INDEX_BEFORE, 'compact-index.json was rewritten during tests');
+  assert.equal(os.homedir(), SANDBOX_HOME);
 });
-
-test('cli/settings.js and cli/settings-ui.js stay <= 380 lines and commands/settings.md exists', () => {
-  const settingsLines = fs
-    .readFileSync(path.join(REPO_ROOT, 'cli', 'settings.js'), 'utf8')
-    .split(/\r?\n/).length;
-  const settingsUiLines = fs
-    .readFileSync(path.join(REPO_ROOT, 'cli', 'settings-ui.js'), 'utf8')
-    .split(/\r?\n/).length;
-  const cmdSettingsPath = path.join(REPO_ROOT, 'commands', 'settings.md');
-
-  assert.ok(
-    settingsLines <= 380,
-    `Expected cli/settings.js <= 380 lines, got ${settingsLines}`
-  );
-  assert.ok(
-    settingsUiLines <= 380,
-    `Expected cli/settings-ui.js <= 380 lines, got ${settingsUiLines}`
-  );
-  assert.ok(fs.existsSync(cmdSettingsPath), 'Expected commands/settings.md to exist');
-  const cmdSettingsContent = fs.readFileSync(cmdSettingsPath, 'utf8');
-  assert.ok(cmdSettingsContent.includes('ask_question'));
-  assert.ok(cmdSettingsContent.includes('auto_team'));
-});
-
-

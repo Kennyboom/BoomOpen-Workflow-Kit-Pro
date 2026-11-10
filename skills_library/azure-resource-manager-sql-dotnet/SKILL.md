@@ -303,14 +303,6 @@ catch (RequestFailedException ex)
 }
 ```
 
-## Reference Files
-
-| File | When to Read |
-|------|--------------|
-| references/server-management.md | Server CRUD, admin credentials, Azure AD auth, networking |
-| references/database-operations.md | Database CRUD, scaling, backup, restore, copy |
-| references/elastic-pools.md | Pool management, adding/removing databases, scaling |
-
 ## Related SDKs
 
 | SDK | Purpose | Install |

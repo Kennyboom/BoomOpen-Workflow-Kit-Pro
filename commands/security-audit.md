@@ -4,250 +4,107 @@ description: >-
   Auth/Authorization audit, Data Protection, API Security,
   Frontend/Infrastructure hardening, Supply Chain, and Zero Trust.
   Creates Security Report with severity scoring.
+category: security
+execution-mode: execute
 version: "5.5"
 ---
 
-# /security-audit — The Fortress Builder v3.0
+# /security-audit — The Fortress Builder v3.0 (v5.5 Parallel Shards)
 
-$ARGUMENTS
+> **MISSION**: Conduct an adversarial Zero-Trust security audit across OWASP Top 10, 2026 LLM/Agentic attack surfaces, STRIDE threat modeling, AuthN/AuthZ, secrets, infrastructure, and supply chain — producing **1 proof-backed `<appDataDir>\brain\<conversation-id>\REVIEW-security-{topic}.md`** (`≤ 500` lines).
 
----
-
-## GOLDEN RULES
-
-```
-1. THINK LIKE A HACKER — "If I wanted to hack this, I would..."
-2. DEFENSE IN DEPTH — Multiple protection layers
-3. LEAST PRIVILEGE — Grant minimum permissions
-4. VALIDATE EVERYTHING — Server-side, always
-5. ENCRYPT EVERYTHING — At rest + in transit
-6. LOG EVERYTHING — But never log sensitive data
-```
+<scope>$ARGUMENTS</scope>
 
 ---
 
-## Phase 1: Context + Codebase Scanner
+## ⚡ TURN-1 ZERO-TAX PARALLEL DISPATCH, READ-ONLY LOCK & ARTIFACT CONTRACT
 
-### 1.1 Auto-Scope (MANDATORY)
-
-```
-1. Read source code → count files, endpoints, routes
-2. Read package.json → dependencies
-3. Read .env.example → environment variables
-4. Read DESIGN.md → architecture
-
-Report:
-  "🔐 Found:
-   [X] API endpoints | [Y] source files
-   [Z] dependencies | [W] env variables
-
-   Starting Full Audit."
-```
-
-### 1.2 Audit Tracker (MANDATORY)
-
-```markdown
-| # | File/Endpoint | Category | Findings | Severity |
-|---|--------------|----------|----------|----------|
-| 1 | /api/auth | Auth | [finding] | 🔴 |
-| 2 | ProfileForm | XSS | None | 🟢 |
-
-📊 AUDIT: 5/15 files scanned (33%)
-```
+1. **Valid Antigravity 2.0 Toolset**: Use `read_file`, `run_command`, `search_web`, `write_file`, `edit_file`, `invoke_subagent`, `send_message`, and `ask_question`.
+2. **Elastic Parallel Security Shards (`> 2` Files)**:
+   - For `≤ 2` known files, audit directly via `read_file` + CLI scanners.
+   - For `> 2` files/endpoints, launch parallel specialist shards (`security-engineer#auth`, `security-engineer#api-data`, `security-engineer#ui-infra`, `security-engineer#supply-ai`) **immediately on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")`, assigning **at most `≤ 3–4` heavy modules/files per shard** and tracking `role#shard -> conversationId` for Warm Session Reuse (`send_message`).
+3. **🛡️ `READ_ONLY_FILES` Audit Lock**: Lock **100% of repository source, config, and test files** in `READ_ONLY_FILES` during audit phases. Shards return structured findings via `send_message` or disjoint scratch files (`REVIEW-security-{topic}-s{1..k}.md`, `ArtifactMetadata: { Summary: "...", UserFacing: false, RequestFeedback: false }`).
+4. **Cohesive Single-File Deliverable**: Write `<appDataDir>\brain\<conversation-id>\REVIEW-security-{topic}.md` (`≤ 500` lines, zero `{name}/` folder splits) with explicit `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: false }`.
+5. **Skill References (Load On-Demand in Shards)**: `~/.{TOOL}/skills/security-auditor/SKILL.md` plus `~/.{TOOL}/skills_library/{stride-analysis-patterns,vulnerability-scanner,broken-authentication,api-security-best-practices}/SKILL.md` when installed.
 
 ---
 
-## Phase 2: OWASP Top 10 Scan
+## 🛡️ GOLDEN RULES
 
-> 🚨 MUST `view_file` this reference BEFORE Phase 2:
-> `.agent/workflows/references/security/owasp-stride.md`
-
-```
-A01: Broken Access Control
-  □ IDOR: Change user_id in URL → see other's data?
-  □ Horizontal: User A sees User B data?
-  □ Vertical: Regular user does Admin actions?
-
-A02: Cryptographic Failures
-  □ Passwords: bcrypt/argon2 (NOT MD5/SHA1)?
-  □ Data at rest encrypted (AES-256)?
-  □ HTTPS everywhere?
-  □ Secrets hardcoded in code?
-
-A03: Injection
-  □ SQL: Parameterized queries / ORM?
-  □ XSS: Output encoding?
-  □ OS Command: No user input in shell?
-
-A05: Security Misconfiguration
-  □ Default credentials removed?
-  □ Debug mode OFF in production?
-  □ Error messages don't leak internals?
-
-A06: Vulnerable Components
-  □ npm audit → 0 critical, 0 high?
-
-A07: Auth Failures
-  □ Brute force protection?
-  □ Weak password allowed?
-
-A09: Logging Failures
-  □ Failed login logged?
-  □ No sensitive data in logs?
-
-A10: SSRF
-  □ User-supplied URLs validated?
-```
+1. **THINK LIKE AN ATTACKER** — Every finding requires a concrete exploit path (`input → sink → impact`), not generic boilerplate.
+2. **DEFENSE IN DEPTH & ZERO TRUST** — Verify explicitly at every layer; assume perimeter breach.
+3. **LEAST PRIVILEGE** — Enforce minimal scopes on DB roles, IAM, API keys, JWT claims, and agent/MCP tools.
+4. **SERVER-SIDE VALIDATION ALWAYS** — Client checks are UX only; validate schemas, types, and sizes server-side.
+5. **ENCRYPT & REDACT** — Strong crypto in transit/at rest; zero secrets in Git or client bundles; zero PII/tokens in logs.
 
 ---
 
-## Phase 3: STRIDE Threat Modeling
+## 🔍 Phase 1 (Turn-1 Parallel Fan-Out): Automated Scanners + Sharded Code Audit
 
-```markdown
-Per component, analyze 6 threats:
+Launch deterministic scanners via `run_command` **in parallel** with `security-engineer#1..k` shards on Turn 1:
 
-| Threat | Description | Example | Mitigation |
-|--------|------------|---------|------------|
-| Spoofing | Impersonation | Fake login | MFA, JWT |
-| Tampering | Data modification | Edit price | Server validation |
-| Repudiation | Deny action | "I didn't buy" | Audit logs |
-| Info Disclosure | Leak data | Error shows DB | Error filtering |
-| DoS | Crash service | 10K req/sec | Rate limiting |
-| Escalation | Gain privilege | User → Admin | RBAC strict |
+```bash
+# 1. Automated vulnerability & secret pattern scanner
+python ~/.{TOOL}/skills_library/vulnerability-scanner/scripts/security_scan.py <target-dir>
+
+# 2. Strict code-quality, type-safety & anti-stub gate
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <target-dir> --strict-phase --no-stubs
+
+# 3. Dependency & lockfile supply-chain audit (Node / Python / Rust as applicable)
+npm audit --audit-level=moderate
 ```
+
+| Parallel Shard | Disjoint Scope (`≤ 3–4` Modules/Files, `READ_ONLY_FILES`) | Security Vectors Audited |
+|----------------|-----------------------------------------------------------|--------------------------|
+| **`security-engineer#auth`** | Auth routes, session/JWT middleware, RBAC guards | OAuth 2.1 / PKCE / Better Auth, Argon2id/bcrypt (`≥10` rounds), `httpOnly`/`secure`/`sameSite=strict` cookies, refresh rotation, brute-force lockout, horizontal/vertical IDOR (`A01`, `A07`) |
+| **`security-engineer#api-data`** | Controllers, ORM/SQL queries, file uploads, webhooks | Parameterized SQL, Zod/schema validation, SSRF allowlists (`A10`), webhook HMAC replay checks, payload limits, CORS origin allowlist, AES-256/TLS (`A02`, `A03`, `A08`) |
+| **`security-engineer#ui-infra`** | Frontend views, headers/CSP, Docker/CI/env configs | DOM XSS / `dangerouslySetInnerHTML`, CSP/HSTS/`X-Frame-Options`, `NEXT_PUBLIC_`/`VITE_` secret leaks, non-root containers, debug/stack-trace suppression (`A05`, `A09`) |
+| **`security-engineer#supply-ai`** | `package.json`/lockfiles, LLM/RAG/MCP integrations | `npm audit` CVEs, pinned lockfiles, Indirect Prompt Injection, tool-call privilege escalation, sandbox/path-traversal boundaries (`A04`, `A06`, OWASP LLM Top 10) |
 
 ---
 
-## Phase 4: Authentication Audit
+## 🧭 Phase 2: STRIDE Threat Matrix & Exploit Verification
 
-> 🚨 MUST `view_file` this reference BEFORE Phase 4:
-> `.agent/workflows/references/security/auth-data-api.md`
+Cross-check shard outputs (resolving multi-hop exploit chains across shards via warm `send_message`) and model all 6 STRIDE threats per critical boundary:
 
-```
-□ Password: bcrypt rounds ≥ 10 or argon2
-□ JWT: httpOnly, secure, sameSite=strict
-□ Token expiry: Access 15min + Refresh 7 days
-□ Refresh token rotation (single use)
-□ Rate limit login: 5 attempts → lockout 15min
-□ Password requirements: ≥ 8 chars, mixed case + number
-□ Session invalidation on password change
-```
+| STRIDE Threat | Attack Vector Checked | Required Control Verified in Code |
+|---------------|-----------------------|-----------------------------------|
+| **S — Spoofing** | Forged JWT, missing webhook signature, session fixation | Signed tokens, secret rotation, HMAC verification, MFA |
+| **T — Tampering** | Mass assignment, client price/role mutation, unsigned state | Strict server-side allowlist schemas & DB transactions |
+| **R — Repudiation** | Unlogged admin/auth/billing mutations | Tamper-evident structured audit logs (with PII/secret redaction) |
+| **I — Info Disclosure** | Stack traces, verbose 500s, enumeration, leaked `.env`/keys | Sanitized RFC 9457 error envelopes & secret scanning |
+| **D — Denial of Service** | Unbounded queries, ReDoS, large uploads, unthrottled endpoints | Per-IP/user rate limiting, pagination caps, body/upload size limits |
+| **E — Elevation of Privilege** | Object-level IDOR, role self-upgrade, unguarded admin/MCP routes | Centralized RBAC/ABAC policy enforcement + ownership checks |
 
 ---
 
-## Phase 5: Authorization Audit
+## ✅ Phase 3: Mandatory Security Coverage Gate
 
-```
-□ RBAC: Admin > Manager > User roles defined
-□ EVERY API checks permissions (middleware)
-□ No object-level access bypass (IDOR protection)
-□ Admin routes separated + double-checked
-□ Cannot escalate own role
-□ API keys scoped with minimal permissions
-```
+> ⛔ **HARD GATE**: Do NOT finalize the report until every coverage check below is accounted for:
 
----
-
-## Phase 6: Data Protection
-
-```
-□ HTTPS everywhere (no mixed content)
-□ No secrets in code/git (truffleHog/gitleaks)
-□ Input validation on SERVER (never trust client)
-□ Output encoding (XSS prevention)
-□ File upload: type + size check + no execution
-□ Database: parameterized queries ONLY
-□ Sensitive data: encrypt at rest (AES-256)
-□ .env.example without real values committed
-```
+- [ ] **OWASP Web Top 10 (`A01–A10`)** + **LLM/Agentic Top Risks** (if AI features exist) audited
+- [ ] **STRIDE Threat Matrix** completed for all external/internal trust boundaries
+- [ ] **100% Target File & Endpoint Census** (`audited_endpoints == total_endpoints`)
+- [ ] **Automated Gates Executed**: `security_scan.py`, `boomopen check --strict-phase --no-stubs`, and dependency audit recorded
+- [ ] **Secrets & `.env` Check**: Zero hardcoded credentials in source or Git history; `.env.example` contains placeholders only
 
 ---
 
-## Phase 7: API Security
+## 📄 Phase 4: Cohesive Brain Artifact (`REVIEW-security-{topic}.md`) & Handover
 
-```
-□ Auth on every non-public endpoint
-□ Rate limiting: per endpoint + per user + per IP
-□ Input validation: zod/joi schema
-□ Output filtering: no internal data leaking
-□ CORS: explicit origin whitelist (no wildcard *)
-□ No verbose errors in production
-□ Request size limit (body + file upload)
-□ Pagination enforced (no unbounded queries)
-□ HTTPS only (redirect HTTP → HTTPS)
+Synthesize all verified findings into **1 single cohesive file** at `<appDataDir>\brain\<conversation-id>\REVIEW-security-{topic}.md` (`≤ 500` lines) with:
+```json
+ArtifactMetadata: { "Summary": "OWASP Top 10, STRIDE & Supply-Chain Security Audit Report", "UserFacing": true, "RequestFeedback": false }
 ```
 
----
+### Mandatory Structure of `REVIEW-security-{topic}.md`:
+1. **Executive Security Posture**: Overall Score (`0–100`), Verdict (`PASS` | `HARDEN_BEFORE_PROD` | `CRITICAL_BLOCK`), endpoint/file census, and CLI scanner outputs (`security_scan.py`, `boomopen check`, `npm audit`).
+2. **Severity & Exploitability Matrix (`🔴 Critical`, `🟠 High`, `🟡 Medium`, `🟢 Low`)**:
+   | ID | Severity | OWASP / STRIDE | `file:line` / Endpoint | Exploit Scenario (Step-by-Step) | Non-Bypassable Fix Summary |
+   |----|:--------:|----------------|------------------------|---------------------------------|----------------------------|
+3. **Copy-Pasteable Remediation Blueprints (`🔴 Critical` & `🟠 High` Mandatory)**: Exact clickable `[file:line](file:///...)` links and concrete code/config patches for every Critical/High vulnerability.
+4. **STRIDE Boundary Table & Verified Defenses**: Summary of threat mitigations already well-implemented.
 
-## Phase 8: Frontend + Infrastructure
-
-```
-FRONTEND:
-□ XSS: No dangerouslySetInnerHTML
-□ CSP headers configured
-□ No secrets in client-side code
-□ Secure cookie flags (httpOnly, secure, sameSite)
-
-INFRASTRUCTURE:
-□ Security headers: HSTS, X-Frame-Options
-□ Database not publicly accessible
-□ Firewall: only needed ports open
-□ Logging: no sensitive data in logs
-```
-
----
-
-## Phase 9: Supply Chain + Zero Trust
-
-```
-DEPENDENCIES:
-□ npm audit → 0 critical, 0 high
-□ Lock file committed (package-lock.json)
-□ No wildcard versions
-□ Automated: Dependabot/Renovate
-
-ZERO TRUST:
-□ Verify explicitly: every request authenticated
-□ Least privilege: minimal permissions
-□ Assume breach: defense in depth
-```
-
----
-
-## Phase 10: Security Coverage Audit (MANDATORY)
-
-> ⛔ NO report if audit FAILS.
-
-```markdown
-| Check | Requirement | Status |
-|-------|-------------|--------|
-| OWASP Coverage | 10/10 categories checked | ☐ |
-| STRIDE Coverage | All components modeled | ☐ |
-| File Coverage | 100% files audited | ☐ |
-| Dependencies | npm audit 0 critical | ☐ |
-| Secrets | No hardcoded secrets | ☐ |
-
-IF any FAIL → fix before writing report.
-```
-
----
-
-## Phase 11: Security Report + Handover
-
-```
-🔐 SECURITY REPORT
-🔴 Critical: [X] | 🟡 High: [Y] | 🟠 Medium: [Z]
-📊 Security Score: [N]/100
-
-OWASP: 10/10 | STRIDE: [Y] components
-File Coverage: 100% | Audit: ALL PASS
-
-TOP ISSUES:
-1. [Issue] — CRITICAL — Fix: [solution]
-2. [Issue] — HIGH — Fix: [solution]
-
-Next:
-1. Fix security issues? /create
-2. Performance? /performance
-3. Deploy? /deploy
-```
+Present `[REVIEW-security-{topic}.md](file:///...)` concisely and offer next steps:
+- **Remediate Vulnerabilities**: Run `/fix:hard` (dispatching parallel `OWNED_FILES ≤ 3–4` remediation shards + regression tests)
+- **Performance / Pre-Deploy Check**: `/performance` or `/deploy:check`

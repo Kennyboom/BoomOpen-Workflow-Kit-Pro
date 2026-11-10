@@ -30,7 +30,7 @@ The framework recognizes 7 distinct actor types operating across 12 business wor
 **Definition**: An individual developer or development team that installs and uses the boomopen-workflow-kit framework through its CLI and prompt commands within a supported AI coding assistant.
 
 ### Responsibilities
-- Install/uninstall framework via CLI (`boomopen-workflow-kit install/uninstall`)
+- Install/uninstall framework via CLI (`boomopen install/uninstall`)
 - Invoke commands through prompt input (`/{cmd}`, `/{cmd}:{variant}`, or natural language)
 - Provide requirements and context for tasks
 - Confirm or reject decisions when prompted (e.g., HSOL low-trust skill confirmation)
@@ -52,8 +52,8 @@ The framework recognizes 7 distinct actor types operating across 12 business wor
 
 | Workflow | Role | Interaction |
 |----------|------|-------------|
-| BW-001 | Primary actor | Runs `boomopen-workflow-kit install` |
-| BW-002 | Primary actor | Runs `boomopen-workflow-kit uninstall` |
+| BW-001 | Primary actor | Runs `boomopen install` |
+| BW-002 | Primary actor | Runs `boomopen uninstall` (or `node cli/install.js uninstall`) |
 | BW-003 | Trigger | Types command or natural language request |
 | BW-006 | Confirmer | Approves low-trust critical skill installation |
 | BW-010 | Escalation target | Final decision after E4 exhaustion |

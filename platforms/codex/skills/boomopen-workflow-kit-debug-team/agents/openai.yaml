@@ -1,4 +1,6 @@
-display_name: "/debug:team"
-short_description: "🔺 Team Debug — Golden Triangle adversarial collaboration"
-brand_color: "#EF4444"
-allow_implicit_invocation: true
+interface:
+  display_name: "/debug:team"
+  short_description: "🔺 Team Debug — 3-Stage SPIE v3.0 Elastic Golden Diamond (Parallel Hypothesis Shards, Adversarial Causal Validation & 1-Click Proceed to /fix)"
+  brand_color: "#EF4444"
+policy:
+  allow_implicit_invocation: true

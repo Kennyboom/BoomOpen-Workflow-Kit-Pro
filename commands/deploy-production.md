@@ -1,155 +1,93 @@
 ---
-description: 🚀 Deploy Production — Production release with safety gates
+description: "🚀 Deploy Production — Production release with parallel safety gates, human Go/No-Go checkpoint, and post-deploy verification"
 version: "5.5"
 category: operations
 execution-mode: execute
 ---
 
-# /deploy:production — Production Deployment
+# /deploy:production — Production Release with Safety Gates
 
-> **MISSION**: Safely deploy to production with full verification and rollback readiness.
+> **MISSION**: Execute a zero-surprise production release gated by parallel readiness/security/test verification, deterministic `check --strict-phase --no-stubs`, an explicit human Go/No-Go checkpoint, progressive rollout, and live post-deploy verification.
 
----
-
-## ⚡ TURN-1 ZERO-TAX DISPATCH & ON-DEMAND RULES
-
-⚡ **TURN-1 ZERO-TAX DISPATCH**: Core orchestration laws and the 5-Field Handoff Packet (`1. MISSION`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION`) are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md` — route and launch Phase 1 sub-agents **immediately on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")`; load `./rules/*.md` on-demand in parallel only when needed.
+<target>$ARGUMENTS</target>
 
 ---
 
-## 🔀 TIERED EXECUTION PROTOCOL (MANDATORY)
+## ⚡ TURN-1 PARALLEL SAFETY GATES, GO/NO-GO & ARTIFACT CONTRACT
 
-> **Reference: AGENTS.md (Tiered Execution)`
-
-```yaml
-tiered_execution:
-  principle: "Sub-agent FIRST (Tier 1). EMBODY ONLY on system failure (Tier 2)."
-  for_each_phase:
-    TIER_1_MANDATORY: "IF tool exists → MUST use SUB_AGENT_DELEGATION"
-    TIER_2_FALLBACK: "ONLY on system error—NOT complexity/preference/speed"
-  anti_lazy_fallback:
-    - ❌ NEVER use Tier 2 when Tier 1 tool is available
-    - ✅ ALWAYS attempt Tier 1 first when tool exists
-```
-
----
-
-## ⛔ INCREMENTAL EXECUTION (MANDATORY)
-
-Execute phases using **DAG Parallel Fan-Out** for independent tracks, **Direct Plan-to-Executor Dispatch** (`Model: "inherit"`), and **Stateful Warm Sub-agent Reuse** (`send_message`) per `rules/PHASES.md` (v5.5).
+1. **Turn-1 0-Turn Parallel Sub-agent Dispatch**: Launch `devops-engineer#1..k`, `security-engineer`, and `tester` **concurrently on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")` with the **5-Field Handoff Packet**. Record `role#shard -> conversationId` to reuse warm specialists across rollout and post-deploy verification via `send_message` (Tier 2 `EMBODY` from `~/.{TOOL}/skills/boomopen-workflow-kit/agents/{role}.md` ONLY on logged system tool failure).
+2. **Deterministic Pre-Deploy CLI Gate**: Mandatory zero-error gate before production sign-off:
+   ```bash
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs
+   ```
+   *(When `.boomopen/project-ledger.json` exists, also run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger status` to confirm 100% of release-scoped `REQ-xxx` are verified.)*
+3. **Cohesive Single-File Brain Artifact (`<= 500` lines, Clean Git Tree)**: Write `<appDataDir>\brain\<conversation-id>\REPORT-deploy-production.md` as **1 single cohesive file** (`<= 500` lines; never split into `{name}/` folders or write to `./reports/` by default) with stage-appropriate `ArtifactMetadata`:
+   - **Phase 2 Human Go/No-Go Pause (before mutating production)**:
+     `ArtifactMetadata: { "Summary": "Production pre-flight audit, migration check, and rollback plan awaiting Go/No-Go confirmation", "UserFacing": true, "RequestFeedback": true }`
+   - **Phase 4 Final Post-Deploy Report**:
+     `ArtifactMetadata: { "Summary": "Completed production release report with rollout telemetry and post-deploy health verification", "UserFacing": true, "RequestFeedback": false }`
 
 ---
 
-## 🎭 Phase 1: FULL READINESS CHECK
+## 📁 DAG STAGE & DELIVERABLE MATRIX
 
-| Attribute | Value |
-|-----------|-------|
-| **Agent** | `devops-engineer` |
-| **Goal** | Complete pre-production verification |
-
-### ⚡ TIERED EXECUTION
-
-**TIER 1 (MANDATORY when tool exists):**
-> Invoke native sub-agent (`invoke_subagent` / `runSubagent`) for `devops-engineer`. Context: ISOLATED.
-
-**TIER 2 (FALLBACK on system error only):**
-> Load `{AGENTS_PATH}/devops-engineer.md`
-> EMBODY [devops-engineer] — Requires logged system error justification.
-
-**Exit Criteria:**
-
-- [ ] All tests pass
-- [ ] Security scan clean
-- [ ] Rollback plan documented
-- [ ] Monitoring ready
+| Phase | Execution Mode | Active Specialists (`TypeName: "self"`, `Model: "inherit"`) | Gate / Output |
+|-------|----------------|-------------------------------------------------------------|---------------|
+| **Phase 1** | ⚡ Turn-1 Parallel Safety Gates | `devops-engineer#1..k` + `security-engineer` + `tester` | `check <dir> --strict-phase --no-stubs` + security/test pass |
+| **Phase 2** | 🛑 Human Go/No-Go Gate | Orchestrator (`ask_question` + pre-flight artifact) | `REPORT-deploy-production.md` (`RequestFeedback: true`) |
+| **Phase 3** | 🚀 Warm Session Rollout (`send_message`) | `devops-engineer#1` | Progressive/zero-downtime production release |
+| **Phase 4** | ⚡ Parallel Post-Deploy Verification | `devops-engineer#1` + `tester` | `REPORT-deploy-production.md` (`RequestFeedback: false`) |
 
 ---
 
-## 🎭 Phase 2: SECURITY GATE
+## 🌊 PHASE 1: PARALLEL PRE-PRODUCTION & SECURITY GATES (TURN 1)
 
-| Attribute | Value |
-|-----------|-------|
-| **Agent** | `security-engineer` |
-| **Goal** | Final security verification |
+Dispatch all 3 production safety tracks simultaneously on Turn 1 via `invoke_subagent(TypeName: "self", Model: "inherit")`:
+1. **`devops-engineer#1..k` (`agents/devops-engineer.md`)**:
+   - Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` and production build verification.
+   - Validate production environment configuration, monitoring/alerting hooks, backward-compatible expand/contract database migrations (`accidental-data-loss-prevention`), and record the exact current live release SHA/version for instant rollback.
+2. **`security-engineer` (`agents/security-engineer.md`)**:
+   - Load `security-auditor` skill; verify zero critical/high dependency CVEs, production secret isolation, auth/RBAC/CORS/CSP headers, and rate-limiting protections.
+3. **`tester` (`agents/tester.md`)**:
+   - Run full unit, integration, and E2E regression suites against the release candidate SHA; confirm 0 failures and 0 skipped critical paths.
 
-### ⚡ TIERED EXECUTION
-
-**TIER 1 (MANDATORY when tool exists):**
-> Invoke native sub-agent (`invoke_subagent` / `runSubagent`) for `security-engineer`. Context: ISOLATED.
-
-**TIER 2 (FALLBACK on system error only):**
-> Load `{AGENTS_PATH}/security-engineer.md`
-> EMBODY [security-engineer] — Requires logged system error justification.
-
-**Exit Criteria:**
-
-- [ ] No critical vulnerabilities
-- [ ] Secrets secured
-- [ ] Approved for production
+**Exit Gate**: All 3 tracks green (`0` critical findings, `check --strict-phase --no-stubs` exits `0`).
 
 ---
 
-## 🎭 Phase 3: PRODUCTION DEPLOY
+## 🛑 PHASE 2: HUMAN GO/NO-GO CONFIRMATION GATE
 
-| Attribute | Value |
-|-----------|-------|
-| **Agent** | `devops-engineer` |
-| **Goal** | Execute production deployment |
-
-### ⚡ TIERED EXECUTION
-
-**TIER 1 (MANDATORY when tool exists):**
-> Invoke native sub-agent (`invoke_subagent` / `runSubagent`) for `devops-engineer`. Context: ISOLATED.
-
-**TIER 2 (FALLBACK on system error only):**
-> Load `{AGENTS_PATH}/devops-engineer.md`
-> EMBODY [devops-engineer] — Requires logged system error justification.
-
-**Exit Criteria:**
-
-- [ ] Deployment successful
-- [ ] Zero-downtime achieved (if applicable)
+1. Write the pre-flight dossier + rollback command to `<appDataDir>\brain\<conversation-id>\REPORT-deploy-production.md` (`RequestFeedback: true`).
+2. Unless the user already gave explicit production push confirmation for this exact release in the current turn, pause and confirm via `ask_question` (`Proceed with Production Release`, `Deploy to Preview First (/deploy:preview)`, or `Abort`).
 
 ---
 
-## 🎭 Phase 4: POST-DEPLOY VERIFICATION
+## 🚀 PHASE 3: PRODUCTION ROLLOUT (WARM REUSE)
 
-| Attribute | Value |
-|-----------|-------|
-| **Agent** | `devops-engineer` |
-| **Goal** | Production health verification |
-
-### ⚡ TIERED EXECUTION
-
-**TIER 1 (MANDATORY when tool exists):**
-> Invoke native sub-agent (`invoke_subagent` / `runSubagent`) for `devops-engineer`. Context: ISOLATED.
-
-**TIER 2 (FALLBACK on system error only):**
-> Load `{AGENTS_PATH}/devops-engineer.md`
-> EMBODY [devops-engineer] — Requires logged system error justification.
-
-**Exit Criteria:**
-
-- [ ] Health checks pass
-- [ ] Core paths verified
-- [ ] Monitoring normal
+Upon confirmation, send `send_message` to warm `devops-engineer#1` to execute the production release:
+- Run additive/zero-downtime migrations (if applicable) followed by progressive/atomic rollout (canary, blue-green, or rolling release).
+- Capture release tag/SHA, deployment ID, rollout timestamps, and live production endpoints.
 
 ---
 
-## ESCALATION
+## 🧪 PHASE 4: PARALLEL POST-DEPLOY HEALTH & SMOKE VERIFICATION
 
-| Condition          | Route To            |
-| ------------------ | ------------------- |
-| Deploy fails       | `/deploy:rollback`  |
-| Health check fails | `/deploy:rollback`  |
-| Security issue     | `security-engineer` |
+Verify live production health concurrently via warm `send_message` (`devops-engineer#1` + `tester`):
+- **`devops-engineer#1`**: Verify `/health` & `/ready` probes, error rate (`5xx`), p95 latency, and runtime log stream stability.
+- **`tester`**: Execute non-destructive, read-safe production smoke checks across critical endpoints/journeys.
+- Update `<appDataDir>\brain\<conversation-id>\REPORT-deploy-production.md` (`<= 500` lines) with live verification telemetry and `ArtifactMetadata: { Summary: "Completed production release report with rollout telemetry and post-deploy health verification", UserFacing: true, RequestFeedback: false }`.
 
 ---
 
-## COMPLETION
+## 🚨 ESCALATION & COMPLETION
 
-Present deployment result with:
+| Condition | Immediate Action |
+|-----------|------------------|
+| Rollout error or failed migration | Halt rollout → route immediately to `/deploy:rollback` (`commands/deploy-rollback.md`) |
+| Post-deploy `5xx` spike or failed smoke check | Route immediately to `/deploy:rollback` (`commands/deploy-rollback.md`) |
+| Security anomaly detected | Engage `security-engineer` + trigger `/deploy:rollback` |
 
-1. ✅ **Success** — Production deployed
-2. ⏪ **Rollback** → `/deploy:rollback` if issues
-3. 📊 **Monitor** — Watch dashboards
+Present final release summary:
+1. ✅ **Production Live** — Release SHA, URL, and verified health metrics
+2. 💾 **Persist Release Milestone** → `/save` (`commands/save.md`)
+3. ⏪ **Emergency Revert** → `/deploy:rollback` (`commands/deploy-rollback.md`) if delayed anomalies appear

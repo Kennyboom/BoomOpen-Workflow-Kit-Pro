@@ -1,350 +1,93 @@
-# Dynamic Question Generation
+# Dynamic Consequence-Driven Questioning & 2026 Architecture Defaults (v5.5.0)
 
-> **PRINCIPLE:** Questions are not about gathering data—they are about **revealing architectural consequences**.
->
-> Every question must connect to a concrete implementation decision that affects cost, complexity, or timeline.
+> **PRINCIPLE**: Inspect the repository and prior `RESEARCH`/`SCOUT` artifacts **first** (`autonomous_first`). Ask a question **only** when it resolves a genuine, irreversible product or architectural fork that cannot be inferred from workspace context.
 
 ---
 
-## 🧠 Core Principles
+## 1. `autonomous_first` vs. `socratic_first` Clarification Matrix
 
-### 1. Questions Reveal Consequences
+| Execution Context | Action Rule | Why |
+|-------------------|-------------|-----|
+| **Sub-Agent Shard (`:hard` / `:team`)** | **0 Blocking Questions** — choose the 2026 `(Recommended)` default that fits `SCOUT` manifests, log `[ASSUMPTION-01..N]` in Block 1, and compare alternatives in Block 2/4. | Sub-agents run asynchronously and must return complete artifacts without stalling the swarm. |
+| **Primary Agent (`autonomous_first` Default)** | **Ground First** (`package.json`, `./documents/`, schemas). If no P0 irreversible fork exists, synthesize the blueprint using `(Recommended)` defaults and surface `0–2` optional forks in `HANDOFF_BRIEF`. If a true P0 fork blocks scope, call `ask_question` (`1–3` questions). | Respects user velocity while eliminating guesswork. |
+| **Primary Agent (`socratic_first` / `/grill-me`)** | Ground in manifests first (never ask what stack is already installed!), then call `ask_question` with `2–3` high-leverage P0/P1 trade-off questions. | Aligns interactive discovery with explicit user preference. |
 
-A good question is not "What color do you want?" but:
+---
 
-```markdown
-❌ BAD: "What authentication method?"
-✅ GOOD: "Should users sign up with email/password or social login?
+## 2. Antigravity 2.0 Native `ask_question` Tool Pattern
 
-   Impact:
-   - Email/Pass → Need password reset, hashing, 2FA infrastructure
-   - Social → OAuth providers, user profile mapping, less control
+When a P0 question is warranted in interactive mode, prefer the native `ask_question` UI widget over walls of prose:
+- **Unnumbered options** (the UI numbers them automatically).
+- **Omit `'Other'`** (the UI adds a free-text `'Other'` choice automatically).
+- **Prefix the best default with `(Recommended)`** in position `0`, including brief cost/complexity rationale.
 
-   Trade-off: Security vs. Development time vs. User friction"
-```
-
-### 2. Context Before Content
-
-First understand **where** this request fits:
-
-| Context | Question Focus |
-|---------|----------------|
-| **Greenfield** (new project) | Foundation decisions: stack, hosting, scale |
-| **Feature Addition** | Integration points, existing patterns, breaking changes |
-| **Refactor** | Why refactor? Performance? Maintainability? What's broken? |
-| **Debug** | Symptoms → Root cause → Reproduction path |
-
-### 3. Minimum Viable Questions
-
-**PRINCIPLE:** Each question must eliminate a fork in the implementation road.
-
-```
-Before Question:
-├── Path A: Do X (5 min)
-├── Path B: Do Y (15 min)
-└── Path C: Do Z (1 hour)
-
-After Question:
-└── Path Confirmed: Do X (5 min)
-```
-
-If a question doesn't reduce implementation paths → **DELETE IT**.
-
-### 4. Questions Generate Data, Not Assumptions
-
-```markdown
-❌ ASSUMPTION: "User probably wants Stripe for payments"
-✅ QUESTION: "Which payment provider fits your needs?
-
-   Stripe → Best documentation, 2.9% + $0.30, US-centric
-   LemonSqueezy → Merchant of Record, 5% + $0.50, global taxes
-   Paddle → Complex pricing, handles EU VAT, enterprise focus"
+```json
+{
+  "questions": [
+    {
+      "question": "Which authentication & tenant model should back the MVP?",
+      "is_multi_select": false,
+      "options": [
+        "(Recommended) Better Auth (self-hosted TypeScript, OAuth 2.1 + Passkeys + Org RBAC in our Postgres DB, $0 MAU tax)",
+        "Supabase Auth + Postgres RLS (integrated JWT-to-RLS policies, fastest if already on Supabase)",
+        "Managed SaaS Auth (Clerk / Auth0 — prebuilt enterprise SSO UI, per-MAU cost above free tier)"
+      ]
+    }
+  ]
+}
 ```
 
 ---
 
-## 📋 Question Generation Algorithm
+## 3. Question Filtering Algorithm (Delete Low-Leverage Questions)
 
-```
-INPUT: User request + Context (greenfield/feature/refactor/debug)
-│
-├── STEP 1: Parse Request
-│   ├── Extract domain (ecommerce, auth, realtime, cms, etc.)
-│   ├── Extract features (explicit and implied)
-│   └── Extract scale indicators (users, data volume, frequency)
-│
-├── STEP 2: Identify Decision Points
-│   ├── What MUST be decided before coding? (blocking)
-│   ├── What COULD be decided later? (deferable)
-│   └── What has ARCHITECTURAL impact? (high-leverage)
-│
-├── STEP 3: Generate Questions (Priority Order)
-│   ├── P0: Blocking decisions (cannot proceed without answer)
-│   ├── P1: High-leverage (affects >30% of implementation)
-│   ├── P2: Medium-leverage (affects specific features)
-│   └── P3: Nice-to-have (edge cases, optimization)
-│
-└── STEP 4: Format Each Question
-    ├── What: Clear question
-    ├── Why: Impact on implementation
-    ├── Options: Trade-offs (not just A vs B)
-    └── Default: What happens if user doesn't answer
-```
+1. **Step 1 — Check Repo Ground Truth**: Is the answer already in `package.json`, `.env.example`, `prisma/schema.prisma`, `src/db/schema.ts`, or `./DESIGN.md`? → **DO NOT ASK; pin it!**
+2. **Step 2 — Check Reversibility (Two-Way vs. One-Way Door)**:
+   - *Two-way door* (button copy, minor animation curve, internal folder helper) → **Pick 2026 best practice; do not ask.**
+   - *One-way door* (multi-tenant isolation model, payment Merchant-of-Record vs. direct Stripe, authoritative multiplayer netcode vs. turn-based REST, destructive schema cutover) → **Candidate P0 fork.**
+3. **Step 3 — Frame Consequence & Default**: Every question or `[ASSUMPTION]` must state **Impact** (latency, COGS at `10k DAU`, engineering days, lock-in) and **2026 Default**.
 
 ---
 
-## 🎯 Domain-Specific Question Banks
-
-### E-Commerce
-
-| Question | Why It Matters | Trade-offs |
-|----------|----------------|------------|
-| **Single or Multi-vendor?** | Multi-vendor → Commission logic, vendor dashboards, split payments | +Revenue, -Complexity |
-| **Inventory Tracking?** | Needs stock tables, reservation logic, low-stock alerts | +Accuracy, -Development time |
-| **Digital or Physical Products?** | Digital → Download links, no shipping | Physical → Shipping APIs, tracking |
-| **Subscription or One-time?** | Subscription → Recurring billing, dunning, proration | +Revenue, -Complexity |
-
-### Authentication
-
-| Question | Why It Matters | Trade-offs |
-|----------|----------------|------------|
-| **Social Login Needed?** | OAuth providers vs. password reset infrastructure | +UX, -Control |
-| **Role-Based Permissions?** | RBAC tables, policy enforcement, admin UI | +Security, -Development time |
-| **2FA Required?** | TOTP/SMI infrastructure, backup codes, recovery flow | +Security, -UX friction |
-| **Email Verification?** | Verification tokens, email service, resend logic | +Security, -Sign-up friction |
-
-### Real-time
-
-| Question | Why It Matters | Trade-offs |
-|----------|----------------|------------|
-| **WebSocket or Polling?** | WS → Server scaling, connection management | Polling → Simpler, higher latency |
-| **Expected Concurrent Users?** | <100 → Single server, >1000 → Redis pub/sub, >10k → specialized infra | +Scale, -Complexity |
-| **Message Persistence?** | History tables, storage costs, pagination | +UX, -Storage |
-| **Ephemeral or Durable?** | Ephemeral → In-memory, Durable → Database write before emit | +Reliability, -Latency |
-
-### Content/CMS
-
-| Question | Why It Matters | Trade-offs |
-|----------|----------------|------------|
-| **Rich Text or Markdown?** | Rich Text → Sanitization, XSS risks | Markdown → Simple, no WYSIWYG |
-| **Draft/Publish Workflow?** | Status field, scheduled jobs, versioning | +Control, -Complexity |
-| **Media Handling?** | Upload endpoints, storage, optimization | +Features, -Development time |
-| **Multi-language?** | i18n tables, translation UI, fallback logic | +Reach, -Complexity |
-
----
-
-## 📐 Dynamic Question Template
-
-```markdown
-Based on your request for [DOMAIN] [FEATURE]:
-
-## 🔴 CRITICAL (Blocking Decisions)
-
-### 1. **[DECISION POINT]**
-
-**Question:** [Clear, specific question]
-
-**Why This Matters:**
-- [Explain architectural consequence]
-- [Affects: cost / complexity / timeline / scale]
-
-**Options:**
-| Option | Pros | Cons | Best For |
-|--------|------|------|----------|
-| A | [Advantage] | [Disadvantage] | [Use case] |
-| B | [Advantage] | [Disadvantage] | [Use case] |
-
-**If Not Specified:** [Default choice + rationale]
-
----
-
-## 🟡 HIGH-LEVERAGE (Affects Implementation)
-
-### 2. **[DECISION POINT]**
-[Same format]
-
----
-
-## 🟢 NICE-TO-HAVE (Edge Cases)
-
-### 3. **[DECISION POINT]**
-[Same format]
-```
-
----
-
-## 🔄 Iterative Questioning
-
-### First Pass (3-5 Questions)
-Focus on **blocking decisions**. Don't proceed without answers.
-
-### Second Pass (After Initial Implementation)
-As patterns emerge, ask:
-- "This feature implies [X]. Should we handle [edge case] now or defer?"
-- "We're using [Pattern A]. Should [Feature B] follow the same pattern?"
-
-### Third Pass (Optimization)
-When functionality works:
-- "Performance bottleneck at [X]. Optimize now or acceptable for now?"
-- "Refactor [Y] for maintainability or ship as-is?"
-
----
-
-## 🎭 Example: Full Question Generation
-
-```
-USER REQUEST: "Build an Instagram clone"
-
-STEP 1: Parse
-├── Domain: Social Media
-├── Features: Photo sharing, engagement (likes/comments), user profiles
-├── Implied: Feed, following, authentication
-└── Scale: Potentially high (social apps go viral)
-
-STEP 2: Decision Points
-├── Blocking: Storage strategy, authentication method, feed type
-├── High-leverage: Real-time notifications, data model complexity
-└── Deferable: Analytics, advanced search, reels/video
-
-STEP 3: Generate Questions (Priority)
-
-P0 (Blocking):
-1. Storage Strategy → Affects architecture, cost, speed
-2. Feed Algorithm → Affects database queries, complexity
-3. Auth Method → Affects dev time, UX, security
-
-P1 (High-leverage):
-4. Real-time Notifications → WebSocket vs polling
-5. Media Processing → Client-side vs server-side optimization
-
-P2 (Deferable):
-6. Story/Reels → Major feature creep, defer to v2
-7. DM/Chat → Separate subsystem, defer to v2
-
-STEP 4: Format Output
-```
-
----
-
-## 📊 Generated Output (Example)
-
-```
-Based on your Instagram clone request:
-
-## 🔴 CRITICAL DECISIONS (Cannot Proceed Without Answers)
-
-### 1. **Photo Storage Strategy**
-
-**Question:** Where will user photos be stored and served?
-
-**Why This Matters:**
-- Affects: Monthly hosting costs, page load speed, CDN complexity
-- High-volume social apps: 1000 users × 10 photos × 2MB = 20GB storage
-
-**Options:**
-| Option | Cost | Speed | Complexity | Best For |
-|--------|------|-------|------------|----------|
-| **Cloudinary** | $89/mo (25GB) | Fast (CDN) | Low | MVP, rapid launch |
-| **AWS S3 + CloudFront** | $0.023/GB | Fast (CDN) | Medium | Production, cost-optimized |
-| **Supabase Storage** | Free tier 1GB | Medium | Low | Small scale, simple |
-| **Local Storage** | Server cost | Slow | Low | Development only |
-
-**If Not Specified:** Cloudinary (balanced for MVP)
-
----
-
-### 2. **Feed Algorithm Choice**
-
-**Question:** How should the main feed work?
-
-**Why This Matters:**
-- Affects: Database query complexity, caching strategy, development time
-- Algorithmic feeds require ML infrastructure, ranking signals
-
-**Options:**
-| Option | Complexity | Database Impact | Best For |
-|--------|------------|-----------------|----------|
-| **Chronological** | Low | Simple query | Early stage, transparency |
-| **Follow-Only** | Medium | JOIN with pagination | Most social apps |
-| **Algorithmic** | High | Pre-computed feed tables | Instagram competitor |
-
-**If Not Specified:** Follow-Only (balanced for social app)
-
----
-
-### 3. **Authentication Approach**
-
-**Question:** How do users sign up and login?
-
-**Why This Matters:**
-- Affects: Development time (2-5 hours), security posture, UX friction
-
-**Options:**
-| Option | Dev Time | Security | UX | Best For |
-|--------|----------|----------|-----|----------|
-| **Email/Password** | 4-5 hrs | High (if 2FA) | Medium | Full control needed |
-| **Social Only** | 1-2 hrs | Provider-dependent | Smooth | B2C, rapid launch |
-| **Magic Link** | 2-3 hrs | Medium | Very smooth | Security-focused |
-| **Clerk/Auth0** | 1 hr | High | Smooth | Fastest to market |
-
-**If Not Specified:** Clerk (fastest for MVP)
-
----
-
-## 🟡 HIGH-LEVERAGE (Affects Architecture)
-
-### 4. **Real-time Notifications**
-
-**Question:** Do users need instant notifications for likes/comments?
-
-**Why This Matters:**
-- WebSocket adds infrastructure complexity (Redis pub/sub for scaling)
-- Polling is simpler but higher latency
-
-**Options:**
-| Option | Complexity | Scale Cost | Best For |
-|--------|------------|------------|----------|
-| **WebSocket + Redis** | High | $10+/mo | >1000 concurrent users |
-| **Polling (30s)** | Low | DB queries | <1000 users |
-| **No Real-time** | None | None | MVP, validate first |
-
-**If Not Specified:** Polling for MVP (defer WebSocket until validated)
-
----
-
-## 🟢 NICE-TO-HAVE (Defer to v2)
-
-### 5. **Video/Reels Support**
-- Major complexity (video processing, streaming infrastructure)
-- Recommendation: Launch with photos only, add video after validation
-
-### 6. **Direct Messaging**
-- Separate subsystem (chat infrastructure different from feed)
-- Recommendation: Use Pusher/Stream for real-time or defer entirely
-
----
-
-## 📋 Summary
-
-| Decision | Recommendation | If Changed |
-|----------|----------------|------------|
-| Storage | Cloudinary | +3 hrs setup |
-| Feed | Follow-only | +2 hrs query optimization |
-| Auth | Clerk | -3 hrs dev time |
-| Real-time | Polling | +5 hrs WebSocket setup |
-| Video | Defer to v2 | N/A |
-| DM | Defer to v2 | N/A |
-
-**Total Estimated MVP Time:** 15-20 hours with recommendations above
-```
-
----
-
-## 🎯 Principles Recap
-
-1. **Every question = Architectural decision** → Not data gathering
-2. **Show trade-offs** → User understands consequences
-3. **Prioritize blocking decisions** → Cannot proceed without
-4. **Provide defaults** → If user doesn't answer, we proceed anyway
-5. **Domain-aware** → Ecommerce questions ≠ Auth questions ≠ Real-time questions
-6. **Iterative** → More questions as patterns emerge during implementation
+## 4. 2026 Domain Trade-Off Banks & `(Recommended)` Defaults
+
+### A. Authentication, Sessions & Multi-Tenancy
+| Option | Strengths | Trade-Offs | 2026 Default For |
+|--------|-----------|------------|------------------|
+| **`(Recommended)` Better Auth + OAuth 2.1 / Passkeys** | Owns user/org tables in your DB, zero per-MAU fee, native TypeScript plugins (2FA, Passkeys, Orgs) | Self-managed transactional email provider | Full-stack TypeScript / Next.js / Hono SaaS |
+| **Supabase Auth + Postgres RLS** | Row-Level Security enforced directly in Postgres via JWT claims | Coupled to Supabase Postgres conventions | Data-centric & realtime Supabase apps |
+| **Managed Identity (Clerk / WorkOS / Auth0)** | Drop-in SAML/SCIM enterprise directory sync in hours | Steep MAU/enterprise tier cost at consumer scale | B2B Enterprise SSO-first MVPs |
+
+### B. Database Engine & Type-Safe ORM
+| Option | Strengths | Trade-Offs | 2026 Default For |
+|--------|-----------|------------|------------------|
+| **`(Recommended)` Drizzle ORM + PostgreSQL (Neon / Supabase)** | SQL-transparent, zero-rust-binary cold starts on Edge/Serverless, instant `$inferSelect` contracts, branching | Requires explicit SQL migration discipline | Default SaaS, APIs, AI(`pgvector`) & transactional apps |
+| **Turso (libSQL) / Cloudflare D1 + Drizzle** | Sub-10ms edge read replicas / per-tenant isolated SQLite databases | Single-writer concurrency ceiling per DB shard | Edge-heavy read workloads & per-tenant DB isolation |
+| **Prisma ORM + PostgreSQL** | Declarative `.prisma` schema DSL & rich studio ecosystem | Heavier runtime bundle than Drizzle | Teams standardized on existing `schema.prisma` |
+
+### C. Object Storage, Media & Asset Delivery
+| Option | Strengths | Trade-Offs | 2026 Default For |
+|--------|-----------|------------|------------------|
+| **`(Recommended)` Cloudflare R2 (S3-Compatible + Presigned URLs)** | **$0 egress bandwidth fees**, S3 SDK compatible, global edge caching | Image transforms billed separately via Workers/Images | User uploads, media-heavy apps, AI artifacts & backups |
+| **AWS S3 + CloudFront CDN** | Deep IAM/VPC lifecycle & Glacier archival tiers | Egress fees (`~$0.085/GB`) spike on viral media | AWS-native enterprise workloads |
+| **Supabase Storage** | Integrated with Postgres RLS bucket policies | Higher per-GB cost at multi-TB scale | Rapid Supabase MVPs (`< 50GB`) |
+
+### D. Realtime Streaming, AI Token Delivery & Multiplayer
+| Option | Strengths | Trade-Offs | 2026 Default For |
+|--------|-----------|------------|------------------|
+| **`(Recommended for AI/Feeds)` Server-Sent Events (SSE)** | Standard HTTP/2+, automatic browser reconnect, zero stateful WS proxy pain, native Edge support | Unidirectional (`Server -> Client`; pair with `POST` mutations) | LLM token streaming, live dashboards, notifications |
+| **`(Recommended for Collab/Games)` WebSockets + Durable Objects / Colyseus / PartyKit** | Sub-50ms bidirectional state sync, hibernation API cuts idle memory cost by ~90% | Requires room sharding & server-authority validation | Multiplayer games, CRDT collaborative editors, live cursors |
+| **Supabase Realtime / Upstash Redis PubSub** | Quick Postgres CDC broadcast & presence channels | Throughput/connection tier limits at high CCU | Presence & moderate-frequency collaborative SaaS |
+
+### E. Frontend Styling, Design Tokens & Motion
+| Option | Strengths | Trade-Offs | 2026 Default For |
+|--------|-----------|------------|------------------|
+| **`(Recommended)` Tailwind CSS v4 (`@theme inline`) + OKLCH Tokens + Radix/shadcn** | Zero-JS CSS variables, uniform perceptual contrast across light/dark modes, 100% shard-lockable `DESIGN_CONTRACT` | Requires strict Anti-AI-Slop aesthetic archetype lock | All modern Web & Tauri v2 Desktop/Mobile UIs |
+| **CSS View Transitions API + Motion v12 Springs** | Compositor-accelerated `transform`/`opacity` layout morphs + native `prefers-reduced-motion` | Avoid animating layout props (`width`/`top`/`height`) | Interactive dashboards, editorial & consumer web apps |
+
+### F. Monetization, Billing & AI Cost Control
+| Option | Strengths | Trade-Offs | 2026 Default For |
+|--------|-----------|------------|------------------|
+| **`(Recommended Global Indie/SaaS)` Merchant of Record (Polar / LemonSqueezy / Paddle)** | Automates global EU VAT / US sales tax remittance & compliance | ~4–5% + $0.50 fee vs. raw card processing | Global self-serve SaaS & developer tools |
+| **`(Recommended Custom/Enterprise)` Stripe Billing + Webhooks** | Lowest base fee (2.9% + $0.30), metered usage-based AI token billing, Connect payouts | Must configure Stripe Tax + tax registrations | Usage-metered AI platforms, marketplaces & enterprise |
+| **Hybrid Rule Engine + Tiered/Prompt-Cached LLM** | Deterministic logic handles 85–90% of events; prompt caching + small models cut inference COGS by 80%+ | Requires explicit router & token budget guardrails | Every AI-native product or game at `10k+ DAU` |

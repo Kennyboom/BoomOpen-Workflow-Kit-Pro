@@ -6,6 +6,8 @@ source: community
 date_added: "2026-02-27"
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`references/azure-sdk-patterns.md`, `references/streaming.md`, `references/tools.md`, `scripts/extract-skills.ts`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Skill Creator
 
 Guide for creating skills that extend AI agent capabilities, with emphasis on Azure SDKs and Microsoft Foundry.
@@ -281,9 +283,6 @@ Gather concrete examples:
 | Example Task | Reusable Resource |
 |--------------|-------------------|
 | Same auth code each time | Code example in SKILL.md |
-| Complex streaming patterns | `references/streaming.md` |
-| Tool configurations | `references/tools.md` |
-| Error handling patterns | `references/error-handling.md` |
 
 ### Step 3: Plan Product Area Category
 
@@ -559,12 +558,6 @@ azure-ai-agents/
 ---
 
 ## Design Pattern References
-
-| Reference | Contents |
-|-----------|----------|
-| `references/workflows.md` | Sequential and conditional workflows |
-| `references/output-patterns.md` | Templates and examples |
-| `references/azure-sdk-patterns.md` | Language-specific Azure SDK patterns |
 
 ---
 

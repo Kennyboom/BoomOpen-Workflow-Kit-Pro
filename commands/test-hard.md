@@ -1,48 +1,70 @@
 ---
-description: "⚡⚡⚡ Comprehensive testing with DAG Parallel Fan-Out (Unit/Integration/E2E + Coverage Gap Analysis)"
+description: "⚡⚡⚡ Comprehensive Testing — 2-Wave Elastic Parallel Test Pyramid (Unit/Integration/E2E/A11y), App-Code READ_ONLY Lock & Deterministic CLI Verification"
 version: "5.5"
+category: validation
+execution-mode: execute
 ---
 
-# /test:hard — Comprehensive Testing
-
-> **Skill Notice**: Load `rules/CORE.md`, `rules/PHASES.md`, and `rules/AGENTS.md` on-demand for Mode B orchestration.
-
----
-
-## PRE-FLIGHT
-
-1. **Inspect Context**: Check `<appDataDir>\brain\<conversation-id>\` for `PLAN-*.md` or `DEBUG-*.md` to identify changed modules and acceptance criteria.
-2. **Session Registry**: Reuse warm `tester` or `scouter` sessions via `send_message` if already active in this conversation.
+> **📂 Cohesive Single-File & Disjoint Shard Rule (v5.5)**:
+> - **Final User-Facing Deliverable**: `<appDataDir>\brain\<conversation-id>\TEST-{scope}.md` (`<= 500` lines, zero `{name}/` folder splits!). Set `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: true }` when real uncovered app bugs (`[APP_DEFECT]`) are found so Antigravity 2.0's 1-click **"Proceed"** button launches `/fix:hard`, or `RequestFeedback: false` when `100%` green.
+> - **Zero Parallel Write Collisions**: Parallel `tester#*` and `scouter#*` shards **NEVER write to the same file path**! Shards own disjoint test files (`<= 3–4` test files/shard) and return structured results via message (or write disjoint `TEST-{scope}-s{k}.md` with `UserFacing: false, RequestFeedback: false`).
 
 ---
 
-## Phase 1 & Phase 2: DAG Parallel Fan-Out (`tester` + `scouter`)
+# /test:hard — Elastic Parallel Test Pyramid & Zero-Test-Gaming Verification
 
-Launch both independent discovery/execution tracks concurrently in a single turn:
+> **MISSION**: Build and execute comprehensive Unit, Integration, E2E, and WCAG 2.2 AA Accessibility test coverage across multi-module scopes using **Elastic Parallel Sharding (`<= 3–4` test files per shard)** while locking production application source files in **`READ_ONLY_FILES`**.
 
-### Track A — Test Suite Execution (`tester`)
-> - **Sub-agent**: `tester` (`EnableWriteTools: true`, `Model: "inherit"`)
-> - **MISSION**: Run existing unit, integration, and E2E test suites; capture pass/fail counts, coverage metrics, and exact failure stack traces.
-> - **OWNED_FILES**: Existing/new `*.test.*` / `*.spec.*` files and `<appDataDir>\brain\<conversation-id>\TEST-{topic}.md`.
-
-### Track B — Uncovered Edge-Case & Risk Scouting (`scouter`)
-> - **Sub-agent**: `scouter` (`EnableWriteTools: false`, `Model: "inherit"`)
-> - **MISSION**: Scan recently modified modules (`git diff`) for untested boundary conditions, error paths, race conditions, and security/input validation gaps.
-> - **READ_ONLY_FILES**: Changed source files and existing test files.
+<scope>$ARGUMENTS</scope>
 
 ---
 
-## Phase 3: Write Missing Tests & Re-Verify (`tester`)
+## ⚡ TURN-1 ZERO-TAX SHARDING & ZERO-TEST-GAMING LOCK
 
-Reuse the warm `tester` sub-agent via `send_message(Recipient: testerConversationId, Message: ...)`:
-1. Write unit/integration/E2E tests for all high-priority gaps identified in Track A & Track B.
-2. Follow the **AAA Pattern (Arrange-Act-Assert)** and test behavior rather than implementation details.
-3. Re-run the full test suite to verify 100% pass rate.
-4. Write the final report to `<appDataDir>\brain\<conversation-id>\TEST-{topic}.md` (fallback to `./reports/{topic}/test/TEST-{topic}.md` only when workspace docs are requested).
+⚡ **COGNITIVE LOAD SHARDING LAW**:
+$$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\left\lceil \frac{\text{Total Target Files}}{3.5} \right\rceil,\; \text{Distinct Test Layers}\right)\right)$$
+- Inspect `<appDataDir>\brain\<conversation-id>\` on Turn 1 for `PLAN-*.md`, `DESIGN-*.md`, or `DEBUG-*.md` to extract acceptance criteria (`AC1..N`) without re-scouting already mapped modules.
+- **🛡️ `READ_ONLY_FILES` App-Code Lock**: Unless `--fix` is explicitly passed, **100% of production source files (`src/**`, `app/**`, `server/**`) are locked in `READ_ONLY_FILES`**. Shards MUST NEVER edit production source code, weaken assertions, mock the unit under test, use hardcoded `sleep()`, or commit `it.skip` / `test.only` / `test.todo`!
+- **Capability Rule**: Always use `invoke_subagent(TypeName: "self", Model: "inherit")` and record `role#shard → conversationId` for Warm Session Reuse (`send_message`).
 
 ---
 
-## Gate
-- [ ] All unit, integration, and E2E tests pass (`0` failures)
-- [ ] Coverage meets or exceeds target (`≥ 80%` on changed modules)
-- [ ] `<appDataDir>\brain\<conversation-id>\TEST-{topic}.md` generated with concrete command output
+## 🎭 Wave 1 (Turn-1 Parallel Fan-Out): GAP MAPPING + SHARED HARNESS LOCK
+
+When shared fixtures/MSW handlers do not yet exist (or scope is unscoped), launch concurrently on Turn 1:
+1. **`scouter#1..k` (`<= 3–4` source files/shard)**: Map `git diff` / target modules for untested boundary values, race conditions, authz/IDOR paths, and error envelopes; return structured RTM rows via message (`READ_ONLY_FILES`: entire repo).
+2. **`tester#harness` (`OWNED_FILES`: `tests/setup.*`, `tests/mocks/*`, `tests/factories.*`, `<= 3–4` files)**: Lock shared Vitest/Jest/Pytest setup, MSW v2 external boundary handlers (`skills_library/vitest-msw-testing-patterns/SKILL.md`), and deterministic data factories (`READ_ONLY_FILES`: all production source files).
+*(Fast-forward straight to Wave 2 if `PLAN-*.md` already defines test files and test setup exists!)*
+
+---
+
+## 🎭 Wave 2: PARALLEL TEST PYRAMID SHARDS (`<= 3–4 OWNED_FILES` / Shard)
+
+Dispatch disjoint `tester#<layer>` shards in parallel (`TypeName: "self"`, `Model: "inherit"`, `READ_ONLY_FILES`: all production source files + Wave 1 harness):
+
+| Parallel Shard | Disjoint `OWNED_FILES` (`<= 3–4` Test Files) | Mandatory Behavioral Coverage (`skills/tdd-workflow`, `testing-patterns`, `webapp-testing`) |
+|----------------|----------------------------------------------|---------------------------------------------------------------------------------------------|
+| **`tester#unit-1..k`** | `tests/unit/*.test.*` (or co-located `*.test.*`) | Pure domain logic, state machines, `0/null/empty/max+1` boundaries, fake timers (zero real `setTimeout`). |
+| **`tester#integration`** | `tests/integration/*.test.*` | API contract schemas, DB transaction rollback isolation, `400/401/403/404/409/422` auth & validation paths, injection payloads. |
+| **`tester#e2e`** *(if web/app)* | `tests/e2e/*.spec.*` | Critical user journeys, semantic `getByRole`/`getByLabel` locators, network error recovery. |
+| **`tester#a11y`** *(if UI)* | `tests/a11y/*.spec.*` | WCAG 2.2 AA keyboard focus order, `SC 2.4.11` Focus Not Obscured, `>= 24x24px` (`44pt` mobile) targets, contrast & ARIA states. |
+
+---
+
+## 🎭 Wave 3: DETERMINISTIC RUNNER, HYGIENE GATES & COHESIVE `TEST-{scope}.md`
+
+Execute real verification scripts end-to-end (routing any test-code syntax/flake fixes back to warm `tester#<shard>` via `send_message`):
+
+```bash
+python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <project-or-test-dir>
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <test-dir> --strict-phase --no-stubs
+```
+*(Also run `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py <url-or-dir>` when E2E tests exist, and `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <ui-dir>` when UI files are in scope.)*
+
+Synthesize **1 cohesive `<appDataDir>\brain\<conversation-id>\TEST-{scope}.md` (`<= 500` lines)**:
+1. **Executive Gate Verdict & Coverage Summary** (`Pass/Fail` counts per pyramid layer, coverage %, `QA-G1..G4` status).
+2. **Requirements Traceability Matrix (`AC -> Shard -> Test File:Line -> Status`)**.
+3. **Uncovered Production Defects (`[APP_DEFECT]`)** *(if any)*: Exact `src/file:line`, failing assertion output, and root-cause hint — never silence failing assertions!
+4. **Deterministic CLI Verification Proof**: Verbatim `test_runner.py` and `boomopen check --strict-phase --no-stubs` exit codes.
+
+> **⛔ HARD STOP**: Present `[TEST-{scope}.md](file:///...)`. If `[APP_DEFECT]` items exist (`RequestFeedback: true`), invite the user to click **"Proceed"** (or run `/fix:hard`) to remediate production bugs; if `100%` green (`RequestFeedback: false`), offer `/review:hard` or `/deploy:check`.

@@ -1,7 +1,8 @@
-import { totalAgents } from './agents'
+import { totalAgents, getAgentCountByCategory } from './agents'
 import { totalCommands } from './commands'
 import { totalSkills, totalDomains } from './skills'
 import { totalPlatforms } from './platforms'
+import { formatCount } from './kitStats'
 
 // Hero metrics (performance improvements)
 export const heroMetrics = [
@@ -12,9 +13,9 @@ export const heroMetrics = [
 
 // Quick stats (key numbers)
 export const quickStats = [
-  { value: `${totalAgents}+`, label: 'Specialist Agents' },
-  { value: `${totalCommands}+`, label: 'Commands' },
-  { value: `${totalSkills}+`, label: 'Skills' },
+  { value: `${totalAgents}`, label: 'Specialist Agents' },
+  { value: `${totalCommands}`, label: 'Commands' },
+  { value: formatCount(totalSkills), label: 'Skills' },
   { value: `${totalPlatforms}`, label: 'Platforms' },
 ]
 
@@ -44,7 +45,7 @@ export const featureCards = [
   {
     emoji: '🧠',
     title: 'Hybrid Skill Orchestration',
-    description: `${totalSkills}+ matrix skills across ${totalDomains} domains plus on-demand community skills via find-skills. Variant-aware, deep expertise.`,
+    description: `${formatCount(totalSkills)} indexed matrix skills across ${totalDomains} domains plus on-demand community skills via find-skills. Variant-aware, deep expertise.`,
     href: '/features/matrix-skills',
     badge: 'Smart',
   },
@@ -58,12 +59,13 @@ export const prerequisites = [
 ]
 
 // Agent category summary for docs
+const categoryCounts = getAgentCountByCategory()
 export const agentCategorySummary = [
-  { category: 'Implementation', count: 4, examples: 'backend, frontend, mobile, game' },
-  { category: 'Architecture', count: 2, examples: 'tech-lead, database-architect' },
-  { category: 'Quality', count: 4, examples: 'tester, reviewer, debugger, security' },
-  { category: 'Planning', count: 3, examples: 'planner, brainstormer, analyst' },
-  { category: 'Support', count: 8, examples: 'designer, devops, docs, reporter, researcher...' },
+  { category: 'Implementation', count: categoryCounts.Implementation, examples: 'backend, frontend, mobile, game' },
+  { category: 'Architecture', count: categoryCounts.Architecture, examples: 'tech-lead, database-architect' },
+  { category: 'Quality', count: categoryCounts.Quality, examples: 'tester, reviewer, debugger, security' },
+  { category: 'Planning', count: categoryCounts.Planning, examples: 'planner, brainstormer, analyst' },
+  { category: 'Support', count: categoryCounts.Support, examples: 'designer, devops, docs, reporter, researcher...' },
 ]
 
 // Documentation sections
@@ -105,17 +107,17 @@ export const docSections = [
     links: [
       { label: 'Agent Overview', href: '/features/specialist-agents' },
       { label: 'Agent Collaboration', href: '/features/sub-agent-orchestration' },
-      { label: 'Custom Agents', href: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit/docs/custom-agents', external: true },
+      { label: 'Custom Agents', href: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit/tree/main/agents', external: true },
     ],
   },
   {
     title: 'Skills',
     icon: '📚',
-    description: `Explore the ${totalSkills}+ skills available across ${totalDomains} domains.`,
+    description: `Explore the ${formatCount(totalSkills)} indexed skills available across ${totalDomains} domains.`,
     links: [
       { label: 'Skills Overview', href: '/features/matrix-skills' },
       { label: 'Skill Domains', href: '/features/matrix-skills#domains' },
-      { label: 'Custom Skills', href: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit/docs/custom-skills', external: true },
+      { label: 'Custom Skills', href: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit/tree/main/skills', external: true },
     ],
   },
   {
@@ -124,7 +126,7 @@ export const docSections = [
     description: 'Customize BoomOpen Workflow Kit to fit your workflow.',
     links: [
       { label: 'Global Config', href: '/features/one-time-setup' },
-      { label: 'Project Overrides', href: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit/docs/project-config', external: true },
+      { label: 'Project Overrides', href: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit/blob/main/commands/settings.md', external: true },
       { label: 'Platform Config', href: '/features/multi-platform-support' },
     ],
   },
@@ -147,10 +149,10 @@ export const resources = [
     external: true,
   },
   {
-    title: 'Discussions',
-    description: 'Community Q&A and feature requests.',
-    icon: '💬',
-    href: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit/discussions',
+    title: 'Security Policy',
+    description: 'How to report a vulnerability privately.',
+    icon: '🔐',
+    href: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit/blob/main/SECURITY.md',
     external: true,
   },
   {

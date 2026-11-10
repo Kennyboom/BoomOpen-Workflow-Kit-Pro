@@ -1,9 +1,9 @@
-import { Outlet } from 'react-router-dom'
 import { cn } from '../../lib/utils'
 import { SkipLink } from './SkipLink'
 import { Header } from './Header'
 import { Footer } from './Footer'
 import { AnimationLayout } from './AnimationLayout'
+import { ScrollManager } from './ScrollManager'
 
 interface LayoutProps {
   children?: React.ReactNode
@@ -17,6 +17,8 @@ interface LayoutProps {
 export function Layout({ children, className }: LayoutProps) {
   return (
     <div className={cn('min-h-screen flex flex-col', className)}>
+      <ScrollManager />
+
       {/* Skip Link for keyboard accessibility */}
       <SkipLink />
 
@@ -30,9 +32,8 @@ export function Layout({ children, className }: LayoutProps) {
         role="main"
         tabIndex={-1}
       >
-        <AnimationLayout>
-          {children ?? <Outlet />}
-        </AnimationLayout>
+        {/* Without children, AnimationLayout renders the matched route (frozen while it exits) */}
+        <AnimationLayout>{children}</AnimationLayout>
       </main>
 
       {/* Footer */}

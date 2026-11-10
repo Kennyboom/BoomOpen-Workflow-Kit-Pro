@@ -17,7 +17,7 @@
 | **Description** | Software developer using one or more AI coding assistants daily for building, debugging, testing, and deploying software |
 | **Primary Goals** | BG-001 (one-time setup), BG-003 (faster delivery), BG-006 (structured workflows) |
 | **Secondary Goals** | BG-004 (fewer bugs), BG-005 (lower token cost) |
-| **Touchpoints** | CLI installer (`boomopen-workflow-kit install --all`), slash commands (`/cook`, `/fix`, `/plan`, `/test`, `/review`), natural language input |
+| **Touchpoints** | CLI installer (`boomopen install --all`), slash commands (`/cook`, `/fix`, `/plan`, `/test`, `/review`), natural language input |
 | **Success Criteria** | Installs in ≤5 minutes; commands produce usable deliverables without prompt iteration |
 | **Pain Points Addressed** | Repetitive prompt engineering, inconsistent AI output, no workflow structure |
 
@@ -101,13 +101,13 @@
 
 | Req ID | Requirement | Priority | INVEST Score | Stakeholders | Goals |
 |--------|-------------|----------|-------------|--------------|-------|
-| BR-001 | Framework installs globally via `npm install -g` and writes platform-specific config files to `~/.{TOOL}/skills/boomopen-workflow-kit/` | Must | 29/30 | S1, S2 | BG-001, BG-002 |
+| BR-001 | Framework installs from a git clone (`node cli/install.js install <tool>`) and writes platform-specific config files to `~/.{TOOL}/skills/boomopen-workflow-kit/` | Must | 29/30 | S1, S2 | BG-001, BG-002 |
 | BR-002 | Framework supports 5 platforms: Cursor, Copilot, Claude Code, Codex, Antigravity/Gemini | Must | 24/30 | S5 | BG-002 |
 | BR-023 | CLI list command shows installed platforms and status | Should | 27/30 | S1 | BG-001 |
 
-**Acceptance Criteria (BR-001)**: Given a clean machine with Node.js 18+, when user runs `npm install -g @boomopen/workflow-kit && boomopen-workflow-kit install --all`, then config files exist at `~/.cursor/`, `~/.copilot/`, `~/.claude/`, `~/.codex/`, `~/.gemini/antigravity/` and exit code is 0.
+**Acceptance Criteria (BR-001)**: Given a clean machine with Node.js 18+, when user runs `git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git && cd BoomOpen-Workflow-Kit && node cli/install.js install --all`, then config files exist at `~/.cursor/`, `~/.copilot/`, `~/.claude/`, `~/.codex/`, `~/.gemini/antigravity/` and exit code is 0.
 
-**Acceptance Criteria (BR-002)**: Given the framework is installed, when user runs `boomopen-workflow-kit install {platform}` for each platform, then each platform's entry point file is created and the orchestrator instructions are loadable by that platform's AI runtime.
+**Acceptance Criteria (BR-002)**: Given the framework is installed, when user runs `boomopen install {platform}` for each platform, then each platform's entry point file is created and the orchestrator instructions are loadable by that platform's AI runtime.
 
 ### Agent System
 
@@ -139,7 +139,7 @@
 
 | Req ID | Requirement | Priority | INVEST Score | Stakeholders | Goals |
 |--------|-------------|----------|-------------|--------------|-------|
-| BR-008 | Matrix Skill Discovery (HSOL) resolves skills from 1,430 pre-curated matrix skills across 19 domains | Must | 21/30 | S4 | BG-007 |
+| BR-008 | Matrix Skill Discovery (HSOL) resolves skills from 1,462 pre-curated matrix skills across 19 domains | Must | 21/30 | S4 | BG-007 |
 | BR-009 | Dynamic Skill Discovery via `find-skills` searches and installs community skills when matrix fitness < 0.75 | Could | 24/30 | S3, S7 | BG-007, BG-009 |
 | BR-010 | Trust Progression Lifecycle: skills progress NEW(0.3) → EVALUATING(0.5) → VALIDATED(0.7) → PROMOTED(1.0) | Could | 25/30 | S6 | BG-009 |
 

@@ -1,358 +1,252 @@
 const fs = require('node:fs');
-const os = require('node:os');
-const path = require('node:path');
 
-const { SETTINGS_MARKER_START, SETTINGS_MARKER_END, isKitOwnedText } = require('./markers.js');
+const { SETTINGS_MARKER_START, SETTINGS_MARKER_END } = require('./markers.js');
+const {
+  KIT_VERSION,
+  DEFAULT_SETTINGS,
+  PRESETS,
+  ALLOWED_ENUMS,
+  SETTING_DESCRIPTIONS,
+  CODING_STANDARDS_PRESETS,
+  LINE_LIMIT_KEYS,
+  MIN_LINE_LIMIT,
+  MAX_LINE_LIMIT,
+  ALL_STORABLE_KEYS,
+  isSettingKey,
+  isPresetName,
+  getSettingByKey,
+  coerceEnumValue,
+  coerceLineLimit,
+  validateAndSanitizeSettings,
+} = require('./settings-schema.js');
+const {
+  getSettingsPaths,
+  loadSettings,
+  loadSettingsDetailed,
+  writeGlobalSettings,
+  writeProjectOverrides,
+  backupCorruptFile,
+} = require('./settings-store.js');
+const {
+  renderActiveSettingsMarkdown,
+  injectSettingsBlockIntoText,
+  detectInstalledPlatforms,
+  syncSettingsToInstalledPlatforms,
+} = require('./settings-sync.js');
 
-const CODING_STANDARDS_PRESETS = {
-  pragmatic: { softFileLines: 400, hardFileLines: 500, forbidExplicitAny: true, warnConsoleLog: true },
-  strict: { softFileLines: 300, hardFileLines: 400, forbidExplicitAny: true, warnConsoleLog: true },
-  relaxed: { softFileLines: 600, hardFileLines: 800, forbidExplicitAny: true, warnConsoleLog: false },
-};
+const DEFAULT_UI_PORT = 4567;
+const MAX_PORT = 65535;
+const RULE = '─'.repeat(68);
 
-const ALLOWED_ENUMS = {
-  preset: ['smart-hybrid', 'solo-fast', 'deep-architect', 'adversarial-team', 'custom'],
-  'execution.mode': ['auto', 'mode_a', 'mode_b', 'team'],
-  'execution.modeAThresholdFiles': [1, 2, 3, 5, 10],
-  'workflows.defaultVariant': ['auto', 'fast', 'hard', 'team', 'ask'],
-  'workflows.naturalLanguageResearchTrigger': ['auto_team', 'auto_hard', 'ask_first', 'off'],
-  'models.subagentPolicy': ['quality_first', 'strict_inherit', 'balanced_speed'],
-  'research.depth': ['5_lens_deep', 'standard', 'quick_brief'],
-  'clarification.style': ['autonomous_first', 'interactive_ask', 'zero_questions'],
-  'teams.maxDebateRounds': [1, 2, 3],
-  'codingStandards.preset': ['pragmatic', 'strict', 'relaxed'],
-  'verification.level': ['strict_e2e', 'fast_check', 'manual'],
-  'deliverables.routing': ['brain_artifacts', 'workspace_reports', 'both'],
-  'language.response': ['auto', 'vi', 'en', 'ja', 'ko', 'zh-CN'],
-};
+const resolveScope = (options) => (options.scope === 'project' || options.project ? 'project' : 'global');
 
-const DEFAULT_SETTINGS = {
-  version: '5.5.0',
-  preset: 'smart-hybrid',
-  execution: { mode: 'auto', modeAThresholdFiles: 2 },
-  workflows: { defaultVariant: 'auto', naturalLanguageResearchTrigger: 'auto_team' },
-  models: { subagentPolicy: 'quality_first' },
-  research: { depth: '5_lens_deep' },
-  clarification: { style: 'autonomous_first' },
-  teams: { maxDebateRounds: 3 },
-  codingStandards: { ...CODING_STANDARDS_PRESETS.pragmatic, preset: 'pragmatic' },
-  verification: { level: 'strict_e2e' },
-  deliverables: { routing: 'brain_artifacts' },
-  language: { response: 'auto' },
-};
-
-const PRESETS = {
-  'smart-hybrid': structuredClone(DEFAULT_SETTINGS),
-  'solo-fast': {
-    version: '5.5.0',
-    preset: 'solo-fast',
-    execution: { mode: 'mode_a', modeAThresholdFiles: 10 },
-    workflows: { defaultVariant: 'fast', naturalLanguageResearchTrigger: 'off' },
-    models: { subagentPolicy: 'balanced_speed' },
-    research: { depth: 'quick_brief' },
-    clarification: { style: 'zero_questions' },
-    teams: { maxDebateRounds: 1 },
-    codingStandards: { ...CODING_STANDARDS_PRESETS.relaxed, preset: 'relaxed' },
-    verification: { level: 'fast_check' },
-    deliverables: { routing: 'brain_artifacts' },
-    language: { response: 'auto' },
-  },
-  'deep-architect': {
-    version: '5.5.0',
-    preset: 'deep-architect',
-    execution: { mode: 'mode_b', modeAThresholdFiles: 1 },
-    workflows: { defaultVariant: 'hard', naturalLanguageResearchTrigger: 'auto_hard' },
-    models: { subagentPolicy: 'strict_inherit' },
-    research: { depth: '5_lens_deep' },
-    clarification: { style: 'interactive_ask' },
-    teams: { maxDebateRounds: 3 },
-    codingStandards: { ...CODING_STANDARDS_PRESETS.strict, preset: 'strict' },
-    verification: { level: 'strict_e2e' },
-    deliverables: { routing: 'brain_artifacts' },
-    language: { response: 'auto' },
-  },
-  'adversarial-team': {
-    version: '5.5.0',
-    preset: 'adversarial-team',
-    execution: { mode: 'team', modeAThresholdFiles: 1 },
-    workflows: { defaultVariant: 'team', naturalLanguageResearchTrigger: 'auto_team' },
-    models: { subagentPolicy: 'strict_inherit' },
-    research: { depth: '5_lens_deep' },
-    clarification: { style: 'interactive_ask' },
-    teams: { maxDebateRounds: 3 },
-    codingStandards: { ...CODING_STANDARDS_PRESETS.strict, preset: 'strict' },
-    verification: { level: 'strict_e2e' },
-    deliverables: { routing: 'both' },
-    language: { response: 'auto' },
-  },
-};
-
-function getSettingsPaths(options = {}) {
-  const homeDir = options.homeDir || os.homedir();
-  const cwd = options.cwd || process.cwd();
-  return {
-    globalPath: path.join(homeDir, '.boomopen', 'settings.json'),
-    projectPath: path.join(cwd, '.boomopen.json'),
-  };
-}
-
-function getSettingByKey(settings, dottedKey) {
-  if (!dottedKey) return settings;
-  return dottedKey.split('.').reduce((acc, part) => (acc && acc[part] !== undefined ? acc[part] : undefined), settings);
-}
-
-function setNestedValue(target, dottedKey, value) {
-  const parts = dottedKey.split('.');
-  let cur = target;
-  for (let i = 0; i < parts.length - 1; i++) {
-    if (!cur[parts[i]] || typeof cur[parts[i]] !== 'object') cur[parts[i]] = {};
-    cur = cur[parts[i]];
-  }
-  cur[parts[parts.length - 1]] = value;
-}
-
-function coerceEnumValue(dottedKey, rawVal) {
-  const allowed = ALLOWED_ENUMS[dottedKey];
-  if (!allowed) return undefined;
-  const numericVal = typeof rawVal === 'string' && /^\d+$/.test(rawVal) ? Number(rawVal) : rawVal;
-  if (allowed.includes(numericVal)) return numericVal;
-  if (allowed.includes(rawVal)) return rawVal;
-  return undefined;
-}
-
-function validateAndSanitizeSettings(partial = {}, base = DEFAULT_SETTINGS) {
-  const merged = structuredClone(base);
-  if (!partial || typeof partial !== 'object') return merged;
-  for (const key of Object.keys(ALLOWED_ENUMS)) {
-    const candidate = key in partial ? partial[key] : getSettingByKey(partial, key);
-    if (candidate !== undefined) {
-      const coerced = coerceEnumValue(key, candidate);
-      if (coerced !== undefined) setNestedValue(merged, key, coerced);
-    }
-  }
-  const stdPreset = merged.codingStandards?.preset || 'pragmatic';
-  const presetDetails = CODING_STANDARDS_PRESETS[stdPreset] || CODING_STANDARDS_PRESETS.pragmatic;
-  merged.codingStandards = {
-    ...presetDetails,
-    preset: stdPreset,
-    ...(typeof partial.codingStandards?.softFileLines === 'number' ? { softFileLines: partial.codingStandards.softFileLines } : {}),
-    ...(typeof partial.codingStandards?.hardFileLines === 'number' ? { hardFileLines: partial.codingStandards.hardFileLines } : {}),
-  };
-  merged.version = '5.5.0';
-  return merged;
-}
-
-function readJsonSafe(filePath) {
-  if (!fs.existsSync(filePath)) return null;
-  try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-  } catch {
-    return null;
-  }
-}
-
-function loadSettings(options = {}) {
-  const { globalPath, projectPath } = getSettingsPaths(options);
-  const globalData = readJsonSafe(globalPath);
-  let resolved = validateAndSanitizeSettings(globalData || {}, DEFAULT_SETTINGS);
-  if (options.scope !== 'global') {
-    const projectData = readJsonSafe(projectPath);
-    if (projectData) resolved = validateAndSanitizeSettings(projectData, resolved);
-  }
-  return resolved;
-}
-
-function renderActiveSettingsMarkdown(settings = DEFAULT_SETTINGS) {
-  const s = validateAndSanitizeSettings(settings, DEFAULT_SETTINGS);
-  const cs = s.codingStandards;
-  return [
-    SETTINGS_MARKER_START,
-    '## 🎛️ ACTIVE USER SETTINGS OVERRIDE (Managed via `/settings` & `~/.boomopen/settings.json`)',
-    '> **PRECEDENCE**: `1. Explicit Turn Command (/cmd:variant, @fast/@deep/@team)` > `2. Workspace ./.boomopen.json` > `3. Active Settings Below` > `4. Default File Rules`.',
-    `- **Active Preset**: \`${s.preset}\` | **Execution Mode (\`execution.mode\`)**: \`${s.execution.mode}\` (\`auto\` = **Proactive Sub-agent First on Turn 1**: Mode A <= ${s.execution.modeAThresholdFiles} known files; parallel sub-agents on Turn 1 for > ${s.execution.modeAThresholdFiles} files, unscoped exploration, or /cmd via \`invoke_subagent(TypeName: "self" | "research")\`; \`mode_a\` = Force Direct Solo Mode unless \`:hard\`/\`:team\`/\`/orchestrate\`; \`mode_b\` = Force Multi-Agent Orchestrator; \`team\` = Force Golden Triangle 3-Agent \`:team\`)`,
-    `- **Workflows**: \`defaultVariant = ${s.workflows.defaultVariant}\` (\`auto\`|\`fast\`|\`hard\`|\`team\`|\`ask\`) | \`naturalLanguageResearchTrigger = ${s.workflows.naturalLanguageResearchTrigger}\` (\`auto_team\` routes NL research/ideation to \`/research:team\` & \`/brainstorm:team\` Golden Triangle | \`auto_hard\` → \`/research:hard\` & \`/brainstorm:hard\` | \`ask_first\` | \`off\`)`,
-    `- **Intelligence & Research**: \`models.subagentPolicy = ${s.models.subagentPolicy}\` (\`inherit\` Pro High default; never \`flash_lite\`) | \`research.depth = ${s.research.depth}\` | \`clarification.style = ${s.clarification.style}\` | \`teams.maxDebateRounds = ${s.teams.maxDebateRounds}\``,
-    `- **Standards & Verification**: \`codingStandards.preset = ${cs.preset}\` (Soft \`${cs.softFileLines}\` / Hard \`${cs.hardFileLines}\` lines, \`forbidExplicitAny = ${cs.forbidExplicitAny}\`, \`warnConsoleLog = ${cs.warnConsoleLog}\`) | \`verification.level = ${s.verification.level}\``,
-    `- **Deliverables & Language**: \`deliverables.routing = ${s.deliverables.routing}\` (\`<appDataDir>\\brain\\<conversation-id>\\\` default) | \`language.response = ${s.language.response}\``,
-    SETTINGS_MARKER_END,
-  ].join('\n');
-}
-
-function injectSettingsBlockIntoText(content, settings = DEFAULT_SETTINGS) {
-  const block = renderActiveSettingsMarkdown(settings);
-  if (content.includes(SETTINGS_MARKER_START) && content.includes(SETTINGS_MARKER_END)) {
-    const startIdx = content.indexOf(SETTINGS_MARKER_START);
-    const endIdx = content.indexOf(SETTINGS_MARKER_END) + SETTINGS_MARKER_END.length;
-    return content.slice(0, startIdx) + block + content.slice(endIdx);
-  }
-  const dividerIdx = content.indexOf('\n---\n', content.startsWith('---\n') ? content.indexOf('\n---\n', 4) + 4 : 0);
-  if (dividerIdx !== -1) {
-    return `${content.slice(0, dividerIdx)}\n\n${block}\n${content.slice(dividerIdx)}`;
-  }
-  return `${content.trimEnd()}\n\n${block}\n`;
-}
-
-function syncSettingsToInstalledPlatforms(settings, options = {}) {
-  const start = Date.now();
-  const homeDir = options.homeDir || os.homedir();
-  const active = settings ? validateAndSanitizeSettings(settings) : loadSettings(options);
-  const targetsByPlatform = {
-    antigravity: [
-      path.join(homeDir, '.gemini', 'GEMINI.md'),
-      path.join(homeDir, '.gemini', 'agents', 'AntigravityGlobal.agent.md'),
-      path.join(homeDir, '.antigravity', 'agents', 'AntigravityGlobal.agent.md'),
-    ],
-    claude: [path.join(homeDir, '.claude', 'CLAUDE.md'), path.join(homeDir, '.claude', 'AGENT.md')],
-    codex: [
-      path.join(homeDir, '.codex', 'CODEX.md'),
-      path.join(homeDir, '.codex', 'AGENTS.md'),
-      path.join(homeDir, '.codex', 'AGENT.md'),
-    ],
-    cursor: [
-      path.join(homeDir, '.cursor', 'CURSOR.md'),
-      path.join(homeDir, '.cursor', 'rules', 'boomopen-workflow-kit.mdc'),
-      path.join(homeDir, '.cursor', 'AGENT.md'),
-    ],
-    copilot: [
-      path.join(homeDir, '.copilot', 'COPILOT.md'),
-      path.join(homeDir, '.copilot', 'AGENT.md'),
-      path.join(homeDir, '.vscode-prompts', 'boomopen-workflow-kit.agent.md'),
-    ],
-  };
-  const updatedFiles = [];
-  const platforms = {};
-  for (const [platform, fileList] of Object.entries(targetsByPlatform)) {
-    let anySynced = false;
-    for (const filePath of fileList) {
-      if (fs.existsSync(filePath)) {
-        const current = fs.readFileSync(filePath, 'utf8');
-        // Only kit-installed files get the settings block; a user's own CLAUDE.md/AGENTS.md/...
-        // for a tool where the kit is not installed is never modified.
-        if (!isKitOwnedText(current)) continue;
-        const updated = injectSettingsBlockIntoText(current, active);
-        if (updated !== current) fs.writeFileSync(filePath, updated, 'utf8');
-        updatedFiles.push(filePath);
-        anySynced = true;
-      }
-    }
-    platforms[platform] = anySynced;
-  }
-  return { updatedFiles, platforms, elapsedMs: Date.now() - start };
-}
-
+/**
+ * Persists `patch` to the chosen scope. Global saves re-sync the platform entry files with the
+ * GLOBAL settings; workspace saves never touch global files (agents read ./.boomopen.json directly).
+ */
 function saveSettings(patch = {}, options = {}) {
-  const scope = options.scope === 'project' || options.project ? 'project' : 'global';
-  const { globalPath, projectPath } = getSettingsPaths(options);
-  const targetPath = scope === 'project' ? projectPath : globalPath;
-  const currentBase = loadSettings({ ...options, scope });
-  const nextSettings = validateAndSanitizeSettings(patch, currentBase);
-  fs.mkdirSync(path.dirname(targetPath), { recursive: true });
-  fs.writeFileSync(targetPath, JSON.stringify(nextSettings, null, 2) + '\n', 'utf8');
-  const effective = loadSettings(options);
-  const syncReport = options.sync === false ? null : syncSettingsToInstalledPlatforms(effective, options);
-  return { settings: effective, savedPath: targetPath, scope, syncReport };
+  const scope = resolveScope(options);
+  let savedPath;
+  let syncReport = null;
+  if (scope === 'project') {
+    savedPath = writeProjectOverrides(patch, options).savedPath;
+  } else {
+    const saved = writeGlobalSettings(patch, options);
+    savedPath = saved.savedPath;
+    if (options.sync !== false) syncReport = syncSettingsToInstalledPlatforms(saved.globalSettings, options);
+  }
+  return { settings: loadSettings({ ...options, scope: undefined }), savedPath, scope, syncReport };
 }
 
 function setSettingByKey(dottedKey, rawValue, options = {}) {
-  if (!ALLOWED_ENUMS[dottedKey]) {
-    throw new Error(`Unknown setting key "${dottedKey}". Allowed keys: ${Object.keys(ALLOWED_ENUMS).join(', ')}`);
+  if (LINE_LIMIT_KEYS.includes(dottedKey)) {
+    const coerced = coerceLineLimit(rawValue);
+    if (coerced === undefined) {
+      throw new Error(`Invalid value "${rawValue}" for ${dottedKey}. Allowed: integer ${MIN_LINE_LIMIT}..${MAX_LINE_LIMIT}`);
+    }
+    return saveSettings({ [dottedKey]: coerced }, options);
+  }
+  if (!isSettingKey(dottedKey)) {
+    throw new Error(`Unknown setting key "${dottedKey}". Allowed keys: ${ALL_STORABLE_KEYS.join(', ')}`);
   }
   const coerced = coerceEnumValue(dottedKey, rawValue);
   if (coerced === undefined) {
     throw new Error(`Invalid value "${rawValue}" for ${dottedKey}. Allowed: ${ALLOWED_ENUMS[dottedKey].join(' | ')}`);
   }
-  const patch = { [dottedKey]: coerced };
-  if (dottedKey !== 'preset') patch.preset = 'custom';
-  return saveSettings(patch, options);
+  // `set preset <name>` applies the whole preset; only `custom` is a pure label.
+  if (dottedKey === 'preset' && isPresetName(coerced)) return applyPreset(coerced, options);
+  return saveSettings({ [dottedKey]: coerced }, options);
 }
 
 function applyPreset(presetName, options = {}) {
-  const presetObj = PRESETS[presetName];
-  if (!presetObj) {
+  if (!isPresetName(presetName)) {
     throw new Error(`Unknown preset "${presetName}". Available presets: ${Object.keys(PRESETS).join(', ')}`);
   }
-  return saveSettings(presetObj, options);
+  return saveSettings(PRESETS[presetName], options);
 }
 
 function resetSettings(options = {}) {
-  const scope = options.scope === 'project' || options.project ? 'project' : 'global';
-  const { projectPath } = getSettingsPaths(options);
-  if (scope === 'project' && fs.existsSync(projectPath)) {
-    fs.rmSync(projectPath, { force: true });
-    const effective = loadSettings(options);
-    const syncReport = options.sync === false ? null : syncSettingsToInstalledPlatforms(effective, options);
-    return { settings: effective, savedPath: projectPath, scope, syncReport };
+  const scope = resolveScope(options);
+  const { globalPath, projectPath } = getSettingsPaths(options);
+  if (scope === 'project') {
+    const existed = fs.existsSync(projectPath);
+    if (existed) fs.rmSync(projectPath, { force: true });
+    return {
+      settings: loadSettings({ ...options, scope: undefined }),
+      savedPath: existed ? projectPath : null,
+      scope,
+      syncReport: null,
+      noop: !existed,
+      message: existed ? `Removed workspace overrides ${projectPath}` : 'No workspace overrides to reset.',
+    };
   }
-  return saveSettings(DEFAULT_SETTINGS, { ...options, scope: 'global' });
+  const backupPath = backupCorruptFile(globalPath);
+  if (backupPath) fs.rmSync(globalPath, { force: true });
+  const result = saveSettings(DEFAULT_SETTINGS, { ...options, scope: 'global' });
+  return backupPath ? { ...result, backupPath } : result;
 }
 
-function printSettingsStatus(settings, paths, syncReport) {
-  const hasProject = fs.existsSync(paths.projectPath);
-  console.log('\n🎛️  BoomOpen Unified Control Center (v5.5.0)\n' + '─'.repeat(68));
+function printSyncReport(syncReport) {
+  if (!syncReport) return;
+  const installed = syncReport.installed || {};
+  const syncedList = Object.entries(syncReport.platforms)
+    .map(([p, ok]) => `${ok ? '✅' : installed[p] ? '⚠️' : '⬚'} ${p}`)
+    .join('  ');
+  console.log(`  🚀 Synced (${syncReport.elapsedMs}ms): ${syncedList}`);
+  for (const { file, reason } of syncReport.skippedFiles || []) console.log(`  ⚠️  Skipped ${file}: ${reason}`);
+  for (const { file, error } of syncReport.failedFiles || []) console.log(`  ❌ Failed  ${file}: ${error}`);
+}
+
+function printSettingsStatus(detail, paths, syncReport, homeDir) {
+  const { settings, projectKeys, hasProject } = detail;
+  console.log(`\n🎛️  BoomOpen Unified Control Center (v${KIT_VERSION})\n${RULE}`);
   console.log(`  ⚡ Active Preset:  ${settings.preset} (${hasProject ? 'workspace override active' : 'global'})`);
   console.log(`  🌐 Global Store:   ${paths.globalPath}`);
   console.log(`  📁 Project Store:  ${paths.projectPath} (${hasProject ? 'present' : 'not set'})`);
-  console.log('─'.repeat(68));
+  console.log(RULE);
   for (const key of Object.keys(ALLOWED_ENUMS).filter((k) => k !== 'preset')) {
-    console.log(`  • ${key.padEnd(42)} = ${String(getSettingByKey(settings, key))}`);
+    const source = projectKeys.includes(key) ? '  [project]' : '';
+    console.log(`  • ${key.padEnd(42)} = ${String(getSettingByKey(settings, key))}${source}`);
   }
-  if (syncReport) {
-    const syncedList = Object.entries(syncReport.platforms)
-      .map(([p, ok]) => `${ok ? '✅' : '⬚'} ${p}`)
-      .join('  ');
-    console.log('─'.repeat(68));
-    console.log(`  🚀 Platforms (${syncReport.elapsedMs}ms): ${syncedList}`);
-  }
-  console.log('─'.repeat(68) + '\n');
+  const cs = settings.codingStandards;
+  console.log(`  • ${'codingStandards (soft/hard lines)'.padEnd(42)} = ${cs.softFileLines}/${cs.hardFileLines}`);
+  console.log(RULE);
+  const installed = detectInstalledPlatforms(homeDir);
+  console.log(`  🧩 Installed: ${Object.entries(installed).map(([p, ok]) => `${ok ? '✅' : '⬚'} ${p}`).join('  ')}`);
+  printSyncReport(syncReport);
+  console.log(RULE + '\n');
 }
 
-async function runSettingsCommand(args = [], options = {}) {
-  const isProject = args.includes('--project') || args.includes('-p');
-  const isJson = args.includes('--json');
-  const cleanArgs = args.filter((a) => !['--project', '-p', '--json', '--no-open'].includes(a));
-  const sub = (cleanArgs[0] || 'status').toLowerCase();
-  const opts = { ...options, scope: isProject ? 'project' : 'global' };
+const SETTINGS_HELP = `
+Usage: boomopen settings <subcommand> [options]
+       node cli/install.js settings <subcommand> [options]
 
-  if (sub === '--ui' || sub === 'ui' || args.includes('--ui')) {
-    const portIdx = args.indexOf('--port');
-    const port = portIdx !== -1 && args[portIdx + 1] ? Number(args[portIdx + 1]) : 4567;
+Subcommands:
+  status                  Show effective settings (read-only; default when no subcommand is given)
+  get [key]               Print the effective value of one key (or all settings)
+  set <key> <value>       Set one key (also: set key=value). "set preset <name>" applies that preset
+  mode <mode>             Shortcut for: set execution.mode <mode>
+  preset <name>           Apply a preset: ${Object.keys(PRESETS).join(', ')}
+  reset                   Restore defaults (with --project: delete ./.boomopen.json only)
+  sync                    Re-write the settings block in every installed kit entry file
+  ui                      Launch the local Web Control Center (also: --ui)
+  help                    Show this help
+
+Options:
+  -p, --project           Write to the workspace file ./.boomopen.json instead of ~/.boomopen/settings.json
+  --json                  Print get output as JSON
+  --port <n>              Web UI port (default ${DEFAULT_UI_PORT}; 0 = random free port)
+  --no-open               Do not open a browser for the Web UI
+
+Keys: ${Object.keys(ALLOWED_ENUMS).join(', ')}
+`;
+
+function parseSettingsArgs(args) {
+  const flags = { project: false, json: false, noOpen: false, ui: false, help: false, port: DEFAULT_UI_PORT };
+  const positional = [];
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === '--project' || arg === '-p') flags.project = true;
+    else if (arg === '--json') flags.json = true;
+    else if (arg === '--no-open') flags.noOpen = true;
+    else if (arg === '--ui') flags.ui = true;
+    else if (arg === '--help' || arg === '-h') flags.help = true;
+    else if (['--get', '--set', '--preset', '--mode', '--reset', '--sync'].includes(arg)) {
+      const subCmd = arg.slice(2);
+      if (!positional.includes(subCmd)) positional.unshift(subCmd);
+    } else if (arg === '--port') {
+      const raw = args[++i];
+      const port = Number(raw);
+      if (!/^\d+$/.test(String(raw)) || port > MAX_PORT) throw new Error(`Invalid --port value "${raw}"`);
+      flags.port = port;
+    } else positional.push(arg);
+  }
+  return { flags, positional };
+}
+
+function reportResult(action, res, opts, options) {
+  if (!options.silent) {
+    // Always show the effective values (with [project] source labels), like `status` does.
+    const readOpts = { ...opts, scope: undefined };
+    if (res.message) console.log(`\nℹ️  ${res.message}`);
+    if (res.backupPath) console.log(`ℹ️  Unreadable settings file backed up to ${res.backupPath}`);
+    printSettingsStatus(loadSettingsDetailed(readOpts), getSettingsPaths(readOpts), res.syncReport, opts.homeDir);
+    if (res.syncReport && res.syncReport.failedFiles.length > 0) process.exitCode = 1;
+  }
+  return { action, ...res };
+}
+
+async function dispatchSettingsCommand(sub, positional, flags, options) {
+  const opts = { ...options, scope: flags.project ? 'project' : 'global' };
+  const readOpts = { ...options, scope: undefined };
+  if (flags.help || sub === 'help') {
+    if (!options.silent) console.log(SETTINGS_HELP);
+    return { action: 'help', help: SETTINGS_HELP };
+  }
+  if (sub === 'ui' || flags.ui) {
     const { startSettingsUiServer } = require('./settings-ui.js');
-    return startSettingsUiServer({ ...opts, port, openBrowser: !args.includes('--no-open') });
+    return startSettingsUiServer({ ...opts, port: flags.port, openBrowser: !flags.noOpen });
+  }
+  if (sub === 'status') {
+    const detail = loadSettingsDetailed(readOpts);
+    if (!options.silent) printSettingsStatus(detail, getSettingsPaths(readOpts), null, options.homeDir);
+    return { action: 'status', settings: detail.settings, paths: getSettingsPaths(readOpts), syncReport: null };
   }
   if (sub === 'get') {
-    const settings = loadSettings(opts);
-    const val = cleanArgs[1] ? getSettingByKey(settings, cleanArgs[1]) : settings;
-    if (!options.silent) console.log(isJson || typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val));
+    const settings = loadSettings(readOpts);
+    const val = positional[1] ? getSettingByKey(settings, positional[1]) : settings;
+    if (val === undefined) throw new Error(`Unknown setting key "${positional[1]}"`);
+    if (!options.silent) console.log(flags.json || typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val));
     return { action: 'get', value: val, settings };
   }
   if (sub === 'set') {
-    let key = cleanArgs[1];
-    let val = cleanArgs[2];
-    if (key && key.includes('=') && val === undefined) [key, val] = key.split('=');
-    const res = setSettingByKey(key, val, opts);
-    if (!options.silent) printSettingsStatus(res.settings, getSettingsPaths(opts), res.syncReport);
-    return { action: 'set', ...res };
+    let [, key, val] = positional;
+    if (key && key.includes('=') && val === undefined) [key, val] = [key.slice(0, key.indexOf('=')), key.slice(key.indexOf('=') + 1)];
+    return reportResult('set', setSettingByKey(key, val, opts), opts, options);
   }
-  if (sub === 'mode') {
-    const res = setSettingByKey('execution.mode', cleanArgs[1], opts);
-    if (!options.silent) printSettingsStatus(res.settings, getSettingsPaths(opts), res.syncReport);
-    return { action: 'mode', ...res };
+  if (sub === 'mode') return reportResult('mode', setSettingByKey('execution.mode', positional[1], opts), opts, options);
+  if (sub === 'preset') return reportResult('preset', applyPreset(positional[1], opts), opts, options);
+  if (sub === 'reset') return reportResult('reset', resetSettings(opts), opts, options);
+  if (sub === 'sync') {
+    const syncReport = syncSettingsToInstalledPlatforms(null, { ...options, scope: 'global' });
+    return reportResult('sync', { settings: loadSettings(readOpts), syncReport }, readOpts, options);
   }
-  if (sub === 'preset') {
-    const res = applyPreset(cleanArgs[1], opts);
-    if (!options.silent) printSettingsStatus(res.settings, getSettingsPaths(opts), res.syncReport);
-    return { action: 'preset', ...res };
+  throw new Error(`Unknown settings subcommand "${sub}". Run "boomopen settings help" for usage.`);
+}
+
+async function runSettingsCommand(args = [], options = {}) {
+  try {
+    const { flags, positional } = parseSettingsArgs(args);
+    const sub = (positional[0] || 'status').toLowerCase();
+    return await dispatchSettingsCommand(sub, positional, flags, options);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (!options.silent) {
+      console.error(`❌ ${message}`);
+      process.exitCode = 1;
+    }
+    return { action: 'error', error: message };
   }
-  if (sub === 'reset') {
-    const res = resetSettings(opts);
-    if (!options.silent) printSettingsStatus(res.settings, getSettingsPaths(opts), res.syncReport);
-    return { action: 'reset', ...res };
-  }
-  const settings = loadSettings(opts);
-  const paths = getSettingsPaths(opts);
-  const syncReport = syncSettingsToInstalledPlatforms(settings, opts);
-  if (!options.silent) printSettingsStatus(settings, paths, syncReport);
-  return { action: 'status', settings, paths, syncReport };
 }
 
 module.exports = {
@@ -361,10 +255,14 @@ module.exports = {
   DEFAULT_SETTINGS,
   PRESETS,
   ALLOWED_ENUMS,
+  ALLOWED_VALUES: ALLOWED_ENUMS,
+  SETTING_DESCRIPTIONS,
   CODING_STANDARDS_PRESETS,
+  SETTINGS_HELP,
   getSettingsPaths,
   validateAndSanitizeSettings,
   loadSettings,
+  loadSettingsDetailed,
   saveSettings,
   setSettingByKey,
   getSettingByKey,
@@ -372,6 +270,7 @@ module.exports = {
   resetSettings,
   renderActiveSettingsMarkdown,
   injectSettingsBlockIntoText,
+  detectInstalledPlatforms,
   syncSettingsToInstalledPlatforms,
   runSettingsCommand,
 };

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { usePrefersReducedMotion } from '../../hooks'
 
 // Command items for left side
 const leftCommands = [
@@ -212,6 +213,10 @@ function FloatingParticle({ x, y, delay, color }: { x: number; y: number; delay:
 }
 
 export function HeroSideDecorations() {
+  // Purely decorative looping animation: skipped entirely for prefers-reduced-motion.
+  const prefersReducedMotion = usePrefersReducedMotion()
+  if (prefersReducedMotion) return null
+
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
       {/* Left side - Commands */}

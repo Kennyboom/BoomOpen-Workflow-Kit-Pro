@@ -1,4 +1,6 @@
-display_name: "/debug"
-short_description: "🐛 Debug Router — Route to debugging workflows"
-brand_color: "#EF4444"
-allow_implicit_invocation: true
+interface:
+  display_name: "/debug"
+  short_description: "🐛 Debug Router — Smart-Hybrid Root-Cause Investigation Router (SPIE v3.0 5-Whys, Elastic Hypothesis Sharding & 1-Click Proceed to /fix)"
+  brand_color: "#EF4444"
+policy:
+  allow_implicit_invocation: true

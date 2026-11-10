@@ -1,4 +1,6 @@
-display_name: "/design:fast"
-short_description: "⚡ Quick Design — Rapid component/UI design"
-brand_color: "#EC4899"
-allow_implicit_invocation: true
+interface:
+  display_name: "/design:fast"
+  short_description: "⚡ Quick Design — Rapid 6-Block UI/component specification with OKLCH tokens, 5-State Matrix, DESIGN_CONTRACT & 4-Gate CLI validation"
+  brand_color: "#EC4899"
+policy:
+  allow_implicit_invocation: true

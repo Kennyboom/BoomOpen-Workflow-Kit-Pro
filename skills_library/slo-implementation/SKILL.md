@@ -20,7 +20,6 @@ Framework for defining and implementing Service Level Indicators (SLIs), Service
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Purpose
 
@@ -72,8 +71,6 @@ sum(storage_writes_successful_total)
 /
 sum(storage_writes_total)
 ```
-
-**Reference:** See `references/slo-definitions.md`
 
 ## Setting SLO Targets
 
@@ -142,8 +139,6 @@ error_budget_policy:
   - remaining_budget: 0%
     action: Feature freeze, focus on reliability
 ```
-
-**Reference:** See `references/error-budget.md`
 
 ## SLO Implementation
 
@@ -331,12 +326,6 @@ rules:
 8. **Align with business goals**
 9. **Automate SLO reporting**
 10. **Use SLOs for prioritization**
-
-## Reference Files
-
-- `assets/slo-template.md` - SLO definition template
-- `references/slo-definitions.md` - SLO definition patterns
-- `references/error-budget.md` - Error budget calculations
 
 ## Related Skills
 

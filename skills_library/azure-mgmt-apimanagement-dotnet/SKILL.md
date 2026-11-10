@@ -293,15 +293,6 @@ catch (RequestFailedException ex)
 }
 ```
 
-## Reference Files
-
-| File | When to Read |
-|------|--------------|
-| references/service-management.md | Service CRUD, SKUs, networking, backup/restore |
-| references/apis-operations.md | APIs, operations, schemas, versioning |
-| references/products-subscriptions.md | Products, subscriptions, access control |
-| references/policies.md | Policy XML patterns, scopes, common policies |
-
 ## Related Resources
 
 | Resource | Purpose |

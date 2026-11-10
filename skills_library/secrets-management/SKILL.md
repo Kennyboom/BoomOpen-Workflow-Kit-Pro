@@ -131,8 +131,6 @@ deploy:
       # Use $DB_PASSWORD, $API_KEY
 ```
 
-**Reference:** See `references/vault-setup.md`
-
 ## AWS Secrets Manager
 
 ### Store Secret
@@ -206,8 +204,6 @@ deploy:
     run: |
       echo "Deploying with ${{ secrets.PROD_API_KEY }}"
 ```
-
-**Reference:** See `references/github-secrets.md`
 
 ## GitLab CI/CD Variables
 
@@ -354,11 +350,6 @@ secret-scan:
     - trufflehog filesystem .
   allow_failure: false
 ```
-
-## Reference Files
-
-- `references/vault-setup.md` - HashiCorp Vault configuration
-- `references/github-secrets.md` - GitHub Secrets best practices
 
 ## Related Skills
 

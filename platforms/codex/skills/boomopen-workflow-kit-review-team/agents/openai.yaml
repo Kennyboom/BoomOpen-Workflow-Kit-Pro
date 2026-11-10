@@ -1,4 +1,6 @@
-display_name: "/review:team"
-short_description: "🔺 Team Review — Golden Triangle adversarial collaboration"
-brand_color: "#10B981"
-allow_implicit_invocation: true
+interface:
+  display_name: "/review:team"
+  short_description: "🔺 Team Review — 2-Stage Elastic Golden Diamond Multi-Specialist Audit, Cross-Engine Council (Author != Critic), Warm False-Positive Elimination & 1-Click Proceed to /fix"
+  brand_color: "#10B981"
+policy:
+  allow_implicit_invocation: true

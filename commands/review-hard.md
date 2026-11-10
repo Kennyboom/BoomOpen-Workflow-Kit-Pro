@@ -1,91 +1,55 @@
 ---
-description: ⚡⚡⚡ Full Review — Deep parallel multi-dimension code & architecture review
+description: "⚡⚡⚡ Full Review — Turn-1 Parallel Multi-Lens Audit Shards (Architecture, OWASP/LLM Security, Hot-Path Perf), Cross-Engine Council & Proof-Backed Patch Matrix"
 version: "5.5"
 category: validation
 execution-mode: execute
 ---
 
-# /review:hard — Deep Multi-Dimension Code Review (DAG Parallel Fan-Out)
+> **📂 Cohesive Single-File & Zero-Collision Rule (v5.5)**:
+> - **Single User-Facing Deliverable**: `<appDataDir>\brain\<conversation-id>\REVIEW-{scope}.md` (`<= 500` lines, zero `{name}/` folder splits!). Set `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: true }` when `P0/P1` defects exist so Antigravity 2.0's 1-click **"Proceed"** button fast-forwards straight into `/fix:hard` (`RequestFeedback: false` when `0` `P0/P1` issues exist).
+> - **Disjoint Shard Outputs (`0` Write Collisions)**: Parallel Stage 1 critics **NEVER write to the same file path**! Each shard returns structured findings via message OR writes a disjoint scratch file (`REVIEW-{scope}-s{1..k}.md`, `COUNCIL-review-{scope}.md`) with `ArtifactMetadata: { Summary: "...", UserFacing: false, RequestFeedback: false }`.
 
-> **MISSION**: Comprehensive architecture, code quality, security, and performance review using concurrent specialist sub-agents.
+---
+
+# /review:hard — Turn-1 Parallel Multi-Lens Code, Security & Performance Audit
+
+> **MISSION**: Conduct an exhaustive, read-only multi-lens audit across `3–8+` files by launching parallel specialist critics (`reviewer#arch-1..k`, `security-engineer#owasp`, `performance-engineer#hotpaths`) + deterministic CLI scanners on Turn 1, synthesizing **1 proof-gated `REVIEW-{scope}.md`**.
 
 <scope>$ARGUMENTS</scope>
 
 ---
 
-## ⚡ TURN-1 ZERO-TAX DISPATCH & ON-DEMAND RULES
+## ⚡ TURN-1 ZERO-TAX PARALLEL DISPATCH & READ-ONLY LOCK
 
-**LOAD now** (in order; path `./rules/` or `~/.{TOOL}/skills/boomopen-workflow-kit/rules/`):
-1. `CORE.md` — 2-Mode Gate, Quality-First Model Policy, Brain Artifact Routing
-2. `PHASES.md` — DAG-Aware Parallel Fan-Out & Phase Execution
-3. `AGENTS.md` — Tiered Execution (`Model: "inherit"` Pro High Default)
-
----
-
-## 🔀 TIERED EXECUTION & QUALITY-FIRST MODEL POLICY
-
-| Tier | When | Action |
-|------|------|--------|
-| **TIER 1** | Antigravity 2.0 Native Sub-Agents (`define_subagent`, `invoke_subagent`, `send_message`) or `runSubagent` EXISTS | Invoke isolated sub-agents with `Model: "inherit"` (Pro High default; NEVER `flash_lite`) |
-| **TIER 2** | Tool MISSING or system error | EMBODY agent file (FALLBACK) |
+- **Zero Turn-1 Rule-Read Tax**: Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md` — launch all Stage 1 audit shards + CLI scanners in **one parallel Turn-1 batch** (`invoke_subagent(TypeName: "self", Model: "inherit")`).
+- **🛡️ `READ_ONLY_FILES` Lock**: Lock **100% of repository source and test files** in `READ_ONLY_FILES` across all shards — never modify project files during `/review:hard`.
+- **Cognitive Load Sharding (`<= 3–4` Heavy Files / Shard)**: When auditing `> 4` heavy files, shard `reviewer#arch-1..k` so no critic reads `> 4` heavy files.
 
 ---
 
-## 📁 PLAN COMPLIANCE CHECK
+## 🎭 Stage 1 (Turn-1 Parallel Fan-Out): MULTI-LENS CRITICS + AUTOMATED SCANNERS (+ OPTIONAL COUNCIL)
 
-```
-IF <appDataDir>\brain\<conversation-id>\PLAN-{scope}.md (or ./reports/{topic}/plans/PLAN-{scope}.md) exists:
-  - Verify code implements plan specification 100%
-  - Check for unauthorized deviations
-  - Ensure all plan phases are reflected in code
-```
+Launch all applicable audit tracks concurrently in Turn 1:
 
-Also run `node cli/install.js check <target-dir>` to deterministically audit Pragmatic 2-Tier Coding Standards (≤ 400 soft / ≤ 500 hard lines/file, 0 `any`).
-
----
-
-## ⚡ DAG PARALLEL FAN-OUT: Phases 1–4 (Launch Concurrently in One Turn)
-
-> **🚀 PARALLEL REVIEW FAN-OUT**: Because Architecture, Code Quality, Security, and Performance reviews are read-only and independent, launch **ALL 4 specialist sub-agents in parallel in a single turn** (`Model: "inherit"`), wait for all 4 via Reactive Async Wakeup, and synthesize their findings into the unified review deliverable.
-
-### 🎭 Phase 1: ARCHITECTURE REVIEW (`tech-lead`)
-- **Agent**: `tech-lead` (`Model: "inherit"`, `EnableWriteTools: false`)
-- **Goal**: Evaluate module boundaries, coupling, SOLID principles, and ADR compliance.
-
-### 🎭 Phase 2: CODE QUALITY & PLAN COMPLIANCE REVIEW (`reviewer`)
-- **Agent**: `reviewer` (`Model: "inherit"`, `EnableWriteTools: false`)
-- **Goal**: Line-by-line review of logic, error handling, edge cases, naming, and `PLAN-{scope}` compliance.
-
-### 🎭 Phase 3: SECURITY REVIEW (`security-engineer`)
-- **Agent**: `security-engineer` (`Model: "inherit"`, `EnableWriteTools: false`)
-- **Goal**: Audit input validation, authZ/authN, injection vectors, secrets, and OWASP Top 10 risks.
-
-### 🎭 Phase 4: PERFORMANCE REVIEW (`performance-engineer`)
-- **Agent**: `performance-engineer` (`Model: "inherit"`, `EnableWriteTools: false`)
-- **Goal**: Identify N+1 queries, memory leaks, blocking I/O, algorithmic bottlenecks, and missing indexes.
+| Parallel Track | Specialist / CLI Tool | Disjoint Audit Scope & Output Lock (`UserFacing: false, RequestFeedback: false`) |
+|----------------|-----------------------|---------------------------------------------------------------------------------|
+| **🏗️ Track 1A: Architecture, Logic & Contract Shards** | `reviewer#arch-1..k` (`agents/reviewer.md`, `<= 3–4` files/shard) | Verify `PLAN-{scope}.md`, `DESIGN-{scope}.md`, `SHARED_CONTRACT` & `OWNED_FILES` compliance; trace null/async/race bugs and Pragmatic 2-Tier rules (`0 any`, `<= 500L`). Output via message or `REVIEW-{scope}-s{k}.md`. |
+| **🔐 Track 1B: OWASP Web + 2026 LLM/Agentic Security** | `security-engineer#owasp` (`agents/security-engineer.md`) | Run `python ~/.{TOOL}/skills_library/vulnerability-scanner/scripts/security_scan.py <dir>` + trace STRIDE, Auth/OAuth2.1/Better-Auth/IDOR, SQLi/SSRF/XSS, Indirect Prompt Injection & MCP tool guards. Output via message or `REVIEW-{scope}-sec.md`. |
+| **⚡ Track 1C: Hot-Path Performance & CWV** | `performance-engineer#hotpaths` (`agents/performance-engineer.md`) | Audit N+1 SQL/ORM queries, missing composite indexes, blocking I/O, memory/allocation leaks, bundle size & Core Web Vitals (`INP/LCP/CLS`). Output via message or `REVIEW-{scope}-perf.md`. |
+| **🛠️ Track 1D: Deterministic CLI & UI/A11y Gates** | `boomopen check` + UI scripts | Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` (plus `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <ui-dir>` & `accessibility_checker.py <ui-dir>` when UI files are in scope). |
+| **🎼 Track 1E: Cross-Engine Critic *(Conditional)*** | `boomopen conduct` (`Author != Critic`) | If `engines.reviewer = "council"`: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task review --output "<appDataDir>/brain/<conversation-id>/COUNCIL-review-{scope}.md" --prompt "<scope>"` (or `conduct dispatch --role reviewer --engine cross_family`). |
 
 ---
 
-## 🎭 Phase 5: SYNTHESIS & REPORT GENERATION
+## 🎭 Stage 2: FALSE-POSITIVE PRUNING & COHESIVE `REVIEW-{scope}.md` SYNTHESIS
 
-Combine all findings from Phases 1–4 into a single prioritized review artifact:
-- **Antigravity 2.0 Default (Clean Git Tree)**: `<appDataDir>\brain\<conversation-id>\REVIEW-{scope}-{YYYY-MM-DD}.md`
-- **Workspace Fallback**: `./reports/{topic}/reviews/REVIEW-{scope}-{YYYY-MM-DD}.md` (only on non-Antigravity tools or when explicitly requested)
-- **Language**: Write in the user's input language (technical terms in English).
+1. **Deduplicate & Verify Proof**: Strip any speculative warning lacking a concrete failure/exploit path! If two shards disagree on severity or reachability, resolve via warm `send_message(Recipient: conversationId)`.
+2. **Write 1 Cohesive `<appDataDir>\brain\<conversation-id>\REVIEW-{scope}.md` (`<= 500` Lines)**:
+   - **1. Executive Verdict & Gate Matrix**: Overall verdict (`APPROVE` | `REQUEST_CHANGES` | `BLOCK`), `PLAN`/`DESIGN` compliance score, CLI scanner results, and Cross-Engine Consensus summary (if active).
+   - **2. Actionable Severity Matrix (`P0 Critical`, `P1 High`, `P2 Medium`, `P3 Low`)**:
+     | ID | Severity | Confidence | Lens | `file:line` | Failure / Exploit Trace | Concrete Remediation Summary |
+     |----|----------|------------|------|-------------|-------------------------|------------------------------|
+   - **3. Detailed Proof & Patch Blueprints (`P0` & `P1` Mandatory)**: Exact clickable `[file:line](file:///...)`, step-by-step trigger/exploit trace, and copy-pasteable non-bypassable patch diff for every `P0/P1` issue.
+   - **4. Verified Strengths**: Concise acknowledgment of well-engineered patterns.
 
----
-
-## ⛔ ABSOLUTE PROHIBITION — NO CODE MODIFICATION
-
-- ❌ NEVER modify source code files during `/review:hard`.
-- ❌ NEVER auto-transition to `/fix`, `/code`, or `/cook`.
-- ✅ Every completed review MUST be saved to `<appDataDir>\brain\<conversation-id>\REVIEW-{scope}-{YYYY-MM-DD}.md` (or `./reports/{topic}/reviews/`).
-
----
-
-## ⛔ HARD STOP — AWAIT USER DECISION
-
-Present the review artifact to the user and **STOP**. Offer next steps:
-1. ✅ **Approved** — Code ready to merge
-2. 🔧 `/fix:hard` or `/fix:fast` → Fix identified issues
-3. 🧪 `/test:hard` → Expand test coverage
+> **⛔ HARD STOP**: Present `[REVIEW-{scope}.md](file:///...)`. When `P0/P1` findings exist (`RequestFeedback: true`), clicking **"Proceed"** (or typing `/fix:hard`) fast-forwards directly into remediation; when clean (`RequestFeedback: false`), approve for merge or `/deploy:check`.

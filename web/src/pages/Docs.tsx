@@ -1,18 +1,18 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { Button, Card, CardContent, Badge, Section, SectionHeader } from '../components/ui'
 import { PageSideDecorations, GradientBackground } from '../components/decorations'
-import { SEO, pageSEO } from '../components/seo'
 import { 
   docSections, 
   resources, 
   quickReferenceCommands, 
   agentCategorySummary 
 } from '../data'
+import { AGENT_COUNT } from '../data/kitStats'
 
 export default function Docs() {
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <SEO {...pageSEO.docs} />
+    <div className="min-h-screen bg-bg-primary">
       
       {/* Hero Section */}
       <Section background="primary" spacing="xl" className="relative overflow-hidden">
@@ -64,19 +64,26 @@ export default function Docs() {
                   <ul className="space-y-2">
                     {section.links.map((link) => (
                       <li key={link.label}>
-                        <a
-                          href={link.href}
-                          target={link.external ? '_blank' : undefined}
-                          rel={link.external ? 'noopener noreferrer' : undefined}
-                          className="text-sm text-text-accent hover:text-text-primary transition-colors flex items-center gap-1"
-                        >
-                          {link.label}
-                          {link.external && (
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {link.external ? (
+                          <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-text-accent hover:text-text-primary transition-colors flex items-center gap-1"
+                          >
+                            {link.label}
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
-                          )}
-                        </a>
+                          </a>
+                        ) : (
+                          <Link
+                            to={link.href}
+                            className="text-sm text-text-accent hover:text-text-primary transition-colors flex items-center gap-1"
+                          >
+                            {link.label}
+                          </Link>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -133,7 +140,7 @@ export default function Docs() {
       <Section background="secondary" spacing="lg">
         <SectionHeader 
           title="Agent Summary" 
-          description="21 specialist agents organized by function."
+          description={`${AGENT_COUNT} specialist agents organized by function.`}
         />
 
         <div className="max-w-4xl mx-auto grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -219,6 +226,6 @@ export default function Docs() {
           </div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

@@ -207,7 +207,7 @@ Dynamic skills are community-contributed skills installed via the CLI. They are 
 | **Category** | Skill System |
 | **Related Terms** | HSOL, Matrix Skill, Dynamic Skill |
 
-A skill module is the physical representation of a skill — a folder under `skills/` containing at minimum a `SKILL.md` file. The SKILL.md file holds structured domain knowledge, best practices, constraints, and examples for a specific capability. There are 1,430 skill modules in the current framework.
+A skill module is the physical representation of a skill — a folder under `skills/` containing at minimum a `SKILL.md` file. The SKILL.md file holds structured domain knowledge, best practices, constraints, and examples for a specific capability. There are 1,462 (22 core in `skills/` + 1,440 in `skills_library/`) skill modules in the current framework.
 
 ### Trust Progression
 

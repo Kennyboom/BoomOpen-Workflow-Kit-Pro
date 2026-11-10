@@ -238,7 +238,6 @@ O objetivo não é burocracia — é inteligência a serviço da velocidade real
 
 - `references/problem-catalog.md` — Catálogo de problemas típicos por domínio
 - `references/time-patterns.md` — Padrões históricos de tempo por tipo de tarefa
-- `scripts/pre_task_check.py` — Script de verificação automatizada pré-tarefa
 
 ---
 

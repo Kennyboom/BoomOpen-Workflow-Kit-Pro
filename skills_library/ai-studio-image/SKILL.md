@@ -295,7 +295,6 @@ As imagens geradas podem ser enviadas para o Canva para adicao de texto/branding
 Para guias detalhados, consulte:
 - `references/setup-guide.md` — Instalacao e configuracao completa
 - `references/prompt-engineering.md` — Tecnicas avancadas de prompt para imagens humanizadas
-- `references/api-reference.md` — Documentacao da API do Google AI Studio
 
 ## Best Practices
 

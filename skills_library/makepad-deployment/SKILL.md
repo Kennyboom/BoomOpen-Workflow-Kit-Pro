@@ -49,7 +49,6 @@ Notes:
 - Android builds can run on any OS runner.
 
 Full inputs/env/outputs and release workflows live in
-`references/makepad-packaging-action.md`.
 
 ## Desktop Packaging
 
@@ -400,8 +399,6 @@ cargo makepad android install-toolchain --full-ndk
 
 ## Reference Files
 
-- `references/platform-troubleshooting.md` - Platform-specific deployment issues
-- `references/makepad-packaging-action.md` - GitHub Actions packaging reference
 - `community/dora-studio-package-workflow.md` - Dora Studio CI packaging example
 
 ## External References

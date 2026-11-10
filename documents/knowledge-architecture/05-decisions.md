@@ -289,7 +289,7 @@ Agents need domain-specific knowledge to produce quality output. A static skill 
 
 **Implement a Hybrid Skill Orchestration Layer (HSOL) with two layers: pre-curated matrix skills (static) and community-discovered dynamic skills, unified by 5-factor fitness scoring.**
 
-Matrix skills (1,430 across 19 domains) provide a trusted baseline. Dynamic discovery via `find-skills` fills gaps when matrix fitness falls below 0.8. Community skills progress through a trust lifecycle (0.3 → 1.0) and can be promoted to the matrix.
+Matrix skills (1,462 across 19 domains) provide a trusted baseline. Dynamic discovery via `find-skills` fills gaps when matrix fitness falls below 0.8. Community skills progress through a trust lifecycle (0.3 → 1.0) and can be promoted to the matrix.
 
 ### Alternatives Considered
 
@@ -318,7 +318,7 @@ Matrix skills (1,430 across 19 domains) provide a trusted baseline. Dynamic disc
 
 | Benefit | Cost |
 |---------|------|
-| Pre-curated baseline ensures minimum quality | 1,430 skill entries require maintenance |
+| Pre-curated baseline ensures minimum quality | 1,462 skill entries require maintenance |
 | Community discovery fills gaps automatically | Dynamic skills start untrusted (0.3) |
 | 5-factor scoring balances multiple dimensions | Scoring is interpretive (AI evaluates), not deterministic |
 | Trust progression protects quality | New skills need 10 successful executions to reach VALIDATED |
@@ -326,7 +326,7 @@ Matrix skills (1,430 across 19 domains) provide a trusted baseline. Dynamic disc
 
 ### Evidence
 
-- `matrix-skills/_index.yaml`: `total_matrix_skills: 1430`, 19 domain files, HSOL config with `async_threshold: 0.8`
+- `matrix-skills/_index.yaml`: `total_matrix_skills: 1476`, 19 domain files, HSOL config with `async_threshold: 0.8`
 - `rules/SKILLS.md`: Resolution algorithm (6 steps), fitness formula (5 factors with weights), trust lifecycle (4 stages with criteria)
 - `matrix-skills/_dynamic.yaml`: Dynamic skill governance fields (owner, checksum, support_state, promotion_state)
 - `_index.yaml` discovery config: `apply_for_variants: ["hard", "team"]` — confirms `:fast` skips discovery
@@ -401,7 +401,7 @@ The laws cover: single point of truth, requirement integrity, explicit loading, 
 | SKILLS.md | `rules/SKILLS.md` | HSOL resolution algorithm, fitness formula, trust lifecycle, variant gating |
 | TEAMS.md | `rules/TEAMS.md` | Golden Triangle: 3 roles, debate (3 rounds), mailbox, C8 checkpoints |
 | ERRORS.md | `rules/ERRORS.md` | Error classes (E1–E4), recovery, anti-patterns (A1–A10) |
-| _index.yaml | `matrix-skills/_index.yaml` | 1,430 skills, 19 domains, HSOL config, discovery settings |
+| _index.yaml | `matrix-skills/_index.yaml` | 1,476 skill entries (1,462 unique), 19 domains, HSOL config, discovery settings |
 | _dynamic.yaml | `matrix-skills/_dynamic.yaml` | Dynamic skill governance fields |
 | package.json | `package.json` | Zero deps, Node >=18, 5 platform scripts, files array |
 | cli/install.js | `cli/install.js` | Platform configs, `{TOOL}` replacement maps, built-in modules only |

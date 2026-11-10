@@ -1,0 +1,332 @@
+{
+  "version": "5.5.0",
+  "agents": 21,
+  "teams": 18,
+  "teamRoles": 54,
+  "skills": 1462,
+  "coreSkills": 22,
+  "librarySkills": 1440,
+  "domains": [
+    {
+      "id": "backend",
+      "name": "Backend Development",
+      "count": 210
+    },
+    {
+      "id": "frontend",
+      "name": "Frontend Development",
+      "count": 115
+    },
+    {
+      "id": "architecture",
+      "name": "System Architecture",
+      "count": 24
+    },
+    {
+      "id": "quality",
+      "name": "Quality Assurance",
+      "count": 62
+    },
+    {
+      "id": "security",
+      "name": "Security Engineering",
+      "count": 106
+    },
+    {
+      "id": "design",
+      "name": "UI/UX Design",
+      "count": 42
+    },
+    {
+      "id": "planning",
+      "name": "Planning & Analysis",
+      "count": 39
+    },
+    {
+      "id": "devops",
+      "name": "DevOps & Deployment",
+      "count": 68
+    },
+    {
+      "id": "data",
+      "name": "Data & Database",
+      "count": 36
+    },
+    {
+      "id": "performance",
+      "name": "Performance Engineering",
+      "count": 22
+    },
+    {
+      "id": "research",
+      "name": "Research & Documentation",
+      "count": 83
+    },
+    {
+      "id": "mobile",
+      "name": "Mobile Development",
+      "count": 29
+    },
+    {
+      "id": "gaming",
+      "name": "Game Development",
+      "count": 16
+    },
+    {
+      "id": "management",
+      "name": "Project Management",
+      "count": 23
+    },
+    {
+      "id": "ai_ml",
+      "name": "AI/ML Engineering",
+      "count": 230
+    },
+    {
+      "id": "cloud",
+      "name": "Cloud & Infrastructure",
+      "count": 68
+    },
+    {
+      "id": "languages",
+      "name": "Programming Languages",
+      "count": 59
+    },
+    {
+      "id": "tools",
+      "name": "Tools & Utilities",
+      "count": 231
+    },
+    {
+      "id": "mcp",
+      "name": "MCP & Agents",
+      "count": 13
+    }
+  ],
+  "commands": [
+    {
+      "name": "architect",
+      "variants": [],
+      "description": "Bulletproof Design System v2 — C4 Architecture, ADR, Database Schema, API Contracts, Screen Specs, State Management, Error Handling, Caching Strategy, and mandatory Design Coverage Audit. NO code writing. Design docs only."
+    },
+    {
+      "name": "ask",
+      "variants": [
+        "fast",
+        "hard"
+      ],
+      "description": "Ask Router — Smart-Hybrid Question Answering Router (Mode A Direct, Elastic Parallel Scout & Evidence-Gated Research)"
+    },
+    {
+      "name": "auto",
+      "variants": [],
+      "description": "Autonomous Execution — Full workflow automation"
+    },
+    {
+      "name": "autopilot",
+      "variants": [
+        "audit",
+        "init",
+        "run"
+      ],
+      "description": "Autonomous Multi-Session Project Orchestrator — Ingest multi-doc specs into an immutable .boomopen/project-ledger.json, execute multi-phase DAGs with Elastic Golden Diamond swarms, and enforce 4-Layer Zero-Omission & Anti-Regression Quality Gates."
+    },
+    {
+      "name": "brainstorm",
+      "variants": [
+        "fast",
+        "hard",
+        "team"
+      ],
+      "description": "Brainstorm Router — SOTA 2026 Anti-Sycophancy Strategic Ideation, 6-Month Pre-Mortem Critic, Weighted MCDA Decision Matrix & 1-Click Proceed Handoff"
+    },
+    {
+      "name": "code",
+      "variants": [
+        "fast",
+        "hard",
+        "team"
+      ],
+      "description": "Code Router — Approved-Plan & Feature Execution Router with Turn-1 Fast-Forward, Contract Extraction & 3-Wave Verification"
+    },
+    {
+      "name": "conduct",
+      "variants": [
+        "council",
+        "pipeline"
+      ],
+      "description": "Cross-Engine Autonomous Conductor & Multi-Engine Council — Orchestrate Claude Code, OpenAI Codex, Antigravity, Cursor, and Copilot in Role-Division Pipelines or Parallel Multi-Engine Councils with 4-Part Consensus Synthesis."
+    },
+    {
+      "name": "cook",
+      "variants": [
+        "fast",
+        "hard",
+        "team"
+      ],
+      "description": "Cook Router — Adaptive end-to-end feature router with Turn-1 Fast-Forward State Machine & 3-Wave Contract-First Execution"
+    },
+    {
+      "name": "debug",
+      "variants": [
+        "fast",
+        "hard",
+        "team"
+      ],
+      "description": "Debug Router — Smart-Hybrid Root-Cause Investigation Router (SPIE v3.0 5-Whys, Elastic Hypothesis Sharding & 1-Click Proceed to /fix)"
+    },
+    {
+      "name": "deep-audit",
+      "variants": [],
+      "description": "Ruthless Inspector v2 — Deep logic audit of documentation BEFORE code. 10 Audit Dimensions, Crash Testing, Data Flow Tracing, Cross-module Dependency Verification, and Scoring Matrix. Finds LOGIC holes, not just TEXT holes."
+    },
+    {
+      "name": "deploy",
+      "variants": [
+        "check",
+        "preview",
+        "production",
+        "rollback"
+      ],
+      "description": "Deploy Router — Route to pre-deployment verification, preview/staging, production release, or emergency rollback"
+    },
+    {
+      "name": "design",
+      "variants": [
+        "fast",
+        "hard",
+        "team"
+      ],
+      "description": "Design Router — 3-Tier Adaptive UI/UX Design, Antigravity 2.0 Live Prototypes, Multi-Engine Design Council & Deterministic 4-Gate Contract Validation"
+    },
+    {
+      "name": "docs",
+      "variants": [
+        "audit",
+        "business",
+        "core"
+      ],
+      "description": "Docs Router & Suite — Source-grounded workspace documentation router (`/docs:core`, `/docs:business`, `/docs:audit`, `/docs:team`) and full sequential suite"
+    },
+    {
+      "name": "fix",
+      "variants": [
+        "fast",
+        "hard",
+        "team"
+      ],
+      "description": "Fix Router — Smart-Hybrid Bug Resolution Router (Approved-Debug Fast-Forward, Fail-First TDD & Persistent Verification)"
+    },
+    {
+      "name": "init",
+      "variants": [],
+      "description": "Bootstrap a new project. Set up folder structure, git, .brain/, and initial configuration."
+    },
+    {
+      "name": "next",
+      "variants": [],
+      "description": "Smart Navigator — Auto-detect project, ledger, and Brain Artifact state to recommend the exact next BoomOpen v5.5 workflow"
+    },
+    {
+      "name": "orchestrate",
+      "variants": [],
+      "description": "Coordinate multiple agents for complex tasks using Elastic Parallel Sharding, Contract-First Parallel Fan-Out, Direct Plan Dispatch, and Warm Sub-agent Reuse."
+    },
+    {
+      "name": "performance",
+      "variants": [],
+      "description": "Speed Alchemist v3 — Performance budgets, frontend/backend profiling, 6-layer caching, bundle optimization, database tuning, Core Web Vitals, and CI/CD performance gates."
+    },
+    {
+      "name": "plan",
+      "variants": [
+        "fast",
+        "hard",
+        "team"
+      ],
+      "description": "Plan Router — Smart 3-Tier Adaptive Planning, Cross-Engine Planner & Antigravity 2.0 Native Artifact Router"
+    },
+    {
+      "name": "preview",
+      "variants": [],
+      "description": "Preview server start, stop, and status check. Local development server management."
+    },
+    {
+      "name": "recap",
+      "variants": [],
+      "description": "Restore Session Context — Recover project state in seconds from .boomopen/project-ledger.json, cook state, SESSION-{date}.md Brain Artifacts, and session_manager.py"
+    },
+    {
+      "name": "refactor",
+      "variants": [],
+      "description": "Code Surgeon v3 — SOLID audit, code smell detection, Fowler's catalog techniques, health scoring, performance-safe refactoring with before/after metrics."
+    },
+    {
+      "name": "report",
+      "variants": [
+        "fast",
+        "hard",
+        "team"
+      ],
+      "description": "Report Router — Evidence-mined reporting router (`/report:fast`, `/report:hard`, `/report:team`) with Zero-Fiction CLI Telemetry & Cohesive Brain Artifacts"
+    },
+    {
+      "name": "research",
+      "variants": [
+        "fast",
+        "hard",
+        "team"
+      ],
+      "description": "Research Router — SOTA 2026 Autonomous Deep-Research Engine with 5-Lens Triangulation, Contradiction Arbitration, Multi-Engine Council & Deterministic CLI Validation"
+    },
+    {
+      "name": "review",
+      "variants": [
+        "fast",
+        "hard",
+        "team"
+      ],
+      "description": "Review Router — SOTA 2026 Multi-Lens Adversarial Code/Security/Perf Review, Cross-Engine Critic (Author != Critic) & 1-Click Proceed to /fix"
+    },
+    {
+      "name": "rollback",
+      "variants": [],
+      "description": "Emergency recovery when things break. Rollback code, deployments, or database changes with severity-based protocols."
+    },
+    {
+      "name": "save",
+      "variants": [],
+      "description": "Save Session & Project Memory — Persist cohesive SESSION-{date}.md Brain Artifact, sync .boomopen/project-ledger.json & cook state, and update .brain/ memory"
+    },
+    {
+      "name": "security-audit",
+      "variants": [],
+      "description": "Fortress Builder v3 — OWASP Top 10 scan, STRIDE Threat Modeling, Auth/Authorization audit, Data Protection, API Security, Frontend/Infrastructure hardening, Supply Chain, and Zero Trust. Creates Security Report with severity scoring."
+    },
+    {
+      "name": "settings",
+      "variants": [],
+      "description": "Settings & Control Center — Configure BoomOpen presets, Mode A/B threshold, elastic swarm scaling, Cross-Engine Conductor matrix, multilingual NL routing, model policy, and coding standards across all 5 platforms."
+    },
+    {
+      "name": "status",
+      "variants": [],
+      "description": "Project, Ledger & Swarm Status — Inspect live project metrics, .boomopen/project-ledger.json cursor, cook state, active sub-agents, and preview health"
+    },
+    {
+      "name": "test",
+      "variants": [
+        "fast",
+        "hard",
+        "team"
+      ],
+      "description": "Test Router — SOTA 2026 Zero-Test-Gaming Pyramid, App-Code READ_ONLY Lock, Elastic Test Shards & Deterministic CLI Verification"
+    },
+    {
+      "name": "ui-ux-pro-max",
+      "variants": [],
+      "description": "UI/UX Pro Max — Empirical design intelligence (50+ styles, 97 palettes, 57 font pairings) + 2026 OKLCH @theme tokens, 6-Block DESIGN_CONTRACT & 4-Gate CLI validation"
+    }
+  ],
+  "commandFiles": 79
+}

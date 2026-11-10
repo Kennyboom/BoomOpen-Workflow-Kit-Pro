@@ -1,132 +1,130 @@
 ---
-description: "Core Docs - Generate 5 knowledge folders with evidence-backed sub-files"
+description: "🏗️ Core Docs — Generate 5 `./documents/knowledge-*/` folders via collision-free parallel sharding (`<= 3–4 OWNED_FILES`/shard) and source-grounded evidence"
 version: "5.5"
 category: documentation
 execution-mode: execute
 ---
 
-# /docs:core — Core Technical Documentation
+# /docs:core — Core Technical Documentation (`v5.5`)
 
-> **MISSION**: Analyze the project through deep codebase reconnaissance, then generate
-> **5 knowledge folders** — each with `00-index.md` + focused sub-files.
-> Every claim must trace to actual source code.
+> **MISSION**: Analyze the repository through parallel codebase reconnaissance, then generate or update **all 5 core knowledge folders** (`26+` files in `./documents/knowledge-*/`) using **collision-free parallel `docs-manager#<shard>` writers (`<= 3–4 OWNED_FILES` per shard)**. Every command, route, env var, schema field, and file reference MUST trace to live source code (`DOC-G1..G4`).
 
 <scope>$ARGUMENTS</scope>
 
 ---
 
-## ⛔ MANDATORY REFERENCE — READ BEFORE PROCEEDING
+## ⚡ TURN-1 ZERO-TAX DISPATCH & MANDATORY REFERENCES
 
-> **🔴 YOU MUST READ these reference files NOW. Do NOT skip.**
->
-> 1. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/docs-recon-protocol.md` — Phase 1 recon steps + Intelligence Report template
-> 2. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/docs-folder-specs.md` — Folder content requirements + quality gates + verification checklist
->
-> **Failure to read = incorrect execution. These files contain BINDING protocols.**
+1. **Same-Turn Reference Load + Sub-Agent Fan-Out**: Core orchestration laws and the **5-Field Handoff Packet** (`1. MISSION & ACCEPTANCE CRITERIA`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION & DELIVERABLE`) are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** burn Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md` alone — read these two binding reference specs AND spawn Phase 1 `scouter#docs-1..k` shards **in the same Turn-1 parallel tool batch** via `invoke_subagent(TypeName: "self", Model: "inherit")`:
+   - `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/docs-recon-protocol.md` — Mode detection (`CREATE`/`UPDATE`/`MIGRATE`), cross-platform scan steps, and Intelligence Report + Evidence Ledger template.
+   - `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/docs-folder-specs.md` — Per-folder sub-file specs, collision-free sharding rules, Mermaid constraints, and quality gates.
+   - *(When `:team` or `execution.mode = team` is active, also follow `~/.{TOOL}/skills/boomopen-workflow-kit/agents/teams/docs-team/_team.md`.)*
+2. **Workspace `./documents/` vs. Transient Brain Artifacts (`ArtifactMetadata`)**:
+   - **Workspace Knowledge Base (`./documents/knowledge-*/`)**: Permanent version-controlled project docs written in the **user's input language** (technical terms, identifiers, paths, and code snippets in English). Omit `ArtifactMetadata` on workspace files.
+   - **Transient Brain Artifacts (`<appDataDir>\brain\<conversation-id>\`)**: Keep `./documents/` clean of scratch files:
+     - `SCOUT-docs-core-{1..k}.md`: `ArtifactMetadata: { Summary: "Core docs codebase recon shard {k}", UserFacing: false, RequestFeedback: false }`
+     - `MAILBOX-{date}.md` (`:team` mode): `ArtifactMetadata: { Summary: "Docs team shard coordination log", UserFacing: false, RequestFeedback: false }`
+     - `REVIEW-docs-core.md`: `ArtifactMetadata: { Summary: "Core technical docs zero-drift audit report", UserFacing: true, RequestFeedback: false }`
+3. **Zero Source Mutation Guardrail**: All application source, test, and config files are strictly `READ_ONLY_FILES`.
 
 ---
 
-## PRE-FLIGHT
+## 📁 DELIVERABLES — 5 Knowledge Folders (`26+` Files)
 
-**LOAD**: CORE.md → PHASES.md → AGENTS.md (path `./rules/` or `~/.{TOOL}/skills/boomopen-workflow-kit/rules/`)
-
----
-
-## DELIVERABLES — 5 Knowledge Folders
-
-> **⛔ MUST CREATE OR UPDATE ALL 5 FOLDERS.** Incomplete = FAILED.
+> [!IMPORTANT]
+> **ALL 5 FOLDERS MUST BE CREATED OR UPDATED.** Partial output = FAILED execution.
 
 ```
 ./documents/
-  knowledge-source-base/    # WHERE things are
-  knowledge-overview/       # WHAT and WHY
-  knowledge-architecture/   # HOW things connect
-  knowledge-domain/         # WHAT flows through
-  knowledge-standards/      # HOW TO CODE correctly
+  knowledge-source-base/    # WHERE things are       (00-index.md + 01..04 = 5 files)
+  knowledge-overview/       # WHAT and WHY           (00-index.md + 01..04 = 5 files)
+  knowledge-architecture/   # HOW things connect     (00-index.md + 01..05 = 6 files)
+  knowledge-domain/         # WHAT flows through     (00-index.md + 01..04 = 5 files)
+  knowledge-standards/      # HOW TO CODE correctly  (00-index.md + 01..04 = 5 files)
 ```
 
-Each folder: `00-index.md` (summary + TOC + cross-refs) + `01-*.md` ... `04-*.md` sub-files.
-
-### The `00-index.md` Pattern (MANDATORY)
-
-Each `00-index.md` MUST include:
-1. Brief overview (2-3 paragraphs)
-2. Sub-files table — filename + description
-3. Quick facts — key reference data
-4. Cross-references to related folders
-5. Known Gaps and Open Questions
-
-### Scaling Rules
-
-| Condition | Action |
-|-----------|--------|
-| Sub-file > ~300 lines | Split into focused sub-files |
-| Sub-file < 20 lines | Merge into nearest related sub-file |
-| Many modules/services | Add per-module sub-files |
+### Mandatory `00-index.md` & Sub-File Scaling Rules
+- Every `00-index.md` MUST include: (1) 2–3 paragraph summary, (2) Sub-files TOC table matching actual files on disk, (3) Quick facts table, (4) Valid relative cross-references (`../knowledge-*/00-index.md`), and (5) `Known Gaps and Open Questions`.
+- Sub-file sizing per `_ref/docs-folder-specs.md`: split cohesive sub-files exceeding `~300` lines into numbered sub-files (`05-*.md`, `06-*.md`) and assign disjoint `OWNED_FILES` (`<= 3–4` files/shard); merge thin stubs `< 20` lines into the nearest related sub-file.
 
 ---
 
-## Phase 1: DEEP CODEBASE RECONNAISSANCE
+## 🎭 Phase 1: PARALLEL DEEP CODEBASE RECONNAISSANCE (`Turn 1`)
 
 | Attribute | Value |
 |-----------|-------|
-| **Agent** | `scouter` |
-| **Goal** | Mode detection + deep scan + Intelligence Report |
-| **Reference** | `_ref/docs-recon-protocol.md` — full recon steps + report template |
-
-> **⛔ READ `_ref/docs-recon-protocol.md` for detailed scan steps and Intelligence Report template.**
+| **Shards** | `scouter#docs-1..k` via `invoke_subagent(TypeName: "self", Model: "inherit")` (`<= 3–4` heavy modules/shard) |
+| **Goal** | Detect `CREATE`/`UPDATE`/`MIGRATE` mode per folder, map live stack/routes/schemas/scripts, and build the Evidence Ledger |
+| **Output** | `<appDataDir>\brain\<conversation-id>\SCOUT-docs-core-{1..k}.md` (`UserFacing: false, RequestFeedback: false`) |
+| **Reference** | `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/docs-recon-protocol.md` |
 
 **Exit Criteria**:
-- [ ] Mode detection complete (CREATE/UPDATE/MIGRATE per folder)
-- [ ] Tech stack mapped with evidence
-- [ ] Architecture patterns identified with file-level evidence
-- [ ] Domain entities and API surface cataloged
-- [ ] Evidence Ledger complete (every claim area ≥ 3 evidence files)
-- [ ] Intelligence Report emitted (Phase 2 depends on this)
+- [ ] `CREATE` / `UPDATE` / `MIGRATE` mode determined for all 5 `knowledge-*/` folders
+- [ ] Tech stack, entry points, architecture layers, domain entities, API contracts, and lint/test standards verified via `read_file`
+- [ ] Evidence Ledger populated (`>= 3` verified repository files per knowledge area; unknowns isolated to `Known Gaps`)
+- [ ] Canonical glossary + cross-folder relative link map locked as `SHARED_CONTRACT` for Phase 2 shards
 
 ---
 
-## Phase 2: GENERATE KNOWLEDGE FOLDERS
+## 🎭 Phase 2: COLLISION-FREE PARALLEL FOLDER SHARDING (`<= 3–4 OWNED_FILES` / Shard)
+
+> **ANTI-COLLISION LAW**: Never assign `26+` files to a single `docs-manager` and never allow two shards to share an `OWNED_FILES` target! Dispatch parallel `docs-manager#<shard>` sub-agents (`TypeName: "self"`, `Model: "inherit"`) with disjoint `OWNED_FILES` (`<= 4` files per shard) and lock all repo source + sibling `./documents/**` paths in `READ_ONLY_FILES`.
+
+### Wave 2A — Parallel Sub-File Writer Shards (`6` Disjoint Shards, `2–4` Files Each)
+
+| Shard Key (`role#shard`) | Disjoint `OWNED_FILES` (`<= 4` Files) | Focus & Required Skills |
+|:-------------------------|:--------------------------------------|:------------------------|
+| `docs-manager#source-base` | `documents/knowledge-source-base/01-directory-structure.md` .. `04-configuration.md` (`4` files) | Annotated tree, boot sequence, modules, env/config |
+| `docs-manager#overview` | `documents/knowledge-overview/01-project-identity.md` .. `04-getting-started.md` (`4` files) | Onboarding, stack versions, verified install/run commands |
+| `docs-manager#arch-1` | `documents/knowledge-architecture/01-system-overview.md` .. `03-data-flow.md` (`3` files) | Layer boundaries, components, quoted Mermaid `flowchart`/`sequenceDiagram` |
+| `docs-manager#arch-2` | `documents/knowledge-architecture/04-design-patterns.md`, `05-decisions.md` (`2` files) | Code-backed design patterns & ADR trade-off table |
+| `docs-manager#domain` | `documents/knowledge-domain/01-entities.md` .. `04-business-rules.md` (`4` files) | Load `skills/api-patterns/SKILL.md` & `skills/database-design/SKILL.md` |
+| `docs-manager#standards` | `documents/knowledge-standards/01-code-style.md` .. `04-testing-standards.md` (`4` files) | Lint/format rules, import conventions, Git/CI, test commands |
+
+### Wave 2B — Disjoint `00-index.md` Synthesis Shards (`2` Shards, `2–3` Files Each)
+Once Wave 2A completes (so every sub-file filename and heading exists on disk), finalize the 5 index files via warm session reuse (`send_message`) or 2 disjoint index shards:
+- **`docs-manager#index-1` (`3` files)**: `knowledge-source-base/00-index.md`, `knowledge-overview/00-index.md`, `knowledge-architecture/00-index.md`
+- **`docs-manager#index-2` (`2` files)**: `knowledge-domain/00-index.md`, `knowledge-standards/00-index.md`
+
+### Mandatory Thinking Protocol (Before Writing Each Sub-File)
+1. **Audience**: Can a new engineer or AI agent understand this subsystem from this file alone?
+2. **Provenance**: Does every symbol, CLI script, and path trace to Phase 1's Evidence Ledger (`## Evidence Sources` table)?
+3. **Mermaid Safety**: Are only supported Mermaid types (`flowchart TD/LR`, `sequenceDiagram`, `stateDiagram-v2`, `classDiagram`, `erDiagram`, `xychart-beta`) used with quoted labels (`id["Label (Detail)"]`)?
+
+---
+
+## 🎭 Phase 3: ZERO-DRIFT QUALITY & LINK AUDIT (`DOC-G1..G4`)
 
 | Attribute | Value |
 |-----------|-------|
-| **Agent** | `docs-manager` |
-| **Goal** | Create all 5 folders with `00-index.md` + sub-files |
-| **Input** | Intelligence Report + Evidence Ledger from Phase 1 |
-| **Reference** | `_ref/docs-folder-specs.md` — content requirements + quality gates |
+| **Agent** | `reviewer` (or `docs-team-reviewer` in `:team` mode) via `invoke_subagent(TypeName: "self", Model: "inherit")` |
+| **Goal** | Cross-check all `26+` files against live codebase symbols, TOC links, Mermaid syntax, and language rules |
+| **Output** | `<appDataDir>\brain\<conversation-id>\REVIEW-docs-core.md` (`ArtifactMetadata: { Summary: "Core docs zero-drift verification", UserFacing: true, RequestFeedback: false }`) |
 
-> **⛔ READ `_ref/docs-folder-specs.md` for folder content requirements, quality gates, and verification.**
-
-### Thinking Protocol (MANDATORY — Before Each Sub-File)
-
-1. WHO reads this? New developer? PM? AI agent?
-2. WHAT must they understand from THIS file alone?
-3. Is EVERY claim backed by an actual file I read?
-4. Is anything speculative? → Remove or mark as assumption
+If any broken relative link, phantom flag/path, unquoted Mermaid label, or `TODO` placeholder is detected, route targeted fixes back to the owning warm `docs-manager#<shard>` `conversationId` via `send_message` (max 3 rounds) until `DOC-G1..G4` pass 100%.
 
 **Exit Criteria**:
-- [ ] All 5 folders created with `00-index.md` + sub-files
-- [ ] Every `00-index.md` TOC matches actual sub-files
-- [ ] Every sub-file has `## Evidence Sources`
-- [ ] No placeholder text in any file
-- [ ] All content is English only
+- [ ] All 5 `knowledge-*/` folders created/updated (`26+` files) in user's input language (technical terms in English)
+- [ ] Every `00-index.md` TOC matches actual sub-files and all cross-folder links resolve
+- [ ] Every sub-file includes `## Evidence Sources` with real repository file paths (`0` placeholders)
+- [ ] `REVIEW-docs-core.md` confirms `DOC-G1..G4` PASS
 
 ---
 
-## COMPLETION
+## ✅ COMPLETION OUTPUT
 
 ```markdown
-## Docs-Core Complete
+## 🏗️ Docs-Core Complete (`v5.5`)
 
-### Deliverables
-| # | Folder | Sub-Files | Mode | Status |
-|---|--------|-----------|------|--------|
-| 1 | knowledge-source-base/ | 00-index + {N} | CREATE/UPDATE | Done |
-| 2 | knowledge-overview/ | 00-index + {N} | CREATE/UPDATE | Done |
-| 3 | knowledge-architecture/ | 00-index + {N} | CREATE/UPDATE | Done |
-| 4 | knowledge-domain/ | 00-index + {N} | CREATE/UPDATE | Done |
-| 5 | knowledge-standards/ | 00-index + {N} | CREATE/UPDATE | Done |
+| # | Folder | Files | Mode | Shard Owner | Status |
+|---|--------|-------|------|-------------|--------|
+| 1 | `documents/knowledge-source-base/` | `00-index` + `{N}` | CREATE/UPDATE | `docs-manager#source-base` | ✅ Verified |
+| 2 | `documents/knowledge-overview/` | `00-index` + `{N}` | CREATE/UPDATE | `docs-manager#overview` | ✅ Verified |
+| 3 | `documents/knowledge-architecture/` | `00-index` + `{N}` | CREATE/UPDATE | `docs-manager#arch-1..2` | ✅ Verified |
+| 4 | `documents/knowledge-domain/` | `00-index` + `{N}` | CREATE/UPDATE | `docs-manager#domain` | ✅ Verified |
+| 5 | `documents/knowledge-standards/` | `00-index` + `{N}` | CREATE/UPDATE | `docs-manager#standards` | ✅ Verified |
 
-**Total files**: {count}
-**Next** → `/docs:business`
+- **Total Workspace Docs**: `{count}` files in `./documents/knowledge-*/`
+- **Zero-Drift Audit**: `<appDataDir>\brain\<conversation-id>\REVIEW-docs-core.md`
+- **Next** → `/docs:business` (when running full `/docs` suite) or await user instruction
 ```

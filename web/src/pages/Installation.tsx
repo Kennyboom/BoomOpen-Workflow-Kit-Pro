@@ -3,18 +3,23 @@ import { motion } from 'framer-motion'
 import { Button, Card, CardContent, Badge, Section, SectionHeader } from '../components/ui'
 import { Terminal } from '../components/terminal'
 import { PageSideDecorations, GradientBackground } from '../components/decorations'
-import { SEO, pageSEO } from '../components/seo'
 import { platforms, prerequisites, quickStartCommands } from '../data'
-
-type PlatformId = 'cursor' | 'claude' | 'copilot' | 'antigravity' | 'codex'
+import {
+  CLI_SUITE_COMMANDS,
+  INSTALL_STEPS,
+  LINK_COMMAND,
+  VERIFY_COMMAND,
+  cliInstallCommand,
+  type ToolId,
+} from '../data/install'
+import { KIT_VERSION } from '../data/kitStats'
 
 export default function Installation() {
-  const [selectedPlatform, setSelectedPlatform] = useState<PlatformId>('cursor')
-  const platform = platforms.find(p => p.id === selectedPlatform)!
+  const [selectedPlatform, setSelectedPlatform] = useState<ToolId>('cursor')
+  const platform = platforms.find((p) => p.id === selectedPlatform) ?? platforms[0]
 
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <SEO {...pageSEO.installation} />
+    <div className="min-h-screen bg-bg-primary">
       
       {/* Hero Section */}
       <Section background="primary" spacing="xl" className="relative overflow-hidden">
@@ -34,8 +39,8 @@ export default function Installation() {
               Installation
             </h1>
             <p className="text-body text-lg mb-8">
-              Install BoomOpen Workflow Kit globally and start using specialized agents 
-              in all your projects. Takes less than a minute.
+              Clone BoomOpen Workflow Kit, run one install command, and start using specialist
+              agents in all your projects.
             </p>
           </motion.div>
         </div>
@@ -71,11 +76,11 @@ export default function Installation() {
         </div>
       </Section>
 
-      {/* Global Installation */}
+      {/* Clone & Install */}
       <Section background="primary" spacing="xl">
         <SectionHeader 
-          title="Step 1: Global Installation" 
-          description="Install BoomOpen Workflow Kit globally with npm."
+          title="Step 1: Clone & Install" 
+          description="The kit is installed from its Git repository (it is not published on npm)."
         />
 
         <motion.div
@@ -84,25 +89,36 @@ export default function Installation() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <Terminal
-            command={[
-              'npm install -g @boomopen/workflow-kit',
-            ]}
-            title="Installation"
-          />
-          
+          <Terminal command={INSTALL_STEPS} title="Install for every supported tool" />
+          <p className="text-small mt-4">
+            Replace <code className="text-text-accent">--all</code> with{' '}
+            <code className="text-text-accent">cursor</code>, <code className="text-text-accent">claude</code>,{' '}
+            <code className="text-text-accent">copilot</code>, <code className="text-text-accent">codex</code> or{' '}
+            <code className="text-text-accent">antigravity</code> to install for one tool only.
+          </p>
+
           <div className="mt-6">
-            <Terminal
-              command="boomopen-workflow-kit --version"
-              title="Verify"
-            >
+            <Terminal command={[LINK_COMMAND, cliInstallCommand('claude'), ...CLI_SUITE_COMMANDS]} title="Optional: use the boomopen CLI suite" />
+            <p className="text-small mt-4">
+              <code className="text-text-accent">npm link</code> (run inside the cloned folder) exposes the{' '}
+              <code className="text-text-accent">boomopen</code> binary (<code className="text-text-accent">install</code>,{' '}
+              <code className="text-text-accent">research</code>, <code className="text-text-accent">design</code>,{' '}
+              <code className="text-text-accent">plan</code>, <code className="text-text-accent">cook</code>,{' '}
+              <code className="text-text-accent">ledger</code>, <code className="text-text-accent">conduct</code>,{' '}
+              <code className="text-text-accent">check</code>, <code className="text-text-accent">settings</code>,{' '}
+              <code className="text-text-accent">doctor</code>) from anywhere.
+            </p>
+          </div>
+
+          <div className="mt-6">
+            <Terminal command={VERIFY_COMMAND} title="Verify">
               <div className="space-y-2">
                 <div className="flex">
                   <span className="text-text-muted select-none mr-2">$</span>
-                  <code className="text-[#00ff88]">boomopen-workflow-kit --version</code>
+                  <code className="text-[#00ff88]">{VERIFY_COMMAND}</code>
                 </div>
-                <div className="text-gradient-green">
-                  ✓ BoomOpen Workflow Kit v1.0.0 installed
+                <div className="text-text-secondary">
+                  Lists every supported tool and whether BoomOpen Workflow Kit v{KIT_VERSION} is installed for it.
                 </div>
               </div>
             </Terminal>
@@ -123,7 +139,7 @@ export default function Installation() {
             {platforms.map((p) => (
               <button
                 key={p.id}
-                onClick={() => setSelectedPlatform(p.id as PlatformId)}
+                onClick={() => setSelectedPlatform(p.id)}
                 className={`
                   px-4 py-2 rounded-lg font-medium transition-all duration-200
                   flex items-center gap-2 min-h-[44px]
@@ -213,8 +229,8 @@ export default function Installation() {
 
         <div className="max-w-3xl mx-auto mb-6">
           <Terminal
-            command="/cook add a hello world endpoint"
-            title="Test Command"
+            command="Who are you?"
+            title="Ask your assistant"
           >
             <div className="space-y-2">
               <div className="flex">
@@ -230,7 +246,7 @@ export default function Installation() {
         <div className="max-w-3xl mx-auto">
           <Terminal
             command="/cook add a hello world endpoint"
-            title="Test Command"
+            title="Run a workflow"
           >
             <div className="space-y-2">
               <div className="flex">
@@ -297,6 +313,6 @@ export default function Installation() {
           </div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

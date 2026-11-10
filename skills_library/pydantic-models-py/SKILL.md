@@ -12,7 +12,7 @@ Create Pydantic models following the multi-model pattern for clean API contracts
 
 ## Quick Start
 
-Copy the template from assets/template.py and replace placeholders:
+Copy the template from `../pydantic-models/assets/template.py` (shipped with the sibling `pydantic-models` vault skill) and replace placeholders:
 - `{{ResourceName}}` → PascalCase name (e.g., `Project`)
 - `{{resource_name}}` → snake_case name (e.g., `project`)
 

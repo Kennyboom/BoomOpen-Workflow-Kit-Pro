@@ -1,230 +1,64 @@
 ---
-description: "🔺 Team Debug — Golden Triangle adversarial collaboration for maximum quality investigation"
+description: "🔺 Team Debug — 3-Stage SPIE v3.0 Elastic Golden Diamond (Parallel Hypothesis Shards, Adversarial Causal Validation & 1-Click Proceed to /fix)"
 version: "5.5"
 category: debugging
 execution-mode: execute
 ---
 
-# /debug:team — Golden Triangle Bug Investigation
+# /debug:team — 3-Stage SPIE v3.0 Elastic Golden Diamond Investigation (`v5.5`)
 
-> **MISSION**: Maximum quality debugging through adversarial collaboration.
-> Each phase spawns a **Golden Triangle** of 3 agents: Tech Lead (coordinator),
-> Executor (investigator), Reviewer (devil's advocate). Findings are released ONLY
-> upon consensus after debate. Investigation only — no fixing.
+> **MISSION**: Achieve forensic, zero-guesswork root-cause certainty on Heisenbugs, race conditions, and cross-subsystem failures via `agents/teams/debug-team/` (`1 Triage Lead + 1..6 Parallel Hypothesis Shards + Adversarial Root-Cause Validator`) — investigation only, releasing **1 cohesive `<appDataDir>\brain\<conversation-id>\DEBUG-{issue}.md` (`≤ 500` lines)** with `ArtifactMetadata.RequestFeedback: true` ONLY after consensus on `DBG-G1..G4`!
 
 <issue>$ARGUMENTS</issue>
 
 ---
 
+## ⚡ TURN-1 ZERO-TAX TOPOLOGY A FAN-OUT & REFERENCES
+
+1. **Zero Pre-Flight Tax (`Topology A`)**: Core orchestration laws and the 5-Field Handoff Packet are pre-loaded in your global entrypoint. Do **NOT** burn Turn 1 reading `CORE.md`, `PHASES.md`, or `_ref/*.md` alone before spawning sub-agents! Launch **Stage 1 (`debug-team-techlead` + `debugger#h1..k`)** on Turn 1 via `invoke_subagent(TypeName: "self", Model: "inherit")` and load `commands/_ref/golden-triangle-protocol.md` + `commands/_ref/convergent-analysis-loop.md` in parallel if needed.
+2. **Prior-Artifact Fast-Forward**: If `SCOUT-{issue}.md` or stack/repro logs already exist in `<appDataDir>\brain\<conversation-id>\`, reuse them immediately without re-scouting.
+3. **⚠️ `TypeName: "self"` & Disjoint Scratch Lock**: Always use `TypeName: "self"`, `Model: "inherit"` (NEVER `TypeName: "research"` or `flash_lite`). Record `role#shard -> conversationId` and reuse warm sessions via `send_message` (max `3` rounds; Round 3 escalates strictly to `debug-team-techlead`).
 
 ---
 
-## ⛔ MANDATORY REFERENCE — READ BEFORE PROCEEDING
+## 📁 DELIVERABLE & `ArtifactMetadata` ROUTING (SINGLE-FILE COHESION)
 
-> **🔴 YOU MUST READ these reference files NOW. Do NOT skip.**
->
-> 1. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/golden-triangle-protocol.md` — Tiered Execution, Mailbox, Pre-Flight, Triangle Loop
-> 2. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/convergent-analysis-loop.md` — Convergent Analysis detailed protocol
-> 3. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/implementation-loop.md` — Implementation step-by-step (for coding phases)
->
-> **Failure to read = incorrect execution. These files contain BINDING protocols.**
+> **🚫 NO FOLDER SPLITTING OR ARTIFACT FRAGMENTATION**: Never split reports into `{name}/` folders or separate `SYMPTOMS`/`HYPOTHESES`/`EVIDENCE` user-facing files!
 
----
-
-## 📁 DELIVERABLE FILES (BRAIN ARTIFACTS FIRST ON ANTIGRAVITY 2.0)
-
-> **Antigravity 2.0 Default**: Write transient deliverables (`BRAINSTORM`, `RESEARCH`, `SCOUT`, `DESIGN`, `PLAN`, `DEBUG`, `TEST`, `REVIEW`, `REPORT`, `MAILBOX`) to `<appDataDir>\brain\<conversation-id>\` to keep the Git tree clean. Use `./reports/{topic}/` only on non-Antigravity tools or when explicitly requested.
-
-| Phase | Output |
-|-------|--------|
-| P1: Symptom Collection | `<appDataDir>\\brain\\<conversation-id>\\SYMPTOMS-{issue}` (or `./reports/{topic}/debugs/SYMPTOMS-{issue}`) |
-| P2: Hypothesis Generation | `<appDataDir>\\brain\\<conversation-id>\\HYPOTHESES-{issue}` (or `./reports/{topic}/debugs/HYPOTHESES-{issue}`) |
-| P3: Hypothesis Testing | `<appDataDir>\\brain\\<conversation-id>\\EVIDENCE-{issue}` (or `./reports/{topic}/debugs/EVIDENCE-{issue}`) |
-| P4: Root Cause Report | `<appDataDir>\\brain\\<conversation-id>\\DEBUG-REPORT-{issue}` (or `./reports/{topic}/debugs/DEBUG-REPORT-{issue}`) |
-| ALL Phases | `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md` (or `./reports/{topic}/MAILBOX-{date}.md`) |
-
-**⚠️ Paths = base names.** ≤ 150 lines → `{name}.md`. > 150 lines → `{name}/` folder.
+| Artifact | Path (`<appDataDir>\brain\<conversation-id>\`) | `ArtifactMetadata` | Purpose & Limit |
+|----------|------------------------------------------------|--------------------|-----------------|
+| **Hypothesis Scratch Notes** | `DEBUG-{issue}-h{1..k}.md` (and optional `SCOUT-{issue}.md`) | `{ Summary: "Track h{k} trace", UserFacing: false, RequestFeedback: false }` | Disjoint Turn-1 shard traces (`0` write collisions) |
+| **Team Debate Mailbox** | `MAILBOX-{date}.md` | `{ Summary: "Debug team debate log", UserFacing: false, RequestFeedback: false }` | Append-only critiques, defenses & `✅ CONSENSUS` |
+| **Master Root-Cause Report** | **`DEBUG-{issue}.md`** (fallback `./reports/{topic}/debugs/DEBUG-{issue}.md`) | **`{ Summary: "Consensus SPIE root-cause & fix spec", UserFacing: true, RequestFeedback: true }`** | **1 cohesive file `≤ 500` lines** (1-click **"Proceed"** → `/fix`) |
 
 ---
 
-## 🔗 PHASE DEPENDENCIES
+## 💎 3-STAGE SPIE v3.0 ELASTIC GOLDEN DIAMOND (`agents/teams/debug-team/`)
 
-| Phase                          | Requires                          | Blocking    |
-| ------------------------------ | --------------------------------- | ----------- |
-| P1: Symptom Collection         | User issue description            | No          |
-| P2: Hypothesis Generation      | Symptoms from P1                  | **YES**     |
-| P3: Hypothesis Testing         | Hypotheses from P2                | **YES**     |
-| P4: Root Cause Report          | Evidence from P3                  | **YES**     |
+### 🚀 Stage 1 (Turn-1 Parallel Fan-Out): SYMPTOM REPRODUCTION & HYPOTHESIS SHARDING
+Compute $N_{\text{agents}} = \min(\text{maxParallelSubagents}, \max(\lceil \text{Suspect Files} / 3.5 \rceil, \text{Subsystems}, \text{Hypotheses}))$ and spawn **in one Turn-1 batch** (`READ_ONLY_FILES`: all production source files):
+- **`debug-team-techlead` (`agents/teams/debug-team/techlead.md`)**: Triage reproducibility, blast radius, data impact, and regression window; frame `3–6` ranked hypotheses `H1..Hk` in `MAILBOX-{date}.md`.
+- **`debugger#h1..k` (`agents/debugger.md` / `debug-team/executor.md`, `1..6` parallel shards, `≤ 3–4` files/shard)**: Execute deterministic reproduction (`run_command`), git blame/diff correlation, call-graph/state tracing, and external CVE/SDK check (`search_web` if needed) → each shard writes its disjoint **`DEBUG-{issue}-h{k}.md`** (`UserFacing: false, RequestFeedback: false`).
+- **🎼 Optional Multi-Engine Council**: When `engines.debugger = "council"`, also run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct council --task debug --engines <engines.councilMembers> --prompt "<issue>" --output "<appDataDir>/brain/<conversation-id>/COUNCIL-{issue}.md"`.
 
-**⛔ Blocking**: If input missing → STOP → Create it first → Resume
+### 🔬 Stage 2: SPIE 5-WHYS CAUSAL PROOF & FIX BLUEPRINT (`debug-team-executor`)
+Reuse warm `debug-team-executor` (`send_message` or spawn once) to synthesize all `DEBUG-{issue}-h{1..k}.md` traces into `<appDataDir>\brain\<conversation-id>\DEBUG-{issue}.md` (`≤ 500` lines) covering:
+1. **Executive Summary & Deterministic Reproduction Command/Steps (`DBG-G1`)**
+2. **Hypothesis Falsification Matrix (`H1..Hk` — `DBG-G3`)** with concrete log/code proof eliminating competing causes
+3. **SPIE v3.0 5-Whys Causal Chain (`DBG-G2`)** (`Why 1 Symptom` → `Why 5 Systemic Root Cause`, clickable `[file:line](file:///...)` at every link)
+4. **Blast-Radius Impact & Surgical Fix Blueprint (`DBG-G4`)** (disjoint `OWNED_FILES` shards `≤ 3–4` files/shard, rollback plan, and Fail-First `RED → GREEN` regression test spec)
 
----
-
-## 🎭 Phase 1: SYMPTOM COLLECTION — 🔺 GOLDEN TRIANGLE
-
-| Role      | Agent                                | Mission                                                           |
-| --------- | ------------------------------------ | ----------------------------------------------------------------- |
-| Tech Lead | `debugger`                           | Decompose: categorize symptoms, define investigation areas        |
-| Executor  | `scouter`                            | Execute: collect error logs, stack traces, reproduction steps, environment data |
-| Reviewer  | `researcher` (Devil's Advocate)      | Challenge: are symptoms complete? Are we looking at the right system? Missing data? |
-
-**Triangle Loop**:
-1. `debugger` decomposes into areas: error logs, stack traces, reproduction steps, environment data, user-reported behavior, recent changes
-2. `debugger` posts TASK_ASSIGNMENT → dispatches to `scouter`
-3. `scouter` collects evidence → posts SUBMISSION per area:
-   - Exact error messages and stack traces
-   - Steps to reproduce (confirmed or attempted)
-   - Environment details (OS, runtime versions, config)
-   - Recent code changes in affected area (git log)
-   - Related log entries and monitoring data
-4. `researcher` reviews each SUBMISSION → posts REVIEW:
-   - Are we looking at the right system/component?
-   - Are symptoms complete or are we missing data sources?
-   - Could these symptoms indicate a different system entirely?
-   - Are reproduction steps reliable and deterministic?
-5. If FAIL → `scouter` collects additional data or defends → RESUBMISSION/DEFENSE → max 3 rounds
-6. `debugger` synthesizes approved symptom data into unified symptom catalog
-
-**Deliverable**: `<appDataDir>\\brain\\<conversation-id>\\SYMPTOMS-{issue}` (or `./reports/{topic}/debugs/SYMPTOMS-{issue}`)
-**Exit Criteria**: All symptoms documented, reproduction confirmed, environment captured, data sources exhausted
-**Consensus**: ✅ CONSENSUS: debugger ✓ | scouter ✓ | researcher ✓
-
----
-
-## 🎭 Phase 2: HYPOTHESIS GENERATION — 🔺 GOLDEN TRIANGLE
-
-| Role      | Agent                                | Mission                                                           |
-| --------- | ------------------------------------ | ----------------------------------------------------------------- |
-| Tech Lead | `debugger`                           | Coordinate: generate hypothesis tree, prioritize investigation paths |
-| Executor  | `researcher`                         | Execute: research similar issues, known bugs, pattern matching    |
-| Reviewer  | `brainstormer` (Devil's Advocate)    | Challenge: are hypotheses sufficient? What if root cause is elsewhere? Propose alternatives |
-
-**Prerequisite**: **READ** `<appDataDir>\\brain\\<conversation-id>\\SYMPTOMS-{issue}` (or `./reports/{topic}/debugs/SYMPTOMS-{issue}`)
-
-**Triangle Loop**:
-1. `debugger` reads symptoms → decomposes into areas: primary suspects, secondary suspects, environmental causes, interaction effects, known bug patterns
-2. `debugger` posts TASK_ASSIGNMENT → dispatches to `researcher`
-3. `researcher` researches each area → posts SUBMISSION:
-   - Similar issues in issue trackers, forums, CVE databases
-   - Known bugs in dependencies matching symptom pattern
-   - Historical incidents with similar symptoms in this codebase
-   - Ranked hypothesis list with confidence levels and reasoning
-4. `brainstormer` reviews each SUBMISSION → posts REVIEW:
-   - Are we anchored on the obvious? What if root cause is completely elsewhere?
-   - Are there hypotheses that explain ALL symptoms, not just some?
-   - What about timing-related causes (race conditions, timeouts)?
-   - Could this be a combination of multiple smaller issues?
-   - Are confidence levels justified or wishful thinking?
-   - **MUST propose at least 2 alternative hypotheses not yet considered**
-5. If FAIL → `researcher` expands research or defends → RESUBMISSION/DEFENSE → max 3 rounds
-6. `debugger` synthesizes approved hypotheses into prioritized hypothesis tree
-
-**Deliverable**: `<appDataDir>\\brain\\<conversation-id>\\HYPOTHESES-{issue}` (or `./reports/{topic}/debugs/HYPOTHESES-{issue}`)
-**Exit Criteria**: Hypothesis tree complete, alternatives explored, priorities assigned, investigation paths defined
-**Consensus**: ✅ CONSENSUS: debugger ✓ | researcher ✓ | brainstormer ✓
-
----
-
-## 🎭 Phase 3: HYPOTHESIS TESTING — 🔺 GOLDEN TRIANGLE (CRITICAL)
-
-> **THIS IS THE MOST CRITICAL PHASE.** Every piece of evidence is debated. No conclusions without proof.
-
-| Role      | Agent                                           | Mission                                                      |
-| --------- | ----------------------------------------------- | ------------------------------------------------------------ |
-| Tech Lead | `debugger`                                      | Decompose: assign hypothesis validation tasks, track progress|
-| Executor  | `scouter` + `backend-engineer`                  | Execute: trace code paths, add logging, test hypotheses with evidence |
-| Reviewer  | `reviewer`                                      | Challenge: is evidence conclusive? Correlation vs causation? Solving the right problem? |
-
-**Prerequisite**: **READ** `<appDataDir>\\brain\\<conversation-id>\\HYPOTHESES-{issue}` (or `./reports/{topic}/debugs/HYPOTHESES-{issue}`)
-
-### GOLDEN TRIANGLE EVIDENCE LOOP (CRITICAL — Step by Step)
-
-
-> **⛔ See `_ref/convergent-analysis-loop.md` or `_ref/implementation-loop.md` for detailed step-by-step protocol.**
-
-
-### STRICT EVIDENCE STANDARDS (ENFORCED BY REVIEWER)
-
-```
-1. NO CONCLUSIONS WITHOUT EVIDENCE — every verdict MUST cite specific evidence
-2. CORRELATION ≠ CAUSATION — Reviewer explicitly challenges:
-   "Does this evidence PROVE causation or just show correlation?"
-3. REPRODUCTION REQUIRED — CONFIRMED hypotheses must be reproducible
-4. ALTERNATIVE EXPLANATIONS — Reviewer must propose at least one alternative
-   for each CONFIRMED hypothesis. Executor must address it.
-5. Unsupported claims → automatic FAIL:
-   Severity: CRITICAL | Action: "Provide evidence or downgrade to INCONCLUSIVE"
-```
-
-**Deliverable**: `<appDataDir>\\brain\\<conversation-id>\\EVIDENCE-{issue}` (or `./reports/{topic}/debugs/EVIDENCE-{issue}`)
-**Exit Criteria**: All hypotheses tested with evidence, verdicts debated and consensus-approved, root cause identified or narrowed
-**Consensus**: ✅ CONSENSUS: debugger ✓ | scouter/backend-engineer ✓ | reviewer ✓
-
----
-
-## 🎭 Phase 4: ROOT CAUSE REPORT — 🔺 GOLDEN TRIANGLE
-
-| Role      | Agent                                | Mission                                                           |
-| --------- | ------------------------------------ | ----------------------------------------------------------------- |
-| Tech Lead | `debugger`                           | Synthesize: compile root cause analysis, recommend fix approaches |
-| Executor  | `reporter`                           | Execute: write formal DEBUG-REPORT-{issue}.md                     |
-| Reviewer  | `tech-lead`                          | Challenge: is analysis complete? Is fix recommendation sensible? Impact assessment? |
-
-**Prerequisite**: **READ** SYMPTOMS + HYPOTHESES + EVIDENCE files
-
-**Triangle Loop**:
-1. `debugger` reads all prior deliverables → decomposes into: executive summary, symptom timeline, hypothesis tree results, root cause chain, impact analysis, fix recommendations, prevention recommendations
-2. `debugger` posts TASK_ASSIGNMENT → dispatches to `reporter`
-3. `reporter` writes formal report → posts SUBMISSION per section:
-   - Executive summary (2-3 sentences, non-technical)
-   - Symptom timeline (chronological, with evidence links)
-   - Hypothesis tree (tested, confirmed/refuted, with evidence)
-   - **SPIE v3.0 5-Whys Root Cause Chain** (`Why 1 Visible Symptom` → `Why 2` → `Why 3` → `Why 4` → `Why 5 Systemic Root Cause` with exact `[file:line]` evidence)
-   - Impact analysis (affected users, data integrity, stability)
-   - Recommended fix approaches (ranked by risk/effort/impact)
-   - Prevention recommendations (how to avoid recurrence)
-4. `tech-lead` reviews each section → posts REVIEW:
-   - Is root cause analysis technically sound?
-   - Does causal chain account for all observed symptoms?
-   - Are fix recommendations feasible within existing architecture?
-   - Is impact assessment accurate — not understated or overstated?
-   - Would a new engineer understand this without prior context?
-5. Debate loop if FAIL → `reporter` revises or defends → max 3 rounds
-6. `debugger` synthesizes approved sections into final report
-
-**Deliverable**: `<appDataDir>\\brain\\<conversation-id>\\DEBUG-REPORT-{issue}` (or `./reports/{topic}/debugs/DEBUG-REPORT-{issue}`)
-**Exit Criteria**: Root cause documented, evidence chain complete, fix approaches recommended, impact assessed, report validated
-**Consensus**: ✅ CONSENSUS: debugger ✓ | reporter ✓ | tech-lead ✓
+### 🛡️ Stage 3: ADVERSARIAL ROOT-CAUSE VALIDATION (`debug-team-reviewer` via Warm `send_message`)
+Spawn `debug-team-reviewer` (`agents/teams/debug-team/reviewer.md`, plus optional Cross-Engine Critic `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "<symptom + DEBUG-{issue}.md>"`) to stress-test `DEBUG-{issue}.md` across all **4 Mandatory Gates (`DBG-G1..G4`)**:
+- **Correlation ≠ Causation Challenge**: Does the proven `file:line` mechanism account for *100%* of observed symptoms? Are any alternative hypotheses still uneliminated?
+- **Fix Safety Challenge**: Does the proposed fix solve Why 5 (rather than masking Why 1 with `catch {}` or `?.`) without breaking shared callers/pools?
+- Run targeted debate via warm `send_message` (max `3` rounds in `MAILBOX-{date}.md`; Round 3 arbitrated by **`debug-team-techlead`** — never `planner`!). Stamp binding consensus:
+  `✅ CONSENSUS: debug-team-techlead ✓ | debug-team-executor (h1..k) ✓ | debug-team-reviewer ✓`
 
 ---
 
 ## ✅ COMPLETION
 
-Present final investigation report with consensus stamps from ALL phases:
-
-```markdown
-# 🔺 Golden Triangle Debug Report: {issue}
-
-## Phase Results
-| Phase | Triangle | Consensus | Rounds |
-|-------|----------|-----------|--------|
-| P1: Symptom Collection | debugger / scouter / researcher | ✅ | {n} |
-| P2: Hypothesis Generation | debugger / researcher / brainstormer | ✅ | {n} |
-| P3: Hypothesis Testing | debugger / scouter+backend-engineer / reviewer | ✅ | {n} |
-| P4: Root Cause Report | debugger / reporter / tech-lead | ✅ | {n} |
-
-## Debate Summary
-- Total submissions: {count}
-- First-pass approvals: {count}
-- Debates triggered: {count}
-- Arbitrations needed: {count}
-
-## Mailbox Reference
-Full debate history: `<appDataDir>\brain\<conversation-id>\MAILBOX-{date}.md` (or `./reports/{topic}/MAILBOX-{date}.md`)
-
-## Next Actions
-1. ✅ **Root Cause** — Identified (triangle-validated across all phases)
-2. 📊 **Report** — `<appDataDir>\\brain\\<conversation-id>\\DEBUG-REPORT-{issue}` (or `./reports/{topic}/debugs/DEBUG-REPORT-{issue}`)
-3. 🔧 **Fix** → `/fix:team` or `/fix:hard`
-4. 📝 **Document** → `/docs:core`
-```
+Present `<appDataDir>\brain\<conversation-id>\DEBUG-{issue}.md` (`RequestFeedback: true` — native **"Proceed"** button active) and `MAILBOX-{date}.md`:
+1. 🔧 **Proceed / `/fix:team` (or `/fix:hard`)** → Bidirectional Fast-Forward skips Stage 1 and jumps straight to Fail-First Reproduction Test + Sharded Fix!
+2. 📝 **`/docs:core`** → Update architecture/runbook docs if systemic design invariants changed

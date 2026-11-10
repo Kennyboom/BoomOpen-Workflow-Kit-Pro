@@ -19,6 +19,8 @@ tools:
 - codex-cli
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/audit_report.py`, `scripts/pre_commit_hook.sh`, `scripts/registry_manager.py`, `scripts/secret_scanner.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # CRED-OMEGA: Security Engine for All API Keys (Enterprise)
 
 ## Overview

@@ -1,145 +1,95 @@
 ---
-description: ✅ Deploy Check — Pre-deployment readiness verification
+description: "✅ Deploy Check — Parallel 4-track pre-deployment readiness verification across code quality, tests, security, and infrastructure"
 version: "5.5"
 category: operations
 execution-mode: execute
 ---
 
-# /deploy:check — Deployment Readiness Check
+# /deploy:check — Parallel Deployment Readiness Verification
 
-> **MISSION**: Verify all deployment prerequisites are met before proceeding.
+> **MISSION**: Verify all code quality, test suite, security, and infrastructure prerequisites in parallel on Turn 1 before promoting a build to preview or production.
 
----
-
-## ⚡ TURN-1 ZERO-TAX DISPATCH & ON-DEMAND RULES
-
-⚡ **TURN-1 ZERO-TAX DISPATCH**: Core orchestration laws and the 5-Field Handoff Packet (`1. MISSION`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION`) are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md` — route and launch Phase 1 sub-agents **immediately on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")`; load `./rules/*.md` on-demand in parallel only when needed.
+<target>$ARGUMENTS</target>
 
 ---
 
-## 🔀 TIERED EXECUTION PROTOCOL (MANDATORY)
+## ⚡ TURN-1 PARALLEL FAN-OUT, CLI GATE & ARTIFACT CONTRACT
 
-> **Reference: AGENTS.md (Tiered Execution)`
+1. **Turn-1 0-Turn Concurrent Sub-agent Dispatch**: Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md`, and do **NOT** run independent audit tracks sequentially. Launch all 4 verification specialists **concurrently in 1 Turn-1 tool batch** via `invoke_subagent(TypeName: "self", Model: "inherit")` (`reviewer`, `tester`, `security-engineer`, `devops-engineer#1..k`) with the **5-Field Handoff Packet** (`READ_ONLY_FILES: ["*"]`, zero source mutations). Record `role#shard -> conversationId` for warm follow-ups via `send_message` (Tier 2 `EMBODY` from `~/.{TOOL}/skills/boomopen-workflow-kit/agents/{role}.md` ONLY on logged system tool failure).
+2. **Deterministic Pre-Deploy Quality Gate**: Enforce zero stubs, strict phase hygiene, and Pragmatic 2-Tier coding limits prior to sign-off:
+   ```bash
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs
+   ```
+   *(When `.boomopen/project-ledger.json` is present, also run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger status` to confirm no unverified blocking `REQ-xxx` remain in scope.)*
+3. **Cohesive Single-File Brain Artifact (`<= 500` lines, Clean Git Tree)**: Consolidate all 4 audit tracks into **1 single cohesive file** `<appDataDir>\brain\<conversation-id>\REPORT-deploy-check.md` (`<= 500` lines; never split into `{name}/` folders or write to `./reports/` by default) using `write_file` with explicit `ArtifactMetadata`:
+   ```json
+   {
+     "ArtifactMetadata": {
+       "Summary": "Pre-deployment readiness audit across code quality, test suite, security scan, and infrastructure readiness",
+       "UserFacing": true,
+       "RequestFeedback": false
+     }
+   }
+   ```
 
-```yaml
-tiered_execution:
-  principle: "Sub-agent FIRST (Tier 1). EMBODY ONLY on system failure (Tier 2)."
-  for_each_phase:
-    TIER_1_MANDATORY: "IF tool exists → MUST use SUB_AGENT_DELEGATION"
-    TIER_2_FALLBACK: "ONLY on system error—NOT complexity/preference/speed"
-  anti_lazy_fallback:
-    - ❌ NEVER use Tier 2 when Tier 1 tool is available
-    - ✅ ALWAYS attempt Tier 1 first when tool exists
+---
+
+## 📁 DAG STAGE & DELIVERABLE MATRIX
+
+| Wave | Execution Mode | Active Specialists (`TypeName: "self"`, `Model: "inherit"`) | Gate / Output |
+|------|----------------|-------------------------------------------------------------|---------------|
+| **Wave 1** | ⚡ Turn-1 4-Track Parallel Fan-Out | `reviewer` + `tester` + `security-engineer` + `devops-engineer#1..k` | `check <dir> --strict-phase --no-stubs` + build/test/CVE/infra telemetry |
+| **Wave 2** | 🎯 Orchestrator Synthesis | Consolidate 4 tracks into Go / No-Go scorecard | `<appDataDir>\brain\<conversation-id>\REPORT-deploy-check.md` (`<= 500` lines) |
+
+---
+
+## 🌊 WAVE 1: PARALLEL 4-TRACK READINESS AUDIT (TURN 1)
+
+Dispatch all 4 read-only verification shards simultaneously via `invoke_subagent(TypeName: "self", Model: "inherit")`:
+
+1. **Track A — Code Quality & Standards (`reviewer` — `agents/reviewer.md`)**:
+   - Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` plus project typecheck and linter (`tsc --noEmit`, `eslint` / `biome` / `ruff` / `cargo check`).
+   - Verify zero hollow TODO/stub implementations, zero leftover debug `console.log` in production code, and full contract alignment.
+2. **Track B — Automated Test & Regression Suite (`tester` — `agents/tester.md`)**:
+   - Execute unit, integration, and critical-path E2E tests.
+   - Confirm 0 failing tests, 0 newly skipped regression tests, and clean exit codes.
+3. **Track C — Security & Secrets Audit (`security-engineer` — `agents/security-engineer.md`)**:
+   - Load `security-auditor` skill; scan dependency advisories (`npm audit` / `pip-audit` / `osv-scanner`), verify zero hardcoded credentials or `.env` leaks in Git history/tree, and check auth, CORS, CSP, and rate-limit guards.
+   - Verify any pending SQL/storage migrations obey `accidental-data-loss-prevention` (expand/contract, zero unconfirmed destructive operations).
+4. **Track D — Build, Config & Rollback Readiness (`devops-engineer#1..k` — `agents/devops-engineer.md`)**:
+   - Execute production build dry-run and container/bundle validation.
+   - Verify required environment variable keys/schemas, health-check endpoint wiring (`/health` or `/ready`), database migration dry-run, and a documented rollback target SHA/artifact.
+
+---
+
+## 📊 WAVE 2: SYNTHESIZE `REPORT-deploy-check.md` & COMPLETION
+
+Write `<appDataDir>\brain\<conversation-id>\REPORT-deploy-check.md` (`<= 500` lines, `ArtifactMetadata: { Summary: "Pre-deployment readiness audit across code quality, test suite, security scan, and infrastructure readiness", UserFacing: true, RequestFeedback: false }`) using this cohesive structure:
+
+```markdown
+# ✅ Deployment Readiness Report (`REPORT-deploy-check.md`)
+
+- **Verdict**: `READY` | `BLOCKED`
+- **Target Branch / Commit SHA**: `{branch} @ {sha}`
+- **Autopilot Ledger Status**: `{verified}/{total} REQ verified` (or `N/A`)
+
+## 1. 4-Track Gate Scorecard
+| Gate | Specialist | Command / Verification | Status |
+|------|------------|------------------------|--------|
+| Code & Standards | `reviewer` | `check <dir> --strict-phase --no-stubs` + typecheck/lint | PASS / FAIL |
+| Test Suite | `tester` | Unit + Integration + E2E smoke | PASS / FAIL |
+| Security & Secrets | `security-engineer` | Dependency CVEs + secrets + migration guard | PASS / FAIL |
+| Build & Infra | `devops-engineer#1` | Prod build dry-run + env schema + health endpoint | PASS / FAIL |
+
+## 2. Blocking Issues & Exact Remediations
+- `{file}:{line}` — `{root cause & required fix}` (or `None`)
+
+## 3. Rollback & Release Prerequisites
+- **Last-Known-Good Target**: `{previous_release_tag_or_sha}`
+- **Database Migration Mode**: `None` | `Additive Expand/Contract` | `Requires Human Sign-off`
 ```
 
----
-
-## ⛔ INCREMENTAL EXECUTION (MANDATORY)
-
-Execute phases using **DAG Parallel Fan-Out** for independent tracks, **Direct Plan-to-Executor Dispatch** (`Model: "inherit"`), and **Stateful Warm Sub-agent Reuse** (`send_message`) per `rules/PHASES.md` (v5.5).
-
----
-
-## 🎭 Phase 1: CODE QUALITY CHECK
-
-| Attribute | Value |
-|-----------|-------|
-| **Agent** | `reviewer` |
-| **Goal** | Verify code quality standards |
-
-### ⚡ TIERED EXECUTION
-
-**TIER 1 (MANDATORY when tool exists):**
-> Invoke native sub-agent (`invoke_subagent` / `runSubagent`) for `reviewer`. Context: ISOLATED.
-
-**TIER 2 (FALLBACK on system error only):**
-> Load `{AGENTS_PATH}/reviewer.md`
-> EMBODY [reviewer] — Requires logged system error justification.
-
-**Exit Criteria:**
-
-- [ ] No critical issues
-- [ ] Standards met
-- [ ] Approved for deploy
-
----
-
-## 🎭 Phase 2: TEST VERIFICATION
-
-| Attribute | Value |
-|-----------|-------|
-| **Agent** | `tester` |
-| **Goal** | Verify all tests passing |
-
-### ⚡ TIERED EXECUTION
-
-**TIER 1 (MANDATORY when tool exists):**
-> Invoke native sub-agent (`invoke_subagent` / `runSubagent`) for `tester`. Context: ISOLATED.
-
-**TIER 2 (FALLBACK on system error only):**
-> Load `{AGENTS_PATH}/tester.md`
-> EMBODY [tester] — Requires logged system error justification.
-
-**Exit Criteria:**
-
-- [ ] All tests pass
-- [ ] Coverage adequate
-- [ ] No flaky tests
-
----
-
-## 🎭 Phase 3: SECURITY SCAN
-
-| Attribute | Value |
-|-----------|-------|
-| **Agent** | `security-engineer` |
-| **Goal** | Security vulnerability check |
-
-### ⚡ TIERED EXECUTION
-
-**TIER 1 (MANDATORY when tool exists):**
-> Invoke native sub-agent (`invoke_subagent` / `runSubagent`) for `security-engineer`. Context: ISOLATED.
-
-**TIER 2 (FALLBACK on system error only):**
-> Load `{AGENTS_PATH}/security-engineer.md`
-> EMBODY [security-engineer] — Requires logged system error justification.
-
-**Exit Criteria:**
-
-- [ ] No critical vulnerabilities
-- [ ] Dependencies secure
-- [ ] Secrets not exposed
-
----
-
-## 🎭 Phase 4: INFRASTRUCTURE CHECK
-
-| Attribute | Value |
-|-----------|-------|
-| **Agent** | `devops-engineer` |
-| **Goal** | Verify infrastructure readiness |
-
-### ⚡ TIERED EXECUTION
-
-**TIER 1 (MANDATORY when tool exists):**
-> Invoke native sub-agent (`invoke_subagent` / `runSubagent`) for `devops-engineer`. Context: ISOLATED.
-
-**TIER 2 (FALLBACK on system error only):**
-> Load `{AGENTS_PATH}/devops-engineer.md`
-> EMBODY [devops-engineer] — Requires logged system error justification.
-
-**Exit Criteria:**
-
-- [ ] Build succeeds
-- [ ] Environment configured
-- [ ] Rollback plan ready
-
----
-
-## COMPLETION
-
-Present readiness report with:
-
-1. ✅ **Ready** → `/deploy:preview` or `/deploy:production`
-2. ❌ **Not Ready** — Issues to address
-3. 🔧 **Fix Issues** → Route to appropriate fix workflow
+Present concise verdict and next actions:
+1. ✅ **Ready for Preview** → `/deploy:preview` (`commands/deploy-preview.md`)
+2. 🚀 **Ready for Production** → `/deploy:production` (`commands/deploy-production.md`)
+3. 🔧 **Blocked — Fix Issues** → `/fix:hard` (`commands/fix-hard.md`)

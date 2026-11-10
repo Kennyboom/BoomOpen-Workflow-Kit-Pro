@@ -1,14 +1,14 @@
 <div align="center">
   <h1>⚡ BoomOpen Workflow Kit v5.5.0</h1>
-  <p><strong>跨平台智慧混合 (Smart-Hybrid) AI 研發作業系統 — 21 位專家級智慧體、17 支黃金三角團隊與 1,450+ 按需技能寶庫</strong></p>
+  <p><strong>跨平台智慧混合 (Smart-Hybrid) AI 研發作業系統 — 21 位專家級智慧體、18 支黃金三角團隊與 1,460+ 按需技能寶庫</strong></p>
 
   <p>
     <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
-    <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2017%20Teams-10b981.svg" alt="Agents: 21 Specialists + 17 Teams" /></a>
-    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-48%20Core%20%2B%201%2C450%2B%20Library-f59e0b.svg" alt="Skills: 48 Core + 1,450+ Library" /></a>
+    <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
+    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
-    <a href="../LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+    <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
   </p>
 
   <p>
@@ -34,13 +34,13 @@
 
 ## 🌟 什麼是 BoomOpen Workflow Kit v5.5？
 
-**BoomOpen Workflow Kit v5.5（跨平台統一與智慧混合版）** 是一套開源的多代理人（Multi-Agent）研發作業系統，能將單一 AI 程式設計助手升級為由 **21 位專家級代理人（Specialist Agents）**、**17 支黃金三角對抗團隊（Golden Triangle Teams）**、**48 項核心技能（Core Skills）** 以及 **1,450+ 項專業領域技能庫（`skills_library`）** 組成的協同工程團隊。
+**BoomOpen Workflow Kit v5.5（跨平台統一與智慧混合版）** 是一套開源的多代理人（Multi-Agent）研發作業系統，能將單一 AI 程式設計助手升級為由 **21 位專家級代理人（Specialist Agents）**、**18 支黃金三角對抗團隊（Golden Triangle Teams）**、**22 項核心技能（Core Skills）** 以及 **1,440 項專業領域技能庫（`skills_library`）** 組成的協同工程團隊。
 
 不同於每次簡單提問都會產生冷啟動延遲的笨重框架，BoomOpen v5.5 引入了 **雙模式智慧複雜度閾值閘門（2-Mode Smart Complexity Threshold Gate）**：
-- **⚡ Mode A — 直接執行模式（0 秒冷啟動）**：針對日常問答、程式碼解釋、單一領域錯誤修復或僅觸及 **≤ 3 個檔案**（且未呼叫 `/cmd` 斜線指令）的明確修改，由主代理人**直接**執行、測試與驗證，同時嚴格執行 **務實雙層編碼規範（Pragmatic 2-Tier Coding Standards）** 與 **持續測試與除錯（Persistent Testing & Bug Fixing）**。
-- **🎻 Mode B — 嚴格多代理人編排模式（Strict Multi-Agent Orchestration）**：針對複雜功能開發（**> 3 個檔案** 或 **≥ 2 個領域**）或明確呼叫 `/cmd` 工作流指令時，啟動嚴格編排器模式，支援 **DAG 平行扇出（Parallel Fan-Out）**、**計畫直達執行者派發（Direct Plan-to-Executor Dispatch）**、**契約優先檔案鎖（`SHARED_CONTRACT` + `OWNED_FILES`）** 以及 **有狀態熱會話重用（`send_message`）**。
+- **⚡ Mode A — 直接執行模式（0 秒冷啟動）**：針對日常問答、程式碼解釋、單一領域錯誤修復或僅觸及 **≤ 2 個檔案**（且未呼叫 `/cmd` 斜線指令）的明確修改，由主代理人**直接**執行、測試與驗證，同時嚴格執行 **務實雙層編碼規範（Pragmatic 2-Tier Coding Standards）** 與 **持續測試與除錯（Persistent Testing & Bug Fixing）**。
+- **🎻 Mode B — 嚴格多代理人編排模式（Strict Multi-Agent Orchestration）**：針對複雜功能開發（**> 2 個檔案** 或 **≥ 2 個領域**）或明確呼叫 `/cmd` 工作流指令時，啟動嚴格編排器模式，支援 **DAG 平行扇出（Parallel Fan-Out）**、**計畫直達執行者派發（Direct Plan-to-Executor Dispatch）**、**契約優先檔案鎖（`SHARED_CONTRACT` + `OWNED_FILES`）** 以及 **有狀態熱會話重用（`send_message`）**。
 
-- **📚 1,450+ 巨型專業技能庫（零上下文膨脹）**：包含 **48 項核心技能 (`skills/`)** 與 **1,450+ 項垂直領域技能 (`skills_library/`)**，預編譯至 `matrix-skills/compact-index.json` 實現 `O(1)` 兩步按需載入，讓 AI 瞬間掌握後端、前端、行動端、遊戲開發 (Unity/Unreal/Godot)、AI/ML、BigQuery/資料工程、雲端原生/DevOps 與 OWASP 資安，且絕不污染提示詞視窗。
+- **📚 1,462 巨型專業技能庫（零上下文膨脹）**：包含 **22 項核心技能 (`skills/`)** 與 **1,440 項垂直領域技能 (`skills_library/`)**，預編譯至 `matrix-skills/compact-index.json` 實現 `O(1)` 兩步按需載入，讓 AI 瞬間掌握後端、前端、行動端、遊戲開發 (Unity/Unreal/Godot)、AI/ML、BigQuery/資料工程、雲端原生/DevOps 與 OWASP 資安，且絕不污染提示詞視窗。
 
 ---
 
@@ -49,8 +49,8 @@
 ```mermaid
 flowchart TD
     User["👤 使用者請求 / 斜線指令"] --> Gate{"🚦 雙模式智慧複雜度閘門"}
-    Gate -->|"≤ 3 個檔案, 單一領域, 無 /cmd"| ModeA["⚡ Mode A: 直接執行 (Tier 0)<br/>0 秒冷啟動 + 務實雙層編碼規範"]
-    Gate -->|"> 3 個檔案, ≥ 2 個領域, 或 /cmd"| ModeB["🎻 Mode B: 多代理人編排器 (Tier 1)<br/>Model: inherit (預設 Pro High)"]
+    Gate -->|"≤ 2 個檔案, 單一領域, 無 /cmd"| ModeA["⚡ Mode A: 直接執行 (Tier 0)<br/>0 秒冷啟動 + 務實雙層編碼規範"]
+    Gate -->|"> 2 個檔案, ≥ 2 個領域, 或 /cmd"| ModeB["🎻 Mode B: 多代理人編排器 (Tier 1)<br/>Model: inherit"]
 
     ModeB --> FanOut["🔀 階段 1: DAG 平行扇出<br/>(researcher + scouter | debugger + researcher)"]
     FanOut --> Plan["📋 階段 2: 契約優先規劃 (planner)<br/>鎖定 SHARED_CONTRACT + OWNED_FILES"]
@@ -65,13 +65,15 @@ flowchart TD
 
 ---
 
+<a id="pillars"></a>
+
 ## 🧠 v5.5 的 6 大核心支柱
 
 1. **🌐 五大平台 100% 統一支援 (`platforms/*`)**：
    - 基於統一架構原生支援 **Google Antigravity 2.0 (Gemini)**、**Claude Code**、**OpenAI Codex**、**Cursor** 與 **GitHub Copilot** 五大主流 AI 研發工具。
 2. **📏 務實雙層編碼規範（Pragmatic 2-Tier Coding Standards — 拒絕機械式切碎檔案）**：
    - **第一層（Tier 1 — 嚴格品質與安全底線，零容忍）**：單一職責原則（Single Responsibility）、**嚴禁顯式 `any`**、**嚴禁在正式環境程式碼遺留除錯 `console.log`**、非同步與 API 邊界必須包含 `try/catch` 與強型別錯誤處理、常數採用 `SCREAMING_SNAKE_CASE`、DRY（重複 ≥ 3 次抽離）、清理並排序匯入語句。
-   - **第二層（Tier 2 — 彈性結構指南，內聚優先）**：單一檔案軟目標為 `~200–350 行`，高內聚模組軟上限可達 `~400–450 行`（僅當 `>500 行` 或混雜多個領域職責時才強制拆分；測試、Schema/Types、CLI 與文件免除行數限制）。邏輯函式目標 `~20–40 行`（UI/處理函式 `~40–80 行`）。
+   - **第二層（Tier 2 — 彈性結構指南，內聚優先）**：單一檔案軟目標為 `~200–350 行`，高內聚模組軟上限可達 `~400–450 行`（僅當 `>500 行` 或混雜多個領域職責時才強制拆分；測試、Schema/Types 與文件免除行數限制）。邏輯函式目標 `~20–40 行`（UI/處理函式 `~40–80 行`）。
 3. **🎯 計畫直達執行者派發 & 有狀態熱子代理人重用 (`send_message`)**：
    - 一旦產出 `PLAN-{feature}.md`，編排器會將任務**直接派發**給領域工程師（`backend-engineer`、`frontend-engineer`、`database-architect` 等），徹底消除多餘的 `tech-lead` 中轉步驟。
    - 已啟動的子代理人會記錄在 **活動會話註冊表 (`Role → conversationId`)** 中，後續修復與迭代透過 `send_message` 直接喚醒，實現 **0 秒冷啟動** 與 **100% 上下文保留**。
@@ -79,10 +81,12 @@ flowchart TD
    - 跨領域計畫在啟動平行開發前，預先鎖定 API 介面契約、DTO 資料結構及互斥的檔案寫入所有權（`OWNED_FILES` 與 `READ_ONLY_FILES`），徹底杜絕平行覆寫衝突與介面不匹配。
 5. **🔍 5-Whys (SPIE v3.0) 根因除錯與 100% 潔淨 Git 樹**：
    - `debugger` 透過 3 個優先級假設與 **5-Whys 因果鏈**（`Why 1 直接症狀` → `Why 5 系統性根因`）定位問題。所有暫態產物（`PLAN`、`DEBUG`、`TEST`、`REVIEW`、`MAILBOX`）預設寫入 `<appDataDir>\brain\<conversation-id>\`，保持專案 Git 工作區 100% 潔淨。
-6. **🩺 內建 CLI 診斷工具 (`doctor` & `check`) 與 O(1) 技能索引**：
-   - `npm run doctor` 自動檢驗五大平台配置、21 個代理人、51 個團隊檔案、72 個指令及 `matrix-skills/compact-index.json`（索引 `1,450+` 項技能）。`npm run check <dir>` 自動執行雙層程式碼規範檢查。
+6. **🩺 內建 CLI 診斷工具 (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check` & `doctor`) 與 O(1) 技能索引**：
+   - `npm run doctor` 自動檢驗五大平台配置、21 個代理人、72 個團隊檔案、84 個指令檔案（`79` 個工作流 + `5` 個 `_ref/` 協定）及 `matrix-skills/compact-index.json`（索引 `1,462` 項技能）。`boomopen check <dir>` 僅檢查可機械驗證的規則：檔案行數、TypeScript 中的顯式 `any` 以及遺留的 `console.log`；其餘規範屬於對代理人的指令。 `boomopen research`、`boomopen design`、`boomopen plan`、`boomopen cook`、`boomopen ledger` 與 `boomopen conduct` 提供確定性契約編譯、分片交接包產生與跨引擎委員會編排。
 
 ---
+
+<a id="platforms"></a>
 
 ## 💻 支援的 AI 程式設計平台
 
@@ -111,23 +115,31 @@ npm run install:cursor        # Cursor AI Editor
 npm run install:copilot       # GitHub Copilot (VS Code)
 npm run install:all           # 一鍵安裝全部 5 大平台
 
-# 3. 執行健康診斷、雙層編碼規範檢查與自動化測試套件
+# 3. 檢驗安裝結果（唯讀）
 npm run doctor
-npm run check ./cli
-npm test
+npm link
+boomopen research validate path/to/RESEARCH.md
+boomopen design validate path/to/DESIGN.md
+boomopen plan validate path/to/PLAN.md
+boomopen cook preflight --plan path/to/PLAN.md
+boomopen check path/to/your/project --strict-phase --no-stubs
+boomopen ledger status
+boomopen conduct probe
 ```
+
+> 本套件**未發佈到 npm**，請僅從本儲存庫安裝。可選：`npm link` 會把 `boomopen` 指令加入 PATH（不會從 npm 下載任何內容）。
 
 ---
 
 ## 🎛️ 統一設定與執行模式選擇 (`/settings` 控制中心)
 
-BoomOpen v5.5 內建**零延遲統一控制中心**，支援在 `< 10ms` 內跨全部 **5 大平台**切換執行模式（`auto`、`mode_a`、`mode_b`、`team`）、4 套一鍵預設與 12 項系統參數（首輪對話延遲為 **0ms**）：
+BoomOpen v5.5 內建**零延遲統一控制中心**，支援在 `< 10ms` 內跨全部 **5 大平台**切換執行模式（`auto`、`mode_a`、`mode_b`、`team`）、4 套一鍵預設與 20 項系統參數（+ 2 項行數上限設定）（首輪對話延遲為 **0ms**）：
 
 | 預設配置 (`Preset`) | 執行模式 (`execution.mode`) | 預設變體 | 自然語言深度調研 (`naturalLanguageResearchTrigger`) | 程式碼規範 (`codingStandards`) | 適用場景 |
 |:---|:---|:---:|:---:|:---:|:---|
-| **⚡ `smart-hybrid`** *(預設推薦)* | **`auto`**（`≤ 3 個檔案` 走 Mode A 極速直連；`> 3 個檔案` 或 `/cmd` 走 Mode B 多代理） | `auto` | **`auto_team`** *(自動路由至 `/brainstorm:team` 黃金三角三人組)* | `pragmatic` (`400/500` 行) | 日常全端研發首選：小任務零延遲，大架構深度協同 |
+| **⚡ `smart-hybrid`** *(預設推薦)* | **`auto`**（`≤ 2 個檔案` 走 Mode A 極速直連；`> 2 個檔案` 或 `/cmd` 走 Mode B 多代理） | `auto` | **`auto_team`** *(自動路由至 `/research:team` / `/brainstorm:team` 黃金三角三人組)* | `pragmatic` (`400/500` 行) | 日常全端研發首選：小任務零延遲，大架構深度協同 |
 | **🚀 `solo-fast`** | **`mode_a`** *(強制單一代理直接執行，0 秒子代理開銷)* | `fast` | `off` *(直接回覆，除非顯式輸入 `/brainstorm`)* | `relaxed` (`600/800` 行) | 緊急熱修復、快速原型驗證、小型腳本與極致節省 Token |
-| **🧠 `deep-architect`** | **`mode_b`** *(所有任務強制啟用 Mode B 多代理編排)* | `hard` | `auto_hard` *(自動執行 `/brainstorm:hard` 五維深度調研)* | `strict` (`300/400` 行) | 複雜系統架構設計、從零新建專案與跨領域重構 |
+| **🧠 `deep-architect`** | **`mode_b`** *(所有任務強制啟用 Mode B 多代理編排)* | `hard` | `auto_hard` *(自動執行 `/research:hard` / `/brainstorm:hard` 五維深度調研)* | `strict` (`300/400` 行) | 複雜系統架構設計、從零新建專案與跨領域重構 |
 | **🔺 `adversarial-team`** | **`team`** *(所有工作流強制啟用 3 代理黃金三角 `:team`)* | `team` | **`auto_team`** *(3 代理經由 `MAILBOX` 交叉對抗評審)* | `strict` (`300/400` 行) | 核心生產系統、金融級安全審計與零缺陷交付 |
 
 ### 三種切換方式（聊天框 `/settings`、本地 Web 面板、終端機 CLI）
@@ -142,13 +154,17 @@ BoomOpen v5.5 內建**零延遲統一控制中心**，支援在 `< 10ms` 內跨�
 /settings mode auto | mode_a | mode_b | team  # 單獨覆寫執行模式 (execution.mode)
 
 # 2. 啟動本地 Web 視覺化控制中心 (http://127.0.0.1:4567)
-npm run settings:ui
+boomopen settings --ui
 
 # 3. 終端機 CLI 命令（支援全域 ~/.boomopen/settings.json 與專案級 ./.boomopen.json）
-npm run settings -- status
-npm run settings -- preset adversarial-team
-npm run settings -- reset
+boomopen settings status
+boomopen settings preset adversarial-team
+cd path/to/your/project
+boomopen settings set execution.mode mode_a --project
+boomopen settings reset
 ```
+
+> `--project` 一律在你執行指令的資料夾寫入 `./.boomopen.json`，請在你的專案目錄中執行，而非套件的 clone 目錄。未執行 `npm link` 時，請把 `boomopen` 換成 `node /path/to/BoomOpen-Workflow-Kit/cli/install.js`。
 
 ---
 
@@ -166,36 +182,42 @@ npm run settings -- reset
 | **`/design`** | `:fast`, `:hard`, `:team` | 系統架構、資料庫結構與 UI/UX 設計規範生成（`DESIGN.md`） |
 | **`/docs`** | `:core`, `:business`, `:audit` | 產生或同步雙層結構化架構文件與業務文件（`./documents/`） |
 | **`/deploy`** | `:check`, `:preview`, `:production`, `:rollback` | 部署前品質閘門檢查、預覽環境發布、正式環境上線與安全回滾 |
+| **`/research`** | `:fast`, `:hard`, `:team` | 自主深度研究引擎（4 源三角驗證、3 波次迭代搜尋與 3 向量黃金三角委員會） |
 | **`/brainstorm`** | `:fast`, `:hard`, `:team` | 蘇格拉底式需求釐清、架構權衡分析與方案腦力激盪 |
 | **`/report`** | `:fast`, `:hard`, `:team` | 產生包含指標統計與架構圖表的技術及管理總結報告 |
+| **`/autopilot`** | `:init`, `:run`, `:audit` | 跨工作階段多階段專案自動駕駛儀（基於 `.boomopen/project-ledger.json` 帳本與 4 層零遺漏棘輪門禁） |
+| **`/conduct`** | `:council`, `:pipeline` | 跨引擎指揮官與多引擎並行委員會（`boomopen conduct`，產生 4 部分共識綜合報告） |
 | **`/orchestrate`** | — | 跨多個領域的自訂多代理人管線協同編排 |
-| **`/settings` / `/config`** | `preset`, `mode`, `set`, `ui` | 統一控制中心：切換 `Auto` / `Mode A` / `Mode B` / `Team`、套用預設或開啟本地 Web 介面 (`--ui`) |
+| **`/settings`** | `preset`, `mode`, `set`, `ui` | 統一控制中心：切換 `Auto` / `Mode A` / `Mode B` / `Team`、套用預設或開啟本地 Web 介面 (`--ui`) |
 | **`/save` / `/recap`** | — | 儲存會話交接狀態（`SESSION-HANDOVER.md`）並在 `< 5秒` 內快速恢復專案上下文 |
 
 ---
 
-## 🤖 21 位專家級代理人 & 17 支黃金三角團隊
+<a id="agents"></a>
+
+## 🤖 21 位專家級代理人 & 18 支黃金三角團隊
 
 | 領域分類 | 專家級代理人 (`agents/*.md`) | 黃金三角對抗團隊 (`agents/teams/*-team/`) |
 |----------|-----------------------------------|------------------------------------------------|
 | **工程實作與交付** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer`, `database-architect`, `devops-engineer` | `backend-team`, `frontend-team`, `fullstack-team`, `mobile-team`, `game-team`, `database-team`, `devops-team` |
-| **架構設計與規劃** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `project-team`, `design-team` |
-| **品質、安全與除錯** | `debugger`, `tester`, `reviewer`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `review-team`, `security-team`, `performance-team` |
+| **架構設計與規劃** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
+| **品質、安全與除錯** | `debugger`, `tester`, `reviewer`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
 | **技術調研與知識管理** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
 
 ---
 
-## 📚 1,450+ 專業技能寶庫（48 項核心技能 + 1,450+ 項領域技能）
+## 📚 1,460+ 專業技能寶庫（22 項核心技能 + 1,440 項領域技能）
 
 BoomOpen 內建開源界規模最大的 AI 工程技能矩陣之一，透過 **兩步 O(1) 漸進式檢索**（`<skills>` 核心匹配 → `matrix-skills/compact-index.json` 索引檢索 → 按需載入 `SKILL.md`）實現 **0 閒置 Token 消耗**：
 
 | 技能層級 / 領域 | 數量 | 代表性技能與核心能力 | 載入機制 |
 |:---|:---:|:---|:---|
-| **⚡ Tier 1：核心技能 (`skills/`)** | **48** | `clean-code`, `systematic-debugging`, `plan-writing`, `brainstorming`, `frontend-design`, `api-patterns`, `database-design`, `testing-patterns`, `vulnerability-scanner`, `skill-seeker` | 預載入於 `<skills>`，首輪零延遲呼叫 |
-| **🌐 Web、後端與分散式系統** | **380+** | Next.js/React 19、FastAPI、NestJS、Go/Rust 微服務、GraphQL、gRPC、Redis/Kafka 事件驅動架構、多租戶 SaaS | 經由 `compact-index.json` 按需載入 (`skills_library/`) |
-| **🤖 AI、LLM 智慧體與資料工程** | **310+** | RAG 管線、LangGraph/MCP 伺服器、提示詞工程、Vertex AI、BigQuery 分析、dbt、Spark、向量資料庫 | 經由 `compact-index.json` 按需載入 (`skills_library/`) |
-| **☁️ 雲端原生、DevOps、K8s 與資安** | **290+** | Terraform/OpenTofu、AWS/GCP/Azure 架構、Docker/K8s GitOps、CI/CD 管線、OWASP Top 10 資安稽核、零信任驗證 | 經由 `compact-index.json` 按需載入 (`skills_library/`) |
-| **📱 行動端、遊戲引擎與垂直產業** | **450+** | iOS Swift/SwiftUI、Android Kotlin、React Native、Flutter、Unity 6、Unreal Engine 5、Godot 4、WebGL/Three.js、量化金融、Web3 | 經由 `compact-index.json` 按需載入 (`skills_library/`) |
+| **⚡ Tier 1：核心技能 (`skills/`)** | **22** | `clean-code`, `debugger`, `plan-writing`, `brainstorming`, `frontend-design`, `frontend-architecture`, `design-spec`, `api-patterns`, `database-design`, `testing-patterns`, `skill-seeker` | 預載入於 `<skills>`，首輪零延遲呼叫 |
+| **🎨 UI/UX 視覺工藝、動效與設計系統** | **42** | Anti-AI-Slop 視覺工藝、OKLCH 感知色彩與 Bento 網格、Motion v12 + CSS View Transitions、無頭原語 (`cmdk`/`vaul`/`sonner`)、Figma MCP + W3C DTCG 設計令牌、WCAG 2.2 AA/AAA、iOS 18 HIG 與 Material 3 Expressive | 經由 `compact-index.json` 按需載入 (`matrix-skills/design.yaml`) |
+| **🌐 Web、後端與分散式系統** | **390+** | Next.js/React 19、FastAPI、NestJS、Go/Rust 微服務、GraphQL、gRPC、Redis/Kafka 事件驅動架構、多租戶 SaaS | 經由 `compact-index.json` 按需載入 (`skills_library/`) |
+| **🤖 AI、LLM 智慧體與資料工程** | **320+** | RAG 管線、LangGraph/MCP 伺服器、提示詞工程、Vertex AI、BigQuery 分析、dbt、Spark、向量資料庫 | 經由 `compact-index.json` 按需載入 (`skills_library/`) |
+| **☁️ 雲端原生、DevOps、K8s 與資安** | **300+** | Terraform/OpenTofu、AWS/GCP/Azure 架構、Docker/K8s GitOps、CI/CD 管線、OWASP Top 10 資安稽核、零信任驗證 | 經由 `compact-index.json` 按需載入 (`skills_library/`) |
+| **📱 行動端、遊戲引擎與垂直產業** | **410+** | iOS Swift/SwiftUI、Android Kotlin、React Native、Flutter、Unity 6、Unreal Engine 5、Godot 4、WebGL/Three.js、量化金融、Web3 | 經由 `compact-index.json` 按需載入 (`skills_library/`) |
 
 ---
 
@@ -203,17 +225,17 @@ BoomOpen 內建開源界規模最大的 AI 工程技能矩陣之一，透過 **�
 
 ```text
 BoomOpen-Workflow-Kit/
-├── agents/                  # 21 個專家代理人定義 + 17 支黃金三角團隊（51 個角色檔案）
-├── cli/                     # 安裝器 (install.js)、健康診斷 (doctor.js)、雙層程式碼檢查器 (checker.js) 與單元測試
-├── commands/                # 72 個斜線指令工作流 (:fast, :hard, :team) + _ref/ 共享協定
+├── agents/                  # 21 個專家代理人定義 + 18 支黃金三角團隊（54 個角色檔案）
+├── cli/                     # 安裝器 (install.js)、診斷 (doctor.js)、檢查器 (checker.js)、設定中心 (settings.js), research.js, design.js, plan.js, cook.js、帳本 (ledger.js) 與跨引擎指揮官 (conductor.js)
+├── commands/                # 79 個斜線指令工作流 (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 個 _ref/ 共享協定 (共 84 個檔案)
 ├── documents/               # 雙層架構、領域模型、原始碼底座與編碼規範文件
 ├── i18n/                    # 多語言國際化文件目錄（包含 16 種主流語言的完整譯本）
-├── matrix-skills/           # 領域技能矩陣 YAML + 預編譯 compact-index.json (1,450+ 項技能)
+├── matrix-skills/           # 領域技能矩陣 YAML + 預編譯 compact-index.json (1,462 項技能)
 ├── platforms/               # 五大平台統一配置範本 (antigravity/, claude/, codex/, copilot/, cursor/)
 ├── rules/                   # Mode B 按需載入核心規則 (CORE, PHASES, AGENTS, TEAMS, SKILLS, ERRORS, REFERENCE)
 ├── scripts/                 # Python 自動化檢驗與輔助腳本 (checklist.py, verify_all.py 等)
-├── skills/                  # 48 項核心技能 (clean-code, debugger, plan-writing, frontend-design 等)
-├── skills_library/          # 1,450+ 項專業領域按需載入技能庫（透過兩步快速檢索載入）
+├── skills/                  # 22 項核心技能 (clean-code, debugger, plan-writing, frontend-design 等)
+├── skills_library/          # 1,440 項專業領域按需載入技能庫（透過兩步快速檢索載入）
 └── GEMINI.md | CLAUDE.md | CODEX.md | COPILOT.md | CURSOR.md | AGENT.md
 ```
 
@@ -221,5 +243,5 @@ BoomOpen-Workflow-Kit/
 
 ## 📄 開源授權與安全政策
 
-- **開源授權**：本專案基於 [MIT 授權條款](../LICENSE) 開源發布。版權所有 © 2026 **Kennyboom (BoomOpen)**。
+- **開源授權**：本專案基於 [MIT 授權條款](../LICENSE) 開源發布。版權所有 © 2026 **BoomOpen Labs**。`skills_library/` 中的第三方技能沿用其上游授權，詳見 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)。
 - **安全政策**：請參閱 [SECURITY.md](../SECURITY.md) 了解內建安全防護機制及漏洞私密通報流程。

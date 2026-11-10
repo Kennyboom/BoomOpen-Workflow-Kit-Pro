@@ -9,6 +9,8 @@ metadata:
   version: "1.0"
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/auth.py`, `scripts/gmail.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Gmail
 
 Lightweight Gmail integration with standalone OAuth authentication. No MCP server required.

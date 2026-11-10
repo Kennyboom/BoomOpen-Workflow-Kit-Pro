@@ -13,6 +13,7 @@ Common installation paths:
 
 - Plugin system: `~/.claude/plugins/marketplaces/playwright-skill/skills/playwright-skill`
 - Manual global: `~/.claude/skills/playwright-skill`
+- BoomOpen vault: `~/.<tool>/skills_library/playwright-skill` (e.g. `~/.claude/skills_library/playwright-skill`)
 - Project-specific: `<project>/.claude/skills/playwright-skill`
 
 # Playwright Browser Automation

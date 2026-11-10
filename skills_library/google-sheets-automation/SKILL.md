@@ -9,6 +9,8 @@ metadata:
   version: "1.0"
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/auth.py`, `scripts/sheets.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Google Sheets
 
 Lightweight Google Sheets integration with standalone OAuth authentication. No MCP server required. Full read/write access.

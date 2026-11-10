@@ -34,9 +34,9 @@ BoomOpen Workflow Kit separates **non-negotiable safety/quality rules (Tier 1)**
 
 | Command | Script | What It Verifies |
 |---------|--------|------------------|
-| `npm run doctor` (`node cli/install.js doctor`) | [`cli/doctor.js`](../../cli/doctor.js) | Verifies `~/.gemini/GEMINI.md` (`≤ 350` lines), `skills.json`, `SKILL.md`, `rules/*.md`, `commands/*.md`, `agents/*.md`, `agents/teams/**/*.md` (`≤ 450` lines, 0 mojibake, 0 legacy refs), and `matrix-skills/compact-index.json` (`1,430+` skills). |
+| `npm run doctor` (`node cli/install.js doctor`) | [`cli/doctor.js`](../../cli/doctor.js) | From a kit checkout: the kit source (all 5 platform bundles, `SKILL.md`, `rules/*.md`, 77 command files in `commands/**/*.md` including `_ref`, 21 agents, 52 team files in `agents/teams/**/*.md`, i18n READMEs; docs `≤ 450` lines, 0 mojibake, 0 legacy refs) and `matrix-skills/compact-index.json` (`1,462` indexed skills). For every installed platform (Antigravity, Claude Code, Codex, Cursor, Copilot): entry files (kit block present, kit content `≤ 350` lines), framework files (`rules/`, `commands/`, `agents/`, `scripts/`, workflows, hook, index), skills vault and install manifest. Plus `~/.boomopen/settings.json`. |
 | `npm run check` (`node cli/install.js check [dir]`) | [`cli/checker.js`](../../cli/checker.js) | Audits source files against Pragmatic 2-Tier Coding Standards: soft warning at `401–500` lines, hard violation at `> 500` lines (test/d.ts/CLI exempt), hard violation on explicit TypeScript `any`, and warning on leftover `console.log` in non-CLI/non-test code. |
-| `npm run lint` | `node --check` | Validates JavaScript syntax across `cli/install.js`, `cli/doctor.js`, and `cli/checker.js`. |
+| `npm run lint` | [`.github/scripts/check-syntax.js`](../../.github/scripts/check-syntax.js) | Runs `node --check` on every JavaScript file in `cli/`, `platforms/`, `.github/scripts/` and `web/build/`. |
 
 ---
 

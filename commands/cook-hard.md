@@ -1,151 +1,121 @@
 ---
-description: ⚡⚡⚡ Full Feature — Complete feature development lifecycle with DAG Parallel Fan-Out & Direct Plan Dispatch
+description: "⚡⚡⚡ Full Feature — Complete feature lifecycle with Turn-1 Fast-Forward, 3-Wave Contract-First Execution & Parallel Verification"
 version: "5.5"
 category: engineering
 execution-mode: execute
 ---
 
-# /cook:hard — Complete Feature Development (DAG Parallel Fan-Out & Contract-First Dispatch)
+# /cook:hard — Complete Feature Development (3-Wave Contract-First Sharding)
 
-> **MISSION**: Full feature development with parallel research + scouting, design, contract-first planning, direct plan-to-executor implementation, and validation (`Model: "inherit"` Pro High default).
+> **MISSION**: End-to-end feature development with **Turn-1 Fast-Forward (`boomopen cook state`)**, elastic parallel discovery (`scouter#1..k` + `researcher#1..k`), conditional 6-Block UI/UX design (`DESIGN_CONTRACT`), machine-validated planning (`boomopen plan validate`), **3-Wave Contract-First Execution (`boomopen cook packets` + `verify-wave`)**, and parallel verification (`Model: "inherit"` Pro High default).
 
 <feature>$ARGUMENTS</feature>
 
 ---
 
-## ⚡ TURN-1 ZERO-TAX DISPATCH & ON-DEMAND RULES
+## ⚡ TURN-1 FAST-FORWARD STATE MACHINE & COGNITIVE LOAD SHARDING
 
-**LOAD now** (in order; path `./rules/` or `~/.{TOOL}/skills/boomopen-workflow-kit/rules/`):
-1. `CORE.md` — 2-Mode Gate, Quality-First Model Policy, Brain Artifact Routing
-2. `PHASES.md` — DAG-Aware Parallel Fan-Out, Contract-First Dispatch & Warm Session Reuse
-3. `AGENTS.md` — Tiered Execution (`Model: "inherit"`), Structured Handoff Packet (`OWNED_FILES`, `SHARED_CONTRACT`)
-
-**Skills Resolution**: When delegating, load `SKILLS.md` on-demand (uses `<skills>` → `matrix-skills/compact-index.json` / `skill-seeker`).
-
----
-
-## 🔀 TIERED EXECUTION, MODEL POLICY & WARM SESSION REUSE
-
-| Tier | When | Action |
-|------|------|--------|
-| **TIER 1** | Antigravity 2.0 Native Sub-Agents (`define_subagent`, `invoke_subagent`, `send_message`) or `runSubagent` EXISTS | Invoke isolated sub-agent with `Model: "inherit"` (Pro High default; NEVER `flash_lite`). Record `conversationId` and reuse warm sessions via `send_message`. |
-| **TIER 2** | Tool MISSING or system error | EMBODY agent file (FALLBACK) |
+1. **Zero Pre-Flight Tax**: Core orchestration laws and the **5-Field Handoff Packet** are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md` — launch the active stage **immediately on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")`.
+2. **⚡ Unified Turn-1 Fast-Forward State Machine (`boomopen cook state`)**:
+   Inspect `<appDataDir>\brain\<conversation-id>\` (or run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook state --artifact-dir "<appDataDir>/brain/<conversation-id>"`) on Turn 1:
+   - **1. `PLAN-{feature}.md` exists (Approved-Plan Continuation Gate)** → **Fast-Forward directly to Stage 4 (3-Wave Execution)**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook preflight "<plan-path>"` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>" [--design "<design-path>"]` and dispatch Wave 1 shards immediately (**0 scouting, 0 design, 0 re-planning!**).
+   - **2. `DESIGN-{feature}.md` exists (no `PLAN` yet — Approved-Design Gate)** → **Fast-Forward to Stage 3 (Planning)**: Extract `DESIGN_CONTRACT` via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design contract "<design-path>"` and invoke `planner` directly (reusing `SCOUT`/`RESEARCH` if present, or running a fast `scouter` only if missing).
+   - **3. `SCOUT-{feature}.md` or `RESEARCH-{feature}.md` exists (no `DESIGN`/`PLAN` yet)** → **Fast-Forward past Stage 1 (Discovery)**: Reuse existing discovery artifacts and start at Stage 2 (if UI needed) or Stage 3 (Planning).
+3. **Cognitive Load Sharding Law (`≤ 3–4 files/sub-agent` or `1` research vector)**:
+   $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\left\lceil \frac{\text{Total Target Files}}{3.5} \right\rceil,\; \text{Distinct Domains},\; \text{Research Vectors}\right)\right)$$
+   Record `role#shard -> conversationId` for every spawned sub-agent (`TypeName: "self"`, `Model: "inherit"`, NEVER `flash_lite`) to reuse warm sessions via `send_message`.
 
 ---
 
-## 📁 DELIVERABLE FILES (BRAIN ARTIFACTS FIRST ON ANTIGRAVITY 2.0)
+## 📁 DELIVERABLE FILES & DAG STAGE MATRIX (CLEAN GIT TREE)
 
-> **Antigravity 2.0 Default**: Write all transient deliverables to `<appDataDir>\brain\<conversation-id>\` to keep the Git working tree 100% clean. Use `./reports/{topic}/` only on non-Antigravity tools or when explicitly requested.
+> **Cohesive Single-File Rule (`<= 500` lines)**: Write transient deliverables to `<appDataDir>\brain\<conversation-id>\` as single cohesive files (`ArtifactMetadata: { Summary, UserFacing: true, RequestFeedback: false }` during autonomous `/cook:hard`; NEVER split into `{name}/` folders).
 
-| Agent | Antigravity 2.0 Brain Artifact (Default) | Workspace Fallback |
-|-------|------------------------------------------|--------------------|
-| `brainstormer` | `<appDataDir>\brain\<conversation-id>\BRAINSTORM-{feature}.md` | `./reports/{topic}/brainstorms/BRAINSTORM-{feature}.md` |
-| `researcher` | `<appDataDir>\brain\<conversation-id>\RESEARCH-{feature}.md` | `./reports/{topic}/researchers/RESEARCH-{feature}.md` |
-| `scouter` | `<appDataDir>\brain\<conversation-id>\SCOUT-{feature}.md` | `./reports/{topic}/scouts/SCOUT-{feature}.md` |
-| `designer` | `<appDataDir>\brain\<conversation-id>\DESIGN-{feature}.md` | `./reports/{topic}/designs/DESIGN-{feature}.md` |
-| `planner` | `<appDataDir>\brain\<conversation-id>\PLAN-{feature}.md` | `./reports/{topic}/plans/PLAN-{feature}.md` |
-
-All deliverables → Write in the user's input language (technical terms in English). Code/comments in English.
+| Stage | Workflow Phase | Execution Mode & Deterministic CLI Gate | Output Artifact (`RequestFeedback: false`) |
+|-------|----------------|-----------------------------------------|--------------------------------------------|
+| **Stage 1** | **Elastic Discovery (`researcher#1..k` + `scouter#1..k`)** | ⚡ Turn-1 Parallel Fan-Out *(Skipped if `SCOUT`/`RESEARCH`/`PLAN` exists)* | `RESEARCH-{feature}.md`, `SCOUT-{feature}.md` |
+| **Stage 2** | **Conditional UI/UX Design (`designer`)** | Sequential only when UI is needed *(Skipped if no UI or `DESIGN`/`PLAN` exists)* → `boomopen design validate` | `DESIGN-{feature}.md` |
+| **Stage 3** | **Contract-First Planning (`planner`)** | Locks DB + API + `DESIGN_CONTRACT` into 3-Wave DAG *(Skipped if `PLAN` exists)* → `boomopen plan validate` | `PLAN-{feature}.md` |
+| **Stage 4** | **3-Wave Contract-First Implementation** | 🎯 Wave 1 (Foundation) → Wave 2 (Parallel Shards `≤ 3–4` files) via `boomopen cook packets` + `cook verify-wave` | Source Code + `[x]` in `PLAN-{feature}.md` |
+| **Stage 5** | **Wave 3: Parallel Verification & Adversarial Review** | ⚡ Parallel `tester#1..k` + `reviewer` (+ Cross-Engine Critic & `python` UI audits) + `check --strict-phase --no-stubs` | `REVIEW-{feature}.md` (`<= 300` lines) |
 
 ---
 
-## 🔗 DAG PHASE DEPENDENCIES & PARALLEL FAN-OUT
+## 🌊 STAGE 1: ELASTIC PARALLEL DISCOVERY *(Skipped When Prior Artifacts Exist)*
 
-| Stage | Phase(s) | Execution Mode | Requires | Blocking |
-|-------|----------|----------------|----------|:--------:|
-| **Stage 1** | P1: Brainstorm | Sequential (if unclear) | User request | No |
-| **Stage 2** | **P2: Research + P3: Scout** | **⚡ PARALLEL FAN-OUT** (same turn) | User request / P1 | No |
-| **Stage 3** | **P3.5: DB Design + P4: UI Design** | **⚡ PARALLEL FAN-OUT** (if both needed) | P2 + P3 outputs | Conditional |
-| **Stage 4** | P5: Planning (`SHARED_CONTRACT` + `OWNED_FILES`) | Sequential Gate | `RESEARCH` + `SCOUT` (+ `DESIGN`) | **YES** |
-| **Stage 5** | P6: Direct Implementation | **🎯 Direct Plan-to-Executor** (Parallel if disjoint `OWNED_FILES`) | **`PLAN-{feature}.md`** | **YES** |
-| **Stage 6** | P7: Testing | Sequential Gate (fix via warm `send_message`) | `PLAN` + Code | **YES** |
-| **Stage 7** | P8: Review | Sequential Gate (fix via warm `send_message`) | `PLAN` + Code + Tests | **YES** |
+Launch `researcher#1..k` AND `scouter#1..k` **concurrently on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")`:
+- **`researcher#1..k` (`agents/researcher.md`)**: Map requirements, architectural patterns, `1,462` skills, and run `python ~/.{TOOL}/skills_library/ui-ux-pro-max/scripts/search.py "<query>" --design-system` when UI is involved → `RESEARCH-{feature}.md`.
+- **`scouter#1..k` (`agents/scouter.md`)**: Map existing modules, DB schemas/migrations, CSS/Tailwind tokens, reusable components, and exact target paths (`≤ 3–4` heavy files/shard) → `SCOUT-{feature}.md`.
 
 ---
 
-## 🎭 Phase 1: REQUIREMENTS CLARIFICATION (`brainstormer`)
+## 🎨 STAGE 2: CONDITIONAL UI/UX DESIGN *(Only If Feature Has UI & No `DESIGN-{feature}.md` Exists)*
 
-| Agent | `brainstormer` (`Model: "inherit"`) |
-|-------|-------------------------------------|
-| Goal | Full requirements discovery (use `ask_question` UI widget if ambiguous) |
-| Output | `<appDataDir>\brain\<conversation-id>\BRAINSTORM-{feature}.md` |
-| Exit | Requirements clear, constraints identified, success criteria defined |
-
----
-
-## ⚡ PARALLEL FAN-OUT: Phase 2 (`researcher`) + Phase 3 (`scouter`)
-
-> **🚀 DAG FAN-OUT DIRECTIVE**: Launch `researcher` AND `scouter` **concurrently in a single turn** via two `invoke_subagent` calls (`Model: "inherit"`). Wait for both via Reactive Async Wakeup before advancing to Stage 3/4.
-
-### 🎭 Phase 2: RESEARCH (`researcher`)
-- **Goal**: Research best practices, libraries, and architectural patterns.
-- **Output**: `<appDataDir>\brain\<conversation-id>\RESEARCH-{feature}.md`
-
-### 🎭 Phase 3: CODEBASE ANALYSIS (`scouter`)
-- **Goal**: Map existing architecture, file locations, and integration points.
-- **Output**: `<appDataDir>\brain\<conversation-id>\SCOUT-{feature}.md`
+- If UI is needed and `DESIGN-{feature}.md` does not yet exist: spawn `designer` (`agents/designer.md`, `TypeName: "self"`, `Model: "inherit"`) to author the cohesive **6-Block `DESIGN-{feature}.md`** (`<= 500` lines, OKLCH `@theme inline` tokens, 5-State Matrix, WCAG 2.2 AA, and fenced `DESIGN_CONTRACT`), then validate and extract:
+  ```bash
+  node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design validate "<design-path>"
+  node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design contract "<design-path>"
+  ```
+- *(Note: Database schema design is NOT a separate pre-planning turn — fold additive DB schema/migrations directly into `PLAN-{feature}.md` **Wave 1 (`database-architect#schema`)**!)*
 
 ---
 
-## ⚡ CONDITIONAL PARALLEL FAN-OUT: Phase 3.5 (`database-architect`) + Phase 4 (`designer`)
+## 📋 STAGE 3: CONTRACT-FIRST 3-WAVE PLANNING *(Skipped If `PLAN-{feature}.md` Already Exists)*
 
-> If the feature requires both DB schema changes and UI design, launch `database-architect` and `designer` **in parallel in a single turn** (`Model: "inherit"`).
-
-### 🎭 Phase 3.5: DATABASE DESIGN (If Data Changes — `database-architect`)
-- **Goal**: Schema design, indexes, and migration strategy.
-
-### 🎭 Phase 4: UI/UX DESIGN (If UI Needed — `designer`)
-- **Goal**: Visual hierarchy, 5 UI states, accessibility, and `generative_ui` / Mermaid flow.
-- **Output**: `<appDataDir>\brain\<conversation-id>\DESIGN-{feature}.md`
+Spawn `planner` (`agents/planner.md`, `TypeName: "self"`, `Model: "inherit"`) to author `<appDataDir>\brain\<conversation-id>\PLAN-{feature}.md` (`<= 500` lines) structured into the **3-Wave Contract-First Topology**:
+1. **`SHARED_CONTRACT`**: Embed compilable DB/API TypeScript/Zod DTOs **plus** `DESIGN_CONTRACT` (`@theme inline` CSS + Component Props).
+2. **Wave 1 (Foundation, Schema & Shared Primitives Lock)**: `database-architect#schema` (migrations/schema) + `backend-engineer#contracts` (shared DTO/Zod/error types) + `frontend-engineer#tokens-primitives` (`globals.css` `@theme inline` & shared UI primitives, `≤ 3–4 OWNED_FILES`/shard).
+3. **Wave 2 (Parallel Feature Shards `Depends On: WAVE-1`, `Parallelizable: Yes`)**: `backend-engineer#api-1..k` + `frontend-engineer#screen-1..k` (+ `mobile-engineer#1..k`), each owning `≤ 3–4` disjoint files with Wave 1 foundation files locked in `READ_ONLY_FILES`.
+4. **Deterministic Gate**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js plan validate "<plan-path>"` (`--sync-ledger` if `≥ 3` waves or `13+` files; must exit `0`).
 
 ---
 
-## 🎭 Phase 5: CONTRACT-FIRST PLANNING (`planner`)
+## 🔨 STAGE 4: 3-WAVE CONTRACT-FIRST IMPLEMENTATION (`boomopen cook packets` & `verify-wave`)
 
-| Agent | `planner` (`Model: "inherit"`) |
-|-------|--------------------------------|
-| Prerequisite | **READ** `RESEARCH-{feature}.md` + `SCOUT-{feature}.md` (+ `DESIGN-{feature}.md`) |
-| Goal | Create self-contained implementation plan with locked `SHARED_CONTRACT` and disjoint `OWNED_FILES` per task |
-| Output | `<appDataDir>\brain\<conversation-id>\PLAN-{feature}.md` (or `./reports/{topic}/plans/PLAN-{feature}.md`) |
-| Exit | Plan created, `SHARED_CONTRACT` + `OWNED_FILES` defined, risks & rollback identified |
-
----
-
-## 🎭 Phase 6: DIRECT IMPLEMENTATION (Orchestrator → Domain Engineers)
-
-| Agent | Orchestrator dispatches **directly** from `PLAN-{feature}.md` to `backend-engineer`, `frontend-engineer`, `database-architect` (`Model: "inherit"`) — **no middleman `tech-lead` hop** |
-|-------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Prerequisite | **READ and FOLLOW** `<appDataDir>\brain\<conversation-id>\PLAN-{feature}.md` |
-| Handoff Packet | Pass `MISSION`, `SHARED_CONTRACT`, `OWNED_FILES (Write Permitted)`, `READ_ONLY_FILES`, and `VERIFICATION` to each engineer and save their `conversationId` |
-| Parallelism | When Backend and Frontend tasks have locked `SHARED_CONTRACT` and disjoint `OWNED_FILES`, launch `backend-engineer` + `frontend-engineer` **in parallel in a single turn** (`Workspace: "inherit"` or `"branch"`) |
-| Verification | Run build/typecheck and `node cli/install.js check <dir>` to verify Pragmatic 2-Tier Coding Standards (≤ 400 soft / ≤ 500 hard lines, 0 `any`) |
-
----
-
-## 🎭 Phase 7: TESTING (`tester`)
-
-| Agent | `tester` (`Model: "inherit"`) |
-|-------|-------------------------------|
-| Prerequisite | **READ** `PLAN-{feature}.md` + Code changes |
-| Goal | Write and run tests verifying every checkpoint in `PLAN-{feature}.md`. If any test fails, send fix request to the warm engineer via `send_message(Recipient: conversationId)`. |
-| Output | `<appDataDir>\brain\<conversation-id>\TEST-{feature}.md` |
-| Exit | All tests pass, deterministic verification complete |
+1. **Wave 1 — Foundation Lock**:
+   - Generate deterministic 5-Field Handoff Packets:
+     ```bash
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>" --wave 1
+     ```
+   - Dispatch Wave 1 shards (`database-architect#schema`, `backend-engineer#contracts`, `frontend-engineer#tokens-primitives`) in parallel (`TypeName: "self"`, `Model: "inherit"`), record `role#shard -> conversationId`, and gate completion:
+     ```bash
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify
+     ```
+2. **Wave 2 — Parallel Feature Shards (`100%` Concurrent Backend + Frontend)**:
+   - Generate Wave 2 packets (automatically locking Wave 1 contracts/tokens and sibling shards' `OWNED_FILES` into `READ_ONLY_FILES`):
+     ```bash
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>" --wave 2
+     ```
+   - Dispatch `backend-engineer#api-1..k`, `frontend-engineer#screen-1..k`, and `mobile-engineer#1..k` **in parallel in the same turn**, then gate completion (routing any failures via warm `send_message`, max 3 rounds):
+     ```bash
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --run-verify
+     ```
 
 ---
 
-## 🎭 Phase 8: REVIEW (`reviewer`)
+## 🧪 STAGE 5 (WAVE 3): PARALLEL CROSS-STACK VERIFICATION & ADVERSARIAL REVIEW
 
-| Agent | `reviewer` (`Model: "inherit"`) |
-|-------|---------------------------------|
-| Prerequisite | **READ** `PLAN-{feature}.md` + `SHARED_CONTRACT` + Code + Test results |
-| Goal | Audit quality, security/performance, and 100% plan compliance (if fixes needed, dispatch via warm `send_message` to engineer) |
-| Exit | Code matches plan intent, all standards met, approved |
+1. **Single-Turn Parallel Verification Fan-Out**: Spawn `tester#1..k` (`agents/tester.md`) AND `reviewer` (`agents/reviewer.md`, plus `security-engineer` when auth/data/API is touched) **concurrently in one wave**.
+   - If Cross-Engine review is configured (`engines.reviewer` = `cross_family` / `council`), also run:
+     ```bash
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "Audit PLAN-{feature}.md implementation against SHARED_CONTRACT"
+     ```
+2. **Deterministic Repo & UI Quality Gates**:
+   ```bash
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs
+   ```
+   If UI files were touched, run portable Python UX & WCAG 2.2 AA scripts:
+   ```bash
+   python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <project_path>
+   python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <project_path>
+   ```
+3. **Self-Healing Fix Loop & Clean Checkpoint**: Route any test, check, UX, or review blocker to the owning warm `{role#shard}` `conversationId` via `send_message` until green. Update `PLAN-{feature}.md` checkboxes (`[x]`) and write **1 unified `REVIEW-{feature}.md` (`<= 300` lines, `RequestFeedback: false`)**.
 
 ---
 
 ## ✅ COMPLETION
 
-Present feature report with:
-1. ✅ **Done** — Feature complete and verified
+Present feature completion summary with verified test results, `cook verify-wave` / `check --strict-phase --no-stubs` status, and next steps:
+1. ✅ **Done** — Feature complete and verified end-to-end
 2. 🚀 **Deploy** → `/deploy:preview`
 3. 📝 **Docs** → `/docs:core`

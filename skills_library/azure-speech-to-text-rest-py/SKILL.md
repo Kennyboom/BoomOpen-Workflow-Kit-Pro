@@ -365,11 +365,5 @@ Use the Speech SDK or Batch Transcription API instead when you need:
 - Custom speech models
 - Batch transcription of many files
 
-## Reference Files
-
-| File | Contents |
-|------|----------|
-| references/pronunciation-assessment.md | Pronunciation assessment parameters and scoring |
-
 ## When to Use
 This skill is applicable to execute the workflow or actions described in the overview.

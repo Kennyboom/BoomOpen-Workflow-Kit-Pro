@@ -1,4 +1,6 @@
-display_name: "/brainstorm"
-short_description: "💡 Brainstorm Router — Route to ideation workflows"
-brand_color: "#F59E0B"
-allow_implicit_invocation: true
+interface:
+  display_name: "/brainstorm"
+  short_description: "💡 Brainstorm Router — SOTA 2026 Anti-Sycophancy Strategic Ideation, 6-Month Pre-Mortem Critic, Weighted MCDA Decision Matrix & 1-Click Proceed Handoff"
+  brand_color: "#EC4899"
+policy:
+  allow_implicit_invocation: true

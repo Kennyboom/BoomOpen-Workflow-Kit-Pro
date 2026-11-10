@@ -45,4 +45,6 @@ export interface NeuralNetworkProps {
   onNodeHover?: (nodeId: string | null) => void
   /** Animation delay before network starts appearing */
   animationDelay?: number
+  /** Mouse-only decoration: nodes are not focusable and the graph is hidden from assistive technology. */
+  decorative?: boolean
 }

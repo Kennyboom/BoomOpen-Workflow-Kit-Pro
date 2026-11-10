@@ -8,7 +8,7 @@
 
 ## Quick Summary
 
-BoomOpen Workflow Kit's domain model is entirely file-based — every entity is a Markdown or YAML file stored in a well-defined directory structure. There is no database, no HTTP API, and no traditional ORM. The AI model reads these files at runtime as its operating instructions. The domain comprises 10 core entity types organized across 5 bounded contexts: Orchestration (rules and governance), Workflow (commands and variants), Agency (individual and team agents), Knowledge (matrix skill domains and skill modules), and Distribution (platform configs and entry points). Together, these entities define a framework of 21 specialist agents, 14 command routers with 54 workflow variants, 1,430 skills across 19 domains, and deployment to 5 AI coding platforms.
+BoomOpen Workflow Kit's domain model is entirely file-based — every entity is a Markdown or YAML file stored in a well-defined directory structure. There is no database, no HTTP API, and no traditional ORM. The AI model reads these files at runtime as its operating instructions. The domain comprises 10 core entity types organized across 5 bounded contexts: Orchestration (rules and governance), Workflow (commands and variants), Agency (individual and team agents), Knowledge (matrix skill domains and skill modules), and Distribution (platform configs and entry points). Together, these entities define a framework of 21 specialist agents, 14 command routers with 54 workflow variants, 1,462 skills across 19 domains, and deployment to 5 AI coding platforms.
 
 ---
 
@@ -153,7 +153,7 @@ erDiagram
 | Command Variants | 54 total |
 | Rules | 7 files |
 | Matrix Skill Domains | 19 + 2 special (_index.yaml, _dynamic.yaml) |
-| Skill Modules | 1,430 |
+| Skill Modules | 1,462 |
 | Supported Platforms | 5 (Cursor, Copilot, Claude, Codex, Antigravity/Gemini) |
 | Platform Entry Points | 6 files (AGENT.md + 5 platform-specific) |
 
@@ -195,7 +195,7 @@ Defines the skill matrix that provides domain expertise to agents.
 | Entity | Location | Count |
 |--------|----------|-------|
 | Matrix Skill Domain | `matrix-skills/*.yaml` | 19 |
-| Skill Module | `skills/*/SKILL.md` | 1,430 |
+| Skill Module | `skills/*/SKILL.md` | 1,462 (22 core in `skills/` + 1,440 in `skills_library/`) |
 
 ### 5. Distribution Context
 
@@ -225,7 +225,7 @@ Defines how the framework is packaged and deployed to different AI platforms.
 ## Known Gaps and Open Questions
 
 1. **No formal schema validation** — YAML frontmatter in agent/command files is not programmatically validated against a schema definition. Correctness relies on convention.
-2. **Skill module content structure** — While `SKILL.md` is the standard filename, the internal structure of skill modules is not enforced by a shared template across all 1,430 skills.
+2. **Skill module content structure** — While `SKILL.md` is the standard filename, the internal structure of skill modules is not enforced by a shared template across all 1,462 skills.
 3. **Dynamic skill lifecycle tracking** — The `_dynamic.yaml` manifest tracks community skills, but runtime execution counts and success rates depend on the AI platform's ability to persist state between sessions.
 4. **Team agent file standardization** — Team agent files (`techlead.md`, `executor.md`, `reviewer.md`) follow the Golden Triangle protocol, but their frontmatter schema is not documented in the same detail as individual agents.
 5. **Cross-platform behavioral parity** — The 5 platforms have different capabilities (sub-agent support, file access, tool availability), but per-platform behavioral differences are not formally documented as entity constraints.

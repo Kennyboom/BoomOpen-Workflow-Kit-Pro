@@ -3,13 +3,12 @@ import { Button, Card, CardContent, Badge, Section, SectionHeader } from '../../
 import { CommandCard } from '../../components/features'
 import { Terminal } from '../../components/terminal'
 import { PageSideDecorations, GradientBackground } from '../../components/decorations'
-import { SEO, pageSEO } from '../../components/seo'
 import { commandCategories, naturalLanguageExamples, totalCommands } from '../../data'
+import { KIT_STATS, WORKFLOW_COUNT } from '../../data/kitStats'
 
 export default function Commands() {
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <SEO {...pageSEO.commands} />
+    <div className="min-h-screen bg-bg-primary">
       
       {/* Hero Section */}
       <Section background="primary" spacing="xl" className="relative overflow-hidden">
@@ -29,7 +28,7 @@ export default function Commands() {
               Commands & Workflows
             </h1>
             <p className="text-body text-lg mb-8">
-              {totalCommands}+ slash commands that trigger complete development workflows. 
+              {totalCommands} slash commands ({WORKFLOW_COUNT} workflow files including variants) that trigger complete development workflows. 
               Each command orchestrates multiple agents for comprehensive results.
             </p>
           </motion.div>
@@ -93,6 +92,7 @@ export default function Commands() {
       {commandCategories.map((category, catIndex) => (
         <Section 
           key={category.name}
+          id={category.name.toLowerCase()}
           background={catIndex % 2 === 0 ? 'primary' : 'secondary'} 
           spacing="lg"
         >
@@ -123,6 +123,34 @@ export default function Commands() {
           </div>
         </Section>
       ))}
+
+      {/* Full command index, generated from commands/*.md */}
+      <Section id="all-commands" background="secondary" spacing="lg">
+        <SectionHeader
+          title="All Commands"
+          description={`Every command shipped in commands/ (${totalCommands} commands, ${WORKFLOW_COUNT} workflow files).`}
+        />
+
+        <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {KIT_STATS.commands.map((command) => (
+            <li key={command.name} className="p-4 rounded-lg bg-bg-tertiary border border-border-secondary">
+              <div className="flex flex-wrap items-baseline gap-2 mb-1">
+                <code className="font-mono text-text-accent">/{command.name}</code>
+                {command.variants.map((variant) => (
+                  <code key={variant} className="font-mono text-xs text-text-secondary">
+                    :{variant}
+                  </code>
+                ))}
+              </div>
+              {command.description && (
+                <p className="text-sm text-text-secondary line-clamp-2" title={command.description}>
+                  {command.description}
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
+      </Section>
 
       {/* Auto-Detection */}
       <Section background="gradient" spacing="lg">
@@ -171,6 +199,6 @@ export default function Commands() {
           </div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

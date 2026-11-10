@@ -8,7 +8,7 @@
 
 ## Quick Summary
 
-BoomOpen Workflow Kit is a plugin-based orchestration framework (v1.3.0) that installs Markdown and YAML configuration files into AI coding tool directories (Cursor, GitHub Copilot, Antigravity/Gemini, Claude Code, and Codex). The framework implements a Hybrid Skill Orchestration Layer (HSOL) that dynamically resolves and injects skills from a matrix of 1,430 skill definitions across 19 domains. It operates as a pure CLI tool built on Node.js >=18.0.0 using only built-in modules (fs, path, os, readline) with zero production dependencies.
+BoomOpen Workflow Kit is a plugin-based orchestration framework (v1.3.0) that installs Markdown and YAML configuration files into AI coding tool directories (Cursor, GitHub Copilot, Antigravity/Gemini, Claude Code, and Codex). The framework implements a Hybrid Skill Orchestration Layer (HSOL) that dynamically resolves and injects skills from a matrix of 1,462 skill definitions across 19 domains. It operates as a pure CLI tool built on Node.js >=18.0.0 using only built-in modules (fs, path, os, readline) with zero production dependencies.
 
 The core architecture centers on an Orchestrator pattern: an AI coding assistant reads the platform entry point file (CURSOR.md, COPILOT.md, CLAUDE.md, CODEX.md, or GEMINI.md), which bootstraps it into the Orchestrator role. The Orchestrator then delegates work to 21 specialist agents (plus 51 team agents across 17 teams) using 14 command workflows with 47 variant strategies. Skills are resolved through the matrix-skills YAML registry and optionally enhanced by dynamic discovery via the find-skills mechanism.
 
@@ -44,7 +44,7 @@ The project also includes a separate React 19 + Vite + Tailwind marketing websit
 | Package Name | `@boomopen/workflow-kit` |
 | Version | 1.3.0 |
 | License | MIT |
-| Author | Kennyboom |
+| Author | BoomOpen Labs |
 | Runtime | Node.js >=18.0.0 |
 | Module System | CommonJS (CLI), ESM (web) |
 | Production Dependencies | 0 (zero) |
@@ -56,7 +56,7 @@ The project also includes a separate React 19 + Vite + Tailwind marketing websit
 | Total Agent Files | 72 |
 | Commands | 14 router files + 47 variant files = 61 total |
 | Matrix Skill Domains | 19 YAML registries + _index.yaml + _dynamic.yaml |
-| Total Skills | 1,430 skill folders (each containing SKILL.md) |
+| Total Skills | 1,462 skill folders (each containing SKILL.md) |
 | Rule Files | 7 (CORE, PHASES, AGENTS, SKILLS, TEAMS, ERRORS, REFERENCE) |
 | Code Assistant Templates | 5 (cursor, copilot, antigravity, claude, codex) |
 | Web Framework | React 19 + Vite + Tailwind CSS 4 |
@@ -98,7 +98,7 @@ The project also includes a separate React 19 + Vite + Tailwind marketing websit
 
 ## Known Gaps and Open Questions
 
-1. **No automated test suite**: `cli/install.test.js.example` exists as an example but no actual test file is committed; the `npm test` script (`node --test cli/*.test.js`) would find no tests to run unless the example is renamed
+1. **Agent behavior is not tested automatically**: `npm test` runs the CLI's `node:test` suites (`cli/*.test.js`, listed in package.json) in sandboxed profiles; orchestration rules and command routing have no automated verification
 2. **Web app environment variables**: The Vercel-hosted marketing site may use environment variables, but none are documented in the repository (`.env` is gitignored)
 3. **Skill SKILL.md format specification**: While `AGENT-TEMPLATE.md` documents the agent file format, there is no equivalent template for skill SKILL.md files
 4. **Dynamic skill manifest**: `matrix-skills/_dynamic.yaml` exists for community-installed skills but its exact schema and lifecycle are defined only in the `_index.yaml` header comments

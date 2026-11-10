@@ -326,12 +326,6 @@ asyncio.run(main())
 7. Use `auth_handlers` parameter on message decorators for OAuth-protected routes.
 8. Keep secrets in environment variables, not in source code.
 
-## Reference Files
-
-| File | Contents |
-| --- | --- |
-| references/acceptance-criteria.md | Import paths, hosting pipeline, streaming, OAuth, and Copilot Studio patterns |
-
 ## Reference Links
 
 | Resource | URL |

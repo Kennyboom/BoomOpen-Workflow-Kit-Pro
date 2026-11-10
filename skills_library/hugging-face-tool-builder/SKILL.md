@@ -5,6 +5,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`references/hf_model_card_frontmatter.sh`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Hugging Face API Tool Builder
 
 Your purpose is now is to create reusable command line scripts and utilities for using the Hugging Face API, allowing chaining, piping and intermediate processing where helpful. You can access the API directly, as well as use the `hf` command line tool. Model and Dataset cards can be accessed from repositories directly.
@@ -26,21 +28,12 @@ Be sure to confirm User preferences where there are questions or clarifications 
 Paths below are relative to this skill directory.
 
 Reference examples:
-- `references/hf_model_papers_auth.sh` — uses `HF_TOKEN` automatically and chains trending → model metadata → model card parsing with fallbacks; it demonstrates multi-step API usage plus auth hygiene for gated/private content.
-- `references/find_models_by_paper.sh` — optional `HF_TOKEN` usage via `--token`, consistent authenticated search, and a retry path when arXiv-prefixed searches are too narrow; it shows resilient query strategy and clear user-facing help.
-- `references/hf_model_card_frontmatter.sh` — uses the `hf` CLI to download model cards, extracts YAML frontmatter, and emits NDJSON summaries (license, pipeline tag, tags, gated prompt flag) for easy filtering.
 
 Baseline examples (ultra-simple, minimal logic, raw JSON output with `HF_TOKEN` header):
-- `references/baseline_hf_api.sh` — bash
-- `references/baseline_hf_api.py` — python
-- `references/baseline_hf_api.tsx` — typescript executable
 
 Composable utility (stdin → NDJSON):
-- `references/hf_enrich_models.sh` — reads model IDs from stdin, fetches metadata per ID, emits one JSON object per line for streaming pipelines.
 
 Composability through piping (shell-friendly JSON output):
-- `references/baseline_hf_api.sh 25 | jq -r '.[].id' | references/hf_enrich_models.sh | jq -s 'sort_by(.downloads) | reverse | .[:10]'`
-- `references/baseline_hf_api.sh 50 | jq '[.[] | {id, downloads}] | sort_by(.downloads) | reverse | .[:10]'`
 - `printf '%s\n' openai/gpt-oss-120b meta-llama/Meta-Llama-3.1-8B | references/hf_model_card_frontmatter.sh | jq -s 'map({id, license, has_extra_gated_prompt})'`
 
 ## High Level Endpoints

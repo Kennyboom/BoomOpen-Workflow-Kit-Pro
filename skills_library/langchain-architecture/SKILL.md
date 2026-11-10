@@ -20,7 +20,6 @@ Master the LangChain framework for building sophisticated LLM applications with 
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Use this skill when
 
@@ -319,17 +318,6 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 llm = OpenAI(streaming=True, callbacks=[StreamingStdOutCallbackHandler()])
 ```
-
-## Resources
-
-- **references/agents.md**: Deep dive on agent architectures
-- **references/memory.md**: Memory system patterns
-- **references/chains.md**: Chain composition strategies
-- **references/document-processing.md**: Document loading and indexing
-- **references/callbacks.md**: Monitoring and observability
-- **assets/agent-template.py**: Production-ready agent template
-- **assets/memory-config.yaml**: Memory configuration examples
-- **assets/chain-example.py**: Complex chain examples
 
 ## Common Pitfalls
 

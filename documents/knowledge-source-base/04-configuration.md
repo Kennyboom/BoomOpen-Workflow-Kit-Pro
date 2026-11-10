@@ -48,7 +48,7 @@ The project has zero production dependencies. All config files serve either the 
 | `bin.boomopen-workflow-kit` | `./cli/install.js` | CLI binary name for `npx` invocation |
 | `engines.node` | `>=18.0.0` | Minimum Node.js version constraint |
 | `license` | `MIT` | Open source license |
-| `author` | `Kennyboom` | Package author |
+| `author` | `BoomOpen Labs` | Package author |
 | `publishConfig.access` | `public` | npm publish visibility |
 
 ### files Array (Published Contents)
@@ -209,7 +209,7 @@ The central config for the Hybrid Skill Orchestration Layer:
 |-----|-------|---------|
 | `version` | `"1.1"` | HSOL protocol version |
 | `last_updated` | `"2026-01-30"` | Last registry update date |
-| `total_matrix_skills` | `1430` | Total curated skills across all domains |
+| `total_matrix_skills` | `1476` | Total curated skills across all domains |
 | `hsol.enabled` | `true` | HSOL is active |
 | `hsol.version` | `"1.1"` | HSOL engine version |
 | `hsol.find_skills.skill_path` | `"{SKILLS_PATH}/find-skills/SKILL.md"` | Path to discovery skill |

@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Layout } from './components/layout'
-import { SEO, DefaultStructuredData, pageSEO } from './components/seo'
+import { RouteSEO } from './components/seo'
 import { ErrorBoundary, LoadingSpinner } from './components/ErrorBoundary'
 
 // Lazy loaded pages for code splitting
@@ -24,11 +24,8 @@ const AgentTeams = lazy(() => import('./pages/features/AgentTeams'))
 function App() {
   return (
     <ErrorBoundary>
-      {/* Default SEO (can be overridden by page-specific SEO) */}
-      <SEO {...pageSEO.home} />
-      
-      {/* Structured Data for the entire site */}
-      <DefaultStructuredData />
+      {/* Per-route title, meta, canonical, Open Graph and JSON-LD */}
+      <RouteSEO />
       
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>

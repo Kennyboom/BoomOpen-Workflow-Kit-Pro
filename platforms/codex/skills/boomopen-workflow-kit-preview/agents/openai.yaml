@@ -1,0 +1,6 @@
+interface:
+  display_name: "/preview"
+  short_description: "Preview server start, stop, and status check. Local development server management."
+  brand_color: "#6366F1"
+policy:
+  allow_implicit_invocation: true

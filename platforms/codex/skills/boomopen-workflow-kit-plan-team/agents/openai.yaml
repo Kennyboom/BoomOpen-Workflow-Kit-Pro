@@ -1,4 +1,6 @@
-display_name: "/plan:team"
-short_description: "🔺 Team Plan — Golden Triangle adversarial collaboration"
-brand_color: "#F59E0B"
-allow_implicit_invocation: true
+interface:
+  display_name: "/plan:team"
+  short_description: "🔺 Team Plan — 2.5x faster 2-Stage Elastic Golden Diamond, Multi-Engine Council synthesis, deterministic CLI validation & native Proceed button"
+  brand_color: "#6366F1"
+policy:
+  allow_implicit_invocation: true

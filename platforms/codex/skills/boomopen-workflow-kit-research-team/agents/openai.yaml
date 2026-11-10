@@ -1,0 +1,6 @@
+interface:
+  display_name: "/research:team"
+  short_description: "🔺 Team Research — 2-Stage Elastic Golden Diamond 3-to-6 Vector Deep-Research, Multi-Engine Council, Adversarial Cross-Examination & CLI Validation"
+  brand_color: "#0EA5E9"
+policy:
+  allow_implicit_invocation: true

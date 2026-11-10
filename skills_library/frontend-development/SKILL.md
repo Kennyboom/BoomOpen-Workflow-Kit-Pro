@@ -1,5 +1,5 @@
 ---
-name: frontend-dev-guidelines
+name: frontend-development
 description: Frontend development guidelines for React/TypeScript applications. Modern patterns including Suspense, lazy loading, useSuspenseQuery, file organization with features directory, MUI v7 styling, TanStack Router, performance optimization, and TypeScript best practices. Use when creating components, pages, features, fetching data, styling, routing, or working with frontend code.
 ---
 
@@ -63,7 +63,7 @@ Creating a feature? Set up this structure:
 | `~components` | `src/components` | `import { SuspenseLoader } from '~components/SuspenseLoader'` |
 | `~features` | `src/features` | `import { authApi } from '~features/auth'` |
 
-Defined in: [vite.config.ts](../../vite.config.ts) lines 180-185
+Defined in the project's `vite.config.ts` (`resolve.alias`).
 
 ---
 

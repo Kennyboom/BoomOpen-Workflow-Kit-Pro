@@ -20,7 +20,6 @@ Master PayPal payment integration including Express Checkout, IPN handling, recu
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
 
 ## Use this skill when
 
@@ -452,16 +451,6 @@ def test_payment_flow():
     # captured = client.capture_order(order['id'])
     # assert captured['status'] == 'COMPLETED'
 ```
-
-## Resources
-
-- **references/express-checkout.md**: Express Checkout implementation guide
-- **references/ipn-handling.md**: IPN verification and processing
-- **references/refund-workflows.md**: Refund handling patterns
-- **references/billing-agreements.md**: Recurring billing setup
-- **assets/paypal-client.py**: Production PayPal client
-- **assets/ipn-processor.py**: IPN webhook processor
-- **assets/recurring-billing.py**: Subscription management
 
 ## Best Practices
 

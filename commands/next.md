@@ -1,198 +1,94 @@
 ---
-description: Smart navigator — detect current state and recommend the next workflow. Use when stuck or unsure what to do next.
+description: "🧭 Smart Navigator — Auto-detect project, ledger, and Brain Artifact state to recommend the exact next BoomOpen v5.5 workflow"
 version: "5.5"
+category: session
+execution-mode: execute
 ---
 
-# /next — Smart Navigator v1.0
+# /next — Smart Workflow Navigator
 
-$ARGUMENTS
-
----
-
-## Purpose
-
-You're the compass. User is stuck or doesn't know what's next.
-Analyze current state and recommend the EXACT next action.
-
-**Rule:** Don't ask questions. Analyze and suggest.
+<context>$ARGUMENTS</context>
 
 ---
 
-## Phase 1: Auto-Detect Current State
+## ⚡ PURPOSE, AUTONOMOUS ANALYSIS & ARTIFACT CONTRACT
 
-```
-READ (in priority order):
-1. <appDataDir>\brain\<conversation-id>\ (SESSION-HANDOVER.md, PLAN-*.md, task.md) or .brain/session.json → working_on, status, pending
-2. .brain/brain.json → project type, features
-3. docs/specs/ → spec files exist?
-4. docs/DESIGN*.md → design docs exist?
-5. git status → uncommitted changes?
-6. git log --oneline -3 → recent commits
-7. Scan for TODO/FIXME in source files
-```
+Act as the deterministic project compass whenever the user is unsure what step comes next. Inspect live CLI telemetry and Brain Artifacts first, then recommend the **exact next workflow** without unnecessary questioning.
 
----
-
-## Phase 2: Phase Detection
-
-Based on what exists, determine current phase:
-
-```
-NO .brain/ AND NO docs/:
-  → Phase: EMPTY (nothing started)
-
-.brain/ exists BUT NO docs/specs/:
-  → Phase: IDEATION (has context, no plan)
-
-docs/specs/ exists BUT NO DESIGN:
-  → Phase: PLANNED (has spec, no design)
-
-DESIGN exists BUT few source files:
-  → Phase: DESIGNED (has design, not coded)
-
-Source files exist AND git has recent commits:
-  → Phase: CODING (actively developing)
-
-session.json status == "debugging":
-  → Phase: DEBUGGING (has errors)
-
-session.json status == "testing":
-  → Phase: TESTING (running tests)
-
-All features done AND tests pass:
-  → Phase: READY TO DEPLOY
-```
+1. **0-Turn Sub-agent Scouting Gate (`> 2` Files Cold-Start Inspection)**: Prefer lightweight CLI & metadata checks (`run_command`, `read_file`). Only when no ledger or Brain Artifacts exist and assessing project state requires inspecting **`> 2` source or specification files**, spawn parallel `scouter#1..k` immediately on Turn 1 via `invoke_subagent(TypeName: "self", Model: "inherit")` using Antigravity 2.0 tools ONLY (`read_file`, `write_file`, `edit_file`, `run_command`, `invoke_subagent`, `send_message`, `ask_question`, `search_web`).
+2. **Cohesive Brain Artifact Rule (`<= 500` lines, Zero `./reports/` Defaults)**: Never read/write legacy `./reports/` paths by default or split files at `150` lines. When persisting a navigation snapshot, update `<appDataDir>\brain\<conversation-id>\REPORT-status.md` or `SESSION-{date}.md` (`<= 500` lines) via `write_file` with explicit `ArtifactMetadata`:
+   ```json
+   {
+     "ArtifactMetadata": {
+       "Summary": "Smart workflow navigation assessment with detected project phase and recommended next command",
+       "UserFacing": true,
+       "RequestFeedback": false
+     }
+   }
+   ```
 
 ---
 
-## Phase 3: Smart Recommendation
+## 🔍 Phase 1: Deterministic State Auto-Detection (Turn 1)
 
-### If EMPTY:
-```
-🧭 Project is empty — nothing started yet.
+Run the fast state-detection batch from the project root:
 
-➡️ Next: /init to bootstrap your project
-   Or: /brainstorm if you have a rough idea
-   Or: /plan if you know exactly what to build
+```bash
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook state --artifact-dir "<appDataDir>/brain/<conversation-id>"
+python ~/.{TOOL}/skills/boomopen-workflow-kit/scripts/session_manager.py status .
 ```
 
-### If IDEATION:
-```
-🧭 You have context but no formal plan.
+If `.boomopen/project-ledger.json` exists in the workspace, also run:
 
-➡️ Next: /plan to create detailed specs
-   Tip: A good plan prevents 80% of bugs.
-```
-
-### If PLANNED:
-```
-🧭 Specs are ready! No technical design yet.
-
-➡️ Next: /architect to create technical design
-   This covers: DB schema, API contracts, state management
+```bash
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger status
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger next
 ```
 
-### If DESIGNED:
-```
-🧭 Design complete. Time to build!
-
-➡️ Next: /create to start coding
-   Your specs and design are ready as input.
-```
-
-### If CODING (with progress):
-```
-🧭 DEVELOPMENT IN PROGRESS
-
-📊 Progress:
-████████░░░░░░░░░░░░ [X]% ([N/M] features)
-
-📍 Currently: [feature name] — [task]
-
-➡️ Next:
-  1. Continue coding: /create [current feature]
-  2. Hit a bug? /debug
-  3. Need a break? /save to persist context
-  4. Review quality? /review
-```
-
-### If DEBUGGING:
-```
-🧭 You have unresolved errors from last session.
-
-🐛 Error: [description from session.json]
-
-➡️ Next: /debug to investigate
-   Tip: Start with the hypothesis from last session.
-```
-
-### If READY TO DEPLOY:
-```
-🧭 All features done! Tests passing!
-
-➡️ Next:
-  1. /deep-audit — Final quality check (recommended)
-  2. /security-audit — Security review
-  3. /deploy — Ship it!
-```
+Evaluate signals in strict priority order:
+1. **`.boomopen/project-ledger.json`** (`ledger status` & `ledger next`: active phase cursor, pending `REQ-xxx`, verified phases)
+2. **Brain Artifacts (`<appDataDir>\brain\<conversation-id>\`)** (`cook state`: `PLAN-*.md`, `DESIGN-*.md`, `SCOUT-*.md`, `RESEARCH-*.md`, `DEBUG-*.md`, `SESSION-*.md`, `REPORT-status.md`)
+3. **Workspace `.brain/` Memory** (`.brain/session.json`, `.brain/brain.json` if present)
+4. **Git & Workspace Docs** (`./documents/`, `git status -s`, `git log --oneline -5`)
 
 ---
 
-## Phase 4: Bonus Tips
+## 🧭 Phase 2: State-to-Workflow Decision Matrix
 
-```
-IF uncommitted changes > 5 files:
-  → "⚠️ You have [N] uncommitted files. Commit often!"
-
-IF last commit > 2 hours ago:
-  → "⚠️ Last commit was [X] ago. Save your work!"
-
-IF TODO count > 3:
-  → "📌 [N] TODOs found in code. Clean up before deploy."
-
-IF session is long:
-  → "🌙 Long session. Consider /save then fresh /recap."
-```
-
----
-
-## Workflow Chain Reference
-
-```
-/init → /brainstorm → /plan → /architect → /create
-                                              │
-                                    ┌─────────┼──────────┐
-                                    ▼         ▼          ▼
-                                 /debug    /test    /enhance
-                                    │         │          │
-                                    └─────────┼──────────┘
-                                              ▼
-                              /deep-audit → /security-audit
-                                              │
-                                              ▼
-                                   /deploy → /save
-                                              │
-                                     (new session)
-                                              │
-                                           /recap
-```
-
-**Emergency exit at any point:** `/rollback`
+| Detected Workspace / Artifact State | Phase | Exact Recommended Next Command |
+|-------------------------------------|-------|--------------------------------|
+| `.boomopen/project-ledger.json` has pending `REQ-xxx` in `ledger next` | `AUTOPILOT_ACTIVE` | `/autopilot:run` — Execute active phase slice with 4-Layer Quality Ratchet |
+| `.boomopen/project-ledger.json` has 100% phases `verified` | `AUTOPILOT_VERIFIED` | `/autopilot:audit` → `/deploy:check` — Final RTM audit & release readiness |
+| Multi-doc specs in `./documents/`, no `.boomopen/project-ledger.json` yet | `SPECS_READY` | `/autopilot:init` (multi-phase roadmap) or `/plan:hard` (single feature) |
+| `cook state` finds approved `PLAN-{task}.md` with unchecked waves | `PLANNED` | `/code` (or `/code:team`) — Fast-forward directly to Wave Execution (0 re-planning) |
+| `cook state` finds `DESIGN-{task}.md` (no `PLAN` yet) | `DESIGNED` | `/plan:hard` — Lock `SHARED_CONTRACT` + `DESIGN_CONTRACT` into 3-Wave plan |
+| `cook state` finds `RESEARCH-*.md` / `SCOUT-*.md` only | `DISCOVERED` | `/design:hard` (if UI feature) or `/plan:hard` (backend/fullstack contract plan) |
+| Empty directory (no source code, no specs) | `EMPTY` | `/init` (bootstrap project) or `/brainstorm` (explore product/architecture options) |
+| Failing tests, crash logs, or unresolved `DEBUG-*.md` | `DEBUGGING` | `/debug:hard` (isolate root cause) or `/fix:hard` (multi-file verified fix) |
+| Source changes written, tests/quality gates not yet verified | `UNVERIFIED_CODE` | `/test:hard` + `/review:team` (and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`) |
+| All features complete, tests & `check --strict-phase --no-stubs` green | `READY_TO_SHIP` | `/deploy:check` → `/deploy:preview` → `/deploy:production` |
 
 ---
 
-## Output Format
+## 🔗 BoomOpen v5.5 Lifecycle Chain & Output Format
 
+```text
+/init → /brainstorm → /research → /design → /plan → /code (or /cook end-to-end | /autopilot multi-phase)
+                                                       │
+                                           ┌───────────┼───────────┐
+                                           ▼           ▼           ▼
+                                        /debug       /test      /review
+                                           └───────────┼───────────┘
+                                                       ▼
+                                    /deploy:check → /deploy:preview → /deploy:production → /save → /recap
+                                    (Emergency recovery anytime: /deploy:rollback or /rollback)
 ```
-🧭 WHERE YOU ARE:
-[Brief status description]
 
-📊 PROGRESS: [if applicable]
-████████░░░░░░░░░░░░ X%
+Present the navigation briefing in this concise format:
 
-➡️ RECOMMENDED NEXT:
-[Specific command with explanation]
-
-💡 TIP:
-[Context-specific advice]
+```markdown
+🧭 **WHERE YOU ARE**: {Detected Phase & active artifact/ledger state}
+📊 **PROGRESS**: {Verified REQ count, PLAN wave progress, or uncommitted file count}
+➡️ **RECOMMENDED NEXT**: `{exact /command}` — {1-sentence reason why this is the zero-waste next step}
+💡 **HYGIENE TIP**: {e.g., uncommitted files reminder, `/save` checkpoint tip, or `check --strict-phase --no-stubs` note}
 ```

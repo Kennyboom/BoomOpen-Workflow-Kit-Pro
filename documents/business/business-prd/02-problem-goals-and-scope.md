@@ -97,7 +97,7 @@ The cost is measured in time (manual prompt iteration), quality (bugs from shall
 | Attribute | Detail |
 |-----------|--------|
 | **Goal** | Enable automatic domain skill injection without manual configuration |
-| **Rationale** | Manual skill selection doesn't scale. HSOL resolves skills by matching agent profiles to 1,430+ matrix entries using a 5-factor fitness score, injecting relevant domain knowledge automatically. |
+| **Rationale** | Manual skill selection doesn't scale. HSOL resolves skills by matching agent profiles to 1,460+ matrix entries using a 5-factor fitness score, injecting relevant domain knowledge automatically. |
 | **KPI** | HSOL fitness ≥0.8 for matrix skills; auto-injection driven by agent profile |
 | **Priority** | Must |
 | **Requirements** | BR-008 (HSOL), BR-009 (dynamic discovery), BR-010 (trust progression) |
@@ -119,7 +119,7 @@ The cost is measured in time (manual prompt iteration), quality (bugs from shall
 | Attribute | Detail |
 |-----------|--------|
 | **Goal** | Grow a community skill ecosystem with trust governance |
-| **Rationale** | The matrix covers 1,430 skills today but cannot cover every domain. A community ecosystem with quality gates (Trust Progression) allows organic growth while maintaining safety. |
+| **Rationale** | The matrix covers 1,462 skills today but cannot cover every domain. A community ecosystem with quality gates (Trust Progression) allows organic growth while maintaining safety. |
 | **KPI** | Trust progression lifecycle operational; ≥50 community skills within 12 months; auto-promotion pipeline functional |
 | **Priority** | Should |
 | **Requirements** | BR-009 (dynamic discovery), BR-010 (trust progression) |
@@ -167,7 +167,7 @@ The following are explicitly NOT objectives for BoomOpen Workflow Kit v1.3.0:
 | 17 Domain Teams | Golden Triangle team configurations for adversarial collaboration | `agents/teams/` |
 | 14 Commands (54+ variants) | Structured workflow files with phases, agent assignments, and exit criteria | `commands/*.md`, `commands/*/` |
 | 7 Rule Files | Governance rules: CORE, PHASES, AGENTS, SKILLS, ERRORS, REFERENCE, TEAMS | `rules/*.md` |
-| HSOL (Matrix Skills) | 1,430+ pre-curated skills across 19 domain YAML files | `matrix-skills/*.yaml` |
+| HSOL (Matrix Skills) | 1,462 (22 core in `skills/` + 1,440 in `skills_library/`) pre-curated skills across 19 domain YAML files | `matrix-skills/*.yaml` |
 | HSOL (Dynamic Discovery) | Integration point for community skill discovery via find-skills | `rules/SKILLS.md`, `matrix-skills/_dynamic.yaml` |
 | Platform Entry Points | Per-platform bootstrap files: CLAUDE.md, COPILOT.md, CURSOR.md, CODEX.md, GEMINI.md | Root directory `*.md` files |
 | Web Marketing Site | React 19 + Vite + Tailwind CSS v4 site deployed on Vercel | `web/` |

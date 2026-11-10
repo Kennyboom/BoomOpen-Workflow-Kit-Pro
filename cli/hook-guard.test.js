@@ -1,0 +1,180 @@
+'use strict';
+
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const { spawnSync } = require('node:child_process');
+const { pathToFileURL } = require('node:url');
+
+const HOOK_PATH = path.resolve(__dirname, '..', 'platforms', 'antigravity', 'hooks', 'validate-tool-call.mjs');
+const EXIT_BLOCK = 2;
+
+const loadHook = () => import(pathToFileURL(HOOK_PATH).href);
+
+const MUST_BLOCK = [
+  'rm -rf /',
+  'rm -rf /*',
+  'sudo rm -rf --no-preserve-root /',
+  'rm -r -f /',
+  'rm --recursive --force /',
+  '/bin/rm -rf /',
+  'rm -rf "/"',
+  '"rm" -rf /',
+  'r\\m -rf /',
+  '$(echo rm) -rf /',
+  'bash -c "rm -rf /"',
+  "sh -c 'rm -rf /'",
+  '(rm -rf /)',
+  'env rm -rf /',
+  'sudo -u root rm -rf /',
+  'echo hi\nrm -rf /',
+  'cd /tmp && rm -rf ~',
+  'rm -rf $HOME',
+  'rm -rf "${HOME}/"',
+  'rm -rf /usr',
+  'Remove-Item C:\\ -Recurse -Force',
+  'Remove-Item -Force -Recurse C:\\',
+  'Remove-Item -Recurse -Force "C:\\"',
+  'Remove-Item -Recurse -Force C:/',
+  'Remove-Item -Rec -For C:\\',
+  'rm -r -fo C:\\',
+  'Remove-Item -Path $env:USERPROFILE -Recurse',
+  'cmd /c format C:',
+  'rd /s /q C:\\',
+  'rmdir /s /q C:\\Windows',
+  'del /f /s /q C:\\*',
+  'powershell -Command "Remove-Item -Recurse -Force C:\\"',
+  'mkfs.ext4 /dev/sda1',
+  '/sbin/mkfs.ext4 /dev/sda',
+  'dd if=/dev/zero of="/dev/sda" bs=1M',
+  'dd if=/dev/zero of=/dev/mmcblk0',
+  'dd if=/dev/zero of=/dev/disk0',
+  'cat /dev/zero > /dev/sda',
+  'find / -delete',
+  'find ~ -type f -exec rm {} +',
+  'chmod -R 777 /',
+  'chown -R nobody /',
+  ':(){ :|:& };:',
+  'Format-Volume -DriveLetter C',
+  // Git Bash / WSL / Cygwin drive roots, home folders by path, '..' above home, cd + wildcard
+  'rm -rf /c/',
+  'rm -rf /c/Windows',
+  'rm -rf /mnt/c',
+  'rm -rf /cygdrive/c/*',
+  'rm -rf /home/kelly',
+  'rm -rf /Users/kelly/',
+  'rm -rf C:\\Users\\kelly',
+  'rm -rf ~/..',
+  'rm -rf $HOME/..',
+  'rm -rf "$HOME"/../',
+  'rm -rf ~/projects/..',
+  'rm -rf /tmp/../',
+  'cd / && rm -rf *',
+  'cd ~ && rm -rf .',
+  'cd && rm -rf ./*',
+  // PowerShell: a trailing backslash inside double quotes is a path separator, not an escape
+  'Remove-Item -Recurse -Force "$env:USERPROFILE\\"',
+  'Remove-Item -Recurse -Force $env:USERPROFILE\\',
+  // ${VAR} is one word: the home variable itself must still be caught
+  'rm -rf ${HOME}',
+  'rm -rf ${HOME}/',
+  'rm -rf $USERPROFILE',
+  'rm -rf ${USERPROFILE}',
+  'bash -c "rm -rf ${HOME}"',
+];
+
+const MUST_ALLOW = [
+  'npm test',
+  'rm -rf node_modules',
+  'rm -rf ./dist /tmp/build-cache',
+  'rm -rf /tmp/boomopen-test',
+  'git commit -m "fix: rm -rf / guard"',
+  "echo 'rm -rf /'",
+  'Remove-Item -Recurse -Force .\\dist; Set-Location C:\\',
+  'Remove-Item -Recurse -Force C:\\Users\\me\\project\\dist',
+  'rm -f /tmp/file.txt',
+  'find . -name "*.log" -delete',
+  'chmod -R 755 ./scripts',
+  'dd if=disk.img of=backup.img',
+  'ls -la /',
+  'rm -rf /home/kelly/project/build',
+  'rm -rf ~/projects/app/node_modules',
+  'rm -rf ~/../kelly/tmp',
+  'cd /tmp/build && rm -rf *',
+  'cd ~/proj && rm -rf dist',
+  'cd / && ls',
+  'Remove-Item -Recurse -Force "$env:USERPROFILE\\project\\dist"',
+  // a ${VAR} path is not a filesystem root
+  'rm -rf ${BUILD_DIR}/*',
+  'rm -rf ${OUT}/',
+  'rm -rf ${HOME}/projects/app/dist',
+];
+
+test('evaluateCommand blocks catastrophic commands in many spellings', async () => {
+  const { evaluateCommand } = await loadHook();
+  for (const command of MUST_BLOCK) {
+    assert.equal(evaluateCommand(command).allowed, false, `should block: ${command}`);
+  }
+});
+
+test('evaluateCommand allows ordinary commands, including safe deletes', async () => {
+  const { evaluateCommand } = await loadHook();
+  for (const command of MUST_ALLOW) {
+    assert.equal(evaluateCommand(command).allowed, true, `should allow: ${command}`);
+  }
+});
+
+test('extractCommand understands Claude, Gemini, Antigravity, OpenAI and argv payloads', async () => {
+  const { extractCommand } = await loadHook();
+  assert.equal(extractCommand({ tool_name: 'Bash', tool_input: { command: 'rm -rf /' } }), 'rm -rf /');
+  assert.equal(extractCommand({ tool_args: { CommandLine: 'ls' } }), 'ls');
+  assert.equal(extractCommand({ arguments: JSON.stringify({ command: 'pwd' }) }), 'pwd');
+  assert.equal(extractCommand({ tool_input: { command: ['rm', '-rf', '/'] } }), 'rm -rf /');
+  assert.equal(extractCommand({ command: 'whoami' }), 'whoami');
+  assert.equal(extractCommand({ tool_input: { file_path: 'a.txt' } }), '');
+});
+
+function runHook(stdin, scriptPath = HOOK_PATH) {
+  return spawnSync(process.execPath, [scriptPath], { input: stdin, encoding: 'utf8', timeout: 30000 });
+}
+
+test('hook process blocks with exit code 2 and a deny decision, allows silently with 0', () => {
+  const blocked = runHook(JSON.stringify({ hook_event_name: 'PreToolUse', tool_name: 'Bash', tool_input: { command: 'rm -rf /' } }));
+  assert.equal(blocked.status, EXIT_BLOCK, blocked.stderr);
+  assert.match(blocked.stderr, /BLOCKED/);
+  assert.equal(JSON.parse(blocked.stdout).hookSpecificOutput.permissionDecision, 'deny');
+
+  const allowed = runHook(JSON.stringify({ tool_name: 'Bash', tool_input: { command: 'npm test' } }));
+  assert.equal(allowed.status, 0, allowed.stderr);
+  assert.equal(allowed.stdout, '');
+
+  const notJson = runHook('rm -rf /');
+  assert.equal(notJson.status, EXIT_BLOCK, 'raw non-JSON input is evaluated as a command');
+});
+
+test('hook fails closed on an oversized payload', () => {
+  const huge = JSON.stringify({ tool_input: { command: 'echo ' + 'x'.repeat(9 * 1024 * 1024) } });
+  const result = runHook(huge);
+  assert.equal(result.status, EXIT_BLOCK);
+});
+
+test('hook still runs when started through a copy in another folder (installed location)', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'boomopen-hook-'));
+  try {
+    const copy = path.join(dir, 'boomopen-workflow-kit', 'hooks', 'validate-tool-call.mjs');
+    fs.mkdirSync(path.dirname(copy), { recursive: true });
+    fs.copyFileSync(HOOK_PATH, copy);
+    const result = runHook(JSON.stringify({ tool_input: { command: 'rm -rf /' } }), copy);
+    assert.equal(result.status, EXIT_BLOCK);
+
+    // Started through a junction / symlinked folder: the entry-point check must resolve real paths
+    const link = path.join(dir, 'linked-hooks');
+    fs.symlinkSync(path.dirname(copy), link, 'junction');
+    const viaLink = runHook(JSON.stringify({ tool_input: { command: 'rm -rf /' } }), path.join(link, 'validate-tool-call.mjs'));
+    assert.equal(viaLink.status, EXIT_BLOCK, 'a linked path must not make the hook fail open');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});

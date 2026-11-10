@@ -65,7 +65,9 @@ export function Header({ className }: HeaderProps) {
               aria-label="BoomOpen Workflow Kit - Home"
             >
               <motion.img
-                src="/assets/logo.svg"
+                src="/assets/logo.webp"
+                width={36}
+                height={32}
                 alt=""
                 className="h-8 w-auto"
                 whileHover={{ scale: 1.05 }}

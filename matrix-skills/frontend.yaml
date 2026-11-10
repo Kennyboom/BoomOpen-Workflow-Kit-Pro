@@ -8,13 +8,13 @@
 domain: frontend
 name: "Frontend Development"
 description: "UI/UX, web applications, client-side"
-skill_count: 114
+skill_count: 115
 
 skills:
   # --------------------------------------------------------------------------
   # CORE SKILLS (Priority 8-9)
   # --------------------------------------------------------------------------
-- skill_id: frontend-architecture
+  - skill_id: frontend-architecture
     category: core
     priority: P0
     priority_score: 9

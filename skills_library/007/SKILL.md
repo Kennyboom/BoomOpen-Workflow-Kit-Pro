@@ -612,14 +612,9 @@ Documentacao tecnica detalhada por dominio:
 
 - `references/stride-pasta-guide.md` — Guia completo de threat modeling
 - `references/owasp-checklists.md` — OWASP Top 10 Web, API e LLM com exemplos
-- `references/hardening-linux.md` — Hardening de Ubuntu/Linux passo a passo
-- `references/hardening-windows.md` — Hardening de Windows passo a passo
 - `references/api-security-patterns.md` — Padroes de seguranca para APIs
 - `references/ai-agent-security.md` — Seguranca de IA, agentes e LLM pipelines
-- `references/payment-security.md` — PCI-DSS, antifraude, webhooks financeiros
-- `references/bot-security.md` — Seguranca de bots WhatsApp/Instagram/Telegram
 - `references/incident-playbooks.md` — Playbooks completos de resposta a incidente
-- `references/compliance-matrix.md` — Matriz de compliance LGPD/GDPR/SOC2/PCI-DSS
 
 ## Governanca Do 007
 

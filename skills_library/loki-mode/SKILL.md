@@ -6,6 +6,8 @@ source: community
 date_added: "2026-02-27"
 ---
 
+> **Skill folder:** paths below that start with `$SKILL_DIR` are relative to the folder that contains this SKILL.md. BoomOpen installs vault skills at `~/.<tool>/skills_library/loki-mode` (for example `~/.claude/skills_library/loki-mode`, `~/.codex/skills_library/loki-mode` or `~/.gemini/config/skills_library/loki-mode`). Set it before running a command, e.g. `SKILL_DIR=~/.claude/skills_library/loki-mode`.
+
 # Loki Mode - Multi-Agent Autonomous Startup System
 
 > **Version 2.35.0** | PRD to Production | Zero Human Intervention
@@ -120,7 +122,7 @@ These files are part of the running Loki Mode process. Editing them will crash t
 
 | File | Reason |
 |------|--------|
-| `~/.claude/skills/loki-mode/autonomy/run.sh` | Currently executing bash script |
+| `$SKILL_DIR/autonomy/run.sh` | Currently executing bash script |
 | `.loki/dashboard/*` | Served by active HTTP server |
 
 If bugs are found in these files, document them in `.loki/CONTINUITY.md` under "Pending Fixes" for manual repair after the session ends.
@@ -675,8 +677,6 @@ See `references/production-patterns.md` for full practitioner patterns.
     +-- reports/            # Generated reports/dashboards
 ```
 
-See `references/architecture.md` for full structure and state schemas.
-
 ---
 
 ## Invocation
@@ -712,10 +712,6 @@ Detailed documentation is split into reference files for progressive loading:
 | `references/agent-types.md` | All 37 agent types with full capabilities |
 | `references/task-queue.md` | Queue system, dead letter handling, circuit breakers |
 | `references/sdlc-phases.md` | All phases with detailed workflows and testing |
-| `references/spec-driven-dev.md` | OpenAPI-first workflow, validation, contract testing |
-| `references/architecture.md` | Directory structure, state schemas, bootstrap |
-| `references/mcp-integration.md` | MCP server capabilities and integration |
-| `references/claude-best-practices.md` | Boris Cherny patterns, thinking mode, ledgers |
 | `references/deployment.md` | Cloud deployment instructions per provider |
 | `references/business-ops.md` | Business operation workflows |
 

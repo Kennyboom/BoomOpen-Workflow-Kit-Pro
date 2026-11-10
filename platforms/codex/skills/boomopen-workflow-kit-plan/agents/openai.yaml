@@ -1,4 +1,6 @@
-display_name: "/plan"
-short_description: "📋 Plan Router — Route to planning workflows"
-brand_color: "#F59E0B"
-allow_implicit_invocation: true
+interface:
+  display_name: "/plan"
+  short_description: "📋 Plan Router — Smart 3-Tier Adaptive Planning, Cross-Engine Planner & Antigravity 2.0 Native Artifact Router"
+  brand_color: "#6366F1"
+policy:
+  allow_implicit_invocation: true

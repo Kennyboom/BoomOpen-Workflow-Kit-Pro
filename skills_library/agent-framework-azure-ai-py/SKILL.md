@@ -327,12 +327,5 @@ if __name__ == "__main__":
 - Use `get_new_thread()` for multi-turn conversations
 - Prefer `HostedMCPTool` for service-managed MCP, `MCPStreamableHTTPTool` for client-managed
 
-## Reference Files
-
-- references/tools.md: Detailed hosted tool patterns
-- references/mcp.md: MCP integration (hosted + local)
-- references/threads.md: Thread and conversation management
-- references/advanced.md: OpenAPI, citations, structured outputs
-
 ## When to Use
 This skill is applicable to execute the workflow or actions described in the overview.

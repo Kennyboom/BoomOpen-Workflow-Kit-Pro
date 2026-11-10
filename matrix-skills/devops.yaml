@@ -8,7 +8,7 @@
 domain: devops
 name: "DevOps & Deployment"
 description: "CI/CD, infrastructure, containerization"
-skill_count: 67
+skill_count: 68
 
 skills:
   # --------------------------------------------------------------------------

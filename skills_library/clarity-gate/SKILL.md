@@ -33,6 +33,8 @@ outputs:
 spec_version: "2.1"
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/claim_id.py`, `scripts/document_hash.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Clarity Gate v2.1
 
 **Purpose:** Pre-ingestion verification system that enforces epistemic quality before documents enter RAG knowledge bases. Produces Clarity-Gated Documents (CGD) compliant with the Clarity Gate Format Specification v2.1.

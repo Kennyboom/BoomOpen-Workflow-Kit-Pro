@@ -1,14 +1,14 @@
 <div align="center">
   <h1>⚡ BoomOpen Workflow Kit v5.5.0</h1>
-  <p><strong>멀티 플랫폼 스마트 하이브리드 AI 개발 OS — 21개 전문 에이전트, 17개 골든 트라이앵글 팀 &amp; 1,450+ 온디맨드 스킬 볼트</strong></p>
+  <p><strong>멀티 플랫폼 스마트 하이브리드 AI 개발 OS — 21개 전문 에이전트, 18개 골든 트라이앵글 팀 &amp; 1,460+ 온디맨드 스킬 볼트</strong></p>
 
   <p>
     <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
-    <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2017%20Teams-10b981.svg" alt="Agents: 21 Specialists + 17 Teams" /></a>
-    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-48%20Core%20%2B%201%2C450%2B%20Library-f59e0b.svg" alt="Skills: 48 Core + 1,450+ Library" /></a>
+    <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
+    <a href="#pillars"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
-    <a href="../LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+    <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
   </p>
 
   <p>
@@ -34,13 +34,13 @@
 
 ## 🌟 BoomOpen Workflow Kit v5.5란 무엇인가요?
 
-**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)**는 단일 AI 코딩 어시스턴트를 **21명의 전문 에이전트(Specialist Agents)**, **17개의 골든 트라이앵글 팀(Golden Triangle Teams)**, **48개의 코어 스킬(Core Skills)**, 그리고 **1,450개 이상의 전문 라이브러리 스킬(`skills_library`)**로 구성된 체계적인 엔지니어링 조직으로 전환하는 오픈소스 멀티 에이전트 운영체제입니다.
+**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)**는 단일 AI 코딩 어시스턴트를 **21명의 전문 에이전트(Specialist Agents)**, **18개의 골든 트라이앵글 팀(Golden Triangle Teams)**, **22개의 코어 스킬(Core Skills)**, 그리고 **1,440개 이상의 전문 라이브러리 스킬(`skills_library`)**로 구성된 체계적인 엔지니어링 조직으로 전환하는 오픈소스 멀티 에이전트 운영체제입니다.
 
 단순한 질문에도 매번 콜드 스타트 지연을 유발하는 무거운 래퍼들과 달리, BoomOpen v5.5는 **2-모드 스마트 복잡도 임계값 게이트(2-Mode Smart Complexity Threshold Gate)**를 도입했습니다:
-- **⚡ Mode A — 직접 실행 모드 (콜드 스타트 0초)**: 간단한 Q&A, 코드 설명, 단일 도메인 버그 수정 또는 **3개 이하의 파일**(`/cmd` 슬래시 명령 없음)만 수정하는 명확한 작업은 메인 에이전트가 **직접** 실행·테스트·검증하며, **실용적 2계층 코딩 표준(Pragmatic 2-Tier Coding Standards)**과 **지속적 테스트 및 버그 수정(Persistent Testing & Bug Fixing)**을 엄격히 준수합니다.
-- **🎻 Mode B — 엄격한 멀티 에이전트 오케스트레이션 (Strict Multi-Agent Orchestration)**: 복잡한 기능 개발(**4개 이상의 파일** 또는 **2개 이상의 도메인**)이나 명시적인 `/cmd` 워크플로우 호출 시 **DAG 병렬 팬아웃(Parallel Fan-Out)**, **계획-실행자 직접 디스패치(Direct Plan-to-Executor Dispatch)**, **계약 우선 파일 잠금(`SHARED_CONTRACT` + `OWNED_FILES`)**, **웜 서브 에이전트 재사용(`send_message`)**을 갖춘 오케스트레이터 모드를 활성화합니다.
+- **⚡ Mode A — 직접 실행 모드 (콜드 스타트 0초)**: 간단한 Q&A, 코드 설명, 단일 도메인 버그 수정 또는 **2개 이하의 파일**(`/cmd` 슬래시 명령 없음)만 수정하는 명확한 작업은 메인 에이전트가 **직접** 실행·테스트·검증하며, **실용적 2계층 코딩 표준(Pragmatic 2-Tier Coding Standards)**과 **지속적 테스트 및 버그 수정(Persistent Testing & Bug Fixing)**을 엄격히 준수합니다.
+- **🎻 Mode B — 엄격한 멀티 에이전트 오케스트레이션 (Strict Multi-Agent Orchestration)**: 복잡한 기능 개발(**3개 이상의 파일** 또는 **2개 이상의 도메인**)이나 명시적인 `/cmd` 워크플로우 호출 시 **DAG 병렬 팬아웃(Parallel Fan-Out)**, **계획-실행자 직접 디스패치(Direct Plan-to-Executor Dispatch)**, **계약 우선 파일 잠금(`SHARED_CONTRACT` + `OWNED_FILES`)**, **웜 서브 에이전트 재사용(`send_message`)**을 갖춘 오케스트레이터 모드를 활성화합니다.
 
-- **📚 컨텍스트 낭비 없는 1,450+ 대규모 스킬 볼트**: **48개 코어 스킬 (`skills/`)** 과 **1,450+개 전문 라이브러리 스킬 (`skills_library/`)** 이 `matrix-skills/compact-index.json`에 사전 컴파일되어 `O(1)` 2단계 조회로 프롬프트 창 오염 없이 백엔드, 프론트엔드, 모바일, 게임 엔진(Unity/Unreal/Godot), AI/ML, BigQuery/데이터 엔지니어링, 클라우드/DevOps 및 OWASP 보안 전문성을 즉시 제공합니다.
+- **📚 컨텍스트 낭비 없는 1,462 대규모 스킬 볼트**: **22개 코어 스킬 (`skills/`)** 과 **1,440개 전문 라이브러리 스킬 (`skills_library/`)** 이 `matrix-skills/compact-index.json`에 사전 컴파일되어 `O(1)` 2단계 조회로 프롬프트 창 오염 없이 백엔드, 프론트엔드, 모바일, 게임 엔진(Unity/Unreal/Godot), AI/ML, BigQuery/데이터 엔지니어링, 클라우드/DevOps 및 OWASP 보안 전문성을 즉시 제공합니다.
 
 ---
 
@@ -49,8 +49,8 @@
 ```mermaid
 flowchart TD
     User["👤 사용자 요청 / 슬래시 명령"] --> Gate{"🚦 2-모드 스마트 복잡도 게이트"}
-    Gate -->|"≤ 3개 파일, 단일 도메인, /cmd 없음"| ModeA["⚡ Mode A: 직접 실행 (Tier 0)<br/>0초 콜드 스타트 + 실용적 2계층 코딩 표준"]
-    Gate -->|"> 3개 파일, ≥ 2개 도메인, 또는 /cmd"| ModeB["🎻 Mode B: 멀티 에이전트 오케스트레이터 (Tier 1)<br/>Model: inherit (기본값 Pro High)"]
+    Gate -->|"≤ 2개 파일, 단일 도메인, /cmd 없음"| ModeA["⚡ Mode A: 직접 실행 (Tier 0)<br/>0초 콜드 스타트 + 실용적 2계층 코딩 표준"]
+    Gate -->|"> 2개 파일, ≥ 2개 도메인, 또는 /cmd"| ModeB["🎻 Mode B: 멀티 에이전트 오케스트레이터 (Tier 1)<br/>Model: inherit"]
 
     ModeB --> FanOut["🔀 1단계: DAG 병렬 팬아웃<br/>(researcher + scouter | debugger + researcher)"]
     FanOut --> Plan["📋 2단계: 계약 우선 설계 (planner)<br/>SHARED_CONTRACT + OWNED_FILES 잠금"]
@@ -65,13 +65,15 @@ flowchart TD
 
 ---
 
+<a id="pillars"></a>
+
 ## 🧠 v5.5의 6대 핵심 기둥
 
 1. **🌐 5대 플랫폼 완벽 통합 지원 (`platforms/*`)**:
    - 단일 통합 아키텍처에서 **Google Antigravity 2.0 (Gemini)**, **Claude Code**, **OpenAI Codex**, **Cursor**, **GitHub Copilot** 등 5대 AI 코딩 플랫폼을 네이티브로 지원합니다.
 2. **📏 실용적 2계층 코딩 표준 (Pragmatic 2-Tier Coding Standards — 기계적 파일 파편화 방지)**:
    - **Tier 1 — 엄격한 품질 및 안전 규칙 (무관용 원칙)**: 단일 책임 원칙(Single Responsibility), **명시적 `any` 절대 금지**, **프로덕션 앱 내 디버그용 `console.log` 방치 금지**, 비동기/API 경계에서 `try/catch` 및 타입 에러 처리 필수, `SCREAMING_SNAKE_CASE` 상수 명명, DRY(3회 이상 반복 시 추출), 깔끔한 import 정렬.
-   - **Tier 2 — 유연한 구조 가이드라인 (응집도 우선)**: 단일 책임 모듈의 파일 길이는 `~200–350줄`을 목표로 하며 응집도가 높을 경우 `~400–450줄`까지 유연하게 허용합니다(`500줄 초과` 또는 다중 도메인 혼재 시에만 분할 강제; 테스트, 타입/스키마, CLI, 문서는 제외). 함수는 로직 `~20–40줄`, UI/핸들러 `~40–80줄`을 권장합니다.
+   - **Tier 2 — 유연한 구조 가이드라인 (응집도 우선)**: 단일 책임 모듈의 파일 길이는 `~200–350줄`을 목표로 하며 응집도가 높을 경우 `~400–450줄`까지 유연하게 허용합니다(`500줄 초과` 또는 다중 도메인 혼재 시에만 분할 강제; 테스트, 타입/스키마, 문서는 제외). 함수는 로직 `~20–40줄`, UI/핸들러 `~40–80줄`을 권장합니다.
 3. **🎯 계획-실행자 직접 디스패치 & 웜 서브 에이전트 재사용 (`send_message`)**:
    - `PLAN-{feature}.md`가 생성되면 불필요한 `tech-lead` 중계를 거치지 않고 도메인 엔지니어(`backend-engineer`, `frontend-engineer`, `database-architect` 등)에게 **직접 작업을 할당**합니다.
    - 생성된 서브 에이전트는 **활성 세션 레지스트리(`Role → conversationId`)**에 기록되며, 후속 수정 시 `send_message`를 통해 **콜드 스타트 0초** 및 **파일 컨텍스트 100% 유지** 상태로 즉시 재사용됩니다.
@@ -79,10 +81,12 @@ flowchart TD
    - 다중 도메인 계획은 병렬 엔지니어를 실행하기 전에 API 엔드포인트, DTO 스키마(`SHARED_CONTRACT`), 그리고 배타적 파일 쓰기 권한(`OWNED_FILES` vs. `READ_ONLY_FILES`)을 먼저 잠가 충돌과 인터페이스 불일치를 원천 차단합니다.
 5. **🔍 5-Whys (SPIE v3.0) 근본 원인 디버깅 & 100% 깨끗한 Git 트리**:
    - `debugger`는 최소 3가지 가설 검증과 **5-Whys 인과 관계 체인**(`Why 1 즉각적 증상` → `Why 5 시스템적 근본 원인`)을 통해 버그를 추적합니다. 모든 임시 산출물(`PLAN`, `DEBUG`, `TEST`, `REVIEW`, `MAILBOX`)은 `<appDataDir>\brain\<conversation-id>\`에 우선 저장되어 Git 작업 트리를 100% 깨끗하게 유지합니다.
-6. **🩺 내장 CLI 진단 도구 (`doctor` & `check`) 및 O(1) 스킬 인덱스**:
-   - `npm run doctor`는 5개 플랫폼 번들, 21개 에이전트, 51개 팀 파일, 72개 명령 및 `matrix-skills/compact-index.json`(`1,450+` 스킬)을 검증하며, `npm run check <dir>`는 Tier 1 & Tier 2 코딩 표준 준수 여부를 자동으로 검사합니다.
+6. **🩺 내장 CLI 진단 도구 (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check` & `doctor`) 및 O(1) 스킬 인덱스**:
+   - `npm run doctor`는 5개 플랫폼 번들, 21개 에이전트, 72개 팀 파일, 84개 명령 파일(`79`개 워크플로우 + `_ref/` 5개) 및 `matrix-skills/compact-index.json`(`1,462` 스킬)을 검증합니다. `boomopen check <dir>`는 기계적으로 검사 가능한 규칙만 검사합니다: 파일 길이, TypeScript의 명시적 `any`, 남아 있는 `console.log`. 나머지 표준은 에이전트에 대한 지침입니다. 또한 `boomopen research`, `boomopen design`, `boomopen plan`, `boomopen cook`, `boomopen ledger`, `boomopen conduct`가 계약 컴파일, 웨이브 핸드오프 패킷 생성 및 멀티 엔진 위원회를 수행합니다.
 
 ---
+
+<a id="platforms"></a>
 
 ## 💻 지원되는 AI 플랫폼
 
@@ -111,23 +115,31 @@ npm run install:cursor        # Cursor AI Editor
 npm run install:copilot       # GitHub Copilot (VS Code)
 npm run install:all           # 5개 플랫폼 전체 일괄 설치
 
-# 3. 설치 상태 진단, 2계층 코드 표준 검사 및 자동화 테스트 실행
+# 3. 설치 상태 확인 (읽기 전용)
 npm run doctor
-npm run check ./cli
-npm test
+npm link
+boomopen research validate path/to/RESEARCH.md
+boomopen design validate path/to/DESIGN.md
+boomopen plan validate path/to/PLAN.md
+boomopen cook preflight --plan path/to/PLAN.md
+boomopen check path/to/your/project --strict-phase --no-stubs
+boomopen ledger status
+boomopen conduct probe
 ```
+
+> 이 키트는 **npm에 게시되지 않았습니다** — 반드시 이 저장소에서 설치하세요. 선택 사항: `npm link`를 실행하면 `boomopen` 명령이 PATH에 추가됩니다(npm에서 아무것도 내려받지 않음).
 
 ---
 
 ## 🎛️ 통합 설정 및 실행 모드 선택 (`/settings` 컨트롤 센터)
 
-BoomOpen v5.5는 **제로 레이턴시 통합 컨트롤 센터**를 제공하여 실행 모드(`auto`, `mode_a`, `mode_b`, `team`), 4가지 원클릭 프리셋 및 12가지 시스템 설정을 **5개 플랫폼** 전체에 `< 10ms`(첫 턴 지연 시간 **0ms**)로 동기화합니다:
+BoomOpen v5.5는 **제로 레이턴시 통합 컨트롤 센터**를 제공하여 실행 모드(`auto`, `mode_a`, `mode_b`, `team`), 4가지 원클릭 프리셋 및 20가지 시스템 설정(+ 줄 수 제한 2개 키)을 **5개 플랫폼** 전체에 `< 10ms`(첫 턴 지연 시간 **0ms**)로 동기화합니다:
 
 | 프리셋 (`Preset`) | 실행 모드 (`execution.mode`) | 기본 변형 | 자연어 심층 리서치 (`naturalLanguageResearchTrigger`) | 코딩 표준 (`codingStandards`) | 권장 사용 환경 |
 |:---|:---|:---:|:---:|:---:|:---|
-| **⚡ `smart-hybrid`** *(기본 권장)* | **`auto`** (`≤ 3개 파일` → Mode A 즉시 실행; `> 3개 파일` 또는 `/cmd` → Mode B) | `auto` | **`auto_team`** *(`/brainstorm:team` 골든 트라이앵글 3인 팀으로 자동 라우팅)* | `pragmatic` (`400/500`줄) | 일상적인 풀스택 개발 — 소규모 작업은 초고속, 대규모 아키텍처는 심층 분석 |
+| **⚡ `smart-hybrid`** *(기본 권장)* | **`auto`** (`≤ 2개 파일` → Mode A 즉시 실행; `> 2개 파일` 또는 `/cmd` → Mode B) | `auto` | **`auto_team`** *(`/research:team` / `/brainstorm:team` 골든 트라이앵글 3인 팀으로 자동 라우팅)* | `pragmatic` (`400/500`줄) | 일상적인 풀스택 개발 — 소규모 작업은 초고속, 대규모 아키텍처는 심층 분석 |
 | **🚀 `solo-fast`** | **`mode_a`** *(서브 에이전트 없이 단일 에이전트 직접 실행 강제)* | `fast` | `off` *(`/brainstorm` 입력 시에만 실행, 기본은 즉시 답변)* | `relaxed` (`600/800`줄) | 긴급 핫픽스, 빠른 프로토타이핑, 스크립트 작성 및 토큰 절약 |
-| **🧠 `deep-architect`** | **`mode_b`** *(모든 작업에 Mode B 멀티 에이전트 오케스트레이션 강제)* | `hard` | `auto_hard` *(`/brainstorm:hard` 5-렌즈 심층 리서치 자동 실행)* | `strict` (`300/400`줄) | 복잡한 시스템 아키텍처 설계, 신규 프로젝트 및 다중 도메인 리팩토링 |
+| **🧠 `deep-architect`** | **`mode_b`** *(모든 작업에 Mode B 멀티 에이전트 오케스트레이션 강제)* | `hard` | `auto_hard` *(`/research:hard` / `/brainstorm:hard` 5-렌즈 심층 리서치 자동 실행)* | `strict` (`300/400`줄) | 복잡한 시스템 아키텍처 설계, 신규 프로젝트 및 다중 도메인 리팩토링 |
 | **🔺 `adversarial-team`** | **`team`** *(모든 워크플로우에 3-에이전트 골든 트라이앵글 `:team` 강제)* | `team` | **`auto_team`** *(`MAILBOX` 기반 3-에이전트 교차 검증 및 토론)* | `strict` (`300/400`줄) | 미션 크리티컬 프로덕션 코드, 보안 감사 및 무결점 릴리스 |
 
 ### 모드 전환 및 설정 변경의 3가지 방법 (채팅 `/settings`, 로컬 웹 UI, CLI)
@@ -142,13 +154,17 @@ BoomOpen v5.5는 **제로 레이턴시 통합 컨트롤 센터**를 제공하여
 /settings mode auto | mode_a | mode_b | team  # 실행 모드 (execution.mode) 직접 지정
 
 # 2. 로컬 웹 컨트롤 센터 대시보드 실행 (http://127.0.0.1:4567)
-npm run settings:ui
+boomopen settings --ui
 
 # 3. 터미널 CLI (전역 ~/.boomopen/settings.json 및 프로젝트 ./.boomopen.json)
-npm run settings -- status
-npm run settings -- preset adversarial-team
-npm run settings -- reset
+boomopen settings status
+boomopen settings preset adversarial-team
+cd path/to/your/project
+boomopen settings set execution.mode mode_a --project
+boomopen settings reset
 ```
+
+> `--project`는 항상 명령을 실행한 폴더에 `./.boomopen.json`을 씁니다. 키트 클론이 아니라 자신의 프로젝트 안에서 실행하세요. `npm link`를 쓰지 않는다면 `boomopen` 대신 `node /path/to/BoomOpen-Workflow-Kit/cli/install.js`를 사용하세요.
 
 ---
 
@@ -166,36 +182,42 @@ npm run settings -- reset
 | **`/design`** | `:fast`, `:hard`, `:team` | 시스템 아키텍처, 데이터베이스 스키마 및 UI/UX 명세서 작성 (`DESIGN.md`) |
 | **`/docs`** | `:core`, `:business`, `:audit` | 2계층 구조의 아키텍처 및 비즈니스 문서 생성·동기화 (`./documents/`) |
 | **`/deploy`** | `:check`, `:preview`, `:production`, `:rollback` | 배포 전 준비 상태 점검, 프리뷰 환경, 프로덕션 롤아웃 및 안전한 롤백 |
+| **`/research`** | `:fast`, `:hard`, `:team` | 자율 딥 리서치 엔진(4대 소스 삼각 검증, 3웨이브 검색 및 3벡터 위원회) |
 | **`/brainstorm`** | `:fast`, `:hard`, `:team` | 소크라테스식 요구사항 탐색, 트레이드오프 분석 및 아이디어 도출 |
 | **`/report`** | `:fast`, `:hard`, `:team` | 지표 및 다이어그램이 포함된 기술·경영 종합 보고서 생성 |
+| **`/autopilot`** | `:init`, `:run`, `:audit` | `.boomopen/project-ledger.json` 및 4계층 품질 래칫 기반 다중 세션 자율 프로젝트 오케스트레이터 |
+| **`/conduct`** | `:council`, `:pipeline` | 크로스 엔진 컨덕터 및 병렬 멀티 엔진 위원회(`boomopen conduct`, 4부 합의 종합 보고서) |
 | **`/orchestrate`** | — | 여러 도메인에 걸친 맞춤형 멀티 에이전트 파이프라인 오케스트레이션 |
-| **`/settings` / `/config`** | `preset`, `mode`, `set`, `ui` | 통합 컨트롤 센터: `Auto` / `Mode A` / `Mode B` / `Team` 전환, 프리셋 적용 및 웹 UI(`--ui`) 실행 |
+| **`/settings`** | `preset`, `mode`, `set`, `ui` | 통합 컨트롤 센터: `Auto` / `Mode A` / `Mode B` / `Team` 전환, 프리셋 적용 및 웹 UI(`--ui`) 실행 |
 | **`/save` / `/recap`** | — | 세션 상태(`SESSION-HANDOVER.md`) 저장 및 `< 5초` 이내 전체 컨텍스트 복원 |
 
 ---
 
-## 🤖 21명의 전문 에이전트 & 17개의 골든 트라이앵글 팀
+<a id="agents"></a>
+
+## 🤖 21명의 전문 에이전트 & 18개의 골든 트라이앵글 팀
 
 | 카테고리 | 전문 에이전트 (`agents/*.md`) | 골든 트라이앵글 팀 (`agents/teams/*-team/`) |
 |----------|-----------------------------------|------------------------------------------------|
 | **엔지니어링 및 실행** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer`, `database-architect`, `devops-engineer` | `backend-team`, `frontend-team`, `fullstack-team`, `mobile-team`, `game-team`, `database-team`, `devops-team` |
-| **아키텍처 및 기획** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `project-team`, `design-team` |
-| **품질, 보안 및 디버깅** | `debugger`, `tester`, `reviewer`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `review-team`, `security-team`, `performance-team` |
+| **아키텍처 및 기획** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
+| **품질, 보안 및 디버깅** | `debugger`, `tester`, `reviewer`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
 | **리서치 및 지식 관리** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
 
 ---
 
-## 📚 1,450+ 스킬 볼트 (48개 코어 스킬 + 1,450+ 전문 라이브러리 스킬)
+## 📚 1,460+ 스킬 볼트 (22개 코어 스킬 + 1,440 전문 라이브러리 스킬)
 
 BoomOpen은 오픈소스 최대 규모의 엔지니어링 스킬 생태계를 탑재하고 있으며, **2단계 O(1) 점진적 스킬 조회**(`<skills>` 코어 확인 → `matrix-skills/compact-index.json` 검색 → 필요한 `SKILL.md`만 온디맨드 로드)를 통해 **유휴 토큰 소모 0**을 달성합니다:
 
 | 스킬 계층 / 도메인 | 개수 | 대표 스킬 및 핵심 역량 | 로딩 메커니즘 |
 |:---|:---:|:---|:---|
-| **⚡ Tier 1: 코어 스킬 (`skills/`)** | **48** | `clean-code`, `systematic-debugging`, `plan-writing`, `brainstorming`, `frontend-design`, `api-patterns`, `database-design`, `testing-patterns`, `vulnerability-scanner`, `skill-seeker` | `<skills>`에 사전 인덱싱되어 Turn 1 즉시 사용 |
-| **🌐 웹, 백엔드 & 분산 시스템** | **380+** | Next.js/React 19, FastAPI, NestJS, Go/Rust 마이크로서비스, GraphQL, gRPC, Redis/Kafka 이벤트 기반 아키텍처, 멀티테넌트 SaaS | `compact-index.json` 기반 온디맨드 로드 (`skills_library/`) |
-| **🤖 AI, LLM 에이전트 & 데이터 엔지니어링** | **310+** | RAG 파이프라인, LangGraph/MCP 서버, 프롬프트 엔지니어링, Vertex AI, BigQuery 분석, dbt, Spark, 벡터 DB | `compact-index.json` 기반 온디맨드 로드 (`skills_library/`) |
-| **☁️ 클라우드, DevOps, K8s & 보안** | **290+** | Terraform/OpenTofu, AWS/GCP/Azure 아키텍처, Docker/K8s GitOps, CI/CD, OWASP Top 10 감사, 제로 트러스트 인증 | `compact-index.json` 기반 온디맨드 로드 (`skills_library/`) |
-| **📱 모바일, 게임 엔진 & 특화 도메인** | **450+** | iOS Swift/SwiftUI, Android Kotlin, React Native, Flutter, Unity 6, Unreal Engine 5, Godot 4, WebGL/Three.js, 퀀트 금융, Web3 | `compact-index.json` 기반 온디맨드 로드 (`skills_library/`) |
+| **⚡ Tier 1: 코어 스킬 (`skills/`)** | **22** | `clean-code`, `debugger`, `plan-writing`, `brainstorming`, `frontend-design`, `frontend-architecture`, `design-spec`, `api-patterns`, `database-design`, `testing-patterns`, `skill-seeker` | `<skills>`에 사전 인덱싱되어 Turn 1 즉시 사용 |
+| **🎨 UI/UX 크래프트, 모션 & 디자인 시스템** | **42** | Anti-AI-Slop Visual Craft, OKLCH 색공간 & Bento Grid, Motion v12 + CSS View Transitions, 헤드리스 프리미티브(`cmdk`/`vaul`/`sonner`), Figma MCP + W3C DTCG 토큰, WCAG 2.2 AA/AAA, iOS 18 HIG & Material 3 Expressive | `compact-index.json` 기반 온디맨드 로드 (`matrix-skills/design.yaml`) |
+| **🌐 웹, 백엔드 & 분산 시스템** | **390+** | Next.js/React 19, FastAPI, NestJS, Go/Rust 마이크로서비스, GraphQL, gRPC, Redis/Kafka 이벤트 기반 아키텍처, 멀티테넌트 SaaS | `compact-index.json` 기반 온디맨드 로드 (`skills_library/`) |
+| **🤖 AI, LLM 에이전트 & 데이터 엔지니어링** | **320+** | RAG 파이프라인, LangGraph/MCP 서버, 프롬프트 엔지니어링, Vertex AI, BigQuery 분석, dbt, Spark, 벡터 DB | `compact-index.json` 기반 온디맨드 로드 (`skills_library/`) |
+| **☁️ 클라우드, DevOps, K8s & 보안** | **300+** | Terraform/OpenTofu, AWS/GCP/Azure 아키텍처, Docker/K8s GitOps, CI/CD, OWASP Top 10 감사, 제로 트러스트 인증 | `compact-index.json` 기반 온디맨드 로드 (`skills_library/`) |
+| **📱 모바일, 게임 엔진 & 특화 도메인** | **410+** | iOS Swift/SwiftUI, Android Kotlin, React Native, Flutter, Unity 6, Unreal Engine 5, Godot 4, WebGL/Three.js, 퀀트 금융, Web3 | `compact-index.json` 기반 온디맨드 로드 (`skills_library/`) |
 
 ---
 
@@ -203,17 +225,17 @@ BoomOpen은 오픈소스 최대 규모의 엔지니어링 스킬 생태계를 �
 
 ```text
 BoomOpen-Workflow-Kit/
-├── agents/                  # 21개 전문 에이전트 정의 + 17개 골든 트라이앵글 팀 (51개 역할 파일)
-├── cli/                     # 설치기(install.js), 헬스 닥터(doctor.js), 2계층 코드 체커(checker.js) 및 테스트
-├── commands/                # 72개 슬래시 명령 워크플로우 (:fast, :hard, :team) + _ref/ 프로토콜
+├── agents/                  # 21개 전문 에이전트 정의 + 18개 골든 트라이앵글 팀 (54개 역할 파일)
+├── cli/                     # 설치기(install.js), 닥터(doctor.js), 체커(checker.js), 설정(settings.js), research.js, design.js, plan.js, cook.js, 레저(ledger.js) 및 컨덕터(conductor.js)
+├── commands/                # 79개 슬래시 명령 워크플로우 (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5개 _ref/ 프로토콜 (총 84개 파일)
 ├── documents/               # 2계층 아키텍처, 도메인, 소스 베이스 및 코딩 표준 문서
 ├── i18n/                    # 다국어 문서 디렉토리 (주요 16개 언어 전체 번역 README)
-├── matrix-skills/           # 도메인별 YAML 스킬 매트릭스 + 사전 컴파일된 compact-index.json (1,450+ 스킬)
+├── matrix-skills/           # 도메인별 YAML 스킬 매트릭스 + 사전 컴파일된 compact-index.json (1,462 스킬)
 ├── platforms/               # 5대 플랫폼 통합 템플릿 (antigravity/, claude/, codex/, copilot/, cursor/)
 ├── rules/                   # Mode B 온디맨드 규칙 (CORE, PHASES, AGENTS, TEAMS, SKILLS, ERRORS, REFERENCE)
 ├── scripts/                 # Python 자동화 및 검증 스크립트 (checklist.py, verify_all.py 등)
-├── skills/                  # 48개 코어 스킬 (clean-code, debugger, plan-writing, frontend-design 등)
-├── skills_library/          # 2단계 고속 조회로 온디맨드 로드되는 1,450+ 전문 스킬 라이브러리
+├── skills/                  # 22개 코어 스킬 (clean-code, debugger, plan-writing, frontend-design 등)
+├── skills_library/          # 2단계 고속 조회로 온디맨드 로드되는 1,440 전문 스킬 라이브러리
 └── GEMINI.md | CLAUDE.md | CODEX.md | COPILOT.md | CURSOR.md | AGENT.md
 ```
 
@@ -221,5 +243,5 @@ BoomOpen-Workflow-Kit/
 
 ## 📄 라이선스 및 보안
 
-- **라이선스**: [MIT 라이선스](../LICENSE)에 따라 배포됩니다. Copyright © 2026 **Kennyboom (BoomOpen)**.
+- **라이선스**: [MIT 라이선스](../LICENSE)에 따라 배포됩니다. Copyright © 2026 **BoomOpen Labs**. `skills_library/`의 서드파티 스킬은 원래 라이선스를 따릅니다. [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)를 참고하세요.
 - **보안 정책**: 내장된 보안 가드레일 및 취약점 제보 절차는 [SECURITY.md](../SECURITY.md)를 참조하세요.

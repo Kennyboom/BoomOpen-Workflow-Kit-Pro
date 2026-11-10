@@ -1,73 +1,72 @@
 import { motion } from 'framer-motion'
 import { Button, Card, CardContent, Badge, Section, SectionHeader } from '../../components/ui'
 import { PageSideDecorations, GradientBackground } from '../../components/decorations'
-import { SEO, pageSEO } from '../../components/seo'
 
 const qualityGates = [
   {
     number: 1,
-    name: 'Research Gate',
+    name: 'Research & Ideation Gate (boomopen research)',
     icon: '🔍',
-    description: 'Ensures requirements are fully understood before planning begins.',
+    description: 'Validates multi-source RESEARCH-* and BRAINSTORM-* blueprints (RES-G1..G4) and compiles downstream HANDOFF_BRIEF.',
     checks: [
-      'Requirements clarified',
-      'Context gathered',
-      'Constraints identified',
-      'Dependencies mapped',
+      '4-source triangulation & confidence tags',
+      'Weighted MCDA matrix & 6-month pre-mortem',
+      'boomopen research validate passes RES-G1..G4',
+      'HANDOFF_BRIEF compiled for /design or /plan',
     ],
-    failAction: 'Return to user for clarification',
+    failAction: 'Triangulate missing evidence or refine options',
   },
   {
     number: 2,
-    name: 'Plan Gate',
+    name: 'Design & Plan Gate (boomopen design | plan)',
     icon: '📋',
-    description: 'Validates the implementation plan before coding starts.',
+    description: 'Validates 6-Block DESIGN-* specs (DES-G1..G5) and PLAN-* blueprints (G1..G5, ≤ 4 OWNED_FILES/shard) before coding.',
     checks: [
-      'Plan is complete and detailed',
-      'All steps are actionable',
-      'Edge cases considered',
-      'Testing strategy defined',
+      'DESIGN_CONTRACT (@theme CSS + TypeScript props)',
+      'SHARED_CONTRACT & disjoint OWNED_FILES locks',
+      'boomopen plan validate & ledger compilation',
+      'Given/When/Then acceptance criteria locked',
     ],
-    failAction: 'Refine plan with more detail',
+    failAction: 'Fix contract or shard-size violations before dispatch',
   },
   {
     number: 3,
-    name: 'Implementation Gate',
+    name: 'Wave Execution Gate (boomopen cook | check)',
     icon: '💻',
-    description: 'Verifies code meets quality standards before testing.',
+    description: 'Compiles 5-Field Wave Handoff Packets and enforces strict post-wave file-lock & 2-Tier code verification.',
     checks: [
-      'Code compiles/runs',
-      'Follows existing patterns',
-      'No obvious bugs',
-      'Documentation added',
+      'boomopen cook packets & verify-wave pass',
+      'Zero unauthorized edits outside OWNED_FILES',
+      'boomopen check --strict-phase --no-stubs (0 any / 0 stubs)',
+      'Build & typecheck clean after every wave',
     ],
-    failAction: 'Fix issues before proceeding',
+    failAction: 'Auto-restore READ_ONLY_FILES & fix wave violations',
   },
   {
     number: 4,
     name: 'Test Gate',
     icon: '🧪',
-    description: 'Ensures adequate test coverage before review.',
+    description: 'Ensures unit, integration, and edge-case regression suites pass with zero test gaming.',
     checks: [
-      'Unit tests passing',
-      'Integration tests added',
-      'Edge cases tested',
-      'Coverage threshold met',
+      'Unit & integration suites passing',
+      'READ_ONLY_FILES regression tests untouched',
+      'Edge cases & error boundaries verified',
+      'Coverage & accessibility thresholds met',
     ],
-    failAction: 'Add missing tests',
+    failAction: 'Add missing regression tests via warm session reuse',
   },
   {
     number: 5,
-    name: 'Review Gate',
+    name: 'Adversarial Review & Council Gate (boomopen conduct)',
     icon: '👁️',
-    description: 'Final quality check before delivery.',
+    description: 'Golden Diamond / Triangle adversarial audit and optional 6-task Multi-Engine Council synthesis before delivery.',
     checks: [
-      'Code review passed',
-      'Security review completed',
-      'Performance acceptable',
-      'Ready for production',
+      'P0–P3 review matrix with file:line citations',
+      'OWASP Top 10 & performance hot-path audit',
+      'Optional boomopen conduct council cross-family check',
+      'boomopen ledger phase ratchet verified',
     ],
-    failAction: 'Address review feedback',
+    failAction: 'Route concrete blockers back to warm executor shard',
   },
 ]
 
@@ -96,8 +95,7 @@ const benefits = [
 
 export default function QualityGates() {
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <SEO {...pageSEO.qualityGates} />
+    <div className="min-h-screen bg-bg-primary">
       
       {/* Hero Section */}
       <Section background="primary" spacing="xl" className="relative overflow-hidden">
@@ -313,6 +311,6 @@ export default function QualityGates() {
           </div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

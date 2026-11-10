@@ -1,25 +1,38 @@
 #!/usr/bin/env python3
 """
 Skill: webapp-testing
-Script: playwright_runner.py
-Purpose: Run basic Playwright browser tests
-Usage: python playwright_runner.py <url> [--screenshot]
-Output: JSON with page info, health status, and optional screenshot path
-Note: Requires playwright (pip install playwright && playwright install chromium)
-Screenshots: Saved to system temp directory (auto-cleaned by OS)
+Script: playwright_runner.py (v5.5.0)
+Purpose: Run Playwright browser smoke/a11y checks on a live URL, or execute a
+         project's `npx playwright test` E2E suite (npx.cmd safe on win32).
+
+Usage (python3 on macOS/Linux, py on Windows also work):
+    python playwright_runner.py <url> [--screenshot] [--a11y]
+    python playwright_runner.py --suite [project_path]
+
+Output: JSON with page health, Navigation Timing Level 2 metrics, WCAG 2.2 a11y
+        signals, or Playwright test suite summary.
+Exit codes: 0 = check/suite passed (status "success"), 1 = check failed or
+            Playwright missing, 2 = invalid arguments.
 """
-import sys
+
 import json
 import os
+import re
+import shutil
+import subprocess
+import sys
 import tempfile
 from datetime import datetime
+from pathlib import Path
+from typing import Dict, List
 
-# Fix Windows console encoding for Unicode output
-try:
-    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
-    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
-except AttributeError:
-    pass  # Python < 3.7
+sys.dont_write_bytecode = True
+
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
 
 try:
     from playwright.sync_api import sync_playwright
@@ -27,147 +40,226 @@ try:
 except ImportError:
     PLAYWRIGHT_AVAILABLE = False
 
+EXIT_FAILED = 1
+EXIT_USAGE = 2
+NAVIGATION_TIMEOUT_MS = 30000
+SUITE_TIMEOUT_SECONDS = 300
+URL_RE = re.compile(r"^https?://\S+$", re.IGNORECASE)
+SCREENSHOT_DIR_NAME = "boomopen_screenshots"
 
-def run_basic_test(url: str, take_screenshot: bool = False) -> dict:
-    """Run basic browser test on URL."""
+NAV_TIMING_JS = """() => {
+  const nav = performance.getEntriesByType('navigation')[0];
+  if (!nav) return { dom_content_loaded: 0, load_complete: 0 };
+  return {
+    dom_content_loaded: Math.round(nav.domContentLoadedEventEnd),
+    load_complete: Math.round(nav.loadEventEnd)
+  };
+}"""
+
+A11Y_EVAL_JS = """() => {
+  const hasLabel = (el) => Boolean(
+    (el.getAttribute('aria-label') || '').trim() ||
+    el.getAttribute('aria-labelledby') ||
+    (el.getAttribute('title') || '').trim() ||
+    (el.textContent || '').trim()
+  );
+  const buttons = Array.from(document.querySelectorAll('button'));
+  const links = Array.from(document.querySelectorAll('a[href]'));
+  return {
+    html_lang: Boolean(document.documentElement.getAttribute('lang')),
+    main_landmarks: document.querySelectorAll('main, [role="main"]').length,
+    nav_landmarks: document.querySelectorAll('nav, [role="navigation"]').length,
+    buttons_total: buttons.length,
+    buttons_with_label: buttons.filter(hasLabel).length,
+    buttons_unlabeled: buttons.filter((b) => !hasLabel(b)).length,
+    links_with_text: links.filter(hasLabel).length
+  };
+}"""
+
+
+def capture_screenshot(page) -> str:
+    screenshot_dir = os.path.join(tempfile.gettempdir(), SCREENSHOT_DIR_NAME)
+    os.makedirs(screenshot_dir, exist_ok=True)
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    screenshot_path = os.path.join(screenshot_dir, f"screenshot_{stamp}.png")
+    page.screenshot(path=screenshot_path, full_page=True)
+    return screenshot_path
+
+
+def run_basic_test(url: str, take_screenshot: bool = False) -> Dict[str, object]:
+    """Run headless Chromium smoke check against a live URL."""
     if not PLAYWRIGHT_AVAILABLE:
         return {
+            "url": url,
+            "status": "error",
             "error": "Playwright not installed",
-            "fix": "pip install playwright && playwright install chromium"
+            "fix": "pip install playwright && playwright install chromium",
         }
-    
-    result = {
+
+    result: Dict[str, object] = {
         "url": url,
         "timestamp": datetime.now().isoformat(),
-        "status": "pending"
+        "status": "pending",
     }
-    
+    console_errors: List[str] = []
+
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
-            context = browser.new_context(
-                viewport={"width": 1280, "height": 720},
-                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-            )
+            context = browser.new_context(viewport={"width": 1280, "height": 720})
             page = context.new_page()
-            
-            # Navigate
-            response = page.goto(url, wait_until="networkidle", timeout=30000)
-            
-            # Basic info
+            page.on("console", lambda msg: console_errors.append(msg.text) if msg.type == "error" else None)
+
+            response = page.goto(url, wait_until="networkidle", timeout=NAVIGATION_TIMEOUT_MS)
+            loaded = response.ok if response else False
             result["page"] = {
                 "title": page.title(),
                 "url": page.url,
-                "status_code": response.status if response else None
+                "status_code": response.status if response else None,
             }
-            
-            # Health checks
             result["health"] = {
-                "loaded": response.ok if response else False,
+                "loaded": loaded,
                 "has_title": bool(page.title()),
                 "has_h1": page.locator("h1").count() > 0,
                 "has_links": page.locator("a").count() > 0,
-                "has_images": page.locator("img").count() > 0
+                "has_images": page.locator("img").count() > 0,
             }
-            
-            # Console errors
-            console_errors = []
-            page.on("console", lambda msg: console_errors.append(msg.text) if msg.type == "error" else None)
-            
-            # Performance metrics
-            result["performance"] = {
-                "dom_content_loaded": page.evaluate("window.performance.timing.domContentLoadedEventEnd - window.performance.timing.navigationStart"),
-                "load_complete": page.evaluate("window.performance.timing.loadEventEnd - window.performance.timing.navigationStart")
-            }
-            
-            # Screenshot - uses system temp directory (cross-platform, auto-cleaned)
+            result["console_errors"] = console_errors[:20]
+            result["performance"] = page.evaluate(NAV_TIMING_JS)
+
             if take_screenshot:
-                # Cross-platform: Windows=%TEMP%, Linux/macOS=/tmp
-                screenshot_dir = os.path.join(tempfile.gettempdir(), "maestro_screenshots")
-                os.makedirs(screenshot_dir, exist_ok=True)
-                screenshot_path = os.path.join(screenshot_dir, f"screenshot_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
-                page.screenshot(path=screenshot_path, full_page=True)
-                result["screenshot"] = screenshot_path
+                result["screenshot"] = capture_screenshot(page)
                 result["screenshot_note"] = "Saved to temp directory (auto-cleaned by OS)"
-            
-            # Element counts
+
             result["elements"] = {
                 "links": page.locator("a").count(),
                 "buttons": page.locator("button").count(),
                 "inputs": page.locator("input").count(),
                 "images": page.locator("img").count(),
-                "forms": page.locator("form").count()
+                "forms": page.locator("form").count(),
             }
-            
             browser.close()
-            
-            result["status"] = "success" if result["health"]["loaded"] else "failed"
-            result["summary"] = "[OK] Page loaded successfully" if result["status"] == "success" else "[X] Page failed to load"
-            
-    except Exception as e:
+            result["status"] = "success" if loaded else "failed"
+            result["summary"] = "[OK] Page loaded successfully" if loaded else "[X] Page failed to load"
+    except Exception as exc:
         result["status"] = "error"
-        result["error"] = str(e)
-        result["summary"] = f"[X] Error: {str(e)[:100]}"
-    
+        result["error"] = str(exc)
+        result["summary"] = f"[X] Error: {str(exc)[:100]}"
+
     return result
 
 
-def run_accessibility_check(url: str) -> dict:
-    """Run basic accessibility check."""
+def run_accessibility_check(url: str) -> Dict[str, object]:
+    """Run WCAG 2.2 AA structural & accessible-name checks on a live URL."""
     if not PLAYWRIGHT_AVAILABLE:
-        return {"error": "Playwright not installed"}
-    
-    result = {"url": url, "accessibility": {}}
-    
+        return {"url": url, "status": "error", "error": "Playwright not installed"}
+
+    result: Dict[str, object] = {"url": url, "accessibility": {}}
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
-            page.goto(url, wait_until="networkidle", timeout=30000)
-            
-            # Basic a11y checks
+            page.goto(url, wait_until="networkidle", timeout=NAVIGATION_TIMEOUT_MS)
+
+            dom_a11y = page.evaluate(A11Y_EVAL_JS)
             result["accessibility"] = {
+                **dom_a11y,
                 "images_with_alt": page.locator("img[alt]").count(),
                 "images_without_alt": page.locator("img:not([alt])").count(),
-                "buttons_with_label": page.locator("button[aria-label], button:has-text('')").count(),
-                "links_with_text": page.locator("a:has-text('')").count(),
                 "form_labels": page.locator("label").count(),
                 "headings": {
                     "h1": page.locator("h1").count(),
                     "h2": page.locator("h2").count(),
-                    "h3": page.locator("h3").count()
-                }
+                    "h3": page.locator("h3").count(),
+                },
             }
-            
             browser.close()
             result["status"] = "success"
-            
-    except Exception as e:
+    except Exception as exc:
         result["status"] = "error"
-        result["error"] = str(e)
-    
+        result["error"] = str(exc)
+
     return result
 
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print(json.dumps({
-            "error": "Usage: python playwright_runner.py <url> [--screenshot] [--a11y]",
-            "examples": [
-                "python playwright_runner.py https://example.com",
-                "python playwright_runner.py https://example.com --screenshot",
-                "python playwright_runner.py https://example.com --a11y"
-            ]
-        }, indent=2))
-        sys.exit(1)
-    
-    url = sys.argv[1]
-    take_screenshot = "--screenshot" in sys.argv
-    check_a11y = "--a11y" in sys.argv
-    
-    if check_a11y:
-        result = run_accessibility_check(url)
-    else:
-        result = run_basic_test(url, take_screenshot)
-    
+def run_playwright_suite(project_dir: Path) -> Dict[str, object]:
+    """Execute `npx playwright test` in a Node.js project (npx.cmd safe on win32)."""
+    npx_bin = shutil.which("npx")
+    if not npx_bin:
+        return {"project": str(project_dir), "status": "error", "error": "npx not found on PATH"}
+
+    has_config = any(
+        (project_dir / cfg).exists()
+        for cfg in ("playwright.config.ts", "playwright.config.js", "playwright.config.mjs")
+    )
+    if not has_config:
+        return {
+            "project": str(project_dir),
+            "status": "success",
+            "skipped": True,
+            "summary": "[SKIP] No playwright.config.{ts,js,mjs} found",
+        }
+
+    try:
+        proc = subprocess.run(
+            [npx_bin, "playwright", "test", "--reporter=list"],
+            cwd=str(project_dir),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=SUITE_TIMEOUT_SECONDS,
+        )
+        ok = proc.returncode == 0
+        return {
+            "project": str(project_dir),
+            "status": "success" if ok else "failed",
+            "exit_code": proc.returncode,
+            "output": (proc.stdout or "")[:2500],
+            "error": (proc.stderr or "")[:500] if not ok else "",
+        }
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return {"project": str(project_dir), "status": "error", "error": str(exc)}
+
+
+def print_usage_and_exit() -> None:
+    print(json.dumps({
+        "error": "Usage: python playwright_runner.py <url> [--screenshot] [--a11y] | --suite [project_path]",
+        "examples": [
+            "python playwright_runner.py https://example.com",
+            "python playwright_runner.py https://example.com --screenshot",
+            "python playwright_runner.py https://example.com --a11y",
+            "python playwright_runner.py --suite .",
+        ],
+    }, indent=2))
+    sys.exit(EXIT_USAGE)
+
+
+def main() -> None:
+    argv = sys.argv[1:]
+    if not argv:
+        print_usage_and_exit()
+
+    if argv[0] == "--suite":
+        target_dir = Path(argv[1] if len(argv) > 1 else ".").resolve()
+        if not target_dir.is_dir():
+            print_usage_and_exit()
+        result = run_playwright_suite(target_dir)
+        print(json.dumps(result, indent=2))
+        sys.exit(0 if result.get("status") == "success" else EXIT_FAILED)
+
+    url = argv[0]
+    if not URL_RE.match(url):
+        print_usage_and_exit()
+
+    result = (
+        run_accessibility_check(url)
+        if "--a11y" in argv
+        else run_basic_test(url, take_screenshot="--screenshot" in argv)
+    )
     print(json.dumps(result, indent=2))
+    sys.exit(0 if result.get("status") == "success" else EXIT_FAILED)
+
+
+if __name__ == "__main__":
+    main()

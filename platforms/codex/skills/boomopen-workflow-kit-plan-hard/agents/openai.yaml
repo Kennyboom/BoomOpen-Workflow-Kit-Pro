@@ -1,4 +1,6 @@
-display_name: "/plan:hard"
-short_description: "⚡⚡⚡ Full Plan — Research-backed comprehensive planning"
-brand_color: "#F59E0B"
-allow_implicit_invocation: true
+interface:
+  display_name: "/plan:hard"
+  short_description: "⚡⚡⚡ Deep Plan — 2x faster 2-Wave parallel discovery + 6-Block cohesive blueprint, deterministic CLI plan validation & native Proceed button"
+  brand_color: "#6366F1"
+policy:
+  allow_implicit_invocation: true

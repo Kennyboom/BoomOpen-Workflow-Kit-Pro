@@ -69,18 +69,6 @@ If you cannot construct all five, report as MEDIUM (needs verification).
 
 For each workflow, identify triggers and load the appropriate reference:
 
-| Trigger / Pattern | Load Reference |
-|---|---|
-| `pull_request_target` | `references/pwn-request.md` |
-| `issue_comment` with command parsing | `references/comment-triggered-commands.md` |
-| `${{ }}` in `run:` blocks | `references/expression-injection.md` |
-| PATs / deploy keys / elevated credentials | `references/credential-escalation.md` |
-| Checkout PR code + config file loading | `references/ai-prompt-injection-via-ci.md` |
-| Third-party actions (especially unpinned) | `references/supply-chain.md` |
-| `permissions:` block or secrets usage | `references/permissions-and-secrets.md` |
-| Self-hosted runners, cache/artifact usage | `references/runner-infrastructure.md` |
-| Any confirmed finding | `references/real-world-attacks.md` |
-
 Load references selectively — only what's relevant to the triggers found.
 
 ## Step 2: Check for Vulnerability Classes

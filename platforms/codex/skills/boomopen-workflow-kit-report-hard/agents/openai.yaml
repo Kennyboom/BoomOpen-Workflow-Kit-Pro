@@ -1,4 +1,6 @@
-display_name: "/report:hard"
-short_description: "⚡ Detailed Report — Comprehensive project analysis and documentation"
-brand_color: "#3B82F6"
-allow_implicit_invocation: true
+interface:
+  display_name: "/report:hard"
+  short_description: "⚡⚡⚡ Detailed Report — Deep multi-source synthesis, existing-doc updates, or template generation with CLI Telemetry & Cohesive `REPORT-{topic}.md`"
+  brand_color: "#10B981"
+policy:
+  allow_implicit_invocation: true

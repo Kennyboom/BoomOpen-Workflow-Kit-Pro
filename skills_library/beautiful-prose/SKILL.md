@@ -185,7 +185,3 @@ Fail the output if any are true:
 - Contains therapy language or validation.
 - Contains meta writing talk ("this essay," "we will").
 - Contains five consecutive sentences of similar length.
-
-## Tests
-
-See `references/test-cases.md`.

@@ -1,7 +1,7 @@
 ---
 name: skill-share
 description: A skill that creates new Codex skills and automatically shares them on Slack using Rube for seamless team collaboration and skill discovery.
-license: Complete terms in LICENSE.txt
+license: Unknown (upstream LICENSE.txt was not vendored; see THIRD_PARTY_NOTICES.md)
 ---
 
 ## When to use this skill

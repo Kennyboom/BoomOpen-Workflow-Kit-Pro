@@ -307,13 +307,6 @@ indexer_client.create_or_update_indexer(indexer)
 
 ## Reference Files
 
-| File | Contents |
-|------|----------|
-| references/vector-search.md | HNSW configuration, integrated vectorization, multi-vector queries |
-| references/semantic-ranking.md | Semantic configuration, captions, answers, hybrid patterns |
-| scripts/setup_vector_index.py | CLI script to create vector-enabled search index |
-
-
 ---
 
 ## Additional Azure AI Search Patterns

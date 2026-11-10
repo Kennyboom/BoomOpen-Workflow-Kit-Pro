@@ -54,7 +54,7 @@ BoomOpen Workflow Kit (`@boomopen/workflow-kit` v1.3.0) enforces a lean set of s
 | Web components | PascalCase `.tsx` | `App.tsx` |
 | Web entry points | camelCase `.tsx` | `main.tsx` |
 | CLI source | camelCase `.js` | `install.js` |
-| CLI test files | camelCase `.test.js` | `install.test.js.example` |
+| CLI test files | kebab-case `<topic>.test.js` | `install-regressions.test.js` |
 
 ---
 
@@ -125,5 +125,5 @@ These are documented absences — not recommendations. They reflect the current 
 | Agent file examples | [../../agents/backend-engineer.md](../../agents/backend-engineer.md) |
 | Command file examples | [../../commands/cook.md](../../commands/cook.md) |
 | CLI source | [../../cli/install.js](../../cli/install.js) |
-| Example test file | [../../cli/install.test.js.example](../../cli/install.test.js.example) |
+| Example test file | [../../cli/install.test.js](../../cli/install.test.js) |
 | Rule files | `../../rules/CORE.md`, `../../rules/PHASES.md` |

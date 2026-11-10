@@ -1,57 +1,23 @@
 import { motion } from 'framer-motion'
 import { Button, Card, CardContent, Badge, Section, SectionHeader } from '../../components/ui'
 import { PageSideDecorations, GradientBackground } from '../../components/decorations'
-import { SEO, pageSEO } from '../../components/seo'
 import { Terminal } from '../../components/terminal'
+import { TEAM_COMMANDS, TEAM_COUNT, TEAM_ROLE_COUNT } from '../../data/kitStats'
+import { consensusPaths, debateSteps, teams } from '../../data/agentTeams'
 
 // ---------------------------------------------------------------------------
 // Data
 // ---------------------------------------------------------------------------
 
-const teams = [
-  { domain: 'backend', icon: '⚙️', techLead: 'tech-lead', executor: 'backend-engineer', reviewerFocus: 'security + performance', color: 'red' as const },
-  { domain: 'frontend', icon: '🎨', techLead: 'tech-lead', executor: 'frontend-engineer', reviewerFocus: 'design + performance', color: 'cyan' as const },
-  { domain: 'fullstack', icon: '🔗', techLead: 'tech-lead', executor: 'backend + frontend-engineer', reviewerFocus: 'security + performance', color: 'purple' as const },
-  { domain: 'database', icon: '🗄️', techLead: 'tech-lead', executor: 'database-architect', reviewerFocus: 'security + performance', color: 'orange' as const },
-  { domain: 'research', icon: '🔬', techLead: 'researcher', executor: 'scouter', reviewerFocus: 'critical evaluator', color: 'green' as const },
-  { domain: 'planning', icon: '📋', techLead: 'planner', executor: 'researcher', reviewerFocus: 'feasibility critic', color: 'cyan' as const },
-  { domain: 'qa', icon: '🧪', techLead: 'tester', executor: 'tester', reviewerFocus: 'security + performance', color: 'green' as const },
-  { domain: 'design', icon: '✏️', techLead: 'designer', executor: 'frontend-engineer', reviewerFocus: 'UX + accessibility', color: 'purple' as const },
-  { domain: 'debug', icon: '🐛', techLead: 'debugger', executor: 'backend-engineer', reviewerFocus: 'root-cause validator', color: 'red' as const },
-  { domain: 'devops', icon: '🚀', techLead: 'devops-engineer', executor: 'backend-engineer', reviewerFocus: 'security', color: 'orange' as const },
-  { domain: 'security', icon: '🔒', techLead: 'security-engineer', executor: 'backend-engineer', reviewerFocus: 'pen-test mindset', color: 'red' as const },
-  { domain: 'game', icon: '🎮', techLead: 'tech-lead', executor: 'game-engineer', reviewerFocus: 'game arch + performance', color: 'purple' as const },
-  { domain: 'mobile', icon: '📱', techLead: 'tech-lead', executor: 'mobile-engineer', reviewerFocus: 'UX + platform + performance', color: 'cyan' as const },
-  { domain: 'performance', icon: '⚡', techLead: 'performance-engineer', executor: 'backend-engineer', reviewerFocus: 'measurement validation', color: 'orange' as const },
-  { domain: 'docs', icon: '📄', techLead: 'docs-manager', executor: 'researcher', reviewerFocus: 'accuracy + completeness', color: 'green' as const },
-  { domain: 'project', icon: '📊', techLead: 'project-manager', executor: 'business-analyst', reviewerFocus: 'technical feasibility', color: 'cyan' as const },
-  { domain: 'report', icon: '📈', techLead: 'reporter', executor: 'scouter', reviewerFocus: 'data accuracy + insight', color: 'purple' as const },
-]
-
-const debateSteps = [
-  { step: 1, title: 'Executor Implements', description: 'Executor delivers implementation. Reviewer receives the work.', icon: '💻', badge: 'Execute' },
-  { step: 2, title: 'Reviewer Critiques', description: 'Reviewer challenges with specific, evidence-based objections.', icon: '🔍', badge: 'Challenge' },
-  { step: 3, title: 'Executor Defends or Fixes', description: 'Executor DEFENDS with evidence OR acknowledges and FIXES. No performative agreement.', icon: '🛡️', badge: 'Defend / Fix' },
-  { step: 4, title: 'Consensus or Escalation', description: 'Reviewer approves → PASS. If FAIL after 3 rounds → Tech Lead ARBITRATES (binding decision).', icon: '⚖️', badge: 'Resolve' },
-]
-
-const consensusPaths = [
-  { name: 'Clean Pass', icon: '✅', description: 'Reviewer approves on first review. No issues found.', color: 'from-[rgba(0,255,136,0.2)] to-[rgba(0,212,255,0.1)]', borderColor: 'border-[rgba(0,255,136,0.3)]' },
-  { name: 'Resolved Pass', icon: '🔄', description: 'After defense with evidence or fix, Reviewer approves.', color: 'from-[rgba(255,136,68,0.2)] to-[rgba(136,68,255,0.1)]', borderColor: 'border-[rgba(255,136,68,0.3)]' },
-  { name: 'Arbitrated Pass', icon: '⚖️', description: 'Tech Lead overrides after max 3 debate rounds. Binding decision.', color: 'from-[rgba(255,68,68,0.2)] to-[rgba(136,68,255,0.1)]', borderColor: 'border-[rgba(255,68,68,0.3)]' },
-]
-
-const teamCommands = [
-  '/cook:team', '/fix:team', '/debug:team', '/test:team',
-  '/review:team', '/plan:team', '/design:team', '/report:team', '/deploy:team',
-]
+// Commands that ship a commands/<name>-team.md variant (generated from the repository at build time).
+const teamCommands = TEAM_COMMANDS
 
 const stats = [
-  { value: '17', label: 'Domain Teams', icon: '🏢' },
-  { value: '51', label: 'Specialized Agents', icon: '🤖' },
+  { value: String(TEAM_COUNT), label: 'Domain Teams', icon: '🏢' },
+  { value: String(TEAM_ROLE_COUNT), label: 'Specialized Agents', icon: '🤖' },
   { value: '3', label: 'Roles per Team', icon: '🔺' },
   { value: '3', label: 'Max Debate Rounds', icon: '🔄' },
-  { value: '9', label: 'Team Commands', icon: '⌨️' },
+  { value: String(TEAM_COMMANDS.length), label: 'Team Commands', icon: '⌨️' },
 ]
 
 // ---------------------------------------------------------------------------
@@ -60,8 +26,7 @@ const stats = [
 
 export default function AgentTeams() {
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <SEO {...pageSEO.agentTeams} />
+    <div className="min-h-screen bg-bg-primary">
 
       {/* ── Hero ───────────────────────────────────────────────────── */}
       <Section background="primary" spacing="xl" className="relative overflow-hidden">
@@ -80,7 +45,7 @@ export default function AgentTeams() {
               Agent Teams — Golden Triangle
             </h1>
             <p className="text-body text-lg mb-8">
-              Adversarial collaboration with 17 specialized teams, each composed of a
+              Adversarial collaboration with {TEAM_COUNT} specialized teams, each composed of a
               Tech Lead, Executor, and Reviewer. Structured debate produces stronger output
               than any single agent can achieve alone.
             </p>
@@ -215,10 +180,10 @@ export default function AgentTeams() {
         </motion.div>
       </Section>
 
-      {/* ── 17 Teams Roster ────────────────────────────────────────── */}
+      {/* ── Teams Roster ────────────────────────────────────────── */}
       <Section background="primary" spacing="lg">
         <SectionHeader
-          title="17 Domain Teams"
+          title={`${TEAM_COUNT} Domain Teams`}
           description="Each team is purpose-built for its domain with the right specialists in every role."
         />
 
@@ -393,7 +358,7 @@ export default function AgentTeams() {
           >
             <Card>
               <CardContent>
-                <h3 className="heading-card mb-4">9 Team-Enabled Commands</h3>
+                <h3 className="heading-card mb-4">{TEAM_COMMANDS.length} Team-Enabled Commands</h3>
                 <div className="flex flex-wrap gap-3">
                   {teamCommands.map((cmd) => (
                     <span
@@ -446,7 +411,7 @@ export default function AgentTeams() {
           {[
             { icon: '🛡️', title: 'Defense in Depth', description: 'Every implementation is challenged before delivery. Bugs, security issues, and design flaws get caught in debate — not production.' },
             { icon: '💎', title: 'Higher Quality Output', description: 'Debate forces Executors to justify decisions. The result is code that survives scrutiny, not just code that compiles.' },
-            { icon: '⚡', title: 'Domain Expertise', description: '17 purpose-built teams mean the right specialists for every domain. A security review uses a security-engineer, not a generalist.' },
+            { icon: '⚡', title: 'Domain Expertise', description: `${TEAM_COUNT} purpose-built teams mean the right specialists for every domain. A security review uses a security-engineer, not a generalist.` },
             { icon: '📊', title: 'Traceable Decisions', description: 'Every debate round, defense, and arbitration is recorded. Full audit trail from requirement to delivery.' },
           ].map((benefit, index) => (
             <motion.div
@@ -486,6 +451,6 @@ export default function AgentTeams() {
           </div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

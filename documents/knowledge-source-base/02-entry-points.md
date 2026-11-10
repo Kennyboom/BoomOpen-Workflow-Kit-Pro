@@ -40,7 +40,7 @@ This is the **sole executable file** in the entire project. It is declared in `p
 - **Size**: ~600 lines
 - **Minimum Runtime**: Node.js >=18.0.0
 
-When installed globally via `npm install -g @boomopen/workflow-kit`, the `boomopen-workflow-kit` binary becomes available system-wide. When invoked via `npx`, it runs directly from the package.
+The kit is not published on npm. Run `node cli/install.js` from a clone, or run `npm link` in the clone so the `boomopen` binary (package.json `bin`) is available system-wide.
 
 ### Secondary: Platform Entry Point Files (Root)
 
@@ -75,9 +75,9 @@ npm run install:all        # → node cli/install.js install --all
 npm run uninstall:copilot  # → node cli/install.js uninstall copilot
 npm run list               # → node cli/install.js list
 
-# Via npx (after npm publish)
-npx boomopen-workflow-kit install cursor
-npx @boomopen/workflow-kit install --all
+# Via the linked binary (after `npm link` in the clone)
+boomopen install cursor
+boomopen install --all
 ```
 
 ### 2. Module Loading
@@ -127,7 +127,7 @@ resetProgress()
       3. Copy CORE_DIRS to boomopenWorkflowKit path
       4. Copy commands also to "workflows" for backward compatibility
       5. Copy ROOT_FILES (README.md)
-      6. Copy skills/ directory (1,430 skill folders)
+      6. Copy skills/ directory (1,462 (22 core in `skills/` + 1,440 in `skills_library/`) skill folders)
       7. Copy agents/ directory (for native subagent support)
       8. Text file replacements: {TOOL} → platform name, {HOME} → ~, path macros
   → completeProgress()

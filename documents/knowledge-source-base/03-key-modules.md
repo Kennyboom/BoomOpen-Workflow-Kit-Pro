@@ -41,7 +41,7 @@ The sole executable module in the published npm package. Copies framework files 
 | File | Size | Role |
 |------|------|------|
 | `install.js` | ~600 LOC | Main CLI entry, all logic in one file |
-| `install.test.js.example` | Template | Example test file (not active) |
+| `*.test.js` | Tests | `node:test` suites run by `npm test` (sandboxed HOME) |
 | `README.md` | Doc | CLI-specific usage guide |
 
 ### Internal Structure of install.js
@@ -342,7 +342,7 @@ HSOL Resolution Flow:
 | Setting | Value | Meaning |
 |---------|-------|---------|
 | `version` | 1.1 | HSOL protocol version |
-| `total_matrix_skills` | 1,430 | Total pre-curated skills |
+| `total_matrix_skills` | 1,476 | Total pre-curated skills |
 | `async_threshold` | 0.8 | Matrix fitness above this skips dynamic discovery |
 | `apply_for_variants` | `["hard", "team"]` | Dynamic discovery only runs for these variants |
 | `timeout_ms` | 5,000 | Discovery timeout |
@@ -360,7 +360,7 @@ HSOL Resolution Flow:
 ## Module 6: Skills (skills/)
 
 ### Purpose
-Contains 1,430 individual skill folders, each containing a `SKILL.md` file that defines the skill's purpose, best practices, and usage patterns. Skills are the atomic units of knowledge injected into agent contexts by the HSOL.
+Contains 1,462 individual skill folders, each containing a `SKILL.md` file that defines the skill's purpose, best practices, and usage patterns. Skills are the atomic units of knowledge injected into agent contexts by the HSOL.
 
 ### Structure
 ```
@@ -371,7 +371,7 @@ skills/
 │   └── SKILL.md
 ├── 10-andruia-skill-smith/
 │   └── SKILL.md
-├── ... (1,430 total)
+├── ... (1,462 total)
 └── find-skills/
     └── SKILL.md          # Special: HSOL dynamic discovery
 ```
@@ -545,7 +545,7 @@ Platform Markdown Files (AGENT.md, CLAUDE.md, etc.)
         │       ├── matrix-skills/{domain}.yaml (static layer)
         │       ├── matrix-skills/_dynamic.yaml (dynamic layer)
         │       └── skills/find-skills/SKILL.md (discovery)
-        │           └── skills/*/ (1,430 skill definitions)
+        │           └── skills/*/ (1,462 (22 core in `skills/` + 1,440 in `skills_library/`) skill definitions)
         ├── rules/TEAMS.md (team coordination)
         ├── rules/ERRORS.md (error handling)
         └── rules/REFERENCE.md (lookup tables)

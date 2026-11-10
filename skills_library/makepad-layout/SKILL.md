@@ -20,12 +20,6 @@ You are an expert at Makepad layout system. Help users by:
 - **Writing code**: Generate layout code following the patterns below
 - **Answering questions**: Explain layout concepts, sizing, flow directions
 
-## Documentation
-
-Refer to the local files for detailed documentation:
-- `./references/layout-system.md` - Complete layout reference
-- `./references/core-types.md` - Walk, Align, Margin, Padding types
-
 ## IMPORTANT: Documentation Completeness Check
 
 **Before answering questions, Claude MUST:**

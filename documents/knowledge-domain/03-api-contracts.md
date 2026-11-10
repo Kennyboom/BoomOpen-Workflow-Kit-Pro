@@ -39,11 +39,11 @@ There is also an internal resolution protocol — the HSOL (Hybrid Skill Orchest
 | Entry point | `cli/install.js` |
 | Runtime | Node.js >= 18.0.0 |
 | Dependencies | Zero (uses only `node:fs`, `node:path`, `node:os`, `node:readline`) |
-| Package | `@boomopen/workflow-kit` on npm |
+| Package | `@boomopen/workflow-kit` (package.json name; not published on npm, install from source) |
 
 ### Commands
 
-#### `boomopen-workflow-kit install <tool>`
+#### `boomopen install <tool>`
 
 Installs the framework to a specific AI platform's global directory.
 
@@ -57,7 +57,7 @@ Installs the framework to a specific AI platform's global directory.
 1. Resolves the platform's installation paths from the TOOLS configuration object
 2. Creates the directory structure (`skills/boomopen-workflow-kit/`, `agents/`, `commands/`, `rules/`, `matrix-skills/`, `documents/`)
 3. Copies core directories: `agents/`, `rules/`, `documents/`, `commands/`, `matrix-skills/`
-4. Copies `skills/` directory (1,430 skill modules)
+4. Copies `skills/` directory (1,462 (22 core in `skills/` + 1,440 in `skills_library/`) skill modules)
 5. Performs `{TOOL}` placeholder replacement in all Markdown and YAML files
 6. Copies platform-specific assets (entry point files, config files)
 7. Copies root files (`README.md`)
@@ -84,7 +84,7 @@ Installs the framework to a specific AI platform's global directory.
 
 ---
 
-#### `boomopen-workflow-kit uninstall <tool>`
+#### `boomopen uninstall <tool>`
 
 Removes the framework from a specific AI platform's global directory.
 
@@ -112,7 +112,7 @@ Removes the framework from a specific AI platform's global directory.
 
 ---
 
-#### `boomopen-workflow-kit list`
+#### `boomopen list`
 
 Lists which platforms currently have the framework installed.
 
@@ -140,7 +140,7 @@ The installer copies these directories from the npm package into platform-specif
 | `documents/` | `documents/` | Knowledge base folders |
 | `commands/` | `commands/` | 14 routers + variant subfolders (54 variant files) |
 | `matrix-skills/` | `matrix-skills/` | 19 domain YAMLs + `_index.yaml` + `_dynamic.yaml` |
-| `skills/` | Installed to `{SKILLS_PATH}/` | 1,430 skill modules |
+| `skills/` | Installed to `{SKILLS_PATH}/` | 1,462 (22 core in `skills/` + 1,440 in `skills_library/`) skill modules |
 | `README.md` | `README.md` | Project readme |
 
 ### Platform-Specific Asset Mapping
@@ -155,7 +155,7 @@ The installer copies these directories from the npm package into platform-specif
 | Claude | Claude config | `platforms/claude/CLAUDE.md` | `~/.claude/CLAUDE.md` |
 | Codex | Codex config | `platforms/codex/CODEX.md` | `~/.codex/CODEX.md` |
 | Codex | TOML config | `platforms/codex/config.toml` | `~/.codex/config.toml` |
-| Codex | Agent TOMLs | `platforms/codex/agents/` | `~/.codex/agents/` |
+| Codex | Agent TOMLs | `platforms/codex/agents/` | `~/.codex/agents/boomopen/` |
 | Codex | Command skills | `platforms/codex/skills/` | `~/.codex/skills/` |
 
 ---

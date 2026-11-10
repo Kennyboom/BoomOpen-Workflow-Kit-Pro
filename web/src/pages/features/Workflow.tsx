@@ -2,9 +2,9 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Zap, Brain, Layers, Target } from 'lucide-react'
 import { Button, Card, CardContent, Badge, Section, SectionHeader } from '../../components/ui'
 import { PageSideDecorations, GradientBackground } from '../../components/decorations'
-import { SEO, pageSEO } from '../../components/seo'
 import { WorkflowDiagram } from '../../components/workflow'
-import { nodeTypeLegend, architectureConcepts } from '../../data/workflowArchitecture'
+import { nodeTypeLegend, architectureConcepts } from '../../data/workflowLegend'
+import { AGENT_COUNT } from '../../data/kitStats'
 
 const conceptIcons = {
   '🧠': Brain,
@@ -15,8 +15,7 @@ const conceptIcons = {
 
 export default function Workflow() {
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <SEO {...pageSEO.workflow} />
+    <div className="min-h-screen bg-bg-primary">
       
       {/* Hero Section */}
       <Section background="primary" spacing="xl" className="relative overflow-hidden">
@@ -172,7 +171,7 @@ export default function Workflow() {
               { step: '4', title: 'Rule Engine', desc: 'Enforces orchestration protocols', color: '#ff8844' },
               { step: '5', title: 'Agent Delegation', desc: 'TIER 1 (sub-agent) or TIER 2 (embody)', color: '#00ff88' },
               { step: '6', title: 'Skill Injection', desc: 'Matrix resolves and injects skills', color: '#8844ff' },
-              { step: '7', title: 'Specialist Execution', desc: '21 domain experts process tasks', color: '#ff8844' },
+              { step: '7', title: 'Specialist Execution', desc: `${AGENT_COUNT} domain experts process tasks`, color: '#ff8844' },
               { step: '8', title: 'Deliverables', desc: 'Code, plans, tests, documentation', color: '#00ff88' },
             ].map((item, index) => (
               <motion.div
@@ -246,6 +245,6 @@ export default function Workflow() {
           </motion.div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

@@ -1,0 +1,6 @@
+interface:
+  display_name: "/research"
+  short_description: "🔬 Research Router — SOTA 2026 Autonomous Deep-Research Engine with 5-Lens Triangulation, Contradiction Arbitration, Multi-Engine Council & Deterministic CLI Validation"
+  brand_color: "#0EA5E9"
+policy:
+  allow_implicit_invocation: true

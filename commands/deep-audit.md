@@ -5,260 +5,116 @@ description: >-
   Cross-module Dependency Verification, and Scoring Matrix.
   Finds LOGIC holes, not just TEXT holes.
 category: audit
-execution-mode: sequential
+execution-mode: execute
 version: "5.5"
 ---
 
-# /deep-audit — The Ruthless Inspector v2.0
+# /deep-audit — The Ruthless Inspector v2.0 (v5.5 Parallel Shards)
 
-$ARGUMENTS
+> **MISSION**: Expose broken logic, mismatched boundary formats, race conditions, crash-recovery gaps, and architectural contradictions across specs/plans/designs **before** code breaks in production — synthesizing **1 cohesive `<appDataDir>\brain\<conversation-id>\REVIEW-audit-{topic}.md`** (`≤ 500` lines).
 
----
-
-## Purpose
-
-```
-"Complete" documentation ≠ "Correct" documentation.
-Text reads fine but logic is broken = TICKING TIME BOMB.
-
-/review checks CODE.
-/deep-audit checks DOCUMENTATION before code.
-```
+<scope>$ARGUMENTS</scope>
 
 ---
 
-## IRON RULES (12)
+## ⚡ TURN-1 ZERO-TAX PARALLEL DISPATCH, TOOLS & ARTIFACT CONTRACT
 
-```
-1.  CHECK LOGIC, NOT TEXT
-2.  TRACE DATA END-TO-END (format at EVERY boundary must match)
-3.  CHALLENGE EVERY "WORKS FINE" (prove with logic)
-4.  TIMING IS THE ENEMY (2 parallel processes = ALWAYS HAVE DELTA)
-5.  CRASH TEST EVERYTHING ("kill -9 then what?")
-6.  FORMAT MUST MATCH EXACTLY (float32 mono ≠ int16 stereo)
-7.  CALCULATE RESOURCES SPECIFICALLY (numbers, not estimates)
-8.  DEPENDENCIES MUST HAVE SPECIFIC VERSIONS (compatible?)
-9.  NAMES MUST BE CONSISTENT (cross-file naming check)
-10. ERROR HANDLING MUST HAVE A WAY BACK (detect → recover → user sees)
-11. COUNT FIRST — CHECK SECOND (scope census MANDATORY)
-12. REPORT PROGRESS — AUTO-SPLIT SESSIONS (50KB/session)
-```
+1. **Valid Antigravity 2.0 Toolset Only**: Use native `read_file`, `run_command`, `search_web`, `write_file`, `edit_file`, `invoke_subagent`, `send_message`, and `ask_question` (never legacy tool names).
+2. **Elastic Parallel Audit Shards (`> 2` Files)**:
+   - If auditing `≤ 2` known files, execute Mode A directly via `read_file`.
+   - If auditing `> 2` files/modules, **never crawl files sequentially in the primary agent**! Immediately spawn parallel critic shards (`reviewer#audit-1..k`) on Turn 1 via `invoke_subagent(TypeName: "self", Model: "inherit")`, assigning **at most `≤ 3–4` heavy files/modules per shard** and recording `role#shard -> conversationId` for Warm Session Reuse (`send_message`).
+3. **🛡️ `READ_ONLY_FILES` Audit Lock**: Lock **100% of audited documentation and repository source files** in `READ_ONLY_FILES` during Phases 0–3. Parallel shards return structured findings via `send_message` or disjoint scratch files (`REVIEW-audit-{topic}-s{1..k}.md`, `ArtifactMetadata: { Summary: "...", UserFacing: false, RequestFeedback: false }`).
+4. **Cohesive Single-File Deliverable**: Write `<appDataDir>\brain\<conversation-id>\REVIEW-audit-{topic}.md` (`≤ 500` lines, zero `{name}/` folder splits) with explicit `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: false }`.
 
 ---
 
-## Phase 0: Scope Census (MANDATORY BEFORE ANYTHING)
+## 🧱 12 IRON RULES
 
-> ⛔ Census not done = audit NOT started.
-
-### 0.1 Count Scope
-
-```
-STEP 1: list_dir → scan ALL directories with .md files
-  → root/, docs/, plans/, docs/specs/, docs/design/
-STEP 2: Count: doc_count + plan_count + spec_count
-             + design_count = TOTAL
-STEP 3: Count modules, phases, features
-STEP 4: Report scope to user
-```
-
-### 0.2 Session Calculator
-
-```
-SESSION_BUDGET = 50KB (byte-level trace per session)
-Group files by LOGIC GROUP (same module = same session)
-Files that reference each other = same session
-```
-
-### 0.3 Progress Persistence
-
-```
-Save: {project_root}/.audit/audit-progress.json
-
-{
-  "totalFiles": N,
-  "checkedFiles": [...],
-  "remainingFiles": [...],
-  "currentSession": X,
-  "totalSessions": Y,
-  "findings": [...]
-}
-
-ON START: Check .audit file exists?
-  YES and remaining > 0 → ask continue or restart
-  NO → run Census from scratch
-```
+1. **CHECK LOGIC, NOT PROSE** — Readable text with broken state transitions is a `P0` ticking time bomb.
+2. **TRACE DATA END-TO-END** — Payload types, units, and encodings at every boundary must match byte-for-byte.
+3. **CHALLENGE EVERY "WORKS FINE"** — Demand concrete invariants, timeouts, and failure paths.
+4. **TIMING IS THE ENEMY** — Any 2 parallel/async processes have skew/delta; verify ordering, idempotency, and locks.
+5. **CRASH TEST EVERYTHING** — Trace `kill -9` / power loss mid-flight: detect → recover → user-visible state.
+6. **EXACT FORMAT MATCH** — `float32 mono ≠ int16 stereo`; `ISO-8601 UTC ≠ Unix ms`; `camelCase ≠ snake_case`.
+7. **CONCRETE RESOURCE BUDGETS** — Demand exact RAM/VRAM/CPU/Disk/QPS numbers, never vague "fast enough".
+8. **PINNED & COMPATIBLE DEPENDENCIES** — Verify version compatibility across runtime, ORM, SDKs, and OS.
+9. **CROSS-FILE NAMING CONSISTENCY** — Entity, DTO, env var, and error code names must match across every doc.
+10. **CLOSED-LOOP ERROR RECOVERY** — Every error needs detection, state rollback/retry, and deterministic UI state.
+11. **CENSUS FIRST, AUDIT SECOND** — Complete 100% file/module scope census before scoring.
+12. **FULL `read_file` COVERAGE** — Every shard must read its assigned files completely via `read_file` (never skim first 50 lines or assume contents).
 
 ---
 
-## Phase 1: Project Scan (EACH session)
+## 🔍 Phase 0: Scope Census & Deterministic CLI Pre-Scan (Turn 1)
 
-### 1.1 Session Scope Declaration
+1. **Scope Census & Shard Partitioning**:
+   - Enumerate all target docs/specs/plans/designs (`docs/`, `documents/`, `plans/`, `<appDataDir>\brain\<conversation-id>\`) via `run_command` or a fast census scan, grouping tightly coupled files into disjoint `≤ 3–4` file shards (`reviewer#audit-1..k`).
+   - Persist multi-wave census state (when auditing massive doc sets `> 24` files) in `<appDataDir>\brain\<conversation-id>\scratch\audit-progress-{topic}.json` (`totalFiles`, `checkedFiles`, `remainingFiles`, `shards`).
+2. **Deterministic CLI Validators & Security Pre-Scan (Run in Parallel on Turn 1)**:
+   ```bash
+   # Validate any PLAN-*.md or DESIGN-*.md in scope
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js plan validate "<plan-path>"
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design validate "<design-path>"
 
-```
-"🔬 SESSION [X/N] — SCOPE:
- 📁 Files: [list]
- 🎯 Modules: [list]
- 📊 Progress: [checked]/[total] files"
-```
-
-### 1.2 File-by-File Reading (MANDATORY)
-
-```
-MUST view_file EACH FILE. DO NOT:
-  ❌ "I already know this file" → MUST re-read
-  ❌ Skim 800 lines → only read 50 lines
-
-AFTER EACH FILE: ✅ file_name.md — read [X lines]
-```
-
-### 1.3 Cross-Reference Map
-
-```markdown
-| Concept | Defined In | Referenced By | Consistent? |
-|---------|-----------|---------------|:-----------:|
-```
-
-### 1.4 Module Dependency Graph
-
-```
-Draw REAL dependency graph — data format at EVERY boundary.
-DO NOT accept "Phase 01 → Phase 02".
-MUST have: format, protocol, size at each connection.
-```
+   # Scan repository code/configs & security posture when code exists alongside docs
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs
+   python ~/.{TOOL}/skills_library/vulnerability-scanner/scripts/security_scan.py <dir>
+   ```
 
 ---
 
-## Phase 2: 10 Audit Dimensions
+## 🌊 Phase 1: Elastic Parallel Shard Scan & Cross-Module Boundary Graph
 
-> EACH dimension = 1 results table. DO NOT skip any.
+Dispatch `reviewer#audit-1..k` (`TypeName: "self"`, `Model: "inherit"`) concurrently with the 5-Field Handoff Packet (`READ_ONLY_FILES` locked):
+- **Complete File Reading**: Each shard reads 100% of its `≤ 3–4` assigned files via `read_file` (using `StartLine`/`EndLine` pagination if `> 800` lines) and logs exact line counts read (`✅ {file} — {N} lines read`).
+- **Cross-Reference & Boundary Graph**: Extract every exported/referenced schema, API endpoint, IPC channel, event payload, and state machine so the orchestrator can verify cross-shard boundaries:
 
-| DIM | Name | What to Check |
-|:---:|------|---------------|
-| 1 | 📡 Data Flow | Trace input→output, format match at boundaries |
-| 2 | ⏱️ Timing | Parallel processes, delta > 16ms needs sync |
-| 3 | 💥 Crash Recovery | Kill -9 → detect → recover → user sees what |
-| 4 | 🔗 Cross-Module | Module A needs data from B, format match? |
-| 5 | 🧮 Resources | VRAM/RAM/CPU/Disk — SPECIFIC NUMBERS |
-| 6 | 📐 Naming | Cross-file naming consistency |
-| 7 | 🔒 Security | Auth, port binding, encryption, isolation |
-| 8 | 📊 Test Coverage | Happy + error + perf + security + integration |
-| 9 | 📝 Spec Complete | User story + AC + edge cases + error handling |
-| 10 | 🧩 Architecture | C4 match IPC? Schema match API? ADR match impl? |
-
-### DIM-7 Security Checklist
-
-```
-□ IPC channels have auth?
-□ SHM names random (UUID) or hardcoded?
-□ Port binding random or fixed?
-□ Sensitive data encrypted?
-□ Process isolation (not elevated)?
-□ Input validation (size limit, format check)?
-```
-
-### DIM-8 Test Coverage Ratios
-
-```
-features_without_tests / total_features → MUST = 0
-edge_case_tests / happy_path_tests → MUST ≥ 1.0
-```
-
-### DIM-10 Architecture Consistency
-
-```
-□ C4 diagrams MATCH IPC schema?
-□ Data schema MATCH API contracts?
-□ Phase dependencies MATCH data flow?
-□ ADR decisions MATCH implementation?
-```
+| Concept / Contract | Defined In (`file:line`) | Referenced By (`file:line`) | Format / Protocol / Size | Match? |
+|--------------------|--------------------------|-----------------------------|--------------------------|:------:|
+| `{DTO / Table / Event}` | `{docA.md:L42}` | `{docB.md:L118}` | `{JSON / SQL / IPC + exact fields}` | ✅ / ❌ |
 
 ---
 
-## Phase 3: Scoring + Report
+## 📐 Phase 2: The 10 Mandatory Audit Dimensions
 
-### Severity Classification
+Evaluate **all 10 dimensions** across shard findings (using warm `send_message` to cross-verify inter-module disputes):
 
-```
-🔴 CRITICAL — Logic breaks, data loss, security hole
-🟡 WARNING — Inconsistency, missing edge case, unclear spec
-🟢 SUGGESTION — Optimization, naming improvement, clarification
-```
-
-### Scoring Matrix (per dimension)
-
-```markdown
-| DIM | Name | Score (0-10) | Findings | Severity |
-|:---:|------|:----------:|:--------:|----------|
-| 1 | Data Flow | — | — | — |
-| 2 | Timing | — | — | — |
-...
-| TOTAL | | —/100 | — | — |
-```
+| DIM | Dimension | Mandatory Logic Verification |
+|:---:|-----------|------------------------------|
+| **1** | 📡 **Data Flow** | End-to-end input → transform → storage → output type/nullability/encoding match at every hop |
+| **2** | ⏱️ **Timing & Concurrency** | Async races, parallel delta (`> 16ms` UI frame / DB write skew), idempotency keys, lock ordering |
+| **3** | 💥 **Crash Recovery** | `kill -9` / network drop mid-transaction: orphan cleanup, retry backoff, dead-letter queue, UI state |
+| **4** | 🔗 **Cross-Module Contracts** | Module A output vs. Module B input (`SHARED_CONTRACT`, pagination envelope, error codes) |
+| **5** | 🧮 **Resource Budgets** | Concrete memory, VRAM, CPU, connection pool, payload size, and rate-limit math under peak load |
+| **6** | 📐 **Naming Consistency** | Zero drift across table columns, TypeScript DTOs, route params, env vars, and ADR terminology |
+| **7** | 🔒 **Security & Isolation** | AuthN/AuthZ on every route/IPC, randomized SHM/ports, secret storage, SSRF/injection/prompt guards |
+| **8** | 📊 **Test Coverage Ratios** | `features_without_tests == 0` AND `edge_case_tests / happy_path_tests >= 1.0` |
+| **9** | 📝 **Spec Completeness** | Verbatim user stories, `Given/When/Then` ACs, 5-state UI (loading/empty/error/offline/populated) |
+| **10** | 🧩 **Architecture Parity** | C4 diagrams == API/IPC schemas == DB indexes/migrations == ADR decisions |
 
 ---
 
-## Phase 4: Fix Execution
+## 📊 Phase 3: Cohesive Brain Artifact Synthesis (`REVIEW-audit-{topic}.md`)
 
+Verify `checkedFiles == totalFiles` (`100%` scope read), prune unverified speculation, and write **1 cohesive file** to `<appDataDir>\brain\<conversation-id>\REVIEW-audit-{topic}.md` (`≤ 500` lines) with:
+```json
+ArtifactMetadata: { "Summary": "10-Dimension Deep Logic Audit & Boundary Verification Report", "UserFacing": true, "RequestFeedback": false }
 ```
-1. List findings by severity (🔴 first)
-2. Ask user: Fix all / selective / review report first
-3. Fix each finding → verify
-4. Re-audit failed dimensions
-```
+
+### Required Sections in `REVIEW-audit-{topic}.md`:
+1. **Executive Verdict & Scope Census**: Files/lines audited (`X/X`), CLI validator & `security_scan.py` status, overall score (`XX/100`), verdict (`READY_FOR_CODE` | `FIX_REQUIRED` | `ARCHITECTURE_BLOCKER`).
+2. **10-Dimension Scoring Matrix**:
+   | DIM | Dimension | Score (`0–10`) | Critical (`🔴`) | Warning (`🟡`) | Suggestion (`🟢`) | Key Evidence (`file:line`) |
+   |:---:|-----------|:--------------:|:---------------:|:--------------:|:-----------------:|----------------------------|
+   *(Sum `TOTAL: XX/100` across DIM 1–10.)*
+3. **Proof-Backed Findings & Remediation Blueprints** (sorted `🔴 CRITICAL` → `🟡 WARNING` → `🟢 SUGGESTION`):
+   - Clickable `[file:line](file:///...)` references, exact failure/race/crash scenario trace, and concrete contract/doc patch for every `🔴` and `🟡` finding.
+4. **End-to-End Boundary & Resource Verification Summary**: Verified data-flow mismatches, timing hazards, and peak resource math.
 
 ---
 
-## Phase 5: Final Report
+## 🔧 Phase 4: Optional Sharded Remediation & Re-Verification
 
-```
-BEFORE writing: files_checked == total_files?
-  ❌ Not yet → "Remaining: [X] files. Run /deep-audit again."
-  ✅ Done → write docs/AUDIT-REPORT-{date}.md
-
-Content:
-- Executive Summary
-- Scope Coverage
-- Scoring Matrix (10 dimensions)
-- Findings Table (severity-sorted)
-- Data Flow Verification
-- Timing Analysis
-- Resource Budget
-- Risk Assessment
-- Recommendations
-```
-
----
-
-## Phase 6: Handover
-
-```
-🔬 DEEP AUDIT COMPLETE!
-📍 Report: docs/AUDIT-REPORT-{date}.md
-📐 Scope: [X/X] files (100% coverage)
-📊 Score: [XX]/100
-🔴 Critical: [N] found, [N] fixed
-🟡 Warning: [N] found, [N] fixed
-
-Next:
-1. Fix remaining issues?
-2. Start code? /code
-3. Save context? /save
-4. Re-audit? /deep-audit
-```
-
----
-
-## GOLDEN RULES
-
-```
-1.  NEVER SAY "100%" — Always more to check
-2.  CHECK LOGIC, NOT TEXT
-3.  TRACE EVERY BYTE — Input → Process → Output
-4.  TIMING IS EVERYTHING — Parallel = ALWAYS DELTA
-5.  CRASH TEST MANDATORY — "If kill -9 then what?"
-6.  FORMAT MATCH = BYTE-EXACT
-7.  CROSS-MODULE > SINGLE MODULE — Errors at BOUNDARIES
-8.  RESOURCES = SPECIFIC NUMBERS — "VRAM enough" = MEANINGLESS
-9.  DO NOT TRUST SOURCE DOCS — Challenge every assumption
-10. RE-AUDIT AFTER FIX — Fix done must be verified
-```
+Present `[REVIEW-audit-{topic}.md](file:///...)` to the user and offer next actions (`ask_question` if selective remediation is needed):
+1. **Remediate Findings**: Dispatch parallel fix shards (`TypeName: "self"`, `Model: "inherit"`) with disjoint `OWNED_FILES` (`≤ 3–4` files/shard) + `SHARED_CONTRACT`, then re-run `plan validate` / `design validate` / `check <dir> --strict-phase --no-stubs` and re-verify failed dimensions via warm `send_message`.
+2. **Proceed to Implementation**: Hand off clean, verified specs to `/code:team` or `/cook:hard`.

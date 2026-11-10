@@ -1,4 +1,6 @@
-display_name: "/deploy:rollback"
-short_description: "⏪ Deploy Rollback — Revert to previous deployment"
-brand_color: "#8B5CF6"
-allow_implicit_invocation: true
+interface:
+  display_name: "/deploy:rollback"
+  short_description: "⏪ Deploy Rollback — Emergency revert to last-known-good release, restoration verification, and root-cause triage"
+  brand_color: "#8B5CF6"
+policy:
+  allow_implicit_invocation: true

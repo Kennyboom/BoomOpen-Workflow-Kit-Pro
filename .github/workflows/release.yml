@@ -1,0 +1,47 @@
+name: Release
+
+# Manual only. semantic-release computes the next version from commits, updates
+# CHANGELOG.md, package.json and package-lock.json, tags and creates a GitHub
+# release. npm publishing is disabled in .releaserc.json ("npmPublish": false)
+# until the maintainers decide to publish; see .github/RELEASING.md.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (compute the next version and notes without tagging or committing)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install release tooling
+        run: npm ci --ignore-scripts
+      - name: Verify
+        run: |
+          npm test
+          npm run lint
+          npm run test:pack
+      - name: semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release ${{ inputs.dry_run && '--dry-run' || '' }}

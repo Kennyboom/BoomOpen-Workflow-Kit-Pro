@@ -8,6 +8,8 @@ risk: unknown
 source: community
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`assets/analysis_template.py`, `references/api_reference.md`, `references/plotting_guide.md`, `references/standard_workflow.md`, `scripts/qc_analysis.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Scanpy: Single-Cell Analysis
 
 ## Overview
@@ -231,8 +233,6 @@ sc.pl.heatmap(adata, var_names=genes, groupby='cell_type',
 sc.pl.dotplot(adata, var_names=genes, groupby='cell_type',
               save='_dotplot.pdf')
 ```
-
-Refer to `references/plotting_guide.md` for comprehensive visualization examples.
 
 ### Trajectory Inference
 

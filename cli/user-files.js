@@ -6,8 +6,11 @@
  *
  * Contract: the kit never destroys content it did not ship.
  *  - Before overwriting a user-owned instruction file, keep a byte-exact backup.
- *  - On uninstall, remove only files whose relative paths exist in the kit's source tree,
- *    restore backups, and strip only the kit's marked blocks from merged files.
+ *  - Restore backups on uninstall and strip only the kit's marked blocks from merged files.
+ *
+ * The installer tracks shared-folder files with the install manifest (manifest.js) and merges
+ * instruction files as marked blocks (instruction-files.js). The helpers below handle the
+ * backups and the configs written by releases before those modules existed.
  */
 
 const fs = require('node:fs');

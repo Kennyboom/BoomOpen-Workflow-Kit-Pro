@@ -9,7 +9,7 @@
 #   - Discovery: find-skills skill ({SKILLS_PATH}/find-skills/SKILL.md)
 #   - Unified resolution: Matrix-first, dynamic-enhanced
 #
-# TOTAL: 1430 matrix skills across 19 domains + dynamic skills
+# TOTAL: 1476 matrix skill entries (1462 unique skills; 14 appear in 2 domains) across 19 domains + dynamic skills
 #
 # USAGE:
 #   1. Agent declares profile in frontmatter (e.g., "backend:execution")
@@ -25,8 +25,8 @@
 # ============================================================================
 
 version: "1.1"
-last_updated: "2026-11-04"
-total_matrix_skills: 1430
+last_updated: "2026-11-07"
+total_matrix_skills: 1476
 
 # ============================================================================
 # HYBRID SKILL ORCHESTRATION LAYER (HSOL) CONFIGURATION
@@ -110,55 +110,55 @@ domains:
     file: "backend.yaml"
     name: "Backend Development"
     description: "Server-side logic, APIs, data access"
-    skill_count: 209
+    skill_count: 210
 
   frontend:
     file: "frontend.yaml"
     name: "Frontend Development"
     description: "UI/UX, web applications, client-side"
-    skill_count: 109
+    skill_count: 115
 
   architecture:
     file: "architecture.yaml"
     name: "System Architecture"
     description: "Design patterns, system design, ADRs"
-    skill_count: 23
+    skill_count: 24
 
   quality:
     file: "quality.yaml"
     name: "Quality Assurance"
     description: "Testing, code review, validation"
-    skill_count: 61
+    skill_count: 62
 
   security:
     file: "security.yaml"
     name: "Security Engineering"
     description: "Threat modeling, secure coding, compliance"
-    skill_count: 103
+    skill_count: 106
 
   design:
     file: "design.yaml"
     name: "UI/UX Design"
     description: "Visual design, user experience, accessibility"
-    skill_count: 28
+    skill_count: 42
 
   planning:
     file: "planning.yaml"
     name: "Planning & Analysis"
     description: "Requirements, task breakdown, roadmaps"
-    skill_count: 38
+    skill_count: 39
 
   devops:
     file: "devops.yaml"
     name: "DevOps & Deployment"
     description: "CI/CD, infrastructure, containerization"
-    skill_count: 67
+    skill_count: 68
 
   data:
     file: "data.yaml"
     name: "Data & Database"
     description: "Schema design, queries, migrations"
-    skill_count: 35
+    skill_count: 36
 
   performance:
     file: "performance.yaml"
@@ -176,19 +176,19 @@ domains:
     file: "mobile.yaml"
     name: "Mobile Development"
     description: "iOS, Android, cross-platform apps"
-    skill_count: 27
+    skill_count: 29
 
   gaming:
     file: "gaming.yaml"
     name: "Game Development"
     description: "Game engines, graphics, game loop"
-    skill_count: 14
+    skill_count: 16
 
   management:
     file: "management.yaml"
     name: "Project Management"
     description: "Delivery, risk management, agile"
-    skill_count: 21
+    skill_count: 23
 
   ai_ml:
     file: "ai-ml.yaml"
@@ -206,19 +206,19 @@ domains:
     file: "languages.yaml"
     name: "Programming Languages"
     description: "Language-specific patterns and expertise"
-    skill_count: 57
+    skill_count: 59
 
   tools:
     file: "tools.yaml"
     name: "Tools & Utilities"
     description: "Productivity tools, document processing"
-    skill_count: 234
+    skill_count: 231
 
   mcp:
     file: "mcp.yaml"
     name: "MCP & Agents"
     description: "Model Context Protocol, agent frameworks"
-    skill_count: 12
+    skill_count: 13
 
 # ============================================================================
 # AGENT PROFILES

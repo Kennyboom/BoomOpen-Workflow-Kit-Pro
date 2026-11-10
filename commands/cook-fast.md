@@ -1,104 +1,85 @@
 ---
-description: ⚡ Quick Feature — Rapid feature implementation
+description: "⚡ Quick Feature — Rapid feature implementation with Turn-1 Fast-Forward, Mode A/B Gate & Strict CLI Verification"
 version: "5.5"
 category: engineering
 execution-mode: execute
 ---
 
-> **📂 Deliverable Routing (v5.5)**: On Antigravity 2.0, write transient deliverables (`BRAINSTORM`, `RESEARCH`, `SCOUT`, `DESIGN`, `PLAN`, `DEBUG`, `TEST`, `REVIEW`, `REPORT`, `MAILBOX`) to `<appDataDir>\brain\<conversation-id>\` to keep the Git tree clean (use `./reports/{topic}/` on non-Antigravity tools or when explicitly requested).
-
----
-
 # /cook:fast — Rapid Feature Implementation
 
-> **MISSION**: Quickly implement well-defined features with minimal ceremony.
+> **MISSION**: Quickly implement well-defined features (`≤ 2` known files directly in Mode A, or focused `3–4` file 1-Wave dispatch in Mode B) with **Turn-1 Fast-Forward** and zero-stub CLI verification.
 
 <feature>$ARGUMENTS</feature>
 
 ---
 
-## ⚡ TURN-1 ZERO-TAX DISPATCH & ON-DEMAND RULES
+## ⚡ TURN-1 FAST-FORWARD STATE MACHINE & EXECUTION GATE
 
-⚡ **TURN-1 ZERO-TAX DISPATCH**: Core orchestration laws and the **5-Field Handoff Packet** (`1. MISSION & ACCEPTANCE CRITERIA`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION & DELIVERABLE`) are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md` — launch Phase 1 sub-agents **immediately on Turn 1** via `invoke_subagent(TypeName: "self", Model: "inherit")` (0-turn fast-track) or `TypeName: "research"` for read-only local scouting, and load `./rules/*.md` on-demand only when needed.
+1. **Zero Pre-Flight Tax**: Core orchestration laws and the **5-Field Handoff Packet** (`1. MISSION`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION`) are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md`.
+2. **⚡ Unified Turn-1 Fast-Forward State Machine (`boomopen cook state`)**:
+   Inspect `<appDataDir>\brain\<conversation-id>\` (or run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook state --artifact-dir "<appDataDir>/brain/<conversation-id>"`) on Turn 1:
+   - **1. `PLAN-{feature}.md` exists** → **Fast-Forward directly to Phase 3 (Wave Execution)**: Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook preflight "<plan-path>"` and `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>" [--design "<design-path>"]` and execute Wave 1 immediately (**skip Phase 1 Context Scan & Phase 2 Micro-Planning!**).
+   - **2. `DESIGN-{feature}.md` exists (no `PLAN` yet)** → **Fast-Forward to Phase 2 (Micro-Planning)**: Extract `DESIGN_CONTRACT` (`@theme inline` CSS + TypeScript Props) via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design contract "<design-path>"` and fold it into your micro-plan.
+   - **3. `SCOUT-*.md` or `RESEARCH-*.md` exists** → **Fast-Forward past Phase 1 (Context Scan)**: Consume existing discovery notes directly.
+3. **Cohesive Single-File Deliverable Rule (`<= 500` lines)**:
+   Keep any transient deliverable (`SCOUT-{feature}.md`, `PLAN-{feature}.md`, `REVIEW-{feature}.md`) in `<appDataDir>\brain\<conversation-id>\` as **1 single cohesive file** (`ArtifactMetadata: { Summary, UserFacing: true, RequestFeedback: false }` during `/cook:fast` — NEVER split into `{name}/` folders). Write deliverables in the user's input language; keep code and comments in English.
 
-**Skills Resolution**: When delegating, load `SKILLS.md` on-demand. Fast variant uses matrix-only (no dynamic discovery for speed optimization).
-
----
-
-## 🔀 TIERED EXECUTION
-
-| Tier       | When               | Action                       |
-| ---------- | ------------------ | ---------------------------- |
-| **TIER 1** | Antigravity 2.0 Native Sub-Agents (`invoke_subagent`, `send_message`) or `runSubagent` EXISTS | Spawn via `invoke_subagent(TypeName: "self", Model: "inherit")` with 5-Field Handoff Packet (`SHARED_CONTRACT` + `OWNED_FILES`) & reuse warm sessions via `send_message` (MANDATORY) |
-| **TIER 2** | Tool MISSING       | EMBODY agent file (FALLBACK) |
-
-**❌ Anti-Lazy**: Never use TIER 2 when TIER 1 tool available.
-
----
-
-## 📁 PRIOR PLAN CHECK
-
-```
-IF `<appDataDir>\\brain\\<conversation-id>\\PLAN-{feature}.md` (or `./reports/{topic}/plans/PLAN-{feature}`) exists (.md file or folder):
-  → READ and FOLLOW it
-ELSE:
-  → Create micro-plan inline
-```
-
-All deliverables in `<appDataDir>\\brain\\<conversation-id>\\` (or `./reports/{topic}/`) → Write in the same language the user communicates with you. Code comments remain in English.
-**⚠️ Paths above = base names.** Small (≤ 150 lines) → create as `{name}.md`. Large (> 150 lines or ≥ 4 sections) → create as `{name}/` folder with `00-index.md` + `01-*.md`, `02-*.md` section files.
+| Mode / Tier | When | Action |
+|-------------|------|--------|
+| **MODE A (TIER 0)** | Exact `≤ 2` target files are already known on Turn 1, `1` domain, 0 exploration needed | Implement, test, and verify **directly** in the primary agent (0 sub-agent overhead). |
+| **MODE B (TIER 1)** | Scope requires codebase scan OR touches `3–4` files / `≥ 2` domains | Spawn specialist via `invoke_subagent(TypeName: "self", Model: "inherit")` (NEVER `flash_lite`) with the 5-Field Handoff Packet; record `role#shard -> conversationId` for warm `send_message` reuse. |
+| **TIER 2** | Sub-agent tool unavailable | Load `agents/{role}.md` and embody specialist directly (fallback). |
 
 ---
 
-## ⛔ INCREMENTAL EXECUTION (MANDATORY)
+## 🎭 Phase 1: FAST CONTEXT SCAN *(Skipped if Mode A or Prior `SCOUT`/`RESEARCH`/`PLAN` Exists)*
 
-Execute phases using **DAG Parallel Fan-Out** for independent tracks, **Direct Plan-to-Executor Dispatch** (`Model: "inherit"`), and **Stateful Warm Sub-agent Reuse** (`send_message`) per `rules/PHASES.md` (v5.5).
-
----
-
-## 🎭 Phase 1: CONTEXT SCAN
-
-| Agent | `scouter`                                     |
-| ----- | --------------------------------------------- |
-| Goal  | Quick context gathering                       |
-| Exit  | Patterns found, integration points identified |
+| Attribute | Value |
+|-----------|-------|
+| **Agent** | `scouter` via `invoke_subagent(TypeName: "self", Model: "inherit")` |
+| **Goal** | Locate exact integration points, existing types/components, and test conventions (`SCOUT-{feature}.md`, `RequestFeedback: false`). |
 
 ---
 
-## 🎭 Phase 2: MICRO-PLANNING
+## 🎭 Phase 2: INLINE / COMPACT MICRO-PLANNING *(Skipped if `PLAN-{feature}.md` Already Exists)*
 
-| Agent | `planner`                          |
-| ----- | ---------------------------------- |
-| Goal  | Quick implementation checklist     |
-| Exit  | Steps identified, approach defined |
-
----
-
-## 🎭 Phase 3: IMPLEMENTATION
-
-| Agent        | Route by domain                                                               |
-| ------------ | ----------------------------------------------------------------------------- |
-| Route        | UI → `frontend-engineer`, API → `backend-engineer`, DB → `database-architect` (`TypeName: "self"`, `Model: "inherit"`) |
-| Prerequisite | READ `<appDataDir>\\brain\\<conversation-id>\\PLAN-{feature}` (or `./reports/{topic}/plans/PLAN-{feature}`) if exists and lock `SHARED_CONTRACT` + disjoint `OWNED_FILES` |
-| Goal         | Implement feature adhering strictly to **Pragmatic 2-Tier Coding Standards** (Tier 1 zero `any`/no debug `console.log`/`try-catch` boundaries + Tier 2 cohesive `~200–350` lines target, `≤ 400–450` soft ceiling) |
-| Exit         | Feature implemented, `node cli/install.js check <dir>` + build/typecheck/tests pass |
+- For `≤ 2` known files (Mode A): Define a concise inline checklist (`SHARED_CONTRACT` types, `OWNED_FILES`, test cases).
+- For `3–4` files / multi-domain (Mode B): Write a compact single-file `<appDataDir>\brain\<conversation-id>\PLAN-{feature}.md` (`<= 100` lines, `RequestFeedback: false` during autonomous `/cook:fast`), embedding `DESIGN_CONTRACT` if `DESIGN-{feature}.md` exists, and validate via:
+  ```bash
+  node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js plan validate "<plan-path>"
+  ```
 
 ---
 
-## ESCALATION
+## 🎭 Phase 3: IMPLEMENTATION & END-TO-END VERIFICATION
 
-| Condition                  | Route To            |
-| -------------------------- | ------------------- |
-| More complex than expected | `/cook:hard`        |
-| Design needed              | `designer`          |
-| Security concern           | `security-engineer` |
+1. **Execute Changes**:
+   - **Mode A (`≤ 2` files)**: Edit target files directly.
+   - **Mode B (`> 2` files or `PLAN-{feature}.md` present)**: Extract packets via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>"` and dispatch `backend-engineer`, `frontend-engineer`, or `database-architect` (`TypeName: "self"`, `Model: "inherit"`, `≤ 3–4 OWNED_FILES` per shard).
+2. **Enforce Pragmatic 2-Tier Coding Standards**:
+   - **Tier 1 (Zero Tolerance)**: Zero explicit `any`, no debug `console.log` in app code, `try/catch` + typed error handling at async/API boundaries, named `SCREAMING_SNAKE_CASE` constants, clean sorted imports.
+   - **Tier 2 (Cohesive Structure)**: `~200–350` lines target (`≤ 400` soft / `≤ 500` hard ceiling), focused functions, guard clauses.
+3. **Mandatory Deterministic Verification (Iterative Self-Healing Until Green)**:
+   - If `PLAN-{feature}.md` exists, verify the wave:
+     ```bash
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --run-verify
+     ```
+   - Run project build/typecheck, unit/integration tests, and strict code check:
+     ```bash
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs
+     ```
+   - If UI/frontend files were modified, run portable Python UX & WCAG 2.2 AA checks:
+     ```bash
+     python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <project_path>
+     python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <project_path>
+     ```
 
 ---
 
-## COMPLETION
+## 🚨 ESCALATION & COMPLETION
 
-Present feature with:
-
-1. ✅ **Done** — Feature complete
-2. 🧪 **Test** → `/test`
-3. 📝 **Docs** → `/docs:core`
+- **Escalate**: If scope expands beyond `4` files or requires multi-wave schema + API + UI orchestration → escalate to `/cook:hard`.
+- **Completion**: Report modified files, passing test & `boomopen check --strict-phase --no-stubs` proof, and next actions:
+  1. ✅ **Done** — Feature implemented and verified end-to-end
+  2. 🧪 **Deep QA** → `/test:hard`
+  3. 📝 **Docs** → `/docs:core`

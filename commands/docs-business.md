@@ -1,277 +1,159 @@
 ---
-description: "Business Docs - Generate 4 business folders with structured sub-files"
+description: "💼 Business Docs — Generate 4 `./documents/business/business-*/` folders via collision-free parallel sharding (`<= 3–4 OWNED_FILES`/shard) and `BG/BR/BF/BW` traceability"
 version: "5.5"
 category: documentation
 execution-mode: execute
 ---
 
-# /docs:business - Business Documentation (Folder-Based)
+# /docs:business — Business & Product Documentation (`v5.5`)
 
-> **MISSION**: Generate or update **ALL 4 business knowledge folders**, each with `00-index.md` + numbered sub-files. Output must be evidence-backed, traceable, and actionable for product, engineering, and delivery teams.
+> **MISSION**: Generate or update **all 4 business documentation folders** (`22+` files in `./documents/business/business-*/`), each with `00-index.md` + numbered sub-files, backed by codebase evidence, canonical domain terminology, and end-to-end `BG` → `BR` → `BF` → `BW` traceability using **collision-free parallel `docs-manager#biz-*` shards (`<= 3–4 OWNED_FILES` per shard)**.
 
 <scope>$ARGUMENTS</scope>
+
 ---
-## PRE-FLIGHT
-**LOAD**: CORE.md → PHASES.md → AGENTS.md (path `./rules/` or `~/.{TOOL}/skills/boomopen-workflow-kit/rules/`)
+
+## ⚡ TURN-1 ZERO-TAX DISPATCH & MANDATORY REFERENCES
+
+1. **Same-Turn Reference Load + Recon Dispatch**: Core orchestration laws and the **5-Field Handoff Packet** (`1. MISSION & ACCEPTANCE CRITERIA`, `2. SHARED_CONTRACT`, `3. OWNED_FILES`, `4. READ_ONLY_FILES`, `5. VERIFICATION & DELIVERABLE`) are pre-loaded in your global entrypoint (`GEMINI.md` / `CLAUDE.md` / `CODEX.md`). Do **NOT** block Turn 1 reading `CORE.md`, `PHASES.md`, or `AGENTS.md` — read these binding specs AND spawn Phase 1 `scouter#biz-1..k` shards **in the same Turn-1 parallel batch** via `invoke_subagent(TypeName: "self", Model: "inherit")`:
+   - `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/docs-recon-protocol.md` — Mode detection (`CREATE`/`UPDATE`/`MIGRATE`) and evidence ledger rules (reuse existing `SCOUT-docs-core-*.md` if Step 1 of `/docs` already ran!).
+   - `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/docs-folder-specs.md` — Collision-free sharding rules, sub-file quality gates, and Mermaid rules.
+   - *(When `:team` or `execution.mode = team` is active, also follow `~/.{TOOL}/skills/boomopen-workflow-kit/agents/teams/docs-team/_team.md`.)*
+2. **Workspace `./documents/business/` vs. Transient Brain Artifacts (`ArtifactMetadata`)**:
+   - **Workspace Business Docs (`./documents/business/business-*/`)**: Written in the **same language as the user's input** (technical terms, code identifiers, and IDs in English). Omit `ArtifactMetadata` on workspace files.
+   - **Transient Brain Artifacts (`<appDataDir>\brain\<conversation-id>\`)**: Keep `./documents/` clean of intermediate packs and audit logs:
+     - `SCOUT-docs-business-{1..k}.md` & `SCOUT-docs-business-pack.md`: `ArtifactMetadata: { Summary: "Business recon & BG/BR/BF/BW contract pack", UserFacing: false, RequestFeedback: false }`
+     - `MAILBOX-{date}.md` (`:team` mode): `ArtifactMetadata: { Summary: "Docs team coordination mailbox", UserFacing: false, RequestFeedback: false }`
+     - `REVIEW-docs-business.md`: `ArtifactMetadata: { Summary: "Business docs traceability & consistency audit", UserFacing: true, RequestFeedback: false }`
+3. **Zero Source Mutation Guardrail**: All application source, config, and test files are strictly `READ_ONLY_FILES`.
+
 ---
-## ⛔ MANDATORY REFERENCE — READ BEFORE PROCEEDING
-> **🔴 YOU MUST READ this reference file NOW. Do NOT skip.**
->
-> 1. `~/.{TOOL}/skills/boomopen-workflow-kit/commands/_ref/docs-recon-protocol.md` — Reconnaissance scan steps and Intelligence Report template (shared with docs-core)
->
-> **Failure to read = incorrect execution. This file contains BINDING protocols.**
----
-## DELIVERABLES - FOLDER-BASED BUSINESS SYSTEM
+
+## 📁 DELIVERABLES — 4 Business Folders (`22+` Files Minimum)
+
 > [!CAUTION]
-> **MUST CREATE OR UPDATE ALL 4 FOLDERS** with `00-index.md` and sub-files. Incomplete = FAILED execution.
+> **MUST CREATE OR UPDATE ALL 4 FOLDERS** with `00-index.md` + sub-files. Incomplete = FAILED execution.
 
-> **DOCUMENT LANGUAGE - NON-NEGOTIABLE**
-> Every file under `./documents/` must be written in the **same language as the user's input** (technical terms in English). (CORE LAW 6.)
-
-### Folder Structure
 ```
 ./documents/business/
-  business-prd/
-    00-index.md
-    01-executive-summary.md
-    02-problem-goals-and-scope.md
-    03-stakeholders-and-requirements.md
-    04-acceptance-risks-assumptions.md
-
-  business-features/
-    00-index.md
-    01-feature-inventory.md
-    02-prioritization-moscow.md
-    03-feature-specifications.md
-    04-dependencies-and-release-sequencing.md
-    05-success-metrics.md
-
-  business-workflows/
-    00-index.md
-    01-actor-map.md
-    02-workflow-catalog.md
-    03-detailed-workflows.md
-    04-decision-rules-and-exceptions.md
-    05-sla-and-handoffs.md
-
-  business-glossary/
-    00-index.md
-    01-canonical-terms.md
-    02-synonyms-and-deprecated-terms.md
-    03-domain-entities-and-events.md
-    04-api-term-mapping.md
+  business-prd/          # 00-index + 01-executive-summary + 02-problem-goals-and-scope + 03-stakeholders-and-requirements + 04-acceptance-risks-assumptions (5 files)
+  business-features/     # 00-index + 01-feature-inventory + 02-prioritization-moscow + 03-feature-specifications + 04-dependencies-and-release-sequencing + 05-success-metrics (6 files)
+  business-workflows/    # 00-index + 01-actor-map + 02-workflow-catalog + 03-detailed-workflows + 04-decision-rules-and-exceptions + 05-sla-and-handoffs (6 files)
+  business-glossary/     # 00-index + 01-canonical-terms + 02-synonyms-and-deprecated-terms + 03-domain-entities-and-events + 04-api-term-mapping (5 files)
 ```
 
-**Minimum total**: 4 folders x (1 index + 4-5 sub-files) = **22 files minimum**.
-
-### `00-index.md` Pattern (MANDATORY)
-Every business folder `00-index.md` MUST include:
-
-1. Quick summary (2-3 paragraphs)
-2. Sub-files table with descriptions
-3. Key facts for that area
-4. Cross-references to related business/core folders
-5. Known Gaps and Open Questions
-
+### Mandatory `00-index.md` Template
 ```markdown
 # {Business Area}
 
-> **Purpose**: {one-line purpose}
-> **Sub-files**: {count}
-> **Last Updated**: {YYYY-MM-DD}
+> **Purpose**: {one-line purpose} | **Sub-files**: {count} | **Last Updated**: {YYYY-MM-DD}
 
 ## Quick Summary
-{2-3 paragraphs}
+{2–3 evidence-backed paragraphs}
 
 ## Sub-Files
 | File | Description |
 |------|-------------|
-| [01-...](./01-...md) | ... |
+| [01-...](./01-...md) | {summary} |
 
 ## Key Facts
-| Key | Value |
-|-----|-------|
-| ... | ... |
+| Metric / Key | Value |
+|--------------|-------|
+| {key} | {verified value} |
 
 ## Cross-References
-- [knowledge-overview](../knowledge-overview/00-index.md)
-- [knowledge-domain](../knowledge-domain/00-index.md)
+- [business-glossary](../business-glossary/00-index.md)
+- [knowledge-overview](../../knowledge-overview/00-index.md)
+- [knowledge-domain](../../knowledge-domain/00-index.md)
 
 ## Known Gaps and Open Questions
-- ...
+- {explicit unknowns — NEVER guess}
 ```
+
 ---
-## INCREMENTAL EXECUTION (MANDATORY)
-One phase at a time, each phase independent: Phase 1 -> Phase 2 -> Phase 3 -> Phase 4.
----
-## Phase 1: BUSINESS RECONNAISSANCE
+
+## 🎭 Phase 1: PARALLEL BUSINESS RECONNAISSANCE (`Turn 1`)
+
 | Attribute | Value |
 |-----------|-------|
-| **Agent** | `scouter` |
-| **Goal** | Build evidence-backed business intelligence from codebase + existing docs |
+| **Shards** | `scouter#biz-1..k` via `invoke_subagent(TypeName: "self", Model: "inherit")` (`<= 3–4` modules/shard; reuse `SCOUT-docs-core-*.md` if present) |
+| **Goal** | Extract live actors/roles, UI/API feature surfaces, state-machine workflows, and domain terms with `>= 2` verified evidence files per area |
+| **Output** | `<appDataDir>\brain\<conversation-id>\SCOUT-docs-business-{1..k}.md` (`UserFacing: false, RequestFeedback: false`) |
 
-
+```markdown
 ## Business Intelligence Report
-### Execution Plan
-| Business Area | Mode | Notes |
-|---------------|------|-------|
-| business-prd/ | CREATE/UPDATE/MIGRATE | {note} |
-| business-features/ | CREATE/UPDATE/MIGRATE | {note} |
-| business-workflows/ | CREATE/UPDATE/MIGRATE | {note} |
-| business-glossary/ | CREATE/UPDATE/MIGRATE | {note} |
+| Business Area | Mode | Evidence Files (`>= 2`) | Confidence |
+|---------------|------|-------------------------|------------|
+| `business-prd/` | CREATE/UPDATE/MIGRATE | `{paths}` | High/Medium/Low |
+| `business-features/` | CREATE/UPDATE/MIGRATE | `{paths}` | High/Medium/Low |
+| `business-workflows/` | CREATE/UPDATE/MIGRATE | `{paths}` | High/Medium/Low |
+| `business-glossary/` | CREATE/UPDATE/MIGRATE | `{paths}` | High/Medium/Low |
+```
+*Anti-Shallow Guardrail*: Never synthesize from `README.md` alone; verify routes, auth roles, schemas, and UI flows via `read_file`. Isolate unverified product assumptions under `Known Gaps and Open Questions`.
 
-### Stakeholder and Actor Map
-| Actor | Goal | Touchpoints | Evidence |
-|-------|------|-------------|----------|
-| {actor} | {goal} | {workflow/api} | {path} |
+---
 
-### Feature Inventory (Raw)
-| Feature | User Value | Technical Surface | Dependencies | Evidence |
-|---------|------------|-------------------|--------------|----------|
-| {feature} | {value} | {files/apis} | {deps} | {path} |
+## 🎭 Phase 2: CANONICAL `SHARED_CONTRACT` & TRACEABILITY LOCK
 
-### Workflow Candidates
-| Workflow | Trigger | Steps (summary) | Exceptions | Evidence |
-|----------|---------|-----------------|------------|----------|
-| {name} | {trigger} | {summary} | {exceptions} | {path} |
+| Attribute | Value |
+|-----------|-------|
+| **Agent** | `business-analyst` via `invoke_subagent(TypeName: "self", Model: "inherit")` |
+| **Skill** | `~/.{TOOL}/skills_library/business-analyst/SKILL.md` |
+| **Goal** | Lock canonical `BG-*` / `BR-*` / `BF-*` / `BW-*` IDs, INVEST acceptance criteria, MoSCoW priorities, and glossary definitions before parallel writing |
+| **Output** | `<appDataDir>\brain\<conversation-id>\SCOUT-docs-business-pack.md` (`UserFacing: false, RequestFeedback: false`) |
 
-### Domain Terms (Raw)
-| Term | Candidate Definition | Synonyms | Source |
-|------|----------------------|----------|--------|
-| {term} | {definition} | {synonyms} | {path} |
-
-### Business Evidence Ledger
-| Claim Area | Evidence Files | Confidence |
-|------------|----------------|------------|
-| Stakeholders | {paths} | High/Medium/Low |
-| Features | {paths} | High/Medium/Low |
-| Workflows | {paths} | High/Medium/Low |
-| Domain Terms | {paths} | High/Medium/Low |
+```markdown
+## Structured Business Contract (`SHARED_CONTRACT` for All Phase 3 Shards)
+| Goal ID | Req ID (INVEST) | Feature ID (MoSCoW) | Workflow ID | Canonical Terms | KPI / Metric |
+|---------|-----------------|---------------------|-------------|-----------------|--------------|
+| `BG-001` | `BR-001` | `BF-001` (Must) | `BW-001` | `{canonical terms}` | `{measurable KPI}` |
 ```
 
-### Anti-Shallow Guardrails
-- NEVER generate content from README alone - must verify with direct file reads
-- Each business area must have at least 2 evidence files in the ledger
-- If evidence is weak (Low confidence), explicitly state it - do NOT guess
-- Unknowns go to `Known Gaps and Open Questions`, not speculative claims
-
-### Exit Criteria
-- [ ] CREATE/UPDATE/MIGRATE mode detected per business area
-- [ ] Stakeholders and actors mapped with evidence
-- [ ] Feature inventory extracted with dependencies
-- [ ] Workflow candidates identified
-- [ ] Domain terms extracted
-- [ ] Business Evidence Ledger complete
 ---
-## Phase 2: BUSINESS STRUCTURING AND PRIORITIZATION
-| Attribute | Value |
-|-----------|-------|
-| **Agent** | `business-analyst` |
-| **Goal** | Convert raw intelligence into structured, testable business artifacts |
-| **Skill** | Load `skills_library/business-analyst/SKILL.md` |
 
+## 🎭 Phase 3: COLLISION-FREE PARALLEL FOLDER SHARDING (`<= 3–4 OWNED_FILES` / Shard)
 
-## Structured Business Pack
-### Goals and Scope
-| Goal ID | Goal | KPI | Priority |
-|---------|------|-----|----------|
-| BG-001 | {goal} | {metric} | Must/Should/Could |
+> **ANTI-COLLISION LAW**: Dispatch parallel `docs-manager#biz-*` sub-agents (`TypeName: "self"`, `Model: "inherit"`) using Phase 2's `SCOUT-docs-business-pack.md` as the locked `SHARED_CONTRACT`. Every shard owns **at most `4` disjoint files** in `./documents/business/` and treats all source files + sibling business folders as `READ_ONLY_FILES`.
 
-### Requirements (INVEST)
-| Req ID | Requirement | Value | INVEST Score | Acceptance Criteria |
-|--------|-------------|-------|--------------|---------------------|
-| BR-001 | {text} | {value} | {score} | {testable criteria} |
+### Wave 3A — Parallel Business Sub-File Shards (`6` Disjoint Shards, `2–4` Files Each)
 
-### Features (MoSCoW)
-| Feature ID | Feature | Priority | Dependencies | Success Metric |
-|------------|---------|----------|--------------|----------------|
-| BF-001 | {feature} | Must | {deps} | {metric} |
+| Shard Key (`role#shard`) | Disjoint `OWNED_FILES` (`<= 4` Files) | Scope & Contract Enforcement |
+|:-------------------------|:--------------------------------------|:-----------------------------|
+| `docs-manager#biz-prd` | `documents/business/business-prd/01-executive-summary.md` .. `04-acceptance-risks-assumptions.md` (`4` files) | `BG-*` goals, `BR-*` INVEST requirements, scope & risks |
+| `docs-manager#biz-feat-1` | `documents/business/business-features/01-feature-inventory.md` .. `03-feature-specifications.md` (`3` files) | `BF-*` inventory, MoSCoW rationale, testable specs |
+| `docs-manager#biz-feat-2` | `documents/business/business-features/04-dependencies-and-release-sequencing.md`, `05-success-metrics.md` (`2` files) | Dependency Mermaid `flowchart TD/LR` (quoted labels) & KPIs |
+| `docs-manager#biz-flow-1` | `documents/business/business-workflows/01-actor-map.md` .. `03-detailed-workflows.md` (`3` files) | Actor matrix, `BW-*` catalog, quoted Mermaid `sequenceDiagram`/`flowchart` |
+| `docs-manager#biz-flow-2` | `documents/business/business-workflows/04-decision-rules-and-exceptions.md`, `05-sla-and-handoffs.md` (`2` files) | Validation/edge-case rules & handoff boundaries |
+| `docs-manager#biz-glossary` | `documents/business/business-glossary/01-canonical-terms.md` .. `04-api-term-mapping.md` (`4` files) | Canonical definitions, deprecated aliases, entity/API mapping |
 
-### Workflows (Canonical)
-| Workflow ID | Actor | Trigger | Outcome | Exception Handling |
-|-------------|-------|---------|---------|--------------------|
-| BW-001 | {actor} | {trigger} | {outcome} | {rule} |
+### Wave 3B — Index Finalization Shard (`4` Files)
+Once Wave 3A finishes, `docs-manager#biz-indexes` (or warm reuse via `send_message`) writes the 4 `00-index.md` files (`business-prd/00-index.md`, `business-features/00-index.md`, `business-workflows/00-index.md`, `business-glossary/00-index.md`) so every TOC link and cross-reference resolves 100%.
 
-### Glossary Canonicalization
-| Canonical Term | Definition | Aliases | Deprecated Terms |
-|----------------|------------|---------|------------------|
-| {term} | {definition} | {aliases} | {deprecated} |
-
-### Traceability Matrix
-| Goal | Requirement | Feature | Workflow | KPI |
-|------|-------------|---------|----------|-----|
-| BG-001 | BR-001 | BF-001 | BW-001 | {metric} |
-```
-
-### Exit Criteria
-- [ ] Requirements are testable and value-linked
-- [ ] Features prioritized with rationale
-- [ ] Workflows canonicalized
-- [ ] Glossary conflicts resolved
-- [ ] Traceability matrix complete
 ---
-## Phase 3: GENERATE BUSINESS FOLDERS
+
+## 🎭 Phase 4: CONSISTENCY & TRACEABILITY AUDIT (`DOC-G1..G4`)
+
 | Attribute | Value |
 |-----------|-------|
-| **Agent** | `docs-manager` |
-| **Goal** | Generate or update all 4 business folders in the user's input language (technical terms in English) |
+| **Agent** | `project-manager` (or `docs-team-reviewer` in `:team` mode) via `invoke_subagent(TypeName: "self", Model: "inherit")` |
+| **Goal** | Verify cross-folder `BG/BR/BF/BW` ID integrity, glossary consistency, evidence paths, links, and Mermaid syntax |
+| **Output** | `<appDataDir>\brain\<conversation-id>\REVIEW-docs-business.md` (`ArtifactMetadata: { Summary: "Business docs consistency & traceability audit", UserFacing: true, RequestFeedback: false }`) |
 
-
-## Phase 4: QUALITY AND CONSISTENCY REVIEW
-| Attribute | Value |
-|-----------|-------|
-| **Agent** | `project-manager` |
-| **Goal** | Validate cross-folder consistency, delivery readiness, and completeness |
-
-
+```markdown
 ## Business Docs Consistency Matrix
-| Check | PRD | Features | Workflows | Glossary | Status |
-|------|-----|----------|-----------|----------|--------|
-| Scope consistent | Yes/No | Yes/No | Yes/No | Yes/No | Pass/Fail |
-| Terms consistent | Yes/No | Yes/No | Yes/No | Yes/No | Pass/Fail |
-| IDs traceable (BG/BR/BF/BW) | Yes/No | Yes/No | Yes/No | Yes/No | Pass/Fail |
-| Metrics defined | Yes/No | Yes/No | Yes/No | Yes/No | Pass/Fail |
-| No contradictions | Yes/No | Yes/No | Yes/No | Yes/No | Pass/Fail |
+| Check | `business-prd` | `business-features` | `business-workflows` | `business-glossary` | Status |
+|-------|----------------|---------------------|----------------------|---------------------|--------|
+| Scope & priorities aligned | Yes/No | Yes/No | Yes/No | Yes/No | Pass/Fail |
+| Canonical terms uniform | Yes/No | Yes/No | Yes/No | Yes/No | Pass/Fail |
+| `BG/BR/BF/BW` IDs traceable | Yes/No | Yes/No | Yes/No | Yes/No | Pass/Fail |
+| `## Evidence Sources` valid | Yes/No | Yes/No | Yes/No | Yes/No | Pass/Fail |
+| Links & Mermaid valid (`0` `TODO`s) | Yes/No | Yes/No | Yes/No | Yes/No | Pass/Fail |
 ```
+Route any failed check back to the owning warm `docs-manager#biz-*` `conversationId` via `send_message` (max 3 rounds) before marking complete.
 
-### Exit Criteria
-- [ ] Cross-folder consistency verified
-- [ ] Contradictions resolved
-- [ ] Traceability intact
-- [ ] Delivery readiness confirmed
 ---
-## VERIFICATION
-Before completion, verify folder existence and quality:
 
-### Folder Existence
-```
-./documents/business/
-  [ ] business-prd/         (00-index.md + 01~04)
-  [ ] business-features/    (00-index.md + 01~05)
-  [ ] business-workflows/   (00-index.md + 01~05)
-  [ ] business-glossary/    (00-index.md + 01~04)
-```
+## ✅ COMPLETION OUTPUT
 
-### Quality Gates
-For every business folder and sub-file:
-
-- [ ] Written in user's input language (technical terms in English)
-- [ ] Required sections present
-- [ ] Evidence Sources section present with actual paths
-- [ ] `00-index.md` contains Known Gaps and Open Questions
-- [ ] No placeholder text
-- [ ] Business value explicit and measurable where applicable
-- [ ] TOC links in every `00-index.md` match actual sub-files
-
-### Cross-Folder Gates
-- [ ] IDs consistent (BG/BR/BF/BW)
-- [ ] Same term has one canonical meaning across folders
-- [ ] Feature priorities align with PRD scope
-- [ ] Workflows reflect features and requirements accurately
----
-## COMPLETION
-Report status:
-
-1. **Complete** - All 4 business folders created/updated and consistency-validated
-2. **Incomplete** - List missing folders/sub-files, failed quality gates, and blockers
-3. **Continue** -> `/docs:audit` for audit documentation
+1. **Complete**: All 4 folders (`22+` files) verified in `./documents/business/` + `REVIEW-docs-business.md` passed (`DOC-G1..G4`).
+2. **Next**: Proceed to `/docs:audit` (when running full `/docs` suite) or await user instruction.

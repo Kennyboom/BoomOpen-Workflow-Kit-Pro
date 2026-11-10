@@ -16,6 +16,8 @@ Thumbs.db
 .env.*
 !.env.example
 .npmrc
+# web/.npmrc only sets legacy-peer-deps=true (no secrets) and is needed for the web build.
+!web/.npmrc
 *.pem
 *.key
 *.p12
@@ -27,6 +29,13 @@ Thumbs.db
 reports/
 .brain/
 test-boom/
+
+# Python bytecode caches (scripts/*.py, skills_library/**/scripts)
+__pycache__/
+*.py[cod]
+
+# Workspace-level BoomOpen settings written by `boomopen settings --project`
+.boomopen.json
 
 # Logs
 *.log

@@ -1,4 +1,6 @@
-display_name: "/test:hard"
-short_description: "⚡⚡⚡ Full Test — Comprehensive QA with quality gates"
-brand_color: "#10B981"
-allow_implicit_invocation: true
+interface:
+  display_name: "/test:hard"
+  short_description: "⚡⚡⚡ Comprehensive Testing — 2-Wave Elastic Parallel Test Pyramid (Unit/Integration/E2E/A11y), App-Code READ_ONLY Lock & Deterministic CLI Verification"
+  brand_color: "#10B981"
+policy:
+  allow_implicit_invocation: true

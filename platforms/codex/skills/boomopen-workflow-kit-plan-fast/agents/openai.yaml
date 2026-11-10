@@ -1,4 +1,6 @@
-display_name: "/plan:fast"
-short_description: "⚡ Quick Plan — Fast planning without deep research"
-brand_color: "#F59E0B"
-allow_implicit_invocation: true
+interface:
+  display_name: "/plan:fast"
+  short_description: "⚡ Quick Plan — Tier 1 compact machine-validated plan (<= 100 lines) with full 5-Field Handoff & native Proceed button"
+  brand_color: "#6366F1"
+policy:
+  allow_implicit_invocation: true

@@ -1,4 +1,6 @@
-display_name: "/docs"
-short_description: "📝 Docs — Full documentation suite (all sub-commands sequentially)"
-brand_color: "#3B82F6"
-allow_implicit_invocation: true
+interface:
+  display_name: "/docs"
+  short_description: "📚 Docs Router & Suite — Source-grounded workspace documentation router (`/docs:core`, `/docs:business`, `/docs:audit`, `/docs:team`) and full sequential suite"
+  brand_color: "#14B8A6"
+policy:
+  allow_implicit_invocation: true

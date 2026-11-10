@@ -6,6 +6,8 @@ source: "https://github.com/huggingface/skills/tree/main/skills/hugging-face-job
 date_added: "2026-02-27"
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/cot-self-instruct.py`, `scripts/finepdfs-stats.py`, `scripts/generate-responses.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Running Workloads on Hugging Face Jobs
 
 ## Overview
@@ -490,7 +492,6 @@ hub_repo_details(["uv-scripts/classification"], repo_type="dataset", include_rea
 - Scale up based on actual needs
 - Use multi-GPU for parallel workloads or large models
 - Use TPUs for JAX/Flax workloads
-- See `references/hardware_guide.md` for detailed specifications
 
 ## Critical: Saving Results
 
@@ -563,8 +564,6 @@ Before submitting:
 - [ ] `secrets={"HF_TOKEN": "$HF_TOKEN"}` if using Hub
 - [ ] Script handles missing token gracefully
 - [ ] Test persistence path works
-
-**See:** `references/hub_saving.md` for detailed Hub persistence guide
 
 ## Timeout Management
 
@@ -982,20 +981,7 @@ Add to PEP 723 header:
 - Import errors → Add dependencies to PEP 723 header
 - Authentication errors → Check token, verify secrets parameter
 
-**See:** `references/troubleshooting.md` for complete troubleshooting guide
-
 ## Resources
-
-### References (In This Skill)
-- `references/token_usage.md` - Complete token usage guide
-- `references/hardware_guide.md` - Hardware specs and selection
-- `references/hub_saving.md` - Hub persistence guide
-- `references/troubleshooting.md` - Common issues and solutions
-
-### Scripts (In This Skill)
-- `scripts/generate-responses.py` - vLLM batch generation: dataset → responses → push to Hub
-- `scripts/cot-self-instruct.py` - CoT Self-Instruct synthetic data generation + filtering → push to Hub
-- `scripts/finepdfs-stats.py` - Polars streaming stats over `finepdfs-edu` parquet on Hub (optional push)
 
 ### External Links
 

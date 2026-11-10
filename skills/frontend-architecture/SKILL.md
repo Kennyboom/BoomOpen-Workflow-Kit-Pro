@@ -239,8 +239,31 @@ Colocate (`useBooking.test.ts` next to `useBooking.ts`) or keep `tests/unit` + `
 - Use `<button>` for actions, not `<div onClick>`.
 - Every input has a label; every image has `alt`.
 - Modals support keyboard escape + focus trap.
-- Forms surface errors clearly.
+- Forms surface errors clearly (`aria-invalid="true"`, `aria-describedby`).
 
 ---
 
-> **Remember:** one file = one responsibility · UI doesn't own logic · logic → hook/composable · API → service · validation → schema · types separate · Next is server-first · Vue is composable-first. Directory structure comes from the scaffolding skill, not from here.
+## 16. 2-Wave Frontend Sharding Protocol & `DESIGN_CONTRACT` Consumption (Mode B Multi-Agent)
+
+When building or refactoring `> 3–4` frontend files across multiple `frontend-engineer#shard` sub-agents in `/code`, `/cook`, or `/autopilot`, **NEVER allow multiple parallel shards to edit `globals.css` or shared UI primitives in the same Wave!**
+
+### Why Single-Wave Parallel Frontend Shards Fail
+If `frontend-engineer#dashboard` and `frontend-engineer#settings` run in the same wave without a locked token/primitive foundation, they either collide on `src/styles/globals.css` or invent mismatched hardcoded Tailwind colors, border radii, and duplicate `<Button>` / `<Modal>` components.
+
+### Canonical 2-Wave Frontend Execution DAG
+
+| Wave | Agent Shard | `OWNED_FILES` (`<= 3–4` files/shard) | `READ_ONLY_FILES` | Responsibility |
+|:----:|-------------|--------------------------------------|-------------------|----------------|
+| **Wave 1 (Foundation & Token Lock)** | `frontend-engineer#tokens-primitives` | `src/styles/globals.css`, `src/types/ui-contract.ts`, `src/components/ui/{button,card,modal,skeleton}.tsx` | `<appDataDir>\brain\<conversation-id>\DESIGN-{task}.md` (or `./DESIGN.md`) | Materialize `DESIGN_CONTRACT` (`@theme inline` CSS tokens + `:root`/`.dark` OKLCH variables + `AsyncViewState<T>` + 5-state shared UI primitives). |
+| **Wave 2 (Parallel Screen Shards)** | `frontend-engineer#screen-1..k` *(parallel)* | Disjoint route/feature slices (`src/features/{slice}/*`, `src/app/{route}/*`, `<= 3–4` files each) | `src/styles/globals.css`, `src/types/ui-contract.ts`, `src/components/ui/*` | Build screens in parallel consuming **only** locked `var(--*)` / `@theme` tokens and shared primitives, implementing all 5 states (`Default`, `Loading`, `Empty`, `Error`, `Disabled/Focus-Visible`). |
+
+### Consuming `DESIGN_CONTRACT` in `PLAN-{task}.md`
+1. Extract the contract from `DESIGN-{task}.md` via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design contract "<path-to-DESIGN.md>"` and embed it inside `## 🤝 Shared Interface Contracts (SHARED_CONTRACT)` of `PLAN-{task}.md`.
+2. Verify every Wave 2 screen shard with both unit/component tests and the deterministic UX/Accessibility audit scripts:
+   ```bash
+   python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <project_path> && python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <project_path>
+   ```
+
+---
+
+> **Remember:** one file = one responsibility · UI doesn't own logic · logic → hook/composable · API → service · validation → schema · types separate · Wave 1 locks `DESIGN_CONTRACT` tokens & primitives · Wave 2 shards screens in parallel. Directory structure comes from the scaffolding skill, not from here.

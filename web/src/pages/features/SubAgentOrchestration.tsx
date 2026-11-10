@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { Button, Card, CardContent, Badge, Section, SectionHeader } from '../../components/ui'
 import { PageSideDecorations, GradientBackground } from '../../components/decorations'
-import { SEO, pageSEO } from '../../components/seo'
 
 const orchestrationSteps = [
   {
@@ -50,24 +49,24 @@ const orchestrationSteps = [
 
 const benefits = [
   {
-    icon: '🎯',
-    title: 'Specialized Expertise',
-    description: 'Each agent focuses on what it does best, providing deeper expertise than a generalist approach.',
+    icon: '🧩',
+    title: '4-Tier Elastic Swarm Sharding (role#shard)',
+    description: 'Dynamically scales from 1 to 8+ parallel sub-agents (e.g., backend-engineer#auth, backend-engineer#billing), capping cognitive load at ≤ 3–4 OWNED_FILES per shard.',
   },
   {
-    icon: '⚡',
-    title: 'Parallel Execution',
-    description: 'Independent tasks run in parallel, dramatically speeding up complex workflows.',
+    icon: '🧭',
+    title: 'Multi-Session Project Autopilot (/autopilot)',
+    description: 'Persists a Master Project DAG Ledger (.boomopen/project-ledger.json) to execute multi-phase specs across sessions with automated QA gates.',
   },
   {
-    icon: '🔄',
-    title: 'Isolated Context',
-    description: 'Each agent gets fresh context, preventing confusion from unrelated information.',
+    icon: '🎼',
+    title: 'Cross-Engine Conductor & Council (/conduct)',
+    description: 'Dispatches parallel Multi-Engine Councils (Claude + Codex + Antigravity + Cursor + Copilot) and Cross-Family Author ≠ Critic pipelines.',
   },
   {
-    icon: '✅',
-    title: 'Quality Gates',
-    description: 'Built-in verification at each phase ensures high-quality output.',
+    icon: '♻️',
+    title: 'Warm Session Reuse & CLI Handoff Compilers',
+    description: 'Compiles deterministic 5-Field Wave Handoff Packets (boomopen research | design | plan | cook) and resumes warm sub-agents via role#shard → conversationId in <1s.',
   },
 ]
 
@@ -86,8 +85,7 @@ const exampleWorkflow = {
 
 export default function SubAgentOrchestration() {
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <SEO {...pageSEO.subAgentOrchestration} />
+    <div className="min-h-screen bg-bg-primary">
       
       {/* Hero Section */}
       <Section background="primary" spacing="xl" className="relative overflow-hidden">
@@ -327,6 +325,6 @@ export default function SubAgentOrchestration() {
           </div>
         </div>
       </Section>
-    </main>
+    </div>
   )
 }

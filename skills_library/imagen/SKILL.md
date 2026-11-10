@@ -6,6 +6,8 @@ source: "https://github.com/sanjay3290/ai-skills/tree/main/skills/imagen"
 date_added: "2026-02-27"
 ---
 
+> **Vault note:** this vault copy does not bundle some files the upstream skill refers to (`scripts/generate_image.py`). Steps that need them will not work until you add them from the upstream project; otherwise follow the inline guidance.
+
 # Imagen - AI Image Generation Skill
 
 ## Overview

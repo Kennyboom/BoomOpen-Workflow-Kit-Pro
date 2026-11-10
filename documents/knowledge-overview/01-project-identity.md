@@ -15,10 +15,10 @@
 | Package | `@boomopen/workflow-kit` |
 | Version | 1.3.0 |
 | Type | Multi-agent orchestration framework for AI coding assistants |
-| Author | Kennyboom |
+| Author | BoomOpen Labs |
 | License | MIT |
 | Repository | https://github.com/Kennyboom/BoomOpen-Workflow-Kit |
-| npm Registry | https://www.npmjs.com/package/@boomopen/workflow-kit |
+| npm Registry | Not published (install from source) |
 | Website | https://boomopen-workflow-kit-ten.vercel.app |
 | Scope | `@boomopen` (public) |
 | Module System | CommonJS (CLI), ESM (web) |
@@ -52,7 +52,7 @@ BoomOpen Workflow Kit solves these by:
 2. **Orchestrator pattern** — The AI reads a platform entry file that transforms it into an Orchestrator role. It delegates work to specialist agents rather than attempting everything itself.
 3. **21 specialist agents** — Each with a defined profile, responsibility scope, and skill set. Examples: `backend-engineer`, `tester`, `security-engineer`, `tech-lead`.
 4. **14 structured commands** — `/cook`, `/code`, `/fix`, `/debug`, `/test`, `/plan`, `/design`, `/review`, `/report`, `/brainstorm`, `/docs`, `/deploy`, `/ask`, `/auto` — each with variant strategies (fast, hard, team).
-5. **Automatic skill injection (HSOL)** — 1,430+ skills across 19 domains resolved by agent profile and request context, with no manual skill selection required.
+5. **Automatic skill injection (HSOL)** — 1,460+ skills across 19 domains resolved by agent profile and request context, with no manual skill selection required.
 6. **Cross-platform parity** — The same workflows and agent definitions work across all 5 supported AI coding tools.
 
 ---
@@ -106,9 +106,9 @@ This checklist takes a new developer or contributor from zero to productive with
 
 ### Minutes 10–20: Install and Verify
 
-- [ ] Install globally: `npm install -g @boomopen/workflow-kit@latest`
-- [ ] Install for your AI tool: `boomopen-workflow-kit install --all` (or specify one: `boomopen-workflow-kit install cursor`)
-- [ ] Verify installation: `boomopen-workflow-kit list`
+- [ ] Clone the kit: `git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit.git && cd BoomOpen-Workflow-Kit`
+- [ ] Install for your AI tool: `node cli/install.js install --all` (or specify one: `node cli/install.js install cursor`)
+- [ ] Verify installation: `node cli/install.js list` (or `boomopen list` after `npm link`)
 - [ ] Confirm files exist in the tool's directory (e.g., `ls ~/.cursor/skills/boomopen-workflow-kit/` for Cursor)
 
 ### Minutes 20–30: Read Core Concepts

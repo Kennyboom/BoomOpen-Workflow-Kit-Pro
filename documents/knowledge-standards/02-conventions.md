@@ -36,7 +36,7 @@ boomopen-workflow-kit/
 │   └── knowledge-standards/
 ├── matrix-skills/           # 19 domain YAML registries + index
 ├── rules/                   # 7 governance rule files
-├── skills/                  # 1,430+ skill module directories
+├── skills/                  # 1,462 (22 core in `skills/` + 1,440 in `skills_library/`) skill module directories
 ├── web/                     # Marketing website (React 19 + Vite)
 ├── CLAUDE.md                # Platform entry files (UPPER_CASE)
 ├── COPILOT.md
@@ -251,4 +251,4 @@ import './index.css'
 | Document index pattern | [../knowledge-overview/00-index.md](../knowledge-overview/00-index.md) |
 | Document sub-file pattern | [../knowledge-overview/01-project-identity.md](../knowledge-overview/01-project-identity.md) |
 | Package manifest | [../../package.json](../../package.json) |
-| Test example (import patterns) | [../../cli/install.test.js.example](../../cli/install.test.js.example) |
+| Test example (import patterns) | [../../cli/install.test.js](../../cli/install.test.js) |

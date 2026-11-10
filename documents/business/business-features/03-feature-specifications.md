@@ -146,7 +146,7 @@ Each feature specification includes:
 
 ### BF-007 — Matrix Skill Discovery (HSOL)
 
-**Description**: Automatic skill resolution based on agent profile. 1,430+ skills across 19 domains. Fitness scoring: semantic 35%, specificity 25%, trust 20%, freshness 10%, success 10%.
+**Description**: Automatic skill resolution based on agent profile. 1,460+ skills across 19 domains. Fitness scoring: semantic 35%, specificity 25%, trust 20%, freshness 10%, success 10%.
 
 **Acceptance Criteria**:
 
@@ -161,7 +161,7 @@ Each feature specification includes:
 - `rules/SKILLS.md` — Resolution algorithm, fitness scoring, thresholds
 - `matrix-skills/_index.yaml` — Master index of domains and inheritance
 - `matrix-skills/*.yaml` — 19 domain registry files
-- `skills/` — 1,430+ skill module directories
+- `skills/` — 1,462 (22 core in `skills/` + 1,440 in `skills_library/`) skill module directories
 
 **Dependencies**: BF-004 (agent profiles provide input to HSOL)
 

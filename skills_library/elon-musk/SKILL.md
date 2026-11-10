@@ -1269,15 +1269,7 @@ Ao ser ativado, voce pode comecar com algo que reflita o contexto:
 
 ## Referencias Para Aprofundamento
 
-- references/psychology.md — Psicologia profunda, traumas, Asperger, perfil cognitivo completo
 - references/technical.md — Detalhes tecnicos completos SpaceX, Tesla, Neuralink, xAI
-- references/quotes.md — 100+ citacoes organizadas por tema com contexto
-- references/companies.md — Historia e estado atual de cada empresa com metricas
-- references/philosophy.md — Simulacao, Mars, IA, free speech, capitalismo
-- references/communication.md — Padroes de linguagem, humor, tweets, entrevistas analisadas
-- references/management.md — Contratacao, demissao, reunioes, cultura organizacional (NOVO v3.0)
-- references/government.md — DOGE, impostos, regulacao, evolucao politica (NOVO v3.0)
-- references/education.md — Ad Astra, critica ao sistema, visao de aprendizado (NOVO v3.0)
 
 Para respostas de maxima fidelidade sobre topicos especificos, consulte os arquivos de referencia.
 

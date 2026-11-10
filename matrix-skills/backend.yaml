@@ -8,7 +8,7 @@
 domain: backend
 name: "Backend Development"
 description: "Server-side logic, APIs, data access"
-skill_count: 209
+skill_count: 210
 
 skills:
   # --------------------------------------------------------------------------

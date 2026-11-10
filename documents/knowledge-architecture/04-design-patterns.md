@@ -250,7 +250,7 @@ From `agents/backend-engineer.md`:
 | Attribute | Value |
 |-----------|-------|
 | **Pattern Type** | Structural — Modular Plugin System |
-| **Where Applied** | `skills/*/SKILL.md` (1,430+ modules), `matrix-skills/*.yaml` (19 domain registries) |
+| **Where Applied** | `skills/*/SKILL.md` (1,462 (22 core in `skills/` + 1,440 in `skills_library/`) modules), `matrix-skills/*.yaml` (19 domain registries) |
 | **Rationale** | Domain knowledge changes faster than framework structure; independent modules can be added, discovered, and promoted without modifying core framework files |
 
 ### Description
@@ -271,7 +271,7 @@ Each skill is a self-contained directory containing at minimum a `SKILL.md` file
 
 From `matrix-skills/_index.yaml`:
 ```yaml
-total_matrix_skills: 1430
+total_matrix_skills: 1476
 hsol:
   enabled: true
   version: "1.1"

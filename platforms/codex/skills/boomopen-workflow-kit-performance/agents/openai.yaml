@@ -1,0 +1,6 @@
+interface:
+  display_name: "/performance"
+  short_description: "Speed Alchemist v3 — Performance budgets, frontend/backend profiling, 6-layer caching, bundle optimization, database tuning, Core Web Vitals, and CI/CD performance gates."
+  brand_color: "#6366F1"
+policy:
+  allow_implicit_invocation: true
