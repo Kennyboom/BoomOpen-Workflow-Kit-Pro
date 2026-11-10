@@ -68,10 +68,10 @@ jobs:
         run: find scripts skills skills_library -name '*.sh' -print0 | xargs -0 -n1 bash -n
       - name: Run zero-dependency static audit scripts
         run: |
-          python skills/frontend-design/scripts/ux_audit.py ./web/src
-          python skills/frontend-design/scripts/accessibility_checker.py ./web
-          python skills/seo-fundamentals/scripts/seo_checker.py ./web
-          python skills/security-auditor/scripts/security_scan.py ./web --skip-deps
+          python -B skills/frontend-design/scripts/ux_audit.py ./web/src
+          python -B skills/frontend-design/scripts/accessibility_checker.py ./web
+          python -B skills/seo-fundamentals/scripts/seo_checker.py ./web
+          python -B skills/security-auditor/scripts/security_scan.py . --skip-deps
       - name: Third-party notices are current
         run: node .github/scripts/third-party-notices.js --check
 

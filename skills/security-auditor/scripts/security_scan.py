@@ -312,6 +312,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Scan source code for secrets and OWASP security risks")
     parser.add_argument("project_path", nargs="?", default=".", help="Project directory or file to scan")
     parser.add_argument("--json", action="store_true", help="Output report as JSON")
+    parser.add_argument("--skip-deps", action="store_true", help="Compatibility flag for static-only scan")
     args = parser.parse_args()
     if not Path(args.project_path).exists():
         parser.print_usage(sys.stderr)
