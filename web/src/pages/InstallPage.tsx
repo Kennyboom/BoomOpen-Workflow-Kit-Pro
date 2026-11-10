@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { useMemo, useRef, type KeyboardEvent } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import { CheckCircle2, ChevronDown, ExternalLink, ShieldAlert, ShieldCheck, Terminal, Wrench } from 'lucide-react'
 import { clsx } from 'clsx'
@@ -32,13 +33,32 @@ const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
 
 const COMPILER_QUICK_IDS = new Set(['plan', 'design', 'cook', 'check', 'settings', 'conduct'])
+const VALID_INSTALL_TARGETS = new Set<string>([...PLATFORMS.map((p) => p.id), 'all'])
+
+function isInstallTargetId(value: string | null): value is InstallTargetId {
+  return value !== null && VALID_INSTALL_TARGETS.has(value)
+}
 
 export function InstallPage() {
   const { locale, t, pick } = useLanguage()
   const reduceMotion = useReducedMotion()
-  const [selectedId, setSelectedId] = useState<InstallTargetId>('antigravity')
+  const [searchParams, setSearchParams] = useSearchParams()
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const copy = t.installPage
+
+  const rawTool = searchParams.get('tool')
+  const selectedId: InstallTargetId = isInstallTargetId(rawTool) ? rawTool : 'antigravity'
+  const hasUnrecognizedTool = Boolean(rawTool) && !isInstallTargetId(rawTool)
+
+  const setSelectedId = (nextId: InstallTargetId) => {
+    const next = new URLSearchParams(searchParams)
+    if (nextId === 'antigravity' && !hasUnrecognizedTool) {
+      next.delete('tool')
+    } else {
+      next.set('tool', nextId)
+    }
+    setSearchParams(next, { replace: true })
+  }
 
   const targets = useMemo<readonly InstallTabTarget[]>(() => {
     const perIde: InstallTabTarget[] = PLATFORMS.map((p) => ({
@@ -164,6 +184,35 @@ export function InstallPage() {
               {t.platformsSection.safetyGuarantee}
             </p>
           </div>
+
+          <div className="grid gap-4 lg:grid-cols-3">
+            {copy.steps.items.map((item) => (
+              <SurfaceCard key={item.step} variant="subtle" className="space-y-2.5">
+                <div className="flex items-center justify-between gap-2">
+                  <StatusBadge tone="amber">{item.step}</StatusBadge>
+                  <code className="truncate font-mono text-[clamp(0.7rem,0.08vw+0.68rem,0.76rem)] leading-tight text-accent">
+                    {item.command}
+                  </code>
+                </div>
+                <div className="font-display text-[clamp(0.975rem,0.2vw+0.92rem,1.08rem)] leading-snug font-semibold text-ink">
+                  {item.title}
+                </div>
+                <p className="max-w-prose text-[clamp(0.825rem,0.1vw+0.8rem,0.9rem)] leading-relaxed font-normal text-muted">
+                  {item.summary}
+                </p>
+              </SurfaceCard>
+            ))}
+          </div>
+
+          {hasUnrecognizedTool && (
+            <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/40 bg-primary/10 px-4 py-3 text-[clamp(0.84rem,0.12vw+0.81rem,0.9rem)] leading-snug text-ink">
+              <span className="flex items-center gap-2">
+                <ShieldAlert aria-hidden="true" className="size-4 shrink-0 text-primary" />
+                <span>{t.platformsSection.unrecognizedToolHint}</span>
+              </span>
+              <code className="rounded bg-canvas px-2 py-1 font-mono text-primary">{`?tool=${rawTool ?? ''}`}</code>
+            </div>
+          )}
 
           <div role="tablist" aria-label={t.platformsSection.tabsAriaLabel} className="flex flex-wrap gap-2 rounded-2xl border border-hairline bg-card p-2">
             {targets.map((target, index) => {

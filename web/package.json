@@ -1,19 +1,21 @@
 {
-  "name": "web",
+  "name": "boomopen-workflow-kit-pro-web",
   "private": true,
-  "version": "0.0.0",
+  "version": "5.5.0",
   "type": "module",
   "scripts": {
     "stats": "node build/kit-stats.mjs",
+    "sync:stats": "node build/kit-stats.mjs",
     "predev": "node build/kit-stats.mjs",
     "dev": "vite",
     "prebuild": "node build/kit-stats.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "test": "node --test build/kit-stats.test.mjs",
+    "verify:ci": "npm run lint && npm test && npm run build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@xyflow/react": "^12.10.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.29.2",
     "lucide-react": "^0.563.0",

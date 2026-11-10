@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Diamond, FileCode2, Globe2, RotateCcw, Terminal } from 'lucide-react'
 import { CommandRowCard } from '../components/catalogs/CommandRowCard'
@@ -22,11 +23,40 @@ import type { CommandFilterKey } from '../i18n/types'
  */
 const FILTER_KEYS: readonly CommandFilterKey[] = ['all', ...COMMAND_CATEGORIES]
 
+function isCommandFilterKey(value: string | null): value is CommandFilterKey {
+  return value !== null && (FILTER_KEYS as readonly string[]).includes(value)
+}
+
 export function CommandsPage() {
   const { t, locale } = useLanguage()
   const reduceMotion = useReducedMotion()
-  const [query, setQuery] = useState<string>('')
-  const [activeCategory, setActiveCategory] = useState<CommandFilterKey>('all')
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const query = searchParams.get('q') ?? searchParams.get('cmd') ?? ''
+  const rawCategory = searchParams.get('category') ?? searchParams.get('cat')
+  const activeCategory: CommandFilterKey = isCommandFilterKey(rawCategory) ? rawCategory : 'all'
+
+  const setQuery = (nextQuery: string) => {
+    const next = new URLSearchParams(searchParams)
+    next.delete('cmd')
+    if (nextQuery.trim()) {
+      next.set('q', nextQuery)
+    } else {
+      next.delete('q')
+    }
+    setSearchParams(next, { replace: true })
+  }
+
+  const setActiveCategory = (nextCat: CommandFilterKey) => {
+    const next = new URLSearchParams(searchParams)
+    next.delete('cat')
+    if (nextCat === 'all') {
+      next.delete('category')
+    } else {
+      next.set('category', nextCat)
+    }
+    setSearchParams(next, { replace: true })
+  }
 
   const categoryCounts = useMemo<Readonly<Record<CommandFilterKey, number>>>(() => {
     const counts: Record<CommandFilterKey, number> = {
@@ -76,8 +106,7 @@ export function CommandsPage() {
   const hasActiveFilters = query.trim().length > 0 || activeCategory !== 'all'
 
   const handleResetFilters = () => {
-    setQuery('')
-    setActiveCategory('all')
+    setSearchParams(new URLSearchParams(), { replace: true })
   }
 
   const resultsSummary = `${formatCount(filteredCommands.length)} / ${formatCount(COMMANDS_CATALOG.length)} ${t.common.resultsCount}`

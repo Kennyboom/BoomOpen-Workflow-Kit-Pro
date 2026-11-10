@@ -117,7 +117,7 @@ export function Footer() {
           <div className="grid gap-8 sm:grid-cols-2 lg:col-span-7">
             <div>
               <div className="mb-3 font-mono text-[clamp(0.75rem,0.08vw+0.73rem,0.8125rem)] leading-tight font-semibold uppercase tracking-widest text-ink">
-                {t.footer.columns.product}
+                {`${t.footer.columns.product} · ${t.footer.columns.resources}`}
               </div>
               <ul className="space-y-1">
                 {internalLinks.map((item) => (

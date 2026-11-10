@@ -1,7 +1,8 @@
-import { useRef, useState, type KeyboardEvent } from 'react';
+import { useRef, type KeyboardEvent } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, CheckCircle2, Cpu, ShieldCheck, Sparkles, Terminal } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Cpu, ShieldAlert, ShieldCheck, Sparkles, Terminal } from 'lucide-react';
 import { CliPlayground } from '../components/home/CliPlayground';
 import { SwarmVisualizer } from '../components/home/SwarmVisualizer';
 import { TrailerPlayer } from '../components/home/TrailerPlayer';
@@ -20,11 +21,31 @@ import type { PlatformId } from '../types/ui-contract';
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas';
 
+const PLATFORM_ID_SET = new Set<string>(PLATFORMS.map((p) => p.id));
+
+function isPlatformId(value: string | null): value is PlatformId {
+  return value !== null && PLATFORM_ID_SET.has(value);
+}
+
 export function HomePage() {
   const { t, pick } = useLanguage();
   const reduceMotion = useReducedMotion();
-  const [selectedPlatformId, setSelectedPlatformId] = useState<PlatformId>('antigravity');
+  const [searchParams, setSearchParams] = useSearchParams();
   const platformTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  const rawTool = searchParams.get('tool');
+  const selectedPlatformId: PlatformId = isPlatformId(rawTool) ? rawTool : 'antigravity';
+  const hasUnrecognizedTool = Boolean(rawTool) && !isPlatformId(rawTool);
+
+  const setSelectedPlatformId = (nextId: PlatformId) => {
+    const next = new URLSearchParams(searchParams);
+    if (nextId === 'antigravity' && !hasUnrecognizedTool) {
+      next.delete('tool');
+    } else {
+      next.set('tool', nextId);
+    }
+    setSearchParams(next, { replace: true });
+  };
 
   const activePlatform =
     PLATFORMS.find((platform) => platform.id === selectedPlatformId) ?? PLATFORMS[0];
@@ -215,6 +236,16 @@ export function HomePage() {
             {t.platformsSection.subtitle}
           </p>
         </div>
+
+        {hasUnrecognizedTool && (
+          <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/40 bg-primary/10 px-4 py-3 text-[clamp(0.84rem,0.12vw+0.81rem,0.9rem)] leading-snug text-ink">
+            <span className="flex items-center gap-2">
+              <ShieldAlert aria-hidden="true" className="size-4 shrink-0 text-primary" />
+              <span>{t.platformsSection.unrecognizedToolHint}</span>
+            </span>
+            <code className="rounded bg-canvas px-2 py-1 font-mono text-primary">{`?tool=${rawTool ?? ''}`}</code>
+          </div>
+        )}
 
         <div
           role="tablist"

@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { useMemo, useRef, type KeyboardEvent } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { clsx } from 'clsx'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Bot, Cpu, Diamond, FileCheck2, RotateCcw, ShieldCheck } from 'lucide-react'
@@ -86,17 +87,49 @@ function SpecialistAgentCard({ agent }: { readonly agent: AgentSpec }) {
   )
 }
 
+function isWorkforceTab(value: string | null): value is WorkforceTabId {
+  return value === 'all' || value === 'agents' || value === 'teams'
+}
+
 export function AgentsTeamsPage() {
   const { t, locale, pick } = useLanguage()
   const reduceMotion = useReducedMotion()
-  const [activeTab, setActiveTab] = useState<WorkforceTabId>('all')
-  const [query, setQuery] = useState<string>('')
-  const [activeDomain, setActiveDomain] = useState<string>('all')
+  const [searchParams, setSearchParams] = useSearchParams()
   const tabRefs = useRef<Record<WorkforceTabId, HTMLButtonElement | null>>({
     all: null,
     agents: null,
     teams: null,
   })
+
+  const rawTab = searchParams.get('tab')
+  const activeTab: WorkforceTabId = isWorkforceTab(rawTab)
+    ? rawTab
+    : searchParams.has('team')
+      ? 'teams'
+      : searchParams.has('agent')
+        ? 'agents'
+        : 'all'
+  const query = searchParams.get('q') ?? searchParams.get('agent') ?? searchParams.get('team') ?? ''
+  const rawDomain = searchParams.get('domain')
+  const activeDomain = rawDomain && rawDomain in DOMAIN_LABELS ? rawDomain : 'all'
+
+  const updateParam = (key: 'tab' | 'q' | 'domain', value: string | null) => {
+    const next = new URLSearchParams(searchParams)
+    if (key === 'q') {
+      next.delete('agent')
+      next.delete('team')
+    }
+    if (value && value !== 'all') {
+      next.set(key, value)
+    } else {
+      next.delete(key)
+    }
+    setSearchParams(next, { replace: true })
+  }
+
+  const setActiveTab = (nextTab: WorkforceTabId) => updateParam('tab', nextTab)
+  const setQuery = (nextQuery: string) => updateParam('q', nextQuery.trim() ? nextQuery : null)
+  const setActiveDomain = (nextDomain: string) => updateParam('domain', nextDomain)
 
   const agentDomainsById = useMemo(
     () => new Map<string, string>(SPECIALIST_AGENTS.map((agent) => [agent.id, agent.domain])),
@@ -172,8 +205,7 @@ export function AgentsTeamsPage() {
   }
 
   const handleResetFilters = () => {
-    setQuery('')
-    setActiveDomain('all')
+    setSearchParams(new URLSearchParams(), { replace: true })
   }
 
   const tabLabels: Readonly<Record<WorkforceTabId, string>> = {

@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Layers, Sparkles, Terminal, Zap } from 'lucide-react'
 import { clsx } from 'clsx'
@@ -21,12 +22,37 @@ type SkillTierFilter = 'all' | 'core' | 'library'
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
 
+const VALID_DOMAIN_IDS = new Set(KIT_STATS.domains.map((d) => d.id))
+
+function isSkillTier(value: string | null): value is SkillTierFilter {
+  return value === 'all' || value === 'core' || value === 'library'
+}
+
 export function SkillsPage() {
   const { locale, t, pick } = useLanguage()
   const reduceMotion = useReducedMotion()
-  const [query, setQuery] = useState('')
-  const [tier, setTier] = useState<SkillTierFilter>('all')
-  const [activeDomain, setActiveDomain] = useState<string>('all')
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const query = searchParams.get('q') ?? searchParams.get('skill') ?? ''
+  const rawTier = searchParams.get('tier')
+  const tier: SkillTierFilter = isSkillTier(rawTier) ? rawTier : 'all'
+  const rawDomain = searchParams.get('domain')
+  const activeDomain = rawDomain && VALID_DOMAIN_IDS.has(rawDomain) ? rawDomain : 'all'
+
+  const updateSearchParam = (key: string, value: string | null) => {
+    const next = new URLSearchParams(searchParams)
+    if (key === 'q') next.delete('skill')
+    if (value && value !== 'all') {
+      next.set(key, value)
+    } else {
+      next.delete(key)
+    }
+    setSearchParams(next, { replace: true })
+  }
+
+  const setQuery = (nextQuery: string) => updateSearchParam('q', nextQuery.trim() ? nextQuery : null)
+  const setTier = (nextTier: SkillTierFilter) => updateSearchParam('tier', nextTier)
+  const setActiveDomain = (nextDomain: string) => updateSearchParam('domain', nextDomain)
 
   const copy = t.skillsPage
   const maxDomainCount = useMemo(() => Math.max(...KIT_STATS.domains.map((d) => d.count), 1), [])
@@ -44,9 +70,7 @@ export function SkillsPage() {
   }, [query, tier, activeDomain])
 
   const resetFilters = () => {
-    setQuery('')
-    setTier('all')
-    setActiveDomain('all')
+    setSearchParams(new URLSearchParams(), { replace: true })
   }
 
   const statCards = [

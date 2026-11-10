@@ -214,4 +214,20 @@ test('commands.ts, agents.ts, teams.ts, skills.ts & platforms.ts match 100% of d
   for (const cmd of installCmds) {
     assert.ok(!/uninstall/i.test(cmd), `installCommand must never contain uninstall: ${cmd}`)
   }
+
+  // 6. URL query deep-linking (useSearchParams), RFC 9110 Range hardening & dead dependency removal
+  const webPkg = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'web', 'package.json'), 'utf8'))
+  assert.equal(webPkg.version, stats.version, 'web/package.json version must match kit version')
+  assert.ok(!('@xyflow/react' in (webPkg.dependencies ?? {})), '@xyflow/react must not remain in web/package.json')
+
+  const llmsTxt = fs.readFileSync(path.join(PUBLIC_DIR, 'llms.txt'), 'utf8')
+  for (const sub of ['install', 'uninstall', 'list', 'doctor', 'settings', 'research', 'design', 'plan', 'cook', 'ledger', 'conduct', 'check']) {
+    assert.ok(llmsTxt.includes(`\`${sub}\``), `public/llms.txt must document CLI subcommand ${sub}`)
+  }
+
+  const pagesDir = path.join(REPO_ROOT, 'web', 'src', 'pages')
+  for (const pageFile of ['CommandsPage.tsx', 'AgentsTeamsPage.tsx', 'SkillsPage.tsx', 'InstallPage.tsx', 'HomePage.tsx']) {
+    const src = fs.readFileSync(path.join(pagesDir, pageFile), 'utf8')
+    assert.ok(src.includes('useSearchParams'), `${pageFile} must sync URL query parameters via useSearchParams`)
+  }
 })

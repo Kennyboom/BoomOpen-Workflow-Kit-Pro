@@ -165,7 +165,27 @@ function resolveRequestPathname(rawUrl: string | undefined): string {
   return pathname === '/index.html' ? '/' : pathname
 }
 
-function serveMediaWithRange(
+function pipeStreamSafely(filePath: string, res: ServerResponse, options?: { start: number; end: number }): void {
+  const stream = fs.createReadStream(filePath, options)
+  stream.on('error', () => {
+    if (!res.writableEnded) {
+      res.end()
+    }
+  })
+  res.on('close', () => {
+    stream.destroy()
+  })
+  stream.pipe(res)
+}
+
+function sendUnsatisfiableRange(res: ServerResponse, total: number): true {
+  res.statusCode = 416
+  res.setHeader('Content-Range', `bytes */${total}`)
+  res.end()
+  return true
+}
+
+export function serveMediaWithRange(
   mediaRoot: string,
   req: IncomingMessage,
   res: ServerResponse,
@@ -197,26 +217,48 @@ function serveMediaWithRange(
   }
 
   const rangeHeader = req.headers.range
-  const match = typeof rangeHeader === 'string' ? /^bytes=(\d*)-(\d*)$/.exec(rangeHeader) : null
-  if (match) {
-    const start = match[1] ? Number.parseInt(match[1], 10) : 0
-    const end = match[2] ? Math.min(Number.parseInt(match[2], 10), total - 1) : total - 1
-    if (Number.isNaN(start) || Number.isNaN(end) || start >= total || start > end) {
-      res.statusCode = 416
-      res.setHeader('Content-Range', `bytes */${total}`)
-      res.end()
-      return true
+  if (typeof rangeHeader === 'string' && rangeHeader.trim().length > 0) {
+    const trimmed = rangeHeader.trim()
+    if (!trimmed.startsWith('bytes=')) {
+      return sendUnsatisfiableRange(res, total)
     }
+    const match = /^bytes=(\d*)-(\d*)$/.exec(trimmed)
+    if (!match || total <= 0) {
+      return sendUnsatisfiableRange(res, total)
+    }
+    const rawStart = match[1] ?? ''
+    const rawEnd = match[2] ?? ''
+    if (rawStart === '' && rawEnd === '') {
+      return sendUnsatisfiableRange(res, total)
+    }
+
+    let start = 0
+    let end = total - 1
+    if (rawStart === '') {
+      const suffixLength = Number.parseInt(rawEnd, 10)
+      if (!Number.isFinite(suffixLength) || suffixLength <= 0) {
+        return sendUnsatisfiableRange(res, total)
+      }
+      start = Math.max(0, total - suffixLength)
+      end = total - 1
+    } else {
+      start = Number.parseInt(rawStart, 10)
+      end = rawEnd ? Math.min(Number.parseInt(rawEnd, 10), total - 1) : total - 1
+      if (!Number.isFinite(start) || !Number.isFinite(end) || start < 0 || start > end || start >= total) {
+        return sendUnsatisfiableRange(res, total)
+      }
+    }
+
     res.statusCode = 206
     res.setHeader('Content-Range', `bytes ${start}-${end}/${total}`)
     res.setHeader('Content-Length', String(end - start + 1))
-    fs.createReadStream(filePath, { start, end }).pipe(res)
+    pipeStreamSafely(filePath, res, { start, end })
     return true
   }
 
   res.statusCode = 200
   res.setHeader('Content-Length', String(total))
-  fs.createReadStream(filePath).pipe(res)
+  pipeStreamSafely(filePath, res)
   return true
 }
 

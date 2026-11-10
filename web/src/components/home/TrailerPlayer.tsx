@@ -23,6 +23,7 @@ export function TrailerPlayer() {
   const { locale, setLocale, t } = useLanguage();
   const reduceMotion = useReducedMotion();
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const pendingSeekRef = useRef<number | null>(null);
 
   const [attempt, setAttempt] = useState<number>(0);
   const [failedStreamKey, setFailedStreamKey] = useState<string | null>(null);
@@ -63,13 +64,18 @@ export function TrailerPlayer() {
       return;
     }
     try {
-      node.currentTime = seconds;
+      if (node.readyState >= 1) {
+        pendingSeekRef.current = null;
+        node.currentTime = seconds;
+      } else {
+        pendingSeekRef.current = seconds;
+      }
       const playPromise = node.play();
       if (playPromise) {
         void playPromise.catch(() => undefined);
       }
     } catch {
-      // Ignore transient media seek readiness errors before metadata finishes buffering.
+      pendingSeekRef.current = seconds;
     }
   };
 
@@ -166,6 +172,16 @@ export function TrailerPlayer() {
               onLoadStart={() => {
                 if (manualPlayLocale === locale) {
                   setLoadingStreamKey(currentStreamKey);
+                }
+              }}
+              onLoadedMetadata={() => {
+                if (pendingSeekRef.current !== null && videoRef.current) {
+                  try {
+                    videoRef.current.currentTime = pendingSeekRef.current;
+                  } catch {
+                    // Ignore seek errors on constrained media decoders.
+                  }
+                  pendingSeekRef.current = null;
                 }
               }}
               onLoadedData={() => setLoadingStreamKey(null)}

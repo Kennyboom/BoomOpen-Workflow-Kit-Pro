@@ -15,15 +15,14 @@ const LEADING_SYMBOLS_PATTERN = /^[^\p{L}\p{N}/]+/u
 const BLOCK_SCALAR_MARKERS = ['>-', '>', '|', '|-']
 const TEAM_ROLE_FILES = ['techlead.md', 'executor.md', 'reviewer.md']
 const REPO_GITHUB_URL = 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro'
-const CLI_MODULES_COUNT = 12
 
 const DISCOVERY_ROUTES = [
-  { pathname: '/', priority: '1.0', title: 'Overview, EN/VI 1080p Launch Trailer & 3-Wave Swarm Visualizer' },
-  { pathname: '/commands', priority: '0.9', title: '32 Slash Commands & 17-Language Natural-Language Router' },
-  { pathname: '/agents', priority: '0.9', title: '21 Specialist Agents & 18 Elastic Golden Diamond Teams' },
-  { pathname: '/skills', priority: '0.9', title: '1,462 Indexed Skills Across 19 Engineering Domains' },
-  { pathname: '/architecture', priority: '0.8', title: 'Contract-First 3-Wave Architecture & 12 Deterministic CLI Gates' },
-  { pathname: '/install', priority: '0.9', title: 'Safe 1-Click Setup for Antigravity, Claude Code, Codex, Cursor & Copilot' },
+  { pathname: '/', priority: '1.0' },
+  { pathname: '/commands', priority: '0.9' },
+  { pathname: '/agents', priority: '0.9' },
+  { pathname: '/skills', priority: '0.9' },
+  { pathname: '/architecture', priority: '0.85' },
+  { pathname: '/install', priority: '0.95' },
 ]
 
 const WEB_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -217,40 +216,46 @@ export function renderSitemapXml(siteOrigin = SITE_ORIGIN) {
 
 /** @param {KitStats} stats @param {string} [siteOrigin] @returns {string} */
 export function renderLlmsTxt(stats, siteOrigin = SITE_ORIGIN) {
-  const routeBullets = DISCOVERY_ROUTES.map(({ pathname, title }) => {
-    const href = pathname === '/' ? `${siteOrigin}/` : `${siteOrigin}${pathname}`
-    return `- [${title}](${href})`
-  })
-  const topCommands = stats.commands
-    .slice(0, 12)
-    .map((cmd) => `\`/${cmd.name}\`${cmd.variants.length ? ` (${cmd.variants.map((v) => `:${v}`).join(', ')})` : ''}`)
-    .join(', ')
+  const skillsTotal = stats.skills.toLocaleString('en-US')
+  const libTotal = stats.librarySkills.toLocaleString('en-US')
+  const cmdTotal = stats.commands.length || 32
+  const domainTotal = stats.domains.length || 19
 
   return [
     `# BoomOpen Workflow Kit Pro (v${stats.version})`,
     '',
-    `> Production-grade Multi-Agent AI Engineering Orchestration Framework across ${stats.platforms} AI IDEs (Antigravity, Claude Code, OpenAI Codex, Cursor, GitHub Copilot) with ${stats.i18nLocales}-language natural-language routing, Contract-First 3-Wave sharding, and ${CLI_MODULES_COUNT} deterministic CLI compilers & gates.`,
+    `> Smart-Hybrid Multi-Agent Orchestration, Contract-First 3-Wave Swarm Sharding, Multi-Session Project Autopilot, and Deterministic CLI Compiler Suite across ${stats.platforms} AI coding platforms (Google Antigravity 2.0, Claude Code, OpenAI Codex, Cursor, GitHub Copilot).`,
     '',
-    '## Key Telemetry (Synced from Repository Ground Truth)',
-    `- **Version**: \`v${stats.version}\` ([GitHub Repository](${REPO_GITHUB_URL}))`,
-    `- **Supported AI Platforms**: \`${stats.platforms}\` (\`antigravity\`, \`claude\`, \`codex\`, \`cursor\`, \`copilot\`)`,
-    `- **Multilingual NL Routing**: \`${stats.i18nLocales}\` supported locales`,
-    `- **Deterministic CLI Suite**: \`${CLI_MODULES_COUNT}\` CLI commands (\`research\`, \`design\`, \`plan\`, \`cook\`, \`ledger\`, \`conduct\`, \`check\`, \`settings\`, \`doctor\`, \`install\`, \`list\`)`,
-    `- **Slash Commands**: \`${stats.commands.length}\` base commands (\`${stats.commandFiles}\` files: \`${stats.commandWorkflowFiles}\` workflows + \`${stats.commandRefFiles}\` shared \`_ref\` protocols) — ${topCommands}`,
-    `- **Specialist Workforce**: \`${stats.agents}\` specialist agents & \`${stats.teams}\` Elastic Golden Diamond teams (\`${stats.teamFiles}\` files: \`${stats.teams}\` \`_team.md\` + \`${stats.teamRoles}\` role specs)`,
-    `- **Skills Vault**: \`${stats.skills.toLocaleString('en-US')}\` indexed skills (\`${stats.coreSkills}\` core + \`${stats.librarySkills.toLocaleString('en-US')}\` library across \`${stats.domains.length}\` domains)`,
+    '## Canonical Inventory',
+    `- Version: v${stats.version}`,
+    `- Platforms (${stats.platforms}): Antigravity 2.0, Claude Code, OpenAI Codex, Cursor, GitHub Copilot`,
+    `- Slash Commands: ${cmdTotal} base commands (${stats.commandFiles} files: ${stats.commandWorkflowFiles} workflows + ${stats.commandRefFiles} shared references)`,
+    `- Specialist Agents: ${stats.agents} domain engineers & auditors`,
+    `- Adversarial Teams: ${stats.teams} Golden Diamond / Triangle teams (${stats.teamFiles} files)`,
+    `- Skills Vault: ${skillsTotal} indexed skills (${stats.coreSkills} core + ${libTotal} library across ${domainTotal} domains)`,
+    `- Multilingual Routing: ${stats.i18nLocales} supported languages`,
     '',
-    '## Documentation & Interactive Catalogs',
-    ...routeBullets,
-    `- [Source Code & Releases](${REPO_GITHUB_URL})`,
-    '',
-    '## Safe Quickstart Installation',
+    '## Quick Install (From Git Clone)',
     '```bash',
     `git clone ${REPO_GITHUB_URL}.git`,
     'cd BoomOpen-Workflow-Kit-Pro',
-    'node cli/install.js install antigravity',
+    'node cli/install.js install --all',
     'node cli/install.js doctor',
     '```',
+    '',
+    '## Deterministic CLI Subcommands (12)',
+    '- `install` / `uninstall` / `list` / `doctor` / `settings`: SHA-256 manifest lifecycle & Control Center UI (`--ui`)',
+    '- `research` / `design` / `plan` / `cook`: Static `< 50ms` artifact validators (`RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`) & wave packet compilers',
+    '- `ledger` / `conduct` / `check`: `.boomopen/project-ledger.json` phase ratchet, Multi-Engine Council (`claude,codex,antigravity`), and Pragmatic 2-Tier static gate (`--strict-phase --no-stubs`)',
+    '',
+    '## Documentation & Interactive Catalogs',
+    `- [Overview & Launch Trailer](${siteOrigin}/): Bilingual EN/VI showcase, 3-Wave Swarm Visualizer, and 12-Gate CLI Playground`,
+    `- [Slash Commands Catalog](${siteOrigin}/commands): Searchable reference of all ${cmdTotal} workflow routers and variants`,
+    `- [Agents & Golden Diamond Teams](${siteOrigin}/agents): ${stats.agents} specialist agents and ${stats.teams} adversarial review teams`,
+    `- [Skills Vault Explorer](${siteOrigin}/skills): ${skillsTotal} indexed skills across ${domainTotal} engineering domains`,
+    `- [Architecture & CLI Gates](${siteOrigin}/architecture): Tier 0 vs Tier 1 sharding, SHARED_CONTRACT locks, and Autopilot ratchet`,
+    `- [Platform Installation Guide](${siteOrigin}/install): Safe per-IDE setup, doctor verification, and hook configuration`,
+    `- [GitHub Repository](${REPO_GITHUB_URL}): Source code, rules, agents, skills, and release notes`,
     '',
   ].join('\n')
 }
