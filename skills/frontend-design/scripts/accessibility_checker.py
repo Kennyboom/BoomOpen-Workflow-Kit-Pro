@@ -54,8 +54,10 @@ BUTTON_BLOCK_RE = re.compile(r"<button\b((?:=>|[^>])*)>([\s\S]*?)</button>", re.
 def find_markup_files(project_path: Path) -> List[Path]:
     """Find HTML/JSX/TSX/Vue/Svelte files via pruned os.walk."""
     files: List[Path] = []
+    extra_skip = {"skills_library", "templates", "examples", "fixtures"} - set(project_path.parts)
+    skip_dirs = SKIP_DIRS | extra_skip
     for root, dirs, names in os.walk(project_path):
-        dirs[:] = sorted(d for d in dirs if d not in SKIP_DIRS)
+        dirs[:] = sorted(d for d in dirs if d not in skip_dirs)
         for name in sorted(names):
             if Path(name).suffix.lower() in AUDITED_SUFFIXES:
                 files.append(Path(root) / name)
@@ -92,7 +94,7 @@ def has_unlabeled_button(content: str) -> bool:
     return False
 
 
-def check_accessibility(file_path: Path) -> Tuple[List[str], List[str]]:
+def check_accessibility(file_path: Path, project_has_skip_link: bool = False) -> Tuple[List[str], List[str]]:
     """Check a single file. Returns (issues, warnings)."""
     issues: List[str] = []
     warnings: List[str] = []
@@ -117,7 +119,10 @@ def check_accessibility(file_path: Path) -> Tuple[List[str], List[str]]:
             issues.append("Missing lang attribute on <html>")
 
         if re.search(r"<(?:main|body)\b", content, re.IGNORECASE):
-            if "skip" not in lower and "#main" not in lower:
+            is_spa_shell = file_path.suffix.lower() in (".html", ".htm") and bool(
+                re.search(r'id=["\'](?:root|app|__next)["\']', content, re.IGNORECASE)
+            )
+            if "skip" not in lower and "#main" not in lower and not (is_spa_shell and project_has_skip_link):
                 warnings.append("Consider adding skip-to-main-content link")
 
         bad_click_count = find_non_interactive_click_handlers(content)
@@ -194,10 +199,20 @@ def main() -> None:
             print(json.dumps(output, indent=2))
         sys.exit(0)
 
+    project_has_skip_link = False
+    for fpath in files:
+        try:
+            txt = fpath.read_text(encoding="utf-8", errors="ignore").lower()
+            if "#main" in txt or "skip-to-main" in txt or "skip-link" in txt:
+                project_has_skip_link = True
+                break
+        except OSError:
+            pass
+
     all_issues = []
     all_warnings = []
     for fpath in files:
-        issues, warnings = check_accessibility(fpath)
+        issues, warnings = check_accessibility(fpath, project_has_skip_link)
         if issues:
             all_issues.append({"file": str(fpath.name), "issues": issues})
         if warnings:

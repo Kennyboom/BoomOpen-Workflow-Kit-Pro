@@ -11,19 +11,22 @@ Supports:
     - Python: ruff check, mypy
 """
 
+import argparse
+import json
+import shutil
 import subprocess
 import sys
-import json
-import platform
-import shutil
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
+sys.dont_write_bytecode = True
 
 # Fix Windows console encoding
-try:
-    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
-except:
-    pass
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
 
 
 def detect_project_type(project_path: Path) -> dict:
@@ -32,40 +35,49 @@ def detect_project_type(project_path: Path) -> dict:
         "type": "unknown",
         "linters": []
     }
-    
+
     # Node.js project
     package_json = project_path / "package.json"
     if package_json.exists():
         result["type"] = "node"
         try:
-            pkg = json.loads(package_json.read_text(encoding='utf-8'))
+            pkg = json.loads(package_json.read_text(encoding="utf-8"))
             scripts = pkg.get("scripts", {})
             deps = {**pkg.get("dependencies", {}), **pkg.get("devDependencies", {})}
-            
+
             # Check for lint script
             if "lint" in scripts:
                 result["linters"].append({"name": "npm lint", "cmd": ["npm", "run", "lint"]})
             elif "eslint" in deps:
                 result["linters"].append({"name": "eslint", "cmd": ["npx", "eslint", "."]})
-            
-            # Check for TypeScript
-            if "typescript" in deps or (project_path / "tsconfig.json").exists():
-                result["linters"].append({"name": "tsc", "cmd": ["npx", "tsc", "--noEmit"]})
-                
-        except:
+
+            # Check for TypeScript (skip raw tsc --noEmit if solution tsconfig uses project references)
+            tsconfig_path = project_path / "tsconfig.json"
+            if "typescript" in deps or tsconfig_path.exists():
+                is_solution_refs = False
+                if tsconfig_path.exists():
+                    try:
+                        ts_raw = tsconfig_path.read_text(encoding="utf-8", errors="ignore")
+                        if '"references"' in ts_raw and '"files": []' in ts_raw:
+                            is_solution_refs = True
+                    except OSError:
+                        pass
+                if not is_solution_refs:
+                    result["linters"].append({"name": "tsc", "cmd": ["npx", "tsc", "--noEmit"]})
+
+        except Exception:
             pass
-    
+
     # Python project
     if (project_path / "pyproject.toml").exists() or (project_path / "requirements.txt").exists():
         result["type"] = "python"
-        
-        # Check for ruff
-        result["linters"].append({"name": "ruff", "cmd": ["ruff", "check", "."]})
-        
-        # Check for mypy
-        if (project_path / "mypy.ini").exists() or (project_path / "pyproject.toml").exists():
+
+        if shutil.which("ruff"):
+            result["linters"].append({"name": "ruff", "cmd": ["ruff", "check", "."]})
+
+        if ((project_path / "mypy.ini").exists() or (project_path / "pyproject.toml").exists()) and shutil.which("mypy"):
             result["linters"].append({"name": "mypy", "cmd": ["mypy", "."]})
-    
+
     return result
 
 
@@ -77,44 +89,46 @@ def run_linter(linter: dict, cwd: Path) -> dict:
         "output": "",
         "error": ""
     }
-    
+
     try:
-        cmd = linter["cmd"]
-        
-        # Windows compatibility for npm/npx
-        if platform.system() == "Windows":
-            if cmd[0] in ["npm", "npx"]:
-                # Force .cmd extension on Windows
-                if not cmd[0].lower().endswith(".cmd"):
-                    cmd[0] = f"{cmd[0]}.cmd"
-        
+        cmd = list(linter["cmd"])
+        executable = shutil.which(cmd[0])
+        if not executable:
+            result["error"] = f"Command not found: {cmd[0]}"
+            return result
+        cmd[0] = executable
+
         proc = subprocess.run(
             cmd,
             cwd=str(cwd),
             capture_output=True,
             text=True,
-            encoding='utf-8',
-            errors='replace',
-            timeout=120,
-            shell=platform.system() == "Windows" # Shell=True often helps with path resolution on Windows
+            encoding="utf-8",
+            errors="replace",
+            timeout=15,
+            shell=False,
         )
-        
+
         result["output"] = proc.stdout[:2000] if proc.stdout else ""
         result["error"] = proc.stderr[:500] if proc.stderr else ""
         result["passed"] = proc.returncode == 0
-        
+
     except FileNotFoundError:
         result["error"] = f"Command not found: {linter['cmd'][0]}"
     except subprocess.TimeoutExpired:
-        result["error"] = "Timeout after 120s"
+        result["error"] = "Timeout after 15s"
     except Exception as e:
         result["error"] = str(e)
-    
+
     return result
 
 
 def main():
-    project_path = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
+    parser = argparse.ArgumentParser(description="Run unified project linters")
+    parser.add_argument("project_path", nargs="?", default=".", help="Project directory")
+    parser.add_argument("--json", action="store_true", help="Print JSON output only")
+    args = parser.parse_args()
+    project_path = Path(args.project_path).resolve()
     
     print(f"\n{'='*60}")
     print(f"[LINT RUNNER] Unified Linting")

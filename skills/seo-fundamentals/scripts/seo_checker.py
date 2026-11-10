@@ -81,9 +81,11 @@ def scan_pages_and_seo_modules(project_path: Path) -> Tuple[List[Path], Dict[str
     """Single pruned os.walk collecting page files and shared SEO module capabilities."""
     pages: List[Path] = []
     shared_seo = {"title": False, "description": False, "og": False, "canonical": False, "json_ld": False}
+    extra_skip = {"skills_library", "templates", "examples"} - set(project_path.parts)
+    skip_dirs = SKIP_DIRS | extra_skip
 
     for root, dirs, names in os.walk(project_path):
-        dirs[:] = sorted(d for d in dirs if d not in SKIP_DIRS)
+        dirs[:] = sorted(d for d in dirs if d not in skip_dirs)
         rel_root = Path(root).relative_to(project_path).parts
         lower_folders = {p.lower() for p in rel_root}
 
@@ -184,7 +186,12 @@ def check_page(file_path: Path, shared_seo: Dict[str, bool]) -> Dict[str, object
 
 
 def detect_discovery_files(project_path: Path) -> Dict[str, bool]:
-    roots = [project_path, project_path / "public", project_path / "app", project_path / "src" / "app", project_path / "build"]
+    roots = [
+        project_path, project_path / "public", project_path / "dist",
+        project_path / "app", project_path / "src" / "app", project_path / "build",
+        project_path / "web", project_path / "web" / "public",
+        project_path / "web" / "dist", project_path / "web" / "build",
+    ]
     has_plugin_gen = False
     for r in roots:
         for plugin_name in ("site-plugin.ts", "site-plugin.js", "vite.config.ts"):

@@ -16,7 +16,7 @@ version: "5.5.0"
 |-----------|---------------------|----------|
 | **Specialist Agents** | **`21` specialist agents** (`planner`, `tech-lead`, `backend-engineer`, `frontend-engineer`, `database-architect`, `mobile-engineer`, `game-engineer`, `designer`, `researcher`, `scouter`, `brainstormer`, `debugger`, `tester`, `reviewer`, `security-engineer`, `performance-engineer`, `devops-engineer`, `docs-manager`, `business-analyst`, `project-manager`, `reporter`) | `agents/*.md` |
 | **Adversarial Teams** | **`18` specialist Golden Diamond / Golden Triangle teams (`72` team files)** including `backend-team`, `brainstorm-team`, `database-team`, `debug-team`, `design-team`, `devops-team`, `docs-team`, `frontend-team`, `fullstack-team`, `game-team`, `mobile-team`, `performance-team`, `planning-team`, `project-team`, `qa-team`, `report-team`, `research-team`, `security-team` | `agents/teams/*/` |
-| **Workflow Commands** | **`84` flat command & reference files** across 19 slash commands & 14 natural-language intents | `commands/**/*.md` |
+| **Workflow Commands** | **`84` flat command & reference files** across 32 slash commands & 17 natural-language intents | `commands/**/*.md` |
 | **Skill Ecosystem** | **`22` core skills + `1,440` library skills (`1,462` indexed in `compact-index.json`)** | `skills/` + `skills_library/` + `matrix-skills/compact-index.json` |
 | **Core Rules** | **`7` on-demand Mode B rule specs** (`<= 300` lines each) | `rules/{CORE,AGENTS,PHASES,TEAMS,SKILLS,ERRORS,REFERENCE}.md` |
 | **Deterministic CLI** | **`12` zero-dependency Node.js CLI subcommands** (install, governance, artifact compilers & multi-engine council) | `cli/install.js` (`boomopen`) |

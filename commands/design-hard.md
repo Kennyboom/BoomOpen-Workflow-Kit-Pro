@@ -12,7 +12,7 @@ execution-mode: execute
 # /design:hard — High-Velocity 2-Wave UI/UX & Design System Specification
 
 > **MISSION**: Produce a complete, self-contained, machine-validated **6-Block `DESIGN-{request}.md`** (`<= 500` lines) + optional interactive `DESIGN-PREVIEW-{request}.html` (`generative_ui`) in **2 High-Velocity Parallel Waves**:
-> - **Wave 1 (Turn 1)**: Parallel Codebase Token Scout (`scouter`) + Empirical Design System Intelligence (`researcher` running `ui-ux-pro-max/scripts/search.py --design-system`) + optional Multi-Engine Design Council (`boomopen conduct council --task design --prompt "<design-context>"`).
+> - **Wave 1 (Turn 1)**: Parallel Codebase Token Scout (`scouter`) + Empirical Design System Intelligence (`researcher` running `~/.{TOOL}/skills_library/ui-ux-pro-max/scripts/search.py --design-system`) + optional Multi-Engine Design Council (`boomopen conduct council --task design --prompt "<design-context>"`).
 > - **Wave 2 (Turn 2)**: Cohesive 6-Block `DESIGN-{request}.md` (`RequestFeedback: true`) + optional Live HTML Prototype (`generative_ui`) / Bespoke Assets (`image-generator`) + Deterministic 4-Gate CLI Validation (`boomopen design validate`) + `reviewer` Audit.
 > **⛔ NO APPLICATION SOURCE CODE — produce design specifications and preview artifacts only.**
 

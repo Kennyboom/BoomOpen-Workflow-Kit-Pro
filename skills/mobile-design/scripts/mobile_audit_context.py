@@ -37,6 +37,9 @@ class MobileFileContext:
 
     @classmethod
     def from_content(cls, content: str, filename: str) -> "MobileFileContext":
+        lower_name = filename.lower()
+        if any(m in lower_name for m in (".test.", ".spec.", "_test.", "_spec.")):
+            return cls(content=content, filename=filename, is_react_native=False, is_flutter=False)
         return cls(
             content=content,
             filename=filename,

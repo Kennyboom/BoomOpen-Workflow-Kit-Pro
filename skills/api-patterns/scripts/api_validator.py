@@ -50,9 +50,13 @@ LOOKING_FOR = "routes/, controllers/, endpoints/, api/, route.ts, +server.ts, op
 def is_api_file(rel_parts: tuple) -> bool:
     """Classify a project-relative path as backend API code or OpenAPI spec."""
     name = rel_parts[-1].lower()
+    if name in ("api_validator.py", "api_scaffolder.py"):
+        return False
     if any(m in name for m in (".test.", ".spec.", "_test.", "_spec.", ".d.ts")):
         return False
     folders = tuple(part.lower() for part in rel_parts[:-1])
+    if "scripts" in folders:
+        return False
     suffix = Path(name).suffix
     if name in SPEC_NAMES or name.endswith(SPEC_SUFFIXES) or name in ROUTE_HANDLER_NAMES:
         return True
@@ -68,8 +72,10 @@ def is_api_file(rel_parts: tuple) -> bool:
 def find_api_files(project_path: Path) -> List[Path]:
     """Find API-related files in a stable order via pruned os.walk."""
     files: List[Path] = []
+    extra_skip = {"skills", "skills_library", "scripts"} - set(project_path.parts)
+    skip_dirs = EXCLUDED_DIRS | extra_skip
     for root, dirs, names in os.walk(project_path):
-        dirs[:] = sorted(d for d in dirs if d not in EXCLUDED_DIRS)
+        dirs[:] = sorted(d for d in dirs if d not in skip_dirs)
         rel_root = Path(root).relative_to(project_path).parts
         for name in sorted(names):
             if is_api_file(rel_root + (name,)):

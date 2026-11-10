@@ -234,9 +234,10 @@ def scan_code_in_lines(rel_path: str, _content: str, lines: List[str]) -> List[D
 def iter_target_files(target: Path) -> List[Tuple[Path, Tuple[str, ...]]]:
     if target.is_file():
         return [(target, (target.name,))]
+    skip_dirs = SKIP_DIRS | ({"skills_library"} if "skills_library" not in target.parts else set())
     collected: List[Tuple[Path, Tuple[str, ...]]] = []
     for root_dir, dirs, files in os.walk(target):
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        dirs[:] = [d for d in dirs if d not in skip_dirs]
         for fname in files:
             fpath = Path(root_dir) / fname
             if fpath.resolve() == SELF_PATH:

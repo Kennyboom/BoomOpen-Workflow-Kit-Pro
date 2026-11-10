@@ -22,7 +22,7 @@ execution-mode: execute
    - **If present and fresh**: Reuse existing discovery artifacts immediately — skip Stage 1 scouting/research and jump directly to **Stage 2 (`design-team-techlead` → `design-team-executor` → `design-team-reviewer`)**!
 3. **🎨 Mandatory 2026 UI/UX Skill Bundle**:
    - `skills/design-spec/SKILL.md`, `skills/frontend-design/SKILL.md`, `skills/frontend-architecture/SKILL.md`, `skills/mobile-design/SKILL.md`
-   - `skills_library/ui-ux-pro-max/SKILL.md` (`scripts/search.py --design-system`)
+   - `skills_library/ui-ux-pro-max/SKILL.md` (`~/.{TOOL}/skills_library/ui-ux-pro-max/scripts/search.py --design-system`)
    - `skills_library/anti-ai-slop-visual-craft/SKILL.md`, `skills_library/oklch-bento-grid-architecture/SKILL.md`, `skills_library/motion-v12-view-transitions-css/SKILL.md`, `skills_library/ai-native-generative-ui-ux/SKILL.md`, `skills_library/wcag-22-accessibility-ergonomics/SKILL.md`
 
 ---
@@ -42,7 +42,7 @@ execution-mode: execute
 
 ## 💎 STAGE 1 (TURNS 1–2): PARALLEL DISCOVERY, CODEBASE TOKEN SCOUT & ARCHETYPE LOCK
 
-> **Why Fused**: Launches codebase token scouting (`scouter`) and empirical design-system research (`researcher` running `ui-ux-pro-max/scripts/search.py --design-system`) **in parallel on Turn 1**, then `design-team-techlead` (`agents/teams/design-team/techlead.md`) locks the Aesthetic Archetype, OKLCH palette, and component scope.
+> **Why Fused**: Launches codebase token scouting (`scouter`) and empirical design-system research (`researcher` running `~/.{TOOL}/skills_library/ui-ux-pro-max/scripts/search.py --design-system`) **in parallel on Turn 1**, then `design-team-techlead` (`agents/teams/design-team/techlead.md`) locks the Aesthetic Archetype, OKLCH palette, and component scope.
 
 | Governance Pillar | Agent (`TypeName: "self"`, `Model: "inherit"`) | Stage 1 Mission |
 |-------------------|------------------------------------------------|-----------------|

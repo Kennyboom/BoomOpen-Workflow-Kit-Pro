@@ -30,8 +30,10 @@ EXCLUDED_DIRS = {
 def collect_source_files(project_path: Path) -> tuple:
     ts_files: List[Path] = []
     py_files: List[Path] = []
+    extra_skip = {"skills_library", "templates"} - set(project_path.parts)
+    skip_dirs = EXCLUDED_DIRS | extra_skip
     for root, dirs, names in os.walk(project_path):
-        dirs[:] = sorted(d for d in dirs if d not in EXCLUDED_DIRS)
+        dirs[:] = sorted(d for d in dirs if d not in skip_dirs)
         for name in sorted(names):
             fpath = Path(root) / name
             if name.endswith(".d.ts"):

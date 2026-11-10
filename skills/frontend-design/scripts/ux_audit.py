@@ -170,8 +170,11 @@ class UXAuditor:
         self.passed_count += ctx.passed_count
 
     def audit_directory(self, directory: str) -> None:
+        target_parts = set(Path(directory).resolve().parts)
+        extra_skip = {'skills_library', 'templates', 'examples', 'fixtures'} - target_parts
+        skip_dirs = SKIPPED_DIRS | extra_skip
         for root, dirs, files in os.walk(directory):
-            dirs[:] = [d for d in dirs if d not in SKIPPED_DIRS]
+            dirs[:] = [d for d in dirs if d not in skip_dirs]
             for file in files:
                 if Path(file).suffix in AUDITED_EXTENSIONS:
                     self.audit_file(os.path.join(root, file))

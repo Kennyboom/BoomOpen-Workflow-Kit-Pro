@@ -34,7 +34,7 @@ category: design
 
 > **MANDATORY SKILL BUNDLE (LOAD ON ACTIVATION)**:
 > 1. `skills/design-spec/SKILL.md` — Canonical machine-readable YAML design-token frontmatter + rationale schema
-> 2. `skills/frontend-design/SKILL.md` — Core design thinking, spatial rhythm, typography, and `scripts/ux_audit.py`
+> 2. `skills/frontend-design/SKILL.md` — Core design thinking, spatial rhythm, typography, and `~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py`
 > 3. `skills_library/ui-ux-pro-max/SKILL.md` — Run `python ~/.{TOOL}/skills_library/ui-ux-pro-max/scripts/search.py "<query>" --design-system -p "<Project>"` to ground industry palettes, font pairings, and anti-patterns
 > 4. `skills_library/anti-ai-slop-visual-craft/SKILL.md` — 7 Named Aesthetic Directions, 1-Axis Border Rule, zero generic `#6366f1` indigo/purple gradient slop
 > 5. `skills_library/oklch-bento-grid-architecture/SKILL.md` — Perceptual OKLCH color tokens, 4-step `surface_elevation` ladder, Tailwind v4 `@theme inline`, responsive Bento grids
