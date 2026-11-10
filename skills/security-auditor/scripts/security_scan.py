@@ -73,8 +73,8 @@ CODE_EXTS = {
 }
 
 PLACEHOLDER_VALUE_RE = re.compile(
-    r"(?:your[_-]?|example|placeholder|changeme|replace[_-]?me|dummy|sample|"
-    r"xxxx+|00000+|123456|fake[_-]?|mock[_-]?|test[_-]?|<[^>]+>|\$\{[A-Za-z0-9_]+\})",
+    r"(?:\byour[_-][a-z0-9_-]*|example|placeholder|changeme|replace[_-]?me|dummy|sample|"
+    r"xxxx+|00000+|password123|fake[_-]|mock[_-]|test[_-]|^<[^>]+>$|^\$\{[A-Za-z0-9_.]+\}$)",
     re.IGNORECASE,
 )
 
@@ -97,7 +97,7 @@ SECRET_PATTERNS: Tuple[Tuple[str, str, re.Pattern], ...] = (
         "Hardcoded Database Credentials URL",
         re.compile(
             r"\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis)://"
-            r"[^:\s'\"`]+:[^@\s'\"`${]{8,}@(?!localhost\b|127\.0\.0\.1\b)[A-Za-z0-9.-]+"
+            r"[^:\s'\"`]+:([^@\s'\"`${]{8,})@(?!localhost\b|127\.0\.0\.1\b)(?:[A-Za-z0-9.-]+|\$\{[^}\s]+\})"
         ),
     ),
 )
@@ -130,7 +130,7 @@ CODE_PATTERNS: Tuple[Tuple[str, str, re.Pattern], ...] = (
     (
         "HIGH",
         "Unsafe deserialization (pickle.loads / yaml.load without SafeLoader)",
-        re.compile(r"\bpickle\.loads?\s*\(|\byaml\.load\s*\([^)\n]*(?!SafeLoader)[^)\n]*\)"),
+        re.compile(r"\bpickle\.loads?\s*\(|\byaml\.load\s*\((?![^)\n]*\b(?:SafeLoader|CSafeLoader)\b)[^)\n]*\)"),
     ),
     (
         "MEDIUM",
@@ -141,6 +141,8 @@ CODE_PATTERNS: Tuple[Tuple[str, str, re.Pattern], ...] = (
 
 DANGEROUS_HTML_RE = re.compile(r"\bdangerouslySetInnerHTML\s*=\s*\{")
 SANITIZER_RE = re.compile(r"\b(?:DOMPurify\.sanitize|sanitizeHtml|sanitize)\s*\(")
+JSON_LD_SCRIPT_RE = re.compile(r"<script\b[^>]*application/ld\+json", re.IGNORECASE)
+JSON_STRINGIFY_RE = re.compile(r"\bJSON\.stringify\s*\(")
 COMMENT_LINE_RE = re.compile(r"^\s*(?://|#|/\*|\*)")
 SELF_PATH = Path(__file__).resolve()
 
@@ -175,10 +177,13 @@ def redact_snippet(line: str) -> str:
 def scan_secrets_in_lines(rel_path: str, lines: List[str]) -> List[Dict[str, object]]:
     findings: List[Dict[str, object]] = []
     for idx, line in enumerate(lines, start=1):
-        if COMMENT_LINE_RE.match(line) or PLACEHOLDER_VALUE_RE.search(line):
+        if COMMENT_LINE_RE.match(line):
             continue
         for severity, label, pattern in SECRET_PATTERNS:
-            if pattern.search(line):
+            for match in pattern.finditer(line):
+                candidate = match.group(1) if match.lastindex else match.group(0)
+                if PLACEHOLDER_VALUE_RE.search(candidate):
+                    continue
                 findings.append({
                     "severity": severity,
                     "category": "secrets",
@@ -187,28 +192,33 @@ def scan_secrets_in_lines(rel_path: str, lines: List[str]) -> List[Dict[str, obj
                     "line": idx,
                     "snippet": redact_snippet(line),
                 })
+                break
     return findings
 
 
-def scan_code_in_lines(rel_path: str, content: str, lines: List[str]) -> List[Dict[str, object]]:
+def scan_code_in_lines(rel_path: str, _content: str, lines: List[str]) -> List[Dict[str, object]]:
     findings: List[Dict[str, object]] = []
-    has_sanitizer = bool(SANITIZER_RE.search(content))
+    total_lines = len(lines)
 
     for idx, line in enumerate(lines, start=1):
         if COMMENT_LINE_RE.match(line):
             continue
-        if DANGEROUS_HTML_RE.search(line) and not has_sanitizer:
-            findings.append({
-                "severity": "HIGH",
-                "category": "xss",
-                "rule": "Unsanitized dangerouslySetInnerHTML without DOMPurify/sanitizer",
-                "file": rel_path,
-                "line": idx,
-                "snippet": redact_snippet(line),
-            })
+        if DANGEROUS_HTML_RE.search(line):
+            start = max(0, idx - 4)
+            end = min(total_lines, idx + 3)
+            window = "\n".join(lines[start:end])
+            is_sanitized = bool(SANITIZER_RE.search(window))
+            is_json_ld = bool(JSON_LD_SCRIPT_RE.search(window) and JSON_STRINGIFY_RE.search(window))
+            if not is_sanitized and not is_json_ld:
+                findings.append({
+                    "severity": "HIGH",
+                    "category": "xss",
+                    "rule": "Unsanitized dangerouslySetInnerHTML without DOMPurify/sanitizer",
+                    "file": rel_path,
+                    "line": idx,
+                    "snippet": redact_snippet(line),
+                })
         for severity, label, pattern in CODE_PATTERNS:
-            if "yaml.load(" in line and "SafeLoader" in line:
-                continue
             if pattern.search(line):
                 findings.append({
                     "severity": severity,

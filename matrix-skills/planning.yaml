@@ -20,7 +20,7 @@ skills:
     relevance_mapping:
       agents: [planner, tech-lead, project-manager, reporter]
       profiles: ["planning:analysis", "architecture:orchestration", "management:*", "reporting:*"]
-    description: "Structured task planning, dependencies, verification criteria"
+    description: "Structured task planning with clear breakdowns, dependencies, Shared Interface Contracts (SHARED_CONTRACT), file ownership locks (OWNED_FILES), and verification criteria. Use when implementing features, refactoring, or any multi-step work."
 
   - skill_id: planning
     category: core
@@ -52,7 +52,7 @@ skills:
     relevance_mapping:
       agents: [brainstormer, business-analyst]
       profiles: ["planning:discovery", "planning:business"]
-    description: "Socratic questioning, requirements discovery, progress reporting"
+    description: "Autonomous-first product & architecture ideation protocol (v5.5.0) — codebase/research grounding before questioning, conditional native ask_question UI, orthogonal option generation, Devil's Advocate tarpit pre-mortems, MCDA scoring, and 6-Block CLI-Validated BRAINSTORM blueprints."
 
   - skill_id: writing-plans
     category: core
@@ -87,7 +87,7 @@ skills:
     relevance_mapping:
       agents: [tech-lead, planner]
       profiles: ["planning:*", "architecture:*"]
-    description: "AI operational modes adaptation"
+    description: "AI operational modes (brainstorm, implement, debug, review, teach, ship, orchestrate). Use to adapt behavior based on task type."
 
   # --------------------------------------------------------------------------
   # NEW SKILLS - PLANNING & EXECUTION (Added from skills-more)

@@ -39,7 +39,7 @@ from kit_console import force_utf8_output, print_error, print_header  # noqa: E4
 CHECK_TIMEOUT_SECONDS = 300
 
 CORE_CHECKS = [
-    CheckSpec("Security Scan", "skills_library/vulnerability-scanner/scripts/security_scan.py", required=True),
+    CheckSpec("Security Scan", "skills/security-auditor/scripts/security_scan.py", required=True),
     CheckSpec("Type Coverage", "skills_library/lint-and-validate/scripts/type_coverage.py"),
     CheckSpec("API Validation", "skills/api-patterns/scripts/api_validator.py"),
     CheckSpec("Schema Validation", "skills/database-design/scripts/schema_validator.py"),

@@ -47,7 +47,7 @@ E2E_CATEGORY = "E2E Testing"
 
 VERIFICATION_SUITE = [
     ("Security", [
-        CheckSpec("Security Scan", "skills_library/vulnerability-scanner/scripts/security_scan.py", required=True),
+        CheckSpec("Security Scan", "skills/security-auditor/scripts/security_scan.py", required=True),
     ]),
     ("Code Quality", [
         CheckSpec("API Validation", "skills/api-patterns/scripts/api_validator.py"),

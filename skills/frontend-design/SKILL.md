@@ -32,8 +32,8 @@ version: 5.5.0
 |---------------|---------|-----------------|
 | **Design Intelligence Search** | Query 161 industry rules, 161 palettes & 57 font pairings before choosing tokens | `python ~/.{TOOL}/skills_library/ui-ux-pro-max/scripts/search.py "<industry or product>" --design-system` |
 | **Static Spec Validator (`< 50ms`)** | Validate `DESIGN-G1..G4` on `DESIGN-{task}.md` or `DESIGN.md` | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design validate "<path-to-DESIGN.md>"` |
-| **UX Psychology & Craft Audit** | Verify OKLCH color system, typography (`tabular-nums`, `dvh`), Fitts'/Hick's laws & anti-slop rules | `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <project_path>` |
-| **WCAG 2.2 AA Accessibility Checker** | Verify semantic HTML, labels, `:focus-visible`, `prefers-reduced-motion`, and `SC 3.3.8` | `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <project_path>` |
+| **UX Psychology & Craft Audit** | Verify OKLCH color system, typography (`tabular-nums`, `dvh`), Fitts'/Hick's laws & anti-slop rules | `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <project_path> [--json]` |
+| **WCAG 2.2 AA Accessibility Checker** | Verify semantic HTML, labels, `:focus-visible`, `prefers-reduced-motion`, and `SC 3.3.8` | `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <project_path> [--json]` |
 | **Interactive Preview & Visual Assets** | Render live HTML token/component preview (`generative_ui`) or bespoke illustrations (`image-generator`) | Write `DESIGN-PREVIEW-{task}.html` via `generative_ui`; spawn `invoke_subagent(TypeName: "image-generator", ...)` for custom hero/empty-state art |
 
 > `python` means your Python 3 launcher: use `python3` on macOS/Linux, or `py -3` on Windows, if `python` is not on PATH.

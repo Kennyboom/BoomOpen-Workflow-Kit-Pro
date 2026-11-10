@@ -20,11 +20,11 @@ version: 5.5.0
 | [agent-coordination.md](agent-coordination.md) | **3-Wave Contract-First Execution Topology (`boomopen cook`)** | Coordinating multi-agent `/cook` & `/code` waves |
 | [scaffolding.md](scaffolding.md) | Directory structure & core foundational files | Scaffolding a new repository |
 | [feature-building.md](feature-building.md) | Incremental feature slicing, blast radius & recovery | Adding features to an existing codebase |
-| [templates/SKILL.md](templates/SKILL.md) | **12 Project Templates** | Bootstrapping from a starter template |
+| [templates/SKILL.md](templates/SKILL.md) | **13 Project Templates** | Bootstrapping from a starter template |
 
 ---
 
-## 📦 Project Templates (12)
+## 📦 Project Templates (13)
 
 Quick-start scaffolding for greenfield projects. **Read only the matching template:**
 
@@ -33,6 +33,7 @@ Quick-start scaffolding for greenfield projects. **Read only the matching templa
 | [nextjs-fullstack](templates/nextjs-fullstack/TEMPLATE.md) | Next.js 15 + Drizzle/Prisma | Full-stack web app |
 | [nextjs-saas](templates/nextjs-saas/TEMPLATE.md) | Next.js 15 + Stripe + Better Auth | SaaS product |
 | [nextjs-static](templates/nextjs-static/TEMPLATE.md) | Next.js + Motion v12 | Editorial / marketing site |
+| [astro-static](templates/astro-static/TEMPLATE.md) | Astro + MDX | Content / docs / blog site |
 | [nuxt-app](templates/nuxt-app/TEMPLATE.md) | Nuxt + Pinia | Vue full-stack app |
 | [express-api](templates/express-api/TEMPLATE.md) | Hono / Express + Zod OpenAPI | Node/Edge API service |
 | [python-fastapi](templates/python-fastapi/TEMPLATE.md) | FastAPI + Pydantic v2 | Python API / AI service |

@@ -21,7 +21,7 @@ skills:
     relevance_mapping:
       agents: [backend-engineer, tech-lead]
       profiles: ["backend:*"]
-    description: "REST/GraphQL design, versioning, pagination, response formats"
+    description: "API design principles and contract-first architecture for 2026 (v5.5). REST vs GraphQL vs tRPC/Hono RPC selection, Wave 1 SHARED_CONTRACT Zod/OpenAPI schemas, structured logging, RFC 9457 errors, and automated API validation."
 
   - skill_id: api-designer
     category: expert

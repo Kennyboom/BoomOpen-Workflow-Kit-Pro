@@ -91,7 +91,7 @@ const RECORD_ARGV = (label, exitCode, stdout) => [
 
 test('checklist passes the URL (not the project path) to URL checks and fails when they report an error', { skip: SKIP }, (t) => {
   const kit = buildFakeKit(t, {
-    'skills_library/vulnerability-scanner/scripts/security_scan.py': RECORD_ARGV('security', 0, 'scan ok'),
+    'skills/security-auditor/scripts/security_scan.py': RECORD_ARGV('security', 0, 'scan ok'),
     'skills_library/performance-profiling/scripts/lighthouse_audit.py':
       RECORD_ARGV('lighthouse', 0, '{"error": "Lighthouse CLI not found"}'),
     'skills/webapp-testing/scripts/playwright_runner.py': RECORD_ARGV('playwright', 1, '{"status": "error"}'),
@@ -122,11 +122,11 @@ test('checklist never reports success when no check script is installed', { skip
 
 test('checklist ignores check scripts shipped inside the audited project', { skip: SKIP }, (t) => {
   const kit = buildFakeKit(t, {
-    'skills_library/vulnerability-scanner/scripts/security_scan.py': 'import sys\nsys.exit(1)\n',
+    'skills/security-auditor/scripts/security_scan.py': 'import sys\nsys.exit(1)\n',
   });
   const project = withTemp(t, 'boomopen-py-project-');
   write(
-    path.join(project, 'skills_library', 'vulnerability-scanner', 'scripts', 'security_scan.py'),
+    path.join(project, 'skills', 'security-auditor', 'scripts', 'security_scan.py'),
     'import pathlib, sys\npathlib.Path(sys.argv[1], "MARKER.txt").write_text("ran")\nsys.exit(0)\n'
   );
   const { status, out } = runPython(t, path.join(kit, 'scripts', 'checklist.py'), [project]);
@@ -164,6 +164,7 @@ test('auto_preview start fails cleanly in a project without a dev script or .age
 test('checkers exit 2 on a path that does not exist instead of passing', { skip: SKIP }, (t) => {
   const missing = path.join(os.tmpdir(), 'boomopen-no-such-project-dir');
   for (const rel of [
+    'skills/security-auditor/scripts/security_scan.py',
     'skills/frontend-design/scripts/ux_audit.py',
     'skills/frontend-design/scripts/accessibility_checker.py',
     'skills/mobile-design/scripts/mobile_audit.py',
@@ -283,4 +284,132 @@ test('with_server copes with a chatty server and stops the whole server tree', {
   assert.match(out, /client ran/);
   await new Promise((resolve) => setTimeout(resolve, 500));
   assert.equal(await isListening(port), false, 'the real server process must be gone');
+});
+
+test('security_scan catches JSX/DB-URL/pickle leaks while allowing application/ld+json JSON.stringify', { skip: SKIP }, (t) => {
+  const project = withTemp(t, 'boomopen-py-sec-');
+  const antKey = ['sk', 'ant', 'api03', 'ZzYyXxWwVvUu123456TtSsRrQqPp'].join('-');
+  write(
+    path.join(project, 'App.tsx'),
+    [
+      `export const A = () => <AIProvider apiKey="${antKey}" />;`,
+      `const yourSecret = "${antKey}";`,
+      'const dbUrl = `postgres://admin:RealProdPass99!@${DB_HOST}:5432/prod`;',
+      '',
+    ].join('\n')
+  );
+  write(
+    path.join(project, 'worker.py'),
+    'import pickle, yaml\nx = pickle.loads(raw); y = yaml.load(cfg, Loader=yaml.SafeLoader)\n'
+  );
+  const leakRun = runPython(t, kitScript('skills/security-auditor/scripts/security_scan.py'), [project, '--json']);
+  assert.equal(leakRun.status, 1, leakRun.out);
+  const leakReport = JSON.parse(leakRun.out);
+  assert.equal(leakReport.blocking_count, 4, leakRun.out);
+
+  const safeDir = withTemp(t, 'boomopen-py-sec-safe-');
+  write(
+    path.join(safeDir, 'JsonLd.tsx'),
+    'export const JsonLd = ({ d }: { d: object }) => <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(d) }} />;\n'
+  );
+  const safeRun = runPython(t, kitScript('skills/security-auditor/scripts/security_scan.py'), [safeDir, '--json']);
+  assert.equal(safeRun.status, 0, safeRun.out);
+  assert.equal(JSON.parse(safeRun.out).blocking_count, 0);
+});
+
+test('ux_audit passes <Card> components and DESIGN_CONTRACT globals.css with 3 fonts + view-timeline', { skip: SKIP }, (t) => {
+  const project = withTemp(t, 'boomopen-py-ux-card-');
+  write(path.join(project, 'Card.tsx'), 'export function Card({ title }: { title: string }) { return <div className="bg-card">{title}</div>; }\n');
+  write(
+    path.join(project, 'globals.css'),
+    [
+      '@font-face { font-family: "Instrument Serif"; src: url("/f1.woff2"); }',
+      '@font-face { font-family: "Plus Jakarta Sans"; src: url("/f2.woff2"); }',
+      '@font-face { font-family: "JetBrains Mono"; src: url("/f3.woff2"); }',
+      ':root { --surface-card: oklch(1 0 0); }',
+      'h1 { font-family: var(--font-display); }',
+      'body { font-family: var(--font-sans); }',
+      'code { font-family: var(--font-mono); }',
+      '.reveal { view-timeline-name: --card; animation-timeline: view(); }',
+      '@media (prefers-reduced-motion: reduce) { .reveal { animation: none; } }',
+      '',
+    ].join('\n')
+  );
+  const { status, out } = runPython(t, kitScript('skills/frontend-design/scripts/ux_audit.py'), [project, '--json']);
+  assert.equal(status, 0, out);
+  const report = JSON.parse(out);
+  assert.deepEqual(report.issues, []);
+});
+
+test('accessibility_checker ignores TypeScript <HTMLDivElement> generics and flags unlabeled icon buttons', { skip: SKIP }, (t) => {
+  const cleanDir = withTemp(t, 'boomopen-py-a11y-ts-');
+  write(
+    path.join(cleanDir, 'Card.tsx'),
+    'import React from "react";\nexport const Card = (p: React.HTMLAttributes<HTMLDivElement>) => <div {...p} />;\n'
+  );
+  const cleanRun = runPython(t, kitScript('skills/frontend-design/scripts/accessibility_checker.py'), [cleanDir, '--json']);
+  assert.equal(cleanRun.status, 0, cleanRun.out);
+  assert.equal(JSON.parse(cleanRun.out).issues_found, 0);
+
+  const badDir = withTemp(t, 'boomopen-py-a11y-icon-');
+  write(path.join(badDir, 'IconBtn.tsx'), 'export const B = () => <button onClick={close}><TrashIcon /></button>;\n');
+  const badRun = runPython(t, kitScript('skills/frontend-design/scripts/accessibility_checker.py'), [badDir, '--json']);
+  assert.equal(badRun.status, 1, badRun.out);
+  assert.equal(JSON.parse(badRun.out).issues_found, 1);
+});
+
+test('test_runner skips 0-test Python projects cleanly instead of failing with pytest exit 5', { skip: SKIP }, (t) => {
+  const project = withTemp(t, 'boomopen-py-empty-pytest-');
+  write(path.join(project, 'pyproject.toml'), '[project]\nname = "demo"\nversion = "0.1.0"\n');
+  write(path.join(project, 'app.py'), 'def add(a: int, b: int) -> int:\n    return a + b\n');
+  const { status, out } = runPython(t, kitScript('skills/testing-patterns/scripts/test_runner.py'), [project]);
+  assert.equal(status, 0, out);
+  assert.match(out, /\[SKIP\]/);
+});
+
+test('schema_validator discovers src/db/schema.ts and handles nested Drizzle { enum } braces', { skip: SKIP }, (t) => {
+  const project = withTemp(t, 'boomopen-py-drizzle-');
+  write(
+    path.join(project, 'src', 'db', 'schema.ts'),
+    [
+      "import { index, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';",
+      "export const orders = pgTable('orders', {",
+      "  orgId: uuid('org_id').notNull(),",
+      "  status: text('status', { enum: ['pending', 'paid'] }).notNull(),",
+      "  id: uuid('id').defaultRandom().primaryKey(),",
+      "  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),",
+      "}, (t) => [index('idx_org').on(t.orgId)]);",
+      '',
+    ].join('\n')
+  );
+  const { status, out } = runPython(t, kitScript('skills/database-design/scripts/schema_validator.py'), [project, '--json']);
+  assert.equal(status, 0, out);
+  const report = JSON.parse(out);
+  assert.equal(report.schemas_checked, 1);
+  assert.equal(report.issues_found, 0, out);
+});
+
+test('api_validator skips frontend user.api.ts clients, accepts Response.json, and session_manager reads verified phases', { skip: SKIP }, (t) => {
+  const project = withTemp(t, 'boomopen-py-api-ledger-');
+  write(
+    path.join(project, 'src', 'app', 'api', 'health', 'route.ts'),
+    'export async function GET() {\n  return Response.json({ ok: true, schema: "v1" }, { status: 200 });\n}\n'
+  );
+  write(
+    path.join(project, 'src', 'features', 'users', 'user.api.ts'),
+    'export async function getUsers() {\n  const r = await fetch("/api/users");\n  return r.json();\n}\n'
+  );
+  write(
+    path.join(project, '.boomopen', 'project-ledger.json'),
+    JSON.stringify({ project_name: 'demo-app', phases: [{ id: 'P1', status: 'verified' }, { id: 'P2', status: 'pending' }] })
+  );
+  const apiRun = runPython(t, kitScript('skills/api-patterns/scripts/api_validator.py'), [project, '--json']);
+  assert.equal(apiRun.status, 0, apiRun.out);
+  assert.equal(JSON.parse(apiRun.out).files_checked, 1);
+
+  const sessRun = runPython(t, kitScript('scripts/session_manager.py'), ['info', project]);
+  assert.equal(sessRun.status, 0, sessRun.out);
+  const info = JSON.parse(sessRun.out);
+  assert.equal(info.autopilot_ledger.project, 'demo-app');
+  assert.equal(info.autopilot_ledger.phases_completed, 1);
 });

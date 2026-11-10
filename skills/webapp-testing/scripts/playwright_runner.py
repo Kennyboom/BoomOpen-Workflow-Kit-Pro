@@ -15,6 +15,7 @@ Exit codes: 0 = check/suite passed (status "success"), 1 = check failed or
             Playwright missing, 2 = invalid arguments.
 """
 
+import argparse
 import json
 import os
 import re
@@ -24,7 +25,7 @@ import sys
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 sys.dont_write_bytecode = True
 
@@ -222,9 +223,9 @@ def run_playwright_suite(project_dir: Path) -> Dict[str, object]:
         return {"project": str(project_dir), "status": "error", "error": str(exc)}
 
 
-def print_usage_and_exit() -> None:
+def print_usage_and_exit(message: str = "Usage: python playwright_runner.py <url> [--screenshot] [--a11y] | --suite [project_path]") -> None:
     print(json.dumps({
-        "error": "Usage: python playwright_runner.py <url> [--screenshot] [--a11y] | --suite [project_path]",
+        "error": message,
         "examples": [
             "python playwright_runner.py https://example.com",
             "python playwright_runner.py https://example.com --screenshot",
@@ -235,27 +236,40 @@ def print_usage_and_exit() -> None:
     sys.exit(EXIT_USAGE)
 
 
-def main() -> None:
-    argv = sys.argv[1:]
-    if not argv:
-        print_usage_and_exit()
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Run Playwright smoke/a11y checks on a live URL or execute a project's Playwright suite",
+    )
+    parser.add_argument("target", nargs="?", default=None, help="Live http(s) URL (or project path when --suite is set)")
+    parser.add_argument("--screenshot", action="store_true", help="Capture full-page screenshot in temp dir")
+    parser.add_argument("--a11y", action="store_true", help="Run WCAG 2.2 AA DOM landmark & label audit")
+    parser.add_argument("--suite", nargs="?", const=".", default=None, metavar="PROJECT_PATH",
+                        help="Run `npx playwright test` in PROJECT_PATH (default: current directory)")
+    return parser
 
-    if argv[0] == "--suite":
-        target_dir = Path(argv[1] if len(argv) > 1 else ".").resolve()
+
+def main() -> None:
+    parser = build_parser()
+    args, unknown = parser.parse_known_args()
+    if unknown:
+        print_usage_and_exit(f"Unrecognized arguments: {' '.join(unknown)}")
+
+    if args.suite is not None:
+        raw_dir: Optional[str] = args.target if (args.suite == "." and args.target) else args.suite
+        target_dir = Path(raw_dir or ".").resolve()
         if not target_dir.is_dir():
-            print_usage_and_exit()
+            print_usage_and_exit(f"Project directory does not exist: {target_dir}")
         result = run_playwright_suite(target_dir)
         print(json.dumps(result, indent=2))
         sys.exit(0 if result.get("status") == "success" else EXIT_FAILED)
 
-    url = argv[0]
-    if not URL_RE.match(url):
+    if not args.target or not URL_RE.match(args.target):
         print_usage_and_exit()
 
     result = (
-        run_accessibility_check(url)
-        if "--a11y" in argv
-        else run_basic_test(url, take_screenshot="--screenshot" in argv)
+        run_accessibility_check(args.target)
+        if args.a11y
+        else run_basic_test(args.target, take_screenshot=args.screenshot)
     )
     print(json.dumps(result, indent=2))
     sys.exit(0 if result.get("status") == "success" else EXIT_FAILED)

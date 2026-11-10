@@ -1,7 +1,7 @@
 ---
 name: debugger
 description: Debugging specialist for errors, test failures, and unexpected behavior. Use proactively when encountering any issues.
-version: "5.5"
+version: "5.5.0"
 priority: HIGH
 ---
 

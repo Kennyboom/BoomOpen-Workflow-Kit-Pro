@@ -5,17 +5,30 @@ Script: lighthouse_audit.py
 Purpose: Run Lighthouse performance audit on a URL
 Usage: python lighthouse_audit.py https://example.com
 Output: JSON with performance scores
-Exit code: 0 = report produced, 1 = usage error or Lighthouse failed (JSON has an "error" key)
-Note: Requires lighthouse CLI (npm install -g lighthouse)
+Exit codes: 0 = report produced, 1 = Lighthouse failed (JSON has an "error" key), 2 = invalid arguments
 """
+import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
+from typing import Optional
 
+sys.dont_write_bytecode = True
+
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
+EXIT_USAGE = 2
 LIGHTHOUSE_TIMEOUT_SECONDS = 120
+URL_RE = re.compile(r"^https?://\S+$", re.IGNORECASE)
 CATEGORY_KEYS = {
     "performance": "performance",
     "accessibility": "accessibility",
@@ -24,18 +37,23 @@ CATEGORY_KEYS = {
 }
 
 
+def resolve_lighthouse_binary() -> Optional[str]:
+    """Check local node_modules/.bin/lighthouse first, then global PATH."""
+    bin_dir = Path.cwd() / "node_modules" / ".bin"
+    names = ("lighthouse.cmd", "lighthouse.exe", "lighthouse") if sys.platform == "win32" else ("lighthouse",)
+    for name in names:
+        local_bin = bin_dir / name
+        if local_bin.is_file():
+            return str(local_bin)
+    return shutil.which("lighthouse")
+
+
 def category_score(categories: dict, key: str) -> int:
-    """Score 0-100. Lighthouse reports `score: null` for categories whose audits failed."""
     score = categories.get(key, {}).get("score")
     return int((score or 0) * 100)
 
 
-def report_failure(report: dict, categories: dict, returncode: int):
-    """Why a written report is not a valid audit, or None.
-
-    Lighthouse still writes a report when the page cannot be loaded: it carries `runtimeError`,
-    every category score is null and the CLI exits non-zero. Such a report must fail the gate.
-    """
+def report_failure(report: dict, categories: dict, returncode: int) -> Optional[str]:
     runtime_error = report.get("runtimeError")
     if isinstance(runtime_error, dict) and runtime_error:
         code = runtime_error.get("code", "UNKNOWN")
@@ -49,10 +67,17 @@ def report_failure(report: dict, categories: dict, returncode: int):
     return None
 
 
+def get_summary(categories: dict) -> str:
+    perf = category_score(categories, "performance")
+    if perf >= 90:
+        return "[OK] Excellent performance"
+    if perf >= 50:
+        return "[!] Needs improvement"
+    return "[X] Poor performance"
+
+
 def run_lighthouse(url: str) -> dict:
-    """Run Lighthouse audit on URL."""
-    # shutil.which also resolves lighthouse.cmd on Windows, which subprocess alone does not.
-    executable = shutil.which("lighthouse")
+    executable = resolve_lighthouse_binary()
     if executable is None:
         return {"error": "Lighthouse CLI not found. Install with: npm install -g lighthouse"}
     fd, output_path = tempfile.mkstemp(suffix=".json")
@@ -75,8 +100,8 @@ def run_lighthouse(url: str) -> dict:
         )
         if os.path.getsize(output_path) == 0:
             return {"error": "Lighthouse failed to generate report", "stderr": (result.stderr or "")[:500]}
-        with open(output_path, "r", encoding="utf-8") as f:
-            report = json.load(f)
+        with open(output_path, "r", encoding="utf-8") as handle:
+            report = json.load(handle)
         categories = report.get("categories", {})
         failure = report_failure(report, categories, result.returncode)
         if failure:
@@ -97,21 +122,18 @@ def run_lighthouse(url: str) -> dict:
             pass
 
 
-def get_summary(categories: dict) -> str:
-    """Generate summary based on scores."""
-    perf = category_score(categories, "performance")
-    if perf >= 90:
-        return "[OK] Excellent performance"
-    if perf >= 50:
-        return "[!] Needs improvement"
-    return "[X] Poor performance"
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Run Lighthouse performance audit on a live URL")
+    parser.add_argument("url", nargs="?", default=None, help="Target http(s) URL")
+    args = parser.parse_args()
+    if not args.url or not URL_RE.match(args.url):
+        print(json.dumps({"error": "Usage: python lighthouse_audit.py <http(s)://url>"}))
+        sys.exit(EXIT_USAGE)
+
+    audit = run_lighthouse(args.url)
+    print(json.dumps(audit, indent=2))
+    sys.exit(1 if "error" in audit else 0)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print(json.dumps({"error": "Usage: python lighthouse_audit.py <url>"}))
-        sys.exit(1)
-
-    audit = run_lighthouse(sys.argv[1])
-    print(json.dumps(audit, indent=2))
-    sys.exit(1 if "error" in audit else 0)
+    main()

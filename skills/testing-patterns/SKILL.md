@@ -15,8 +15,8 @@ version: "5.5.0"
 
 | Script / CLI | Purpose | Canonical Command |
 |--------------|---------|-------------------|
-| `scripts/test_runner.py` | Auto-detects & executes `vitest`, `jest`, `node --test`, `pytest`, `cargo test`, or `go test` (`npm.cmd`/`npx.cmd` safe on Windows) | `python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <project_path> [--coverage]` |
-| `accessibility_checker.py` | Static WCAG 2.2 AA semantic, keyboard, & accessible-name audit | `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <project_path>` |
+| `scripts/test_runner.py` | Auto-detects & executes `vitest`, `jest`, `node --test`, `pytest`, `cargo test`, or `go test` (`npm.cmd`/`npx.cmd` safe on Windows) | `python ~/.{TOOL}/skills/testing-patterns/scripts/test_runner.py <project_path> [--coverage] [--json]` |
+| `accessibility_checker.py` | Static WCAG 2.2 AA semantic, keyboard, & accessible-name audit | `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <project_path> [--json]` |
 | `boomopen check` | Anti-stub & anti-test-gaming gate (`0` `it.skip`, `test.only`, `test.todo`, vacuous `expect(true).toBe(true)`) | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <target_dir> --strict-phase --no-stubs` |
 
 > `python` means your Python 3 launcher: use `python3` on macOS/Linux, or `py -3` on Windows, if `python` is not on PATH.

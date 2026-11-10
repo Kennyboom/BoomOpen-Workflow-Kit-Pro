@@ -33,6 +33,8 @@ import tempfile
 import time
 from typing import List, Optional
 
+sys.dont_write_bytecode = True
+
 IS_WINDOWS = sys.platform == "win32"
 EXIT_USAGE = 2
 POLL_INTERVAL_SECONDS = 0.5

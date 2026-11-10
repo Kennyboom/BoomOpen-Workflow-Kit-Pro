@@ -82,7 +82,7 @@ skills:
     relevance_mapping:
       agents: [game-engineer]
       profiles: ["gaming:execution"]
-    description: "Game development expertise"
+    description: "Use when building game systems, implementing Unity 6/Unreal 5/Godot 4/WebGPU features, or optimizing game performance. Invoke for Unity, Unreal, Godot, WebGPU, R3F, Phaser/PixiJS, ECS, physics, networking, and performance optimization."
 
   - skill_id: threejs
     category: specialized

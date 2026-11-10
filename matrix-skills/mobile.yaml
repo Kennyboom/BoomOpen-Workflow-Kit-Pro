@@ -214,7 +214,7 @@ skills:
     relevance_mapping:
       agents: [mobile-engineer]
       profiles: ["mobile:*"]
-    description: "Develop React Native, Flutter, or native mobile apps with modern architecture patterns. Masters cross-platform develo..."
+    description: "Develop React Native, Flutter, or native mobile apps with modern architecture patterns. Masters cross-platform development, native integrations, offline sync, and app store optimization."
 
   - skill_id: react-native-architecture
     category: community

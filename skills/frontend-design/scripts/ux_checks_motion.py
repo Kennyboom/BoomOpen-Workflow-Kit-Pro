@@ -80,12 +80,12 @@ def check_motion_graphics(ctx: UXFileContext) -> None:
             ctx.warnings.append(f"[Motion] {filename}: Lottie animation without reduced-motion fallback. Add pause/stop for accessibility.")
 
     # 6.2 GSAP Memory Leak Risks
-    has_gsap = bool(re.search(r'gsap|ScrollTrigger|from\(.*gsap', content))
+    has_gsap = bool(re.search(r'\bgsap\.|\bScrollTrigger\.|\bfrom\s*\([^)]*gsap', content))
     if has_gsap:
-        # Check for cleanup patterns
-        has_gsap_cleanup = bool(re.search(r'kill\(|revert\(|useEffect.*return.*gsap', content))
+        # Check for cleanup patterns (including @gsap/react useGSAP auto-cleanup)
+        has_gsap_cleanup = bool(re.search(r'\bkill\s*\(|\brevert\s*\(|\buseGSAP\s*\(|useEffect.*return.*gsap', content))
         if not has_gsap_cleanup:
-            ctx.issues.append(f"[Motion] {filename}: GSAP animation without cleanup (kill/revert). Memory leak risk on unmount.")
+            ctx.issues.append(f"[Motion] {filename}: GSAP animation without cleanup (kill/revert/useGSAP). Memory leak risk on unmount.")
 
     # 6.3 SVG Animation Performance
     svg_animations = re.findall(r'<animate|<animateTransform|stroke-dasharray|stroke-dashoffset', content)
@@ -110,12 +110,13 @@ def check_motion_graphics(ctx: UXFileContext) -> None:
         ctx.warnings.append(f"[Motion] {filename}: Particle effects detected. Ensure fallback or reduced-quality option for mobile devices.")
 
     # 6.6 Scroll-Driven Animation Performance
-    has_scroll_driven = bool(re.search(r'IntersectionObserver.*animate|scroll.*progress|view-timeline', content))
-    if has_scroll_driven:
-        # Check for throttling/debouncing
-        has_throttle = bool(re.search(r'throttle|debounce|requestAnimationFrame', content))
+    # CSS view-timeline / animation-timeline: view() runs off-main-thread on the compositor (no JS rAF needed).
+    if re.search(r'\b(?:view-timeline|scroll-timeline|animation-timeline\s*:\s*(?:view|scroll)\()', content):
+        ctx.passed_count += 1
+    elif not ctx.is_stylesheet and re.search(r'addEventListener\s*\(\s*["\']scroll["\']', content):
+        has_throttle = bool(re.search(r'throttle|debounce|requestAnimationFrame|passive\s*:\s*true', content))
         if not has_throttle:
-            ctx.issues.append(f"[Motion] {filename}: Scroll-driven animation without throttling. Add requestAnimationFrame for 60fps.")
+            ctx.issues.append(f"[Motion] {filename}: JS scroll listener without throttling/passive flag. Add requestAnimationFrame for 60fps.")
 
     # 6.7 Motion Decision Tree - Context Check
     # Check if animation serves purpose (not just decoration)

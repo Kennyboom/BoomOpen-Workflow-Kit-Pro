@@ -21,7 +21,7 @@ skills:
     relevance_mapping:
       agents: [database-architect, backend-engineer]
       profiles: ["data:*", "backend:execution"]
-    description: "Schema design, normalization, indexing, migrations"
+    description: "Database design principles, Wave 1 SHARED_CONTRACT schema locking, zero-downtime expand/contract migrations, indexing strategy, and ORM selection (Drizzle, Prisma, Postgres/Supabase, Neon, Turso, D1) (v5.5)."
 
   - skill_id: databases
     category: core

@@ -29,7 +29,7 @@ skills:
     relevance_mapping:
       agents: [backend-engineer, frontend-engineer, debugger, database-architect, scouter, reviewer, docs-manager]
       profiles: ["backend:*", "frontend:execution", "quality:*"]
-    description: "SOLID principles, pragmatic coding standards, refactoring"
+    description: "Pragmatic 2-Tier coding standards — strict type/error safety with cohesive, maintainable file and function structure"
 
   - skill_id: senior-architect
     category: expert
@@ -81,7 +81,7 @@ skills:
     relevance_mapping:
       agents: [tech-lead, backend-engineer, frontend-engineer]
       profiles: ["architecture:*", "backend:*", "frontend:*"]
-    description: "Full-stack application building orchestrator"
+    description: "Main application building orchestrator (v5.5). Creates full-stack, mobile, and cross-platform applications from natural language requests using Contract-First 3-Wave Parallel Sharding, DESIGN_CONTRACT, PLAN validation, and deterministic CLI verification."
 
   # --------------------------------------------------------------------------
   # UTILITY SKILLS (Priority 6)
@@ -209,7 +209,7 @@ skills:
     relevance_mapping:
       agents: [tech-lead, planner, scouter]
       profiles: ["*:orchestration", "architecture:*"]
-    description: "Smart-Hybrid 2-Mode complexity threshold gate, Proactive Sub-agent First fan-out, and warm sub-agent session reuse"
+    description: "Multilingual Natural-Language Intent-to-Workflow & Elastic Swarm Router (v5.5 — All 17 Supported Languages). Automatically classifies explicit /cmd and natural-language requests across 17 languages into Mode B structured workflows (commands/{cmd}-{variant}.md), Multi-Session Autonomous Project Autopilot (/autopilot), Cross-Engine Conductor & Multi-Engine Council (/conduct), Approved-Plan Execution (/code:team), Ad-Hoc Codebase Q&A Fan-Out, or Mode A Known-Target Micro-Direct."
 
   - skill_id: c4-context
     category: community

@@ -23,8 +23,8 @@ Use this skill when creating, packaging, auditing, or synchronizing **AI coding 
    - Use deterministic HTML comment markers (`<!-- BOOMOPEN-SETTINGS-START --> ... <!-- BOOMOPEN-SETTINGS-END -->`) to hot-sync user settings into platform entrypoints in `< 10ms` without runtime file-read tool calls on Turn 1.
 3. **Canonical `SKILL.md` Frontmatter Contract**:
    - Every skill folder (`skills/<skill-id>/SKILL.md`) MUST begin with valid YAML frontmatter containing `name`, `description` (with clear trigger conditions), and `domain`, staying `<= 350 lines`.
-4. **Defense-in-Depth PreToolUse Hooks**:
-   - Never rely solely on prompt instructions to prevent destructive shell commands (`rm -rf /`, `git push --force`, `DROP TABLE`). Attach deterministic runtime hooks (`validate-tool-call.mjs`) that inspect and block dangerous tool invocations before execution.
+4. **Opt-In Destructive Command Guard (`validate-tool-call.mjs`)**:
+   - Pair prompt instructions with opt-in runtime command guards (`validate-tool-call.mjs`, registered via `boomopen install claude --with-hooks` or manual `BeforeTool` config) that exit `2` (`BLOCKED`) on catastrophic filesystem/disk/fork-bomb accidents (`rm -rf` / `Remove-Item -Recurse` / `del /s` against `/`, home folders, drives, or system folders; `mkfs` / `wipefs` / `Format-Volume`; `dd` to raw disks; fork bombs; payloads `> 8 MiB`). Remember it is an accident safety net, **not a sandbox** (it does not inspect scripts, aliases, encoded commands, git history pushes, SQL statements, or file writes).
 
 ---
 
@@ -68,14 +68,16 @@ config_file = "agents/reviewer.toml"
 
 ---
 
-## 4. Deterministic PreToolUse Safety Hook (`validate-tool-call.mjs`)
+## 4. Opt-In Destructive Filesystem & Disk Guard (`validate-tool-call.mjs`)
+
+> **Scope (`SECURITY.md`)**: Exit `0` = allowed; exit `2` = blocked (reason on `stderr`, JSON `deny` decision on `stdout`). Guards against catastrophic filesystem root, home-folder, drive, and system-folder deletion (`rm -rf`, `Remove-Item -Recurse`, `del /s`), disk formatting (`mkfs`, `wipefs`, `Format-Volume`), raw-disk `dd` writes, fork bombs, and payloads over `8 MiB`. It is an opt-in accident guard, not a sandbox.
 
 ```javascript
 const DESTRUCTIVE_COMMAND_PATTERNS = [
-  { id: 'ROOT_RM', regex: /\brm\s+-[a-zA-Z]*r[a-zA-Z]*f[a-zA-Z]*\s+(?:\/|\*|--no-preserve-root)\b/i },
-  { id: 'GIT_FORCE_PUSH', regex: /\bgit\s+push\b[^\n]*\s(?:--force|-f)\b/i },
-  { id: 'SQL_DROP', regex: /\bDROP\s+(?:TABLE|DATABASE|SCHEMA)\b/i },
-  { id: 'DISK_FORMAT', regex: /\b(?:mkfs|fdisk|diskpart)\b/i },
+  { id: 'ROOT_OR_HOME_DELETE', regex: /\b(?:rm\s+-[a-zA-Z]*r[a-zA-Z]*f[a-zA-Z]*|Remove-Item\b[^\n]*-Recurse)\s+(?:\/|~|\$HOME|[A-Za-z]:\\?\s*$|--no-preserve-root)/i },
+  { id: 'DISK_FORMAT', regex: /\b(?:mkfs(?:\.\w+)?|wipefs|Format-Volume)\b/i },
+  { id: 'RAW_DISK_DD', regex: /\bdd\b[^\n]*\bof=\/dev\/(?:sd[a-z]|nvme\d+n\d+|disk\d+)\b/i },
+  { id: 'FORK_BOMB', regex: /:\(\)\s*\{\s*:\s*\|\s*:\s*&\s*\}\s*;\s*:/ },
 ];
 
 /**
@@ -90,7 +92,7 @@ export function evaluateCommand(commandLine = '') {
       return {
         allowed: false,
         ruleId: rule.id,
-        reason: `Blocked destructive command matching rule ${rule.id}`,
+        reason: `BLOCKED destructive command matching rule ${rule.id}`,
       };
     }
   }
@@ -128,4 +130,4 @@ function copyTemplateWithTokenReplacements(srcPath, destPath, replacements) {
 - [ ] All 5 platform entrypoints stay `<= 220 lines` and include `<!-- BOOMOPEN-SETTINGS-START/END -->`.
 - [ ] Zero personal paths or OS-specific absolute paths exist in committed skill/rule files.
 - [ ] Every `SKILL.md` has valid YAML frontmatter (`name`, `description`, `domain`).
-- [ ] PreToolUse command hooks block `rm -rf /`, `git push --force`, and `DROP TABLE/DATABASE`.
+- [ ] Opt-in `validate-tool-call.mjs` guard exits `2` (`BLOCKED`) on catastrophic root/home/drive deletions, `mkfs`/`wipefs`/`Format-Volume`, raw-disk `dd`, and fork bombs.

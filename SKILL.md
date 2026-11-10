@@ -15,7 +15,7 @@ version: "5.5.0"
 | Subsystem | Canonical Inventory | Location |
 |-----------|---------------------|----------|
 | **Specialist Agents** | **`21` specialist agents** (`planner`, `tech-lead`, `backend-engineer`, `frontend-engineer`, `database-architect`, `mobile-engineer`, `game-engineer`, `designer`, `researcher`, `scouter`, `brainstormer`, `debugger`, `tester`, `reviewer`, `security-engineer`, `performance-engineer`, `devops-engineer`, `docs-manager`, `business-analyst`, `project-manager`, `reporter`) | `agents/*.md` |
-| **Adversarial Teams** | **`18` specialist Golden Diamond / Golden Triangle teams (`72` team files)** including `brainstorm-team`, `research-team`, `planning-team`, `design-team`, `coding-team`, `testing-team`, `debug-team`, `review-team`, `security-team`, `architecture-team`, `performance-team`, `devops-team`, `docs-team`, `project-team`, `report-team`, `game-team`, `mobile-team`, `data-team` | `agents/teams/*/` |
+| **Adversarial Teams** | **`18` specialist Golden Diamond / Golden Triangle teams (`72` team files)** including `backend-team`, `brainstorm-team`, `database-team`, `debug-team`, `design-team`, `devops-team`, `docs-team`, `frontend-team`, `fullstack-team`, `game-team`, `mobile-team`, `performance-team`, `planning-team`, `project-team`, `qa-team`, `report-team`, `research-team`, `security-team` | `agents/teams/*/` |
 | **Workflow Commands** | **`84` flat command & reference files** across 19 slash commands & 14 natural-language intents | `commands/**/*.md` |
 | **Skill Ecosystem** | **`22` core skills + `1,440` library skills (`1,462` indexed in `compact-index.json`)** | `skills/` + `skills_library/` + `matrix-skills/compact-index.json` |
 | **Core Rules** | **`7` on-demand Mode B rule specs** (`<= 300` lines each) | `rules/{CORE,AGENTS,PHASES,TEAMS,SKILLS,ERRORS,REFERENCE}.md` |
@@ -69,7 +69,7 @@ Invoke via `boomopen <subcommand>` (when linked) or `node ~/.{TOOL}/skills/boomo
 | `list` | `list` | Inspect installed platforms, versions, and tracked manifest counts |
 | `doctor` | `doctor [--platform <tool>] [--source-only] [--rebuild-index]` | Read-only health check, Markdown line-limit audit & `compact-index.json` builder |
 | `check` | `check [dir] [--strict-phase] [--no-stubs] [--ignore <glob>]` | Pragmatic 2-Tier static code & anti-stub/anti-test-gaming auditor |
-| `settings` | `settings [show\|get\|set\|preset\|sync\|reset\|--ui]` | Manage `~/.boomopen/settings.json`, `./.boomopen.json`, or launch Web Control Center |
+| `settings` | `settings [status\|get\|set\|mode\|preset\|sync\|reset\|ui\|--ui]` | Manage `~/.boomopen/settings.json`, `./.boomopen.json`, or launch Web Control Center |
 | `research` | `research <validate\|brief> <file> [--mode research\|brainstorm] [--out <f>]` | 4-Gate validator (`RES-G1..G4`) & `HANDOFF_BRIEF` extractor for `RESEARCH` / `BRAINSTORM` |
 | `design` | `design <validate\|contract> <file> [--out <f>] [--json]` | 4-Gate UI spec validator (`DESIGN-G1..G4`) & `DESIGN_CONTRACT` token/props compiler |
 | `plan` | `plan <validate\|compile> <file> [--sync-ledger]` | 5-Gate implementation plan validator (`PLAN-G1..G5`) & Plan-to-Ledger compiler |

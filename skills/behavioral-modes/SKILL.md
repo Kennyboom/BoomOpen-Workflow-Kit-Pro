@@ -35,7 +35,7 @@ version: "5.5.0"
   - **Adversarial Hypothesis Fan-Out**: In complex bugs, fan out parallel `debugger#hyp-1..N` shards to test competing hypotheses rather than guessing sequentially.
   - **5-Whys & Regression Lock**: Document Symptom → Root Cause → Minimal Surgical Fix → Regression Test in `<appDataDir>\brain\<conversation-id>\DEBUG-{issue}.md`, and verify the fix end-to-end.
 
-### 📋 4. REVIEW Mode (`/review`, `review-team`, Post-Wave Critic)
+### 📋 4. REVIEW Mode (`/review`, `qa-team` / `security-team`, Post-Wave Critic)
 - **When to use**: Code review, architecture audit, OWASP Web + LLM/Agentic security review, or `:team` Critic evaluation.
 - **Execution Discipline**:
   - **Evidence-Cited Severity**: Classify every finding as `CRITICAL` / `HIGH` / `MEDIUM` / `LOW` with exact `file:line` citations and concrete remediation diffs.

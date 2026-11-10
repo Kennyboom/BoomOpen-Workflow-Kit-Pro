@@ -20,7 +20,7 @@ version: 5.5.0
 |----------------|---------|--------------|
 | `design-spec` | 6-Block `DESIGN-{task}.md` & `DESIGN_CONTRACT` format | `../design-spec/SKILL.md` (`skills/design-spec/SKILL.md`) |
 | `boomopen design validate` | `< 50ms` static gate (`DESIGN-G1..G4`) on `DESIGN-{task}.md` | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js design validate "<path-to-DESIGN.md>"` |
-| `scripts/mobile_audit.py` | Mobile UX, Touch Target (`44pt`/`48dp`) & List Perf Audit | `python ~/.{TOOL}/skills/mobile-design/scripts/mobile_audit.py <project_path>` |
+| `scripts/mobile_audit.py` | Mobile UX, Touch Target (`44pt`/`48dp`) & List Perf Audit | `python ~/.{TOOL}/skills/mobile-design/scripts/mobile_audit.py <project_path> [--json]` |
 | `ios18-hig-material3-expressive` | iOS 18 HIG + Material 3 Expressive Design System | `../../skills_library/ios18-hig-material3-expressive/SKILL.md` (`skills_library/ios18-hig-material3-expressive/SKILL.md`) |
 | `wcag-22-accessibility-ergonomics` | WCAG 2.2 AA mobile ergonomics, VoiceOver/TalkBack & Dynamic Type | `../../skills_library/wcag-22-accessibility-ergonomics/SKILL.md` (`skills_library/wcag-22-accessibility-ergonomics/SKILL.md`) |
 | `tauri-v2-rust-desktop-mobile` | Tauri v2 Cross-Platform Desktop & iOS/Android Mobile | `../../skills_library/tauri-v2-rust-desktop-mobile/SKILL.md` (`skills_library/tauri-v2-rust-desktop-mobile/SKILL.md`) |

@@ -29,7 +29,7 @@ skills:
     relevance_mapping:
       agents: [tester, mobile-engineer]
       profiles: ["quality:validation"]
-    description: "Unit, integration, mocking strategies, test organization"
+    description: "Testing patterns and principles. Unit, integration, mocking strategies, Vitest + MSW v2, and WCAG 2.2 accessibility verification."
 
   - skill_id: tdd-workflow
     category: expert
@@ -37,7 +37,7 @@ skills:
     relevance_mapping:
       agents: [tester]
       profiles: ["quality:validation"]
-    description: "Test-Driven Development RED-GREEN-REFACTOR cycle"
+    description: "Test-Driven Development workflow principles (v5.5). RED-GREEN-REFACTOR cycle, PLAN-{task}.md Given/When/Then mapping, READ_ONLY_FILES regression test locks, and zero-test-gaming CLI verification."
 
   - skill_id: webapp-testing
     category: expert
@@ -45,7 +45,7 @@ skills:
     relevance_mapping:
       agents: [tester]
       profiles: ["quality:validation"]
-    description: "E2E testing, Playwright, browser automation, deep audit"
+    description: "Web application testing principles. E2E, Playwright, Vitest + MSW v2, WCAG 2.2 accessibility, and deep audit strategies."
 
   - skill_id: senior-qa
     category: expert
@@ -324,7 +324,7 @@ skills:
     relevance_mapping:
       agents: [tester, reviewer]
       profiles: ["quality:*"]
-    description: "Debugging specialist for errors, test failures, and unexpected"
+    description: "Debugging specialist for errors, test failures, and unexpected behavior. Use proactively when encountering any issues."
 
   - skill_id: dependency-upgrade
     category: community

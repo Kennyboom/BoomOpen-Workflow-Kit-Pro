@@ -21,7 +21,7 @@ skills:
     relevance_mapping:
       agents: [designer, frontend-engineer, mobile-engineer]
       profiles: ["design:*", "frontend:execution", "mobile:execution"]
-    description: "Machine-readable DESIGN.md specification with YAML frontmatter tokens (OKLCH/hex colors, surface_elevation, motion springs, typography, components) and WCAG 2.2 AA guardrails."
+    description: "How to author a DESIGN.md or DESIGN-{task}.md file — the machine-verifiable 6-Block design-token + UI contract format that must exist before any UI is built. Supports OKLCH perceptual color tokens + sRGB hex, surface_elevation ladders, motion spring tokens, 5-State Component Matrix, DESIGN_CONTRACT (@theme CSS + TypeScript Props), and WCAG 2.2 AA guardrails."
 
   - skill_id: frontend-design
     category: core
@@ -30,7 +30,7 @@ skills:
     relevance_mapping:
       agents: [designer, frontend-engineer]
       profiles: ["design:*", "frontend:execution"]
-    description: "Design thinking, Pre-Coding Aesthetic Gate, UX psychology laws, OKLCH color hierarchy, 3-axis typography, and WCAG 2.2 AA verification."
+    description: "Design thinking, 2026 visual craft, OKLCH color architecture, 3-axis typography, spring motion, 5-State UI Matrix, and WCAG 2.2 AA decision-making for web UI. Pair with design-spec, anti-ai-slop-visual-craft, and generative_ui."
 
   - skill_id: anti-ai-slop-visual-craft
     category: core
@@ -161,7 +161,7 @@ skills:
     relevance_mapping:
       agents: [designer, mobile-engineer]
       profiles: ["design:creative", "mobile:execution"]
-    description: "Touch interactions, platform conventions, mobile-first"
+    description: "Mobile-first design thinking and decision-making for iOS 18 and Android Material 3 Expressive apps. Enforces the 6-Block DESIGN-{task}.md spec, 5-State Mobile UI Matrix, 44pt/48dp touch targets, safe-area tokens, and Tauri v2 / React Native / Flutter patterns."
 
   - skill_id: ui-design-system
     category: expert

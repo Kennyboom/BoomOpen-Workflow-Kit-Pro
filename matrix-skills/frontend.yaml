@@ -21,7 +21,7 @@ skills:
     relevance_mapping:
       agents: [frontend-engineer, tech-lead]
       profiles: ["frontend:*", "architecture:*"]
-    description: "Separation of concerns (UI / logic / data / type), state tiers, API services, schema validation, and framework conventions for React/Next and Vue."
+    description: "How to organize frontend code — separation of concerns (UI / logic / data / type), file responsibility, state tiers, API services, schema validation, and framework conventions for React/Next and Vue. Structural rules, not visual design."
 
   - skill_id: nextjs-react-expert
     category: expert
@@ -81,7 +81,7 @@ skills:
     relevance_mapping:
       agents: [designer, frontend-engineer]
       profiles: ["design:*", "frontend:execution"]
-    description: "Web UI patterns, responsive design, typography"
+    description: "Design thinking, 2026 visual craft, OKLCH color architecture, 3-axis typography, spring motion, 5-State UI Matrix, and WCAG 2.2 AA decision-making for web UI. Pair with design-spec, anti-ai-slop-visual-craft, and generative_ui."
 
   - skill_id: react-expert
     category: expert

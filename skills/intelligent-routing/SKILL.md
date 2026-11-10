@@ -59,12 +59,12 @@ flowchart TD
 | **2** | **UI/UX & Design Spec (`/design`)** | `/design:hard` (`commands/design-hard.md`) or `/design:team` (`commands/design-team.md`) | `design-team`: `scouter` + `researcher` → `designer` (+ `frontend-engineer` critic) | `DESIGN-{feature}.md` (`boomopen design validate`) |
 | **3** | **Deep Research (`/research`)** | `/research:team` (`commands/research-team.md`, `auto_team`) or `/research:hard` | `research-team`: `researcher#v1..v3` + `tech-lead` red-team critic | `RESEARCH-{topic}.md` (`boomopen research validate`) |
 | **4** | **Ideation & Brainstorming (`/brainstorm`)** | `/brainstorm:team` (`commands/brainstorm-team.md`, `auto_team`) or `/brainstorm:hard` | `brainstorm-team`: `researcher` + `scouter` → `brainstormer` + `tech-lead` tarpit critic | `BRAINSTORM-{topic}.md` (`boomopen research validate --mode brainstorm`) |
-| **5** | **Code / Arch / Security Review (`/review`)** | `/review:team` (`commands/review-team.md`) or `/review:hard` (`commands/review-hard.md`) | `review-team`: `tech-lead` + `reviewer#1..N` + `security-engineer` + `performance-engineer` | `REVIEW-{scope}.md` + `boomopen check --strict-phase --no-stubs` |
+| **5** | **Code / Arch / Security Review (`/review`)** | `/review:team` (`commands/review-team.md`) or `/review:hard` (`commands/review-hard.md`) | `qa-team` / `security-team`: `tech-lead` + `reviewer#1..N` + `security-engineer` + `performance-engineer` | `REVIEW-{scope}.md` + `boomopen check --strict-phase --no-stubs` |
 | **6** | **Root-Cause Debugging (`/debug`)** | `/debug:hard` (`commands/debug-hard.md`) or `/debug:team` (`commands/debug-team.md`) | `debug-team`: `debugger#hyp-1..N` + `scouter` (+ `tech-lead` critic) | `DEBUG-{issue}.md` (5 Whys + Fishbone RCA) |
 | **7** | **Multi-File / Unscoped Bug Fix (`/fix`)** | `/fix:hard` (`commands/fix-hard.md`) or `/fix:team` (`commands/fix-team.md`) *(> 2 files / unknown scope)* | `debugger` + `scouter` → `<engineer>#shard-1..N` → `tester` | `DEBUG-{issue}.md` + Verified Fix + `TEST-{issue}.md` |
-| **8** | **Testing & QA Verification (`/test`)** | `/test:hard` (`commands/test-hard.md`) or `/test:team` (`commands/test-team.md`) | `testing-team`: `tester#unit` + `tester#e2e` (+ `security-engineer` in `:team`) | `TEST-{feature}.md` + `test_runner.py` |
+| **8** | **Testing & QA Verification (`/test`)** | `/test:hard` (`commands/test-hard.md`) or `/test:team` (`commands/test-team.md`) | `qa-team`: `tester#unit` + `tester#e2e` (+ `security-engineer` in `:team`) | `TEST-{feature}.md` + `test_runner.py` |
 | **9** | **End-to-End Feature Build (`/cook`)** | `/cook:hard` (`commands/cook-hard.md`) or `/cook:team` (`commands/cook-team.md`) | `cook state` fast-forward → `planner` → `<engineer>#shard-1..N` → `tester` + `reviewer` | `PLAN` + Sharded Code (`boomopen cook verify-wave`) |
-| **10** | **Approved-Plan Execution (`/code`)** | `/code:team` (`commands/code-team.md`) or **Direct Plan-to-Executor Dispatch** | `coding-team`: `<engineer>#shard-1..N` (`≤ 3–4 OWNED_FILES`/shard) + `tester` + `reviewer` | Sharded Code (`boomopen cook packets` + `verify-wave`) |
+| **10** | **Approved-Plan Execution (`/code`)** | `/code:team` (`commands/code-team.md`) or **Direct Plan-to-Executor Dispatch** | `fullstack-team`: `<engineer>#shard-1..N` (`≤ 3–4 OWNED_FILES`/shard) + `tester` + `reviewer` | Sharded Code (`boomopen cook packets` + `verify-wave`) |
 | **11** | **Project Documentation (`/docs`)** | `/docs:core` (`commands/docs-core.md`), `/docs:business`, or `/docs:audit` | `docs-team`: `scouter#1..N` → `docs-manager#shard-1..M` + `reviewer` | `./documents/knowledge-*/` or `README.md` |
 | **12** | **Status Report & Deploy Check (`/report`, `/deploy`)** | `/report:hard` (`commands/report-hard.md`) or `/deploy:check` (`commands/deploy-check.md`) | `report-team` (`scouter` → `reporter`) OR `devops-team` (`devops-engineer` + `security-engineer`) | `REPORT-{type}-{date}.md` or Deploy Readiness Report |
 | **13** | **Multi-Session Project Autopilot (`/autopilot`)** | `commands/autopilot.md` → `autopilot-init.md` \| `autopilot-run.md` \| `autopilot-audit.md` | `scouter#doc-1..N` → `planner` → `reviewer#spec-auditor`; Elastic Golden Diamond (`run`) | `.boomopen/project-ledger.json` (`boomopen ledger verify\|audit`) |
@@ -207,11 +207,11 @@ flowchart TD
 
 | Primary Intent / Domain | Canonical Agent(s) (`role#shard`) | Adversarial `:team` (`18` Teams / `72` Files) |
 |-------------------------|-----------------------------------|-----------------------------------------------|
-| **Architecture & Phased Planning** | `planner` (fed by `scouter#1..N` + `researcher#1..M`) | `planning-team`, `architecture-team` |
+| **Architecture & Phased Planning** | `planner` (fed by `scouter#1..N` + `researcher#1..M`) | `planning-team` |
 | **System Architecture & `:team` Arbitration** | `tech-lead` (`tech-lead#1`) | Lead / Critic across `:team` & `/autopilot:run` |
-| **API / Server / Microservices** | `backend-engineer#shard-1..N` | `coding-team` |
-| **Web UI / Components / State** | `frontend-engineer#shard-1..N` | `coding-team`, `design-team` |
-| **Schema / Migrations / Analytics** | `database-architect#shard-1..N` | `data-team`, `coding-team` |
+| **API / Server / Microservices** | `backend-engineer#shard-1..N` | `backend-team`, `fullstack-team` |
+| **Web UI / Components / State** | `frontend-engineer#shard-1..N` | `frontend-team`, `fullstack-team`, `design-team` |
+| **Schema / Migrations / Analytics** | `database-architect#shard-1..N` | `database-team`, `fullstack-team` |
 | **iOS / Android / React Native / Flutter / Tauri** | `mobile-engineer#shard-1..N` | `mobile-team` |
 | **Game Engines / ECS / Physics / Shaders** | `game-engineer#shard-1..N` | `game-team` |
 | **UI/UX Design Systems & Tokens** | `designer` (`designer#lead`, `designer#tokens`) | `design-team` |
@@ -219,8 +219,8 @@ flowchart TD
 | **Codebase Mapping & Multi-Doc Scouting** | `scouter#module-1..N` (`TypeName: "self"` or `"research"`) | `research-team`, `planning-team`, `brainstorm-team` |
 | **Evidence-Grounded Ideation & Discovery** | `brainstormer` (grounded in `RESEARCH` + `SCOUT`) | `brainstorm-team` |
 | **Root-Cause Debugging (5 Whys / Fishbone)** | `debugger#hyp-1..N` | `debug-team` |
-| **Unit, Integration & E2E Testing** | `tester#unit`, `tester#int`, `tester#e2e` | `testing-team` |
-| **Adversarial Code, Spec & Contract Review** | `reviewer#code`, `reviewer#spec-auditor` | `review-team` |
+| **Unit, Integration & E2E Testing** | `tester#unit`, `tester#int`, `tester#e2e` | `qa-team` |
+| **Adversarial Code, Spec & Contract Review** | `reviewer#code`, `reviewer#spec-auditor` | `qa-team`, `fullstack-team` |
 | **OWASP / STRIDE / LLM-Agent Security** | `security-engineer#sec` | `security-team` |
 | **Profiling, Latency & Load Optimization** | `performance-engineer#perf` | `performance-team` |
 | **CI/CD, Containers & Cloud Deployment** | `devops-engineer#infra` | `devops-team` |

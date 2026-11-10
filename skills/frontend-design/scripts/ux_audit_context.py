@@ -15,6 +15,7 @@ from typing import List
 class UXFileContext:
     content: str
     filename: str
+    is_stylesheet: bool
     has_long_text: bool
     has_form: bool
     complex_elements: int
@@ -25,11 +26,19 @@ class UXFileContext:
 
     @classmethod
     def from_content(cls, content: str, filename: str) -> "UXFileContext":
+        is_css = filename.lower().endswith(".css")
         return cls(
             content=content,
             filename=filename,
-            has_long_text=bool(re.search(r'<p|<div.*class=.*text|article|<span.*text', content, re.IGNORECASE)),
-            has_form=bool(re.search(r'<form|<input|password|credit|card|payment', content, re.IGNORECASE)),
-            complex_elements=len(re.findall(r'<input|<select|<textarea|<option', content, re.IGNORECASE)),
-            has_hero=bool(re.search(r'hero|<h1|banner', content, re.IGNORECASE)),
+            is_stylesheet=is_css,
+            has_long_text=not is_css and bool(
+                re.search(r'<p\b|<div[^>]*class(?:Name)?=[^>]*text|<article\b|<span[^>]*text', content, re.IGNORECASE)
+            ),
+            has_form=not is_css and bool(
+                re.search(r'<(?:form|input|select|textarea)\b', content, re.IGNORECASE)
+            ),
+            complex_elements=0 if is_css else len(
+                re.findall(r'<(?:input|select|textarea|option)\b', content, re.IGNORECASE)
+            ),
+            has_hero=not is_css and bool(re.search(r'hero|<h1\b|banner', content, re.IGNORECASE)),
         )

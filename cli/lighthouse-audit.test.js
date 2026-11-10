@@ -80,7 +80,7 @@ test('lighthouse_audit.py and the checklist Lighthouse gate fail when Lighthouse
   fs.mkdirSync(path.dirname(auditCopy), { recursive: true });
   fs.copyFileSync(AUDIT_SCRIPT, auditCopy);
   // The critical security gate runs first; a passing stand-in lets the checklist reach Lighthouse.
-  const securityScan = path.join(kit, 'skills_library', 'vulnerability-scanner', 'scripts', 'security_scan.py');
+  const securityScan = path.join(kit, 'skills', 'security-auditor', 'scripts', 'security_scan.py');
   fs.mkdirSync(path.dirname(securityScan), { recursive: true });
   fs.writeFileSync(securityScan, 'print("scan ok")\n', 'utf8');
   const gate = runPython([path.join(kit, 'scripts', 'checklist.py'), project, '--url', DEAD_URL], env);

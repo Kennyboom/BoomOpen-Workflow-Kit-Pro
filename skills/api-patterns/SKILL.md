@@ -91,7 +91,7 @@ Run both gates on every modified API directory before marking a backend task com
 
 | Tool / Script | Purpose | Command |
 |---------------|---------|---------|
-| **API Validator** | Checks error handling, status codes, schema validation, auth & structured logging | `python ~/.{TOOL}/skills/api-patterns/scripts/api_validator.py <project_path>` |
+| **API Validator** | Checks error handling, status codes, schema validation, auth & structured logging | `python ~/.{TOOL}/skills/api-patterns/scripts/api_validator.py <project_path> [--json]` |
 | **Pragmatic 2-Tier & Anti-Stub Gate** | Rejects explicit `any`, `console.log`, `TODO`s, and hollow stubs | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <project_path> --strict-phase --no-stubs` |
 
 > `python` means your Python 3 launcher: use `python3` on macOS/Linux, or `py -3` on Windows, if `python` is not on PATH.

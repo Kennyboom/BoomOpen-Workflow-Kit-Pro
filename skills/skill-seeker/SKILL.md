@@ -24,7 +24,7 @@ Use this 2-step lookup protocol whenever a task involves:
 
 ### Step 1 — Query the Pre-Compiled Index (`compact-index.json` or Domain Matrix)
 1. Check the active `<skills>` list in context first (`22` core skills).
-2. If a deeper specialist skill is needed, query `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/compact-index.json` (which indexes all `22` core + `1,440` library = **`1,462` skills** with descriptions, triggers, and relative paths) using `Grep` / keyword search — or inspect the relevant domain catalog in `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/*.yaml` (`backend.yaml`, `frontend.yaml`, `security.yaml`, `ai-agents.yaml`, `cloud-devops.yaml`, `data-ml.yaml`, `mobile.yaml`, `game-dev.yaml`, `testing.yaml`).
+2. If a deeper specialist skill is needed, query `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/compact-index.json` (which maps all `22` core + `1,440` library = **`1,462` skills** to `{ domain, priority, category, path }`) using `Grep` / keyword search — or inspect full descriptions and triggers in `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/*.yaml` (`backend.yaml`, `frontend.yaml`, `design.yaml`, `security.yaml`, `ai-ml.yaml`, `mcp.yaml`, `cloud.yaml`, `devops.yaml`, `data.yaml`, `mobile.yaml`, `gaming.yaml`, `quality.yaml`, `architecture.yaml`, `planning.yaml`, `research.yaml`, `performance.yaml`, `languages.yaml`, `management.yaml`, `tools.yaml`).
 
 ### Step 2 — Load Only the Exact Matched `SKILL.md` (`1–3` Max)
 - Read `~/.{TOOL}/skills_library/<skill-id>/SKILL.md` directly (the installer maps `~/.{TOOL}/` automatically to `~/.gemini/config/`, `~/.claude/`, `~/.codex/`, `~/.cursor/`, or `~/.copilot/`).
@@ -36,11 +36,11 @@ Use this 2-step lookup protocol whenever a task involves:
 
 | Domain | High-Signal `skills_library/<skill-id>/SKILL.md` |
 |--------|--------------------------------------------------|
-| **Frontend & Visual Craft** | `anti-ai-slop-visual-craft`, `tailwind-v4-design-tokens`, `shadcn-radix-headless-composition`, `nextjs-15-react-19-patterns` |
-| **Backend, Auth & Data** | `better-auth-typescript`, `hono-trpc-typesafe-apis`, `drizzle-orm-postgres`, `stripe-billing-webhooks-2026` |
+| **Frontend & Visual Craft** | `anti-ai-slop-visual-craft`, `tailwind-v4-shadcn-ui`, `shadcn`, `react-19-nextjs-15-rsc`, `nextjs-react-expert` |
+| **Backend, Auth & Data** | `better-auth-typescript`, `hono-rpc-zod-openapi`, `drizzle-neon-turso-edge`, `stripe-integration`, `supabase-rls-edge-realtime` |
 | **Testing & Accessibility** | `vitest-msw-testing-patterns`, `wcag-22-accessibility-ergonomics`, `performance-profiling` |
 | **Security & DevSecOps** | `owasp-llm-agent-security-2025`, `vulnerability-scanner`, `terraform-opentofu-production` |
-| **Mobile & Desktop** | `tauri-v2-rust-desktop-mobile`, `expo-react-native-2026`, `flutter-riverpod-impeller` |
+| **Mobile & Desktop** | `tauri-v2-rust-desktop-mobile`, `ios18-hig-material3-expressive`, `expo-app-design`, `flutter-expert` |
 | **Game Engineering** | `unity-6-dots-ecs-architecture`, `godot-4-gdscript-shaders-2d-3d`, `webgpu-wgsl-three-tsl`, `react-three-fiber-rapier-3d`, `multiplayer-netcode-colyseus`, `pixijs-v8-phaser-2d-games` |
 
 ---

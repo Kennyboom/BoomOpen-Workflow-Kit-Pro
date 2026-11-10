@@ -61,10 +61,23 @@ def read_ledger_summary(root: Path) -> Optional[Dict[str, Any]]:
         return None
     try:
         data = json.loads(ledger_path.read_text(encoding="utf-8"))
-        phases = data.get("phases", []) if isinstance(data, dict) else []
-        completed = sum(1 for p in phases if isinstance(p, dict) and p.get("status") == "completed")
+        if not isinstance(data, dict):
+            return None
+        phases = data.get("phases", [])
+        if not isinstance(phases, list):
+            phases = []
+        completed = sum(
+            1 for p in phases if isinstance(p, dict) and p.get("status") in ("verified", "completed")
+        )
+        project_title = (
+            data.get("project_name")
+            or data.get("project")
+            or data.get("projectName")
+            or data.get("name")
+            or root.name
+        )
         return {
-            "project": data.get("projectName") or data.get("name") or root.name,
+            "project": project_title,
             "phases_total": len(phases),
             "phases_completed": completed,
         }
@@ -166,6 +179,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="BoomOpen Session & Workspace Manager")
     parser.add_argument("command", choices=["status", "info"], help="Command to run")
     parser.add_argument("path", nargs="?", default=".", help="Project path")
+    parser.add_argument("--json", action="store_true", help="Output report as JSON")
 
     args = parser.parse_args()
     root = get_project_root(args.path)
@@ -173,10 +187,14 @@ def main() -> None:
         print(f"Error: project path is not an existing directory: {root}", file=sys.stderr)
         sys.exit(EXIT_USAGE)
 
-    if args.command == "status":
+    if args.command == "info" or args.json:
+        payload = analyze_project(root)
+        if args.command == "status":
+            payload["files"] = count_files(root)["total"]
+            payload["features"] = detect_features(root)
+        print(json.dumps(payload, indent=2))
+    else:
         print_status(root)
-    elif args.command == "info":
-        print(json.dumps(analyze_project(root), indent=2))
 
 
 if __name__ == "__main__":

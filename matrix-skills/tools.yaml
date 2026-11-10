@@ -1826,7 +1826,7 @@ skills:
     relevance_mapping:
       agents: [tech-lead, researcher, scouter, backend-engineer, frontend-engineer]
       profiles: ["*"]
-    description: "2-step O(1) compact-index discovery and on-demand loading for 1,460+ library skills"
+    description: "Core skill used to search and discover the 1,440 specialized library skills (1,462 total indexed skills in compact-index.json) without bloating context."
 
   - skill_id: gitnexus-intelligence
     category: specialized

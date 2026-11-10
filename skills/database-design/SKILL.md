@@ -33,7 +33,7 @@ version: 5.5.0
 | **Supabase Postgres RLS, Realtime & `pgvector`** | `../../skills_library/supabase-rls-edge-realtime/SKILL.md` (`skills_library/supabase-rls-edge-realtime/SKILL.md`) |
 | **PostgreSQL Performance & Indexing Best Practices** | `../../skills_library/postgres-best-practices/SKILL.md` (`skills_library/postgres-best-practices/SKILL.md`) |
 | **Cloudflare D1 SQLite, R2 & Durable Objects** | `../../skills_library/cloudflare-d1-r2-durable-objects/SKILL.md` (`skills_library/cloudflare-d1-r2-durable-objects/SKILL.md`) |
-| **Destructive DDL / Data-Loss Prevention Gate** | `../accidental-data-loss-prevention/SKILL.md` (`skills/accidental-data-loss-prevention/SKILL.md`) |
+| **Zero-Downtime Database Migration Patterns** | `../../skills_library/database-migration/SKILL.md` (`skills_library/database-migration/SKILL.md`) |
 
 ---
 
@@ -75,7 +75,7 @@ Every schema change in `PLAN-{task}.md` and Wave 1 execution MUST satisfy all 3 
 2. **Zero-Downtime Expand → Backfill → Contract (Never Rename/Drop In-Place)**:
    - **Expand**: Add new nullable column (or column with safe server default) + non-blocking index (`CREATE INDEX CONCURRENTLY` on large Postgres tables).
    - **Backfill & Dual-Write**: Deploy application code writing to both old and new columns and backfill historical rows in batches.
-   - **Contract**: Enforce `NOT NULL` or drop legacy column only in a subsequent release after explicit user consent (`accidental-data-loss-prevention`).
+   - **Contract**: Enforce `NOT NULL` or drop legacy column only in a subsequent release (**STOP-AND-VERIFY**: always obtain explicit user consent before executing any irreversible `DROP TABLE`/`DROP COLUMN`/`TRUNCATE`/un-scoped `DELETE` DDL).
 3. **Mandatory Integrity & Precision Rules**:
    - Store money as integer minor units (`total_cents INTEGER`) or exact `NUMERIC(19,4)` — **never `FLOAT`/`REAL`**.
    - Store timestamps in UTC with timezone (`TIMESTAMPTZ` / `{ withTimezone: true }`), define explicit `ON DELETE` behavior (`RESTRICT` vs `CASCADE`), and index every foreign key (`org_id`, `user_id`).
@@ -86,7 +86,7 @@ Every schema change in `PLAN-{task}.md` and Wave 1 execution MUST satisfy all 3 
 
 | Tool / Script | Purpose | Command |
 |---------------|---------|---------|
-| **Schema Validator (Prisma & Drizzle)** | Checks primary keys, `createdAt` timestamps, FK indexes, naming & zero `any` | `python ~/.{TOOL}/skills/database-design/scripts/schema_validator.py <project_path>` |
+| **Schema Validator (Prisma & Drizzle)** | Checks primary keys, `createdAt` timestamps, FK indexes, naming & zero `any` | `python ~/.{TOOL}/skills/database-design/scripts/schema_validator.py <project_path> [--json]` |
 | **Pragmatic 2-Tier & Anti-Stub Gate** | Verifies `0` explicit `any`, `0` deferred `TODO`s, and `0` hollow stubs | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <project_path> --strict-phase --no-stubs` |
 
 > `python` means your Python 3 launcher: use `python3` on macOS/Linux, or `py -3` on Windows, if `python` is not on PATH.

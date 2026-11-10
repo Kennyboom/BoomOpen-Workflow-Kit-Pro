@@ -15,8 +15,8 @@ version: "5.5.0"
 
 | Script | Purpose | Canonical Command |
 |--------|---------|-------------------|
-| `scripts/seo_checker.py` | Audits HTML/JSX/TSX public pages & Next.js Metadata API for `<title>`, `description`, `og:title`, single `<h1>`, `alt` attributes, canonical links, JSON-LD, semantic landmarks, and `robots.txt` / `sitemap.xml` / `llms.txt` | `python ~/.{TOOL}/skills/seo-fundamentals/scripts/seo_checker.py <project_path>` |
-| `geo_checker.py` | Audits Generative Engine Optimization & AI citation readiness | `python ~/.{TOOL}/skills_library/geo-fundamentals/scripts/geo_checker.py <project_path>` |
+| `scripts/seo_checker.py` | Audits HTML/JSX/TSX public pages & Next.js Metadata API for `<title>`, `description`, `og:title`, single `<h1>`, `alt` attributes, canonical links, JSON-LD, semantic landmarks, and `robots.txt` / `sitemap.xml` / `llms.txt` | `python ~/.{TOOL}/skills/seo-fundamentals/scripts/seo_checker.py <project_path> [--json]` |
+| `geo_checker.py` | Audits Generative Engine Optimization & AI citation readiness | `python ~/.{TOOL}/skills_library/geo-fundamentals/scripts/geo_checker.py <project_path> [--json]` |
 
 > `python` means your Python 3 launcher: use `python3` on macOS/Linux, or `py -3` on Windows, if `python` is not on PATH.
 

@@ -713,7 +713,7 @@ skills:
     relevance_mapping:
       agents: [security-engineer]
       profiles: ["security:*"]
-    description: "Expert security auditor specializing in DevSecOps, comprehensive cybersecurity, and compliance frameworks."
+    description: "Expert security auditor specializing in DevSecOps, OWASP Top 10, AI/LLM Agent Security, Better Auth / OAuth 2.1, and compliance frameworks."
 
   - skill_id: security-bluebook-builder
     category: community

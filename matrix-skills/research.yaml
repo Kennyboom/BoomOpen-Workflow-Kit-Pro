@@ -22,7 +22,7 @@ skills:
     relevance_mapping:
       agents: [researcher, brainstormer, scouter, tech-lead, business-analyst]
       profiles: ["research:*", "planning:discovery", "architecture:*"]
-    description: "Autonomous multi-hop deep research engine using 4-Source Triangulation, 3-Wave Iterative Search Loop, Stanford STORM decomposition, and Dual-Track 5-Lens analysis."
+    description: "Autonomous multi-hop deep research engine using 4-Source Triangulation, 3-Wave Iterative Search, Contradiction Arbitration, Anti-Sycophancy Red-Teaming, and the 6-Block CLI-Validated RESEARCH Blueprint (v5.5.0)."
 
   - skill_id: docs-seeker
     category: core
@@ -94,7 +94,7 @@ skills:
     relevance_mapping:
       agents: [researcher, frontend-engineer]
       profiles: ["research:*", "frontend:*"]
-    description: "SEO fundamentals and best practices"
+    description: "SEO fundamentals, E-E-A-T, Core Web Vitals (LCP, INP, CLS), JSON-LD, and AI search / llms.txt readiness."
 
   - skill_id: lead-research-assistant
     category: utility

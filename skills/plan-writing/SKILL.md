@@ -2,7 +2,7 @@
 name: plan-writing
 description: Structured task planning with clear breakdowns, dependencies, Shared Interface Contracts (SHARED_CONTRACT), file ownership locks (OWNED_FILES), and verification criteria. Use when implementing features, refactoring, or any multi-step work.
 allowed-tools: Read, Glob, Grep, Write
-version: "5.5"
+version: "5.5.0"
 ---
 
 # 📋 Plan Writing (v5.5 — 6-Block Machine-Verifiable & Contract-First DAG Edition)

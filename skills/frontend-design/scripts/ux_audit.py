@@ -124,7 +124,11 @@ for _stream in (sys.stdout, sys.stderr):
 
 EXIT_USAGE = 2
 AUDITED_EXTENSIONS = {'.tsx', '.jsx', '.html', '.vue', '.svelte', '.css'}
-SKIPPED_DIRS = {'node_modules', '.git', 'dist', 'build', '.next'}
+SKIPPED_DIRS = {
+    'node_modules', '.git', 'dist', 'build', '.next', 'coverage',
+    'playwright-report', '.boomopen', '.agent', '__pycache__',
+    '.svelte-kit', '.astro', 'out', 'target', '.venv', 'venv',
+}
 MAX_PRINTED_ISSUES = 10
 MAX_PRINTED_WARNINGS = 15
 
@@ -175,6 +179,7 @@ class UXAuditor:
     def get_report(self):
         return {
             "files_checked": self.files_checked,
+            "skipped": self.files_checked == 0,
             "issues": self.issues,
             "warnings": self.warnings,
             "passed_checks": self.passed_count,

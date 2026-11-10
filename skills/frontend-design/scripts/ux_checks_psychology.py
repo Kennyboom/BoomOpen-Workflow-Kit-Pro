@@ -10,8 +10,14 @@ import re
 from ux_audit_context import UXFileContext
 
 
+NAV_BLOCK_RE = re.compile(r'<nav\b[^>]*>([\s\S]*?)</nav>', re.IGNORECASE)
+NAV_ITEM_RE = re.compile(r'<(?:NavLink|Link)\b|<a\s+[^>]*href=|nav-item')
+
+
 def check_psychology(ctx: UXFileContext) -> None:
     """Sections 1-1.8: Hick, Fitts, Miller, Von Restorff, emotional design, trust, cognitive load, persuasion."""
+    if ctx.is_stylesheet:
+        return
     content = ctx.content
     filename = ctx.filename
     has_long_text = ctx.has_long_text
@@ -20,8 +26,9 @@ def check_psychology(ctx: UXFileContext) -> None:
     has_hero = ctx.has_hero
 
     # --- 1. PSYCHOLOGY LAWS ---
-    # Hick's Law
-    nav_items = len(re.findall(r'<NavLink|<Link|<a\s+href|nav-item', content, re.IGNORECASE))
+    # Hick's Law (scoped to <nav> containers; ignores <link> metadata tags in <head>)
+    nav_blocks = NAV_BLOCK_RE.findall(content)
+    nav_items = max((len(NAV_ITEM_RE.findall(block)) for block in nav_blocks), default=0)
     if nav_items > 7:
         ctx.issues.append(f"[Hick's Law] {filename}: {nav_items} nav items (Max 7)")
 

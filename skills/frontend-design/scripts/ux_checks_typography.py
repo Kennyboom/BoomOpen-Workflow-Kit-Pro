@@ -13,6 +13,22 @@ LINE_HEIGHT_RATIO_RE = re.compile(r'line-height:\s*(\d+(?:\.\d+)?)(?![\d.]|\s*(?
 TAILWIND_ARBITRARY_LEADING_RE = re.compile(r'leading-\[(\d+(?:\.\d+)?)\]')
 
 
+GENERIC_FONT_KEYWORDS = {
+    'sans-serif', 'serif', 'monospace', 'cursive', 'fantasy', 'system-ui',
+    'ui-sans-serif', 'ui-serif', 'ui-monospace', 'ui-rounded', '-apple-system',
+    'blinkmacsystemfont', 'segoe ui', 'inherit', 'initial', 'unset', 'revert',
+    'arial', 'georgia', 'times new roman', 'courier new', 'verdana', 'helvetica', 'tahoma',
+}
+
+
+def _normalize_font_name(raw: str) -> str:
+    cleaned = raw.split(',')[0].strip().strip('"\'')
+    lowered = cleaned.lower()
+    if not lowered or lowered.startswith('var(') or lowered in GENERIC_FONT_KEYWORDS:
+        return ''
+    return lowered
+
+
 def check_typography(ctx: UXFileContext) -> None:
     """Section 2: typography system."""
     content = ctx.content
@@ -24,20 +40,23 @@ def check_typography(ctx: UXFileContext) -> None:
     # 2.1 Font Pairing - Too many font families
     font_families = set()
     # Check for @font-face, Google Fonts, font-family declarations
-    font_faces = re.findall(r'@font-face\s*\{[^}]*family:\s*["\']?([^;"\'\s}]+)', content, re.IGNORECASE)
+    font_faces = re.findall(r'@font-face\s*\{[^}]*?(?:font-)?family:\s*["\']?([^;"\'}]+)', content, re.IGNORECASE)
     google_fonts = re.findall(r'fonts\.googleapis\.com[^"\']*family=([^"&]+)', content, re.IGNORECASE)
-    font_family_css = re.findall(r'font-family:\s*([^;]+)', content, re.IGNORECASE)
+    font_family_css = re.findall(r'font-family:\s*([^;}\n]+)', content, re.IGNORECASE)
 
-    for font in font_faces: font_families.add(font.strip().lower())
+    for font in font_faces:
+        norm = _normalize_font_name(font)
+        if norm:
+            font_families.add(norm)
     for font in google_fonts:
         for f in font.replace('+', ' ').split('|'):
-            font_families.add(f.split(':')[0].strip().lower())
+            norm = _normalize_font_name(f.split(':')[0])
+            if norm:
+                font_families.add(norm)
     for family in font_family_css:
-        # Extract first font from stack
-        first_font = family.split(',')[0].strip().strip('"\'')
-
-        if first_font.lower() not in {'sans-serif', 'serif', 'monospace', 'cursive', 'fantasy', 'system-ui', 'inherit', 'arial', 'georgia', 'times new roman', 'courier new', 'verdana', 'helvetica', 'tahoma'}:
-            font_families.add(first_font.lower())
+        norm = _normalize_font_name(family)
+        if norm:
+            font_families.add(norm)
 
     if len(font_families) > 3:
         ctx.issues.append(f"[Typography] {filename}: {len(font_families)} font families detected. Limit to 2-3 for cohesion.")

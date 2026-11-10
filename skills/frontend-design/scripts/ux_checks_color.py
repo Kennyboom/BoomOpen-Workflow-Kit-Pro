@@ -92,14 +92,20 @@ def check_color(ctx: UXFileContext) -> None:
     # 4.5 WCAG Contrast Pattern Check
     # Look for potential low-contrast combinations
     light_bg_light_text = bool(re.search(r'bg-(?:gray|slate|zinc)-50|bg-white.*text-(?:gray|slate)-[12]', content))
-    dark_bg_dark_text = bool(re.search(r'bg-(?:gray|slate|zinct)-9|bg-black.*text-(?:gray|slate)-[89]', content))
+    dark_bg_dark_text = bool(re.search(r'bg-(?:gray|slate|zinc)-9|bg-black.*text-(?:gray|slate)-[89]', content))
     if light_bg_light_text or dark_bg_dark_text:
         ctx.warnings.append(f"[Color] {filename}: Possible low-contrast combination detected. Verify WCAG AA (4.5:1 for text).")
 
     # 4.6 Color Psychology Context Check
     # Warn if blue used for food/restaurant context
-    has_blue = bool(re.search(r'bg-blue|text-blue|from-blue|#[0-9a-fA-F]*00[0-9A-Fa-f]{2}|#[0-9a-fA-F]*1[0-9A-Fa-f]{2}', content))
-    has_food_context = bool(re.search(r'restaurant|food|cooking|recipe|menu|dish|meal', content, re.IGNORECASE))
+    hex_blues = [
+        (int(r, 16), int(g, 16), int(b, 16))
+        for r, g, b in re.findall(r'#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})\b', content)
+    ]
+    has_blue = bool(re.search(r'\b(?:bg|text|from)-blue-\d', content)) or any(
+        b > max(r, g) + 40 for r, g, b in hex_blues
+    )
+    has_food_context = bool(re.search(r'\b(?:restaurant|food|cooking|recipe|dish|meal)\b', content, re.IGNORECASE))
     if has_blue and has_food_context:
         ctx.warnings.append(f"[Color] {filename}: Blue color in food context. Blue suppresses appetite; consider warm colors (red, orange, yellow).")
 
@@ -119,9 +125,11 @@ def check_color(ctx: UXFileContext) -> None:
 
 def check_accessibility(ctx: UXFileContext) -> None:
     """Section 7: accessibility (image alt text)."""
+    if ctx.is_stylesheet:
+        return
     content = ctx.content
     filename = ctx.filename
 
     # --- 7. ACCESSIBILITY ---
-    if re.search(r'<img(?![^>]*alt=)[^>]*>', content):
+    if re.search(r'<img\b(?![^>]*\balt=)[^>]*>', content):
         ctx.issues.append(f"[Accessibility] {filename}: Missing img alt text")
