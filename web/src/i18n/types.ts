@@ -251,6 +251,14 @@ export interface ArchitecturePageCopy {
     readonly ledgerFile: string;
     readonly auditCommand: string;
     readonly guarantees: ReadonlyArray<{ readonly title: string; readonly summary: string }>;
+    readonly overnightPlaybook: {
+      readonly badge: string;
+      readonly title: string;
+      readonly subtitle: string;
+      readonly modes: ReadonlyArray<{ readonly workflow: string; readonly scope: string; readonly behavior: string }>;
+      readonly promptLabel: string;
+      readonly prompt: string;
+    };
   };
 }
 

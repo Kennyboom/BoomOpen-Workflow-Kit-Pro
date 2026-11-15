@@ -7,7 +7,7 @@ import type { CliCommandId, CliCommandSpec } from '../../types/ui-contract';
 import { CopyCommandBar, EmptyCatalogState, FilterPill, StatusBadge, SurfaceCard } from '../ui/Primitives';
 
 /**
- * Mission: interactive explorer for all 12 deterministic CLI compilers & gates, providing
+ * Mission: interactive explorer for all 14 deterministic CLI compilers & gates, providing
  * trusted Pass (Exit 0) vs Fail (Exit 1) review diagnostics across the 1,462-skill kit.
  */
 type CliCategoryFilter = 'all' | CliCommandSpec['category'];

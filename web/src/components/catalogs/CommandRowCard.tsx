@@ -8,7 +8,7 @@ import { StatusBadge, SurfaceCard } from '../ui/Primitives'
 
 /**
  * Slash command card aligned with our mission of trusted, deterministic review
- * across 32 base workflows and 1,462 indexed skills.
+ * across 33 base commands (89 files) and 1,462 indexed skills.
  */
 export interface CommandRowCardProps {
   readonly item: CommandCatalogItem

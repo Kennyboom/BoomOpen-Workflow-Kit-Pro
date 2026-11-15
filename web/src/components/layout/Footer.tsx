@@ -30,7 +30,7 @@ export function Footer() {
   const telemetryItems: ReadonlyArray<{ readonly value: string; readonly label: string }> = [
     { value: `v${KIT_STATS.version}`, label: SITE_NAME },
     { value: String(KIT_STATS.platforms), label: t.hero.metrics.platforms },
-    { value: `${KIT_STATS.commands.length || 32} (${KIT_STATS.commandFiles})`, label: t.nav.commands },
+    { value: `${KIT_STATS.commands.length || 33} (${KIT_STATS.commandFiles})`, label: t.nav.commands },
     { value: `${KIT_STATS.agents} + ${KIT_STATS.teams}`, label: t.nav.agents },
     { value: formatCount(KIT_STATS.skills), label: t.nav.skills },
     { value: String(KIT_STATS.i18nLocales), label: t.hero.metrics.languages },

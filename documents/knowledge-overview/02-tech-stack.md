@@ -12,7 +12,7 @@
 
 BoomOpen Workflow Kit `v5.5.0` is organized into three clean, decoupled layers under one repository (`Kennyboom/BoomOpen-Workflow-Kit-Pro`):
 
-1. **Core CLI & Orchestration Engine (`cli/`, `agents/`, `commands/`, `rules/`, `platforms/`, `skills/`, `skills_library/`, `matrix-skills/`)** — Pure Node.js (`>=18.0.0`) CommonJS modules (`cli/install.js` + `40` modular `cli/*.js` files) with **zero runtime npm dependencies**.
+1. **Core CLI & Orchestration Engine (`cli/`, `agents/`, `commands/`, `rules/`, `platforms/`, `skills/`, `skills_library/`, `matrix-skills/`)** — Pure Node.js (`>=18.0.0`) CommonJS modules (`cli/install.js` + `43` modular `cli/*.js` files) with **zero runtime npm dependencies**.
 2. **Workspace Automation Helpers (`scripts/`)** — `7` cross-platform Python (`>=3.10`) verification and session helper scripts.
 3. **Marketing Web Application (`web/`)** — Isolated React 19 + TypeScript + Vite 7 + Tailwind CSS v4 SPA deployed to Vercel.
 
@@ -34,16 +34,16 @@ All `9` packages in root `package.json` `devDependencies` exist solely for guard
 
 | Technology | Version | Role | Evidence |
 |-----------|---------|------|----------|
-| Vanilla JavaScript (CommonJS) | ES2022+ | `cli/install.js` + `40` modular CLI files implementing `12` `boomopen` subcommands | [../../cli/install.js](../../cli/install.js) |
+| Vanilla JavaScript (CommonJS) | ES2022+ | `cli/install.js` + `43` modular CLI files implementing `14` `boomopen` subcommands | [../../cli/install.js](../../cli/install.js) |
 | Node.js `node:fs` & `node:path` | Built-in | Cross-platform file copying, atomic writes, ownership manifests, and link checks | [../../cli/copy-engine.js](../../cli/copy-engine.js), [../../cli/manifest.js](../../cli/manifest.js) |
-| Node.js `node:crypto` | Built-in | SHA-256 per-file install manifests, Spec-Hash Drift Guard (`ledger`), and `READ_ONLY_FILES` snapshots (`conduct`) | [../../cli/manifest.js](../../cli/manifest.js), [../../cli/ledger.js](../../cli/ledger.js), [../../cli/conductor.js](../../cli/conductor.js) |
+| Node.js `node:crypto` | Built-in | SHA-256 per-file install manifests, Spec-Hash Drift Guard (`ledger`), and `READ_ONLY_FILES` snapshots (`conduct`, `audit`) | [../../cli/manifest.js](../../cli/manifest.js), [../../cli/ledger.js](../../cli/ledger.js), [../../cli/conductor.js](../../cli/conductor.js) |
 | Node.js `node:http` | Built-in | Ephemeral loopback HTTP server (`http://127.0.0.1:4567`) for `boomopen settings --ui` | [../../cli/settings-http.js](../../cli/settings-http.js), [../../cli/settings-ui.js](../../cli/settings-ui.js) |
 | Node.js `node:child_process` | Built-in | Cross-engine subprocess orchestration (`boomopen conduct`) and post-wave verification (`boomopen cook`) | [../../cli/conductor.js](../../cli/conductor.js), [../../cli/cook.js](../../cli/cook.js) |
 | Node.js `node:os` & `node:readline` | Built-in | Platform home resolution (`os.homedir()`) and terminal progress UI | [../../cli/platform-paths.js](../../cli/platform-paths.js), [../../cli/progress.js](../../cli/progress.js) |
-| Node.js `node:test` & `node:assert/strict` | Built-in | Native test runner executing `30` automated test suites (`29` `cli/*.test.js` + `web/build/kit-stats.test.mjs`) | [../../package.json](../../package.json) — `scripts.test` |
-| Markdown (`.md`) & MDC (`.mdc`) | CommonMark / GFM | `13` platform/root entrypoints (`<= 250`L), `7` rules (`<= 300`L), `84` command files, `21` agents, `72` team files, `16` `i18n` READMEs, `1,462` `SKILL.md` modules, Cursor `.mdc` rule | [../../rules/](../../rules/), [../../commands/](../../commands/), [../../agents/](../../agents/), [../../platforms/](../../platforms/) |
+| Node.js `node:test` & `node:assert/strict` | Built-in | Native test runner executing `34` automated test suites (`33` `cli/*.test.js` + `web/build/kit-stats.test.mjs`) | [../../package.json](../../package.json) — `scripts.test` |
+| Markdown (`.md`) & MDC (`.mdc`) | CommonMark / GFM | `13` platform/root entrypoints (`<= 250`L), `7` rules (`<= 300`L), `89` command files, `22` agents, `72` team files, `16` `i18n` READMEs, `1,462` `SKILL.md` modules, Cursor `.mdc` rule | [../../rules/](../../rules/), [../../commands/](../../commands/), [../../agents/](../../agents/), [../../platforms/](../../platforms/) |
 | YAML & Compiled JSON | YAML 1.2 / JSON | `19` domain skill matrices + `_index.yaml` + `_dynamic.yaml` compiled into `matrix-skills/compact-index.json` (`1,462` skills) | [../../matrix-skills/](../../matrix-skills/), [../../matrix-skills/compact-index.json](../../matrix-skills/compact-index.json) |
-| TOML & ESM Hook | TOML 1.0 / ES2022 | Codex `config.toml` + `21` generated `agents/boomopen/*.toml` files (`cli/toml-lite.js`) and `PreToolUse` safety guard (`validate-tool-call.mjs`) | [../../platforms/codex/config.toml](../../platforms/codex/config.toml), [../../platforms/antigravity/hooks/validate-tool-call.mjs](../../platforms/antigravity/hooks/validate-tool-call.mjs) |
+| TOML & ESM Hook | TOML 1.0 / ES2022 | Codex `config.toml` + `22` `platforms/codex/agents/*.toml` role configs (`cli/toml-lite.js`) and `PreToolUse` safety guard (`validate-tool-call.mjs`) | [../../platforms/codex/config.toml](../../platforms/codex/config.toml), [../../platforms/antigravity/hooks/validate-tool-call.mjs](../../platforms/antigravity/hooks/validate-tool-call.mjs) |
 | Python Workspace Helpers | Python `>=3.10` | `7` helper scripts: `auto_preview.py`, `checklist.py`, `kit_checks.py`, `kit_console.py`, `kit_process.py`, `session_manager.py`, `verify_all.py` | [../../scripts/](../../scripts/) |
 
 ---
@@ -58,7 +58,6 @@ All `9` packages in root `package.json` `devDependencies` exist solely for guard
 | Tailwind CSS | `^4.1.18` (`@tailwindcss/vite`) | Utility-first CSS styling | [../../web/package.json](../../web/package.json) |
 | Framer Motion | `^12.29.2` | Page transitions and interactive motion | [../../web/package.json](../../web/package.json) |
 | react-router-dom | `^7.13.0` | Client-side SPA routing | [../../web/package.json](../../web/package.json) |
-| `@xyflow/react` | `^12.10.0` | Interactive orchestration graph visualizations | [../../web/package.json](../../web/package.json) |
 | `lucide-react` & `clsx` | `^0.563.0` / `^2.1.1` | Icon system and conditional class composition | [../../web/package.json](../../web/package.json) |
 | ESLint & `typescript-eslint` | `^9.39.1` / `^8.46.4` | Linting for `web/` TypeScript/React code | [../../web/package.json](../../web/package.json) |
 
@@ -98,7 +97,7 @@ All `9` packages in root `package.json` `devDependencies` exist solely for guard
 | Runtime npm Dependencies | Zero | Core CLI uses 100% Node.js built-ins so `git clone` works offline without `npm install` |
 | Public npm Registry Publishing | Disabled (`npmPublish: false`) | Installed directly from `Kennyboom/BoomOpen-Workflow-Kit-Pro` source |
 | External Database / Cloud Backend | None | Uses local JSON/Markdown files (`~/.boomopen/`, `.boomopen/project-ledger.json`); `settings --ui` binds only to local loopback `127.0.0.1:4567` |
-| Third-Party Test Runners | None | Uses native `node --test` (`30` suites) rather than Jest, Mocha, or Vitest |
+| Third-Party Test Runners | None | Uses native `node --test` (`34` suites) rather than Jest, Mocha, or Vitest |
 | Third-Party Git Hook Managers | Omitted | Removed to preserve zero-friction Windows/macOS/Linux compatibility; enforced instead via `.github/workflows/ci.yml` and `boomopen check` |
 
 ---
@@ -107,7 +106,7 @@ All `9` packages in root `package.json` `devDependencies` exist solely for guard
 
 | Source | Path |
 |--------|------|
-| Root package manifest (`5.5.0`, zero deps, `9` release devDeps, `30` test suites) | [../../package.json](../../package.json) |
+| Root package manifest (`5.5.0`, zero deps, `9` release devDeps, `34` test suites) | [../../package.json](../../package.json) |
 | Semantic-release config (`npmPublish: false`, `release-guard.js`) | [../../.releaserc.json](../../.releaserc.json) |
 | CLI entrypoint & modular subcommands | [../../cli/install.js](../../cli/install.js) |
 | Cross-OS CI & Release workflows | [../../.github/workflows/ci.yml](../../.github/workflows/ci.yml), [../../.github/workflows/release.yml](../../.github/workflows/release.yml) |

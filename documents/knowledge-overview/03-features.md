@@ -1,6 +1,6 @@
 # BoomOpen Workflow Kit — Features
 
-> **Purpose**: Comprehensive `v5.5.0` inventory of key features, platform layouts, 4-Tier Elastic Swarm orchestration, 21 agents, 18 Golden Diamond teams, 32 base slash commands (`84` files), `1,462` skills, and 12 `boomopen` CLI subcommands
+> **Purpose**: Comprehensive `v5.5.0` inventory of key features, platform layouts, 4-Tier Elastic Swarm orchestration, 22 agents, 18 Golden Diamond teams, 33 base slash commands (`89` files), `1,462` skills, 5 presets, and 14 `boomopen` CLI subcommands
 > **Parent**: [00-index.md](./00-index.md)
 > **Version**: `5.5.0` (Multi-Platform Unified & Smart-Hybrid Edition)
 > **Last Updated**: 2026-11-10
@@ -28,7 +28,7 @@ The installer (`cli/install.js`) adapts one source tree across **5 AI coding pla
 |----------|----------------------------------------|----------------|------------------------|
 | **Antigravity (Gemini)** | `~/.gemini/GEMINI.md`, `~/.gemini/agents/AntigravityGlobal.agent.md`, `~/.gemini/agents/` & `~/.antigravity/agents/`, `~/.gemini/config/global_workflows/` & `~/.antigravity/workflows/` | `~/.gemini/config/skills/boomopen-workflow-kit/` | `~/.gemini/config/skills/` (`22` core) + `~/.gemini/config/skills_library/` (`1,440` library) |
 | **Claude Code** | `~/.claude/CLAUDE.md`, `~/.claude/AGENT.md`, `~/.claude/commands/`, `~/.claude/agents/`, optional `--with-hooks` `PreToolUse` (`validate-tool-call.mjs` in `~/.claude/settings.json`) | `~/.claude/skills/boomopen-workflow-kit/` | `~/.claude/skills/` + `~/.claude/skills_library/` |
-| **OpenAI Codex** | `~/.codex/CODEX.md`, `~/.codex/AGENTS.md`, `~/.codex/AGENT.md`, TOML merge in `~/.codex/config.toml`, `21` role TOMLs in `~/.codex/agents/boomopen/*.toml`, `~/.codex/commands/` | `~/.codex/skills/boomopen-workflow-kit/` | `~/.codex/skills/` (`22` core + `79` generated command skills) + `~/.codex/skills_library/` |
+| **OpenAI Codex** | `~/.codex/CODEX.md`, `~/.codex/AGENTS.md`, `~/.codex/AGENT.md`, TOML merge in `~/.codex/config.toml`, `22` role TOMLs in `~/.codex/agents/boomopen/*.toml`, `~/.codex/commands/` | `~/.codex/skills/boomopen-workflow-kit/` | `~/.codex/skills/` (`22` core + `83` generated command skills) + `~/.codex/skills_library/` |
 | **Cursor** | `~/.cursor/CURSOR.md`, `~/.cursor/AGENT.md`, `~/.cursor/rules/boomopen-workflow-kit.mdc`, `~/.cursor/commands/`, `~/.cursor/agents/` | `~/.cursor/skills/boomopen-workflow-kit/` | `~/.cursor/skills/` + `~/.cursor/skills_library/` |
 | **GitHub Copilot** | `~/.copilot/COPILOT.md`, `~/.copilot/AGENT.md`, `<VSCodeUser>/prompts/boomopen-workflow-kit.agent.md`, `~/.copilot/commands/`, `~/.copilot/agents/` | `~/.copilot/skills/boomopen-workflow-kit/` | `~/.copilot/skills/` + `~/.copilot/skills_library/` |
 
@@ -61,15 +61,15 @@ BoomOpen `v5.5.0` separates frequently needed foundational standards from niche 
 
 ---
 
-### 4. 21 Specialist Agents & 18 Elastic Golden Diamond Teams (`72` Team Files)
+### 4. 22 Specialist Agents & 18 Elastic Golden Diamond Teams (`72` Team Files)
 
 Every specialist agent (`agents/*.md`, `<= 450` lines) defines strict scope boundaries, quality rules, and skill bindings:
 
-| Category | Specialist Agents (`21` Total) |
+| Category | Specialist Agents (`22` Total) |
 |----------|--------------------------------|
 | **Implementation (`4`)** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer` |
 | **Architecture (`2`)** | `tech-lead`, `database-architect` |
-| **Quality & Security (`4`)** | `tester`, `reviewer`, `debugger`, `security-engineer` |
+| **Quality & Security (`5`)** | `tester`, `reviewer`, `debugger`, `spec-reconciler`, `security-engineer` |
 | **Discovery & Planning (`5`)** | `planner`, `brainstormer`, `business-analyst`, `researcher`, `scouter` |
 | **Design, Ops & Delivery (`6`)** | `designer`, `devops-engineer`, `docs-manager`, `performance-engineer`, `project-manager`, `reporter` |
 
@@ -87,37 +87,39 @@ For high-stakes `:team` workflows, **18 specialist teams** (`agents/teams/*-team
 
 ---
 
-### 5. 32 Base Slash Commands (`84` Flat Command Files)
+### 5. 33 Base Slash Commands (`89` Flat Command Files)
 
-All command definitions use a **100% flat layout** (`79` workflow files in `commands/*.md` + `5` shared protocol files in `commands/_ref/*.md` = **`84` files total**, each `<= 450` lines):
+All command definitions use a **100% flat layout** (`83` workflow files in `commands/*.md` + `6` shared protocol files in `commands/_ref/*.md` = **`89` files total**, each `<= 450` lines):
 
-| Group | Base Slash Commands (`32` Total) | Variants & Highlights |
+| Group | Base Slash Commands (`33` Total) | Variants & Highlights |
 |-------|----------------------------------|-----------------------|
 | **Core Multi-Variant Families (`11`)** | `/cook`, `/code`, `/plan`, `/design`, `/research`, `/brainstorm`, `/debug`, `/fix`, `/test`, `/review`, `/report` | Each supports `:fast`, `:hard`, and `:team` (`commands/{cmd}.md` -> `commands/{cmd}-{variant}.md`) |
-| **Specialized Multi-Variant Families (`5`)** | `/docs` (`:core\|:business\|:audit`), `/deploy` (`:check\|:preview\|:production\|:rollback`), `/autopilot` (`:init\|:run\|:audit`), `/conduct` (`:council\|:pipeline`), `/ask` (`:fast\|:hard`) | Multi-pack docs, release gates, multi-session `.boomopen/project-ledger.json` autopilot, and cross-engine councils |
+| **Specialized Multi-Variant Families (`6`)** | `/audit` (`:run\|:fix\|:auto`), `/docs` (`:core\|:business\|:audit`), `/deploy` (`:check\|:preview\|:production\|:rollback`), `/autopilot` (`:init\|:run\|:audit`), `/conduct` (`:council\|:pipeline`), `/ask` (`:fast\|:hard`) | Multi-round project audit, multi-pack docs, release gates, multi-session `.boomopen/project-ledger.json` autopilot, and cross-engine councils |
 | **Standalone Workflow & Control Commands (`16`)** | `/settings`, `/orchestrate`, `/save`, `/recap`, `/init`, `/next`, `/status`, `/preview`, `/rollback`, `/architect`, `/auto`, `/refactor`, `/performance`, `/security-audit`, `/deep-audit`, `/ui-ux-pro-max` | Mode/preset control center, elastic swarm launcher, session persistence, and targeted audits |
-| **Shared Reference Protocols (`5` in `_ref/`)** | `convergent-analysis-loop.md`, `docs-folder-specs.md`, `docs-recon-protocol.md`, `golden-triangle-protocol.md`, `implementation-loop.md` | Reusable verification, recon, and adversarial loop specifications |
+| **Shared Reference Protocols (`6` in `_ref/`)** | `convergent-analysis-loop.md`, `docs-folder-specs.md`, `docs-recon-protocol.md`, `golden-triangle-protocol.md`, `implementation-loop.md`, `reconcile-loop.md` | Reusable verification, recon, Wave 2.5 reconciliation, and adversarial loop specifications |
 
 **Evidence**: [../../commands/](../../commands/), [../../commands/cook.md](../../commands/cook.md), [../../commands/cook-hard.md](../../commands/cook-hard.md), [../../commands/_ref/](../../commands/_ref/)
 
 ---
 
-### 6. 12 Deterministic `boomopen` CLI Subcommands & Artifact Compilers
+### 6. 14 Deterministic `boomopen` CLI Subcommands & Artifact Compilers
 
-`cli/install.js` exposes **12 subcommands** that turn Markdown plans, designs, research briefs, and code quality rules into machine-verifiable gates:
+`cli/install.js` exposes **14 subcommands** that turn Markdown plans, designs, research briefs, and code quality rules into machine-verifiable gates:
 
 | Subcommand | Role & Deterministic Gates |
 |------------|----------------------------|
 | `install <tool\|--all> [--with-hooks]` | Installs across Antigravity, Claude, Codex, Cursor, and Copilot with SHA-256 manifests and backups |
 | `uninstall <tool\|--all>` | Manifest-safe removal preserving user-authored files and restoring backed-up configs |
 | `list` | Displays all 5 supported platforms and live installation status |
-| `settings [status\|get\|set\|mode\|preset\|sync\|reset\|--ui]` | 3-Surface Control Center (`~/.boomopen/settings.json` + `./.boomopen.json`, 4 presets, `20` enum + `2` line-limit keys, Local Web UI on `http://127.0.0.1:4567`) |
+| `settings [status\|get\|set\|mode\|preset\|sync\|reset\|--ui]` | 3-Surface Control Center (`~/.boomopen/settings.json` + `./.boomopen.json`, 5 presets incl. `carbon-guardrails`, `20` enum + `2` line-limit keys, Local Web UI on `http://127.0.0.1:4567`) |
 | `doctor [--platform <name>] [--source-only] [--rebuild-index]` | Audits kit source, 5 platform bundles, Markdown line/mojibake budgets, `compact-index.json`, settings, and Conductor CLI engines |
 | `check [dir] [--strict-phase] [--no-stubs] [--ignore <glob>]` | Enforces Pragmatic 2-Tier Coding Standards (`400`/`500` lines, zero explicit `any`, zero prod `console.log`) + 4-Layer Zero-Omission Phase Ratchet (blocks `TODO`/`FIXME`, stubs, and test gaming) |
 | `research <validate\|brief> <file.md> [--mode research\|brainstorm]` | Enforces `RES-G1..G4` (citations, weighted decision matrix, pre-mortem, `<= 500` lines) & compiles `HANDOFF_BRIEF` |
 | `design <validate\|contract> <design.md>` | Enforces `DESIGN-G1..G4` (OKLCH tokens, 5-State UI Matrix, WCAG 2.2 AA, `<= 500` lines) & compiles `DESIGN_CONTRACT` (`@theme` CSS + TS props) |
 | `plan <validate\|compile> <plan.md> [--sync-ledger]` | Enforces `PLAN-G1..G5` (DAG acyclicity, disjoint `OWNED_FILES <= 4`/shard, `SHARED_CONTRACT`, verification commands, `<= 500` lines) |
-| `cook <state\|packets\|verify-wave\|preflight> <plan.md>` | 5-Stage Fast-Forward state detector, 5-Field Wave Handoff Packet compiler, and `COOK-G1..G4` post-wave lock/stub/test verifier |
+| `cook <state\|packets\|verify-wave\|preflight\|amend-plan> <plan.md>` | 5-Stage Fast-Forward state detector, 5-Field Wave Handoff Packet compiler, and `COOK-G1..G4` post-wave lock/stub/test verifier |
+| `reconcile [dir] [--plan <plan.md>] [--strict]` | Wave 2.5 spec-to-code reconciliation scanner (`REC-G1..G4`: island shards, FE/BE route parity, `[SC-*]` sub-clauses, `.env.example` parity) |
+| `audit <init\|slice\|record\|approve\|verify-fix\|status>` | Stateful multi-round whole-project audit (`.boomopen/audit-ledger.json`) with SHA-256 finding fingerprints, selective fix approval, and monotonic test ratchets |
 | `ledger <init\|from-plan\|validate\|status\|next\|verify\|audit>` | Manages `.boomopen/project-ledger.json` with SHA-256 Spec-Hash Drift Guard for `/autopilot` |
 | `conduct <probe\|dispatch\|council\|status>` | Cross-Engine Conductor (`Author != Critic` pipelines, SHA-256 `READ_ONLY_FILES` guard) & 6-Task Multi-Engine Council (`research\|brainstorm\|plan\|design\|review\|debug`) |
 
@@ -146,14 +148,15 @@ All command definitions use a **100% flat layout** (`79` workflow files in `comm
 |-----------|----------------------|
 | Supported AI Platforms | `5` (Antigravity, Claude Code, OpenAI Codex, Cursor, GitHub Copilot) + `6` root entrypoints |
 | Core Rule Files | `7` (`rules/*.md`, `<= 300` lines each) |
-| Base Slash Commands / Total Files | `32` base commands / `84` files (`79` `commands/*.md` + `5` `commands/_ref/*.md`, `<= 450` lines) |
-| Specialist Agents | `21` (`agents/*.md`, `<= 450` lines each) |
+| Base Slash Commands / Total Files | `33` base commands / `89` files (`83` `commands/*.md` + `6` `commands/_ref/*.md`, `<= 450` lines) |
+| Specialist Agents | `22` (`agents/*.md`, including `spec-reconciler`, `<= 450` lines each) |
 | Elastic Golden Diamond Teams | `18` teams (`72` files = `54` role files + `18` `_team.md`, `<= 450` lines each) |
 | Skills Vault (`compact-index.json`) | `1,462` indexed skills (`22` Core in `skills/` + `1,440` Library in `skills_library/`) across `19` domains |
-| `boomopen` CLI Subcommands | `12` (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `ledger`, `conduct`) |
+| `boomopen` CLI Subcommands | `14` (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`) |
+| Settings Presets | `5` (`smart-hybrid`, `carbon-guardrails`, `solo-fast`, `deep-architect`, `adversarial-team`) |
 | Natural-Language Routing Locales | `17` languages (`en` + `16` `i18n/README.*.md` files) |
 | Error Recovery Classes | `7` (`E0`, `E1`, `E1b`, `E2`, `E3`, `E4`, `E5`, `E6` across `E0-E6`) |
-| Automated `node:test` Suites | `30` (`29` `cli/*.test.js` + `web/build/kit-stats.test.mjs`) |
+| Automated `node:test` Suites | `34` (`33` `cli/*.test.js` + `web/build/kit-stats.test.mjs`) |
 
 ---
 
@@ -166,8 +169,8 @@ All command definitions use a **100% flat layout** (`79` workflow files in `comm
 | Skills rules (`HSOL v5.5` 2-Step `O(1)` resolution) | [../../rules/SKILLS.md](../../rules/SKILLS.md) |
 | Teams rules (Elastic Golden Diamond protocol) | [../../rules/TEAMS.md](../../rules/TEAMS.md) |
 | Errors rules (`E0-E6` self-healing & `A1-A14` anti-patterns) | [../../rules/ERRORS.md](../../rules/ERRORS.md) |
-| Specialist agents (`21`) & teams (`18`) | [../../agents/](../../agents/), [../../agents/teams/](../../agents/teams/) |
-| Flat command workflows (`84` files) | [../../commands/](../../commands/) |
+| Specialist agents (`22`) & teams (`18`) | [../../agents/](../../agents/), [../../agents/teams/](../../agents/teams/) |
+| Flat command workflows (`89` files) | [../../commands/](../../commands/) |
 | Core skills (`22`) & Library vault (`1,440`) | [../../skills/](../../skills/), [../../skills_library/](../../skills_library/) |
 | Compiled skill index (`1,462` skills) | [../../matrix-skills/compact-index.json](../../matrix-skills/compact-index.json) |
-| CLI subcommands (`12`) | [../../cli/install.js](../../cli/install.js) |
+| CLI subcommands (`14`) | [../../cli/install.js](../../cli/install.js) |

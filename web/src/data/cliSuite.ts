@@ -221,7 +221,7 @@ export const CLI_COMMANDS: readonly CliCommandSpec[] = [
     id: 'settings',
     invocation: 'boomopen settings status',
     category: 'orchestration',
-    gates: ['20 Enum Keys', '4 Presets', '< 10ms AOT Sync'],
+    gates: ['20 Enum Keys', '5 Presets', '< 10ms AOT Sync'],
     summary: {
       en: 'Manages global (~/.boomopen/settings.json) and workspace (.boomopen.json) presets, interactive --ui dashboard, and < 10ms AOT entrypoint marker sync.',
       vi: 'Quản lý cấu hình toàn cục (~/.boomopen/settings.json), workspace (.boomopen.json), giao diện --ui trực quan và đồng bộ AOT vào entrypoint dưới 10ms.',
@@ -274,9 +274,9 @@ export const CLI_COMMANDS: readonly CliCommandSpec[] = [
     },
     passOutput: [
       '$ node cli/install.js install --all',
-      '[antigravity] Merged GEMINI.md marker block + synced 1,462 skills & 84 workflows',
+      '[antigravity] Merged GEMINI.md marker block + synced 1,462 skills & 83 workflows (89 command files)',
       '[claude]      Merged CLAUDE.md marker block + synced agents, commands & skills',
-      '[codex]       Synced AGENTS.md, config.toml, 21 TOML roles & 84 $boomopen-* skills',
+      '[codex]       Synced AGENTS.md, config.toml, 22 TOML roles & 83 $boomopen-* skills',
       '[cursor]      Synced CURSOR.md, .mdc rules, commands, agents & skills',
       '[copilot]     Synced COPILOT.md & VS Code boomopen-workflow-kit.agent.md',
     ].join('\n'),

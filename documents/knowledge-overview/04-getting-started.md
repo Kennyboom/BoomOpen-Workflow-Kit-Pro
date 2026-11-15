@@ -1,6 +1,6 @@
 # BoomOpen Workflow Kit — Getting Started
 
-> **Purpose**: Step-by-step source installation, 5-platform directory layout, `boomopen` CLI & settings usage, running the `30` `node:test` suites, contributor workflow, and troubleshooting for `v5.5.0`
+> **Purpose**: Step-by-step source installation, 5-platform directory layout, `boomopen` CLI & settings usage, overnight `/goal` + `/autopilot` + `/audit` playbook, running the `34` `node:test` suites, contributor workflow, and troubleshooting for `v5.5.0`
 > **Parent**: [00-index.md](./00-index.md)
 > **Version**: `5.5.0` (Multi-Platform Unified & Smart-Hybrid Edition)
 > **Last Updated**: 2026-11-10
@@ -74,11 +74,11 @@ Every installation records SHA-256 per-file ownership ledgers in `~/.boomopen/ma
 |----------|---------------------------------------------|---------------------|----------------------------------------------|
 | **Antigravity** | `~/.gemini/GEMINI.md`, `~/.gemini/agents/AntigravityGlobal.agent.md`, `~/.gemini/agents/`, `~/.antigravity/agents/`, `~/.gemini/config/global_workflows/`, `~/.antigravity/workflows/` | `~/.gemini/config/skills/boomopen-workflow-kit/` | `~/.gemini/config/skills/` & `~/.gemini/config/skills_library/` |
 | **Claude Code** | `~/.claude/CLAUDE.md`, `~/.claude/AGENT.md`, `~/.claude/commands/`, `~/.claude/agents/`, optional `PreToolUse` hook in `~/.claude/settings.json` | `~/.claude/skills/boomopen-workflow-kit/` | `~/.claude/skills/` & `~/.claude/skills_library/` |
-| **OpenAI Codex** | `~/.codex/CODEX.md`, `~/.codex/AGENTS.md`, `~/.codex/AGENT.md`, `~/.codex/config.toml` merge, `21` role TOMLs in `~/.codex/agents/boomopen/*.toml`, `~/.codex/commands/` | `~/.codex/skills/boomopen-workflow-kit/` | `~/.codex/skills/` (`22` core + `79` command skills) & `~/.codex/skills_library/` |
+| **OpenAI Codex** | `~/.codex/CODEX.md`, `~/.codex/AGENTS.md`, `~/.codex/AGENT.md`, `~/.codex/config.toml` merge, `22` role TOMLs in `~/.codex/agents/boomopen/*.toml`, `~/.codex/commands/` | `~/.codex/skills/boomopen-workflow-kit/` | `~/.codex/skills/` (`22` core + `83` command skills) & `~/.codex/skills_library/` |
 | **Cursor** | `~/.cursor/CURSOR.md`, `~/.cursor/AGENT.md`, `~/.cursor/rules/boomopen-workflow-kit.mdc`, `~/.cursor/commands/`, `~/.cursor/agents/` | `~/.cursor/skills/boomopen-workflow-kit/` | `~/.cursor/skills/` & `~/.cursor/skills_library/` |
 | **GitHub Copilot** | `~/.copilot/COPILOT.md`, `~/.copilot/AGENT.md`, `<VSCodeUser>/prompts/boomopen-workflow-kit.agent.md`, `~/.copilot/commands/`, `~/.copilot/agents/` | `~/.copilot/skills/boomopen-workflow-kit/` | `~/.copilot/skills/` & `~/.copilot/skills_library/` |
 
-Inside each `<frameworkPath>/`, the installer places `agents/` (`21` specialists + `18` teams / `72` files), `commands/` (`84` files = `79` flat `*.md` + `5` `_ref/*.md`), `rules/` (`7` files), `matrix-skills/` (`19` domain YAMLs + `compact-index.json` with `1,462` skills), `cli/`, `scripts/`, `documents/`, root metadata (`README.md`, `SKILL.md`, `package.json`), and `install-files.json`.
+Inside each `<frameworkPath>/`, the installer places `agents/` (`22` specialists + `18` teams / `72` files), `commands/` (`89` files = `83` flat `*.md` + `6` `_ref/*.md`), `rules/` (`7` files), `matrix-skills/` (`19` domain YAMLs + `compact-index.json` with `1,462` skills), `cli/`, `scripts/`, `documents/`, root metadata (`README.md`, `SKILL.md`, `package.json`), and `install-files.json`.
 
 ---
 
@@ -92,9 +92,10 @@ npm run doctor
 # 2. Check installed platform status
 npm run list
 
-# 3. Inspect or switch presets (smart-hybrid | solo-fast | deep-architect | adversarial-team)
+# 3. Inspect or switch presets (smart-hybrid | carbon-guardrails | solo-fast | deep-architect | adversarial-team)
 npm run settings
 node cli/install.js settings preset smart-hybrid
+node cli/install.js settings preset carbon-guardrails   # Carbon drives, BoomOpen guards (<3KB Antigravity slim)
 
 # 4. Launch the Local Web Control Center on http://127.0.0.1:4567
 npm run settings:ui
@@ -104,7 +105,7 @@ npm run settings:ui
 
 ## First Run — Slash Commands & Natural-Language Workflows
 
-Open any project in your AI coding tool. You can invoke workflows explicitly via **32 base slash commands** or speak naturally in any of the **17 supported languages**:
+Open any project in your AI coding tool. You can invoke workflows explicitly via **33 base slash commands** or speak naturally in any of the **17 supported languages**:
 
 ```text
 # Quick feature (2-3 parallel shards)
@@ -138,11 +139,24 @@ Open any project in your AI coding tool. You can invoke workflows explicitly via
 /docs:business
 ```
 
+### Overnight Large Multi-Phase Project Guide (`/autopilot` vs. `/goal` + `/autopilot` + `/audit`)
+
+| Workflow | Best Scope | Context Window Behavior | Quality & Spec Guarantees |
+|:---------|:-----------|:------------------------|:--------------------------|
+| **`/autopilot` alone** | Single-session or small/medium builds (`< 70%` context) | Runs inside one conversation session; stops cleanly near `~70%` context for manual resume | Initializes `.boomopen/project-ledger.json`, enforces 5 verification gates & Wave 2.5 reconciliation |
+| **`/goal` + `/autopilot` + `/audit`** | Large multi-phase projects with `docs/` (overnight autonomous runs) | **`/goal`** acts as the persistent outer runner across phases and auto-resets/continues when context hits `~70%` | **`/autopilot`** enforces ledger state, 5 verification gates & Wave 2.5 spec-reconciliation per phase, then runs Round 1 of **`/audit`** at 100% completion and stops for review |
+
+**Ready-to-copy overnight prompt:**
+
+```text
+/goal Use /autopilot to read all project documentation in docs/, initialize project-ledger.json, and autonomously implement every phase sequentially from start to finish (skip the initial PLAN approval pause; every phase must pass all 5 verification gates and reconcile 100% against the specs). After 100% of phases are complete, run Round 1 of /audit and stop with a report for my review.
+```
+
 ---
 
-## `boomopen` CLI Subcommands (`12`) & npm Scripts Reference
+## `boomopen` CLI Subcommands (`14`) & npm Scripts Reference
 
-All `12` CLI subcommands can be invoked via `boomopen <subcommand>` (after `npm link`) or `node cli/install.js <subcommand>`:
+All `14` CLI subcommands can be invoked via `boomopen <subcommand>` (after `npm link`) or `node cli/install.js <subcommand>`:
 
 | npm Script | Underlying Command | Purpose |
 |------------|--------------------|---------|
@@ -161,11 +175,13 @@ All `12` CLI subcommands can be invoked via `boomopen <subcommand>` (after `npm 
 | `npm run research` | `node cli/install.js research` | Validate `RESEARCH-*`/`BRAINSTORM-*` (`RES-G1..G4`) & emit `HANDOFF_BRIEF` |
 | `npm run design` | `node cli/install.js design` | Validate 6-Block `DESIGN-*` (`DESIGN-G1..G4`) & emit `DESIGN_CONTRACT` |
 | `npm run plan` | `node cli/install.js plan` | Validate `PLAN-*` (`PLAN-G1..G5`) & compile `.boomopen/project-ledger.json` |
-| `npm run cook` | `node cli/install.js cook` | Run `state`, `packets`, `verify-wave` (`COOK-G1..G4`), or `preflight` |
+| `npm run cook` | `node cli/install.js cook` | Run `state`, `packets`, `verify-wave` (`COOK-G1..G4`), `preflight`, or `amend-plan` |
+| `npm run reconcile` | `node cli/install.js reconcile` | Run Wave 2.5 spec-to-code reconciliation (`REC-G1..G4`) |
+| `npm run audit` | `node cli/install.js audit` | Run stateful multi-round whole-project audit (`.boomopen/audit-ledger.json`) |
 | `npm run ledger` | `node cli/install.js ledger` | Manage `.boomopen/project-ledger.json` (`init`, `from-plan`, `status`, `next`, `verify`, `audit`) |
 | `npm run conduct` | `node cli/install.js conduct` | Run Cross-Engine Conductor (`probe`, `dispatch`, `council`, `status`) |
-| `npm test` | `node --test cli/*.test.js web/build/kit-stats.test.mjs` | Execute all `30` automated `node:test` suites |
-| `npm run test:unit` | `node --test ...` (`16` fast unit suites) | Execute fast CLI unit test subset |
+| `npm test` | `node --test cli/*.test.js web/build/kit-stats.test.mjs` | Execute all `34` automated `node:test` suites |
+| `npm run test:unit` | `node --test ...` (`19` fast unit suites) | Execute fast CLI unit test subset |
 | `npm run lint` | `node .github/scripts/check-syntax.js` | Validate JavaScript syntax across CLI and helper scripts |
 | `npm run test:pack` | `node .github/scripts/pack-smoke.js` | Pack tarball, extract, and smoke-test `doctor` + sandboxed `install`/`uninstall` |
 | `npm run semantic-release` | `semantic-release` | Guarded release automation (`.github/workflows/release.yml`, `npmPublish: false`) |
@@ -177,7 +193,7 @@ All `12` CLI subcommands can be invoked via `boomopen <subcommand>` (after `npm 
 Because the CLI and test suites rely exclusively on Node.js built-ins, `npm test` runs immediately on a fresh clone without `npm install` and isolates all filesystem writes inside temporary sandboxed `HOME` / `USERPROFILE` / `APPDATA` directories:
 
 ```bash
-# Run all 30 node:test suites (29 cli/*.test.js + web/build/kit-stats.test.mjs)
+# Run all 34 node:test suites (33 cli/*.test.js + web/build/kit-stats.test.mjs)
 npm test
 
 # Run fast unit subset
@@ -302,6 +318,6 @@ node cli/install.js install <antigravity|claude|codex|cursor|copilot>
 | Package manifest (`5.5.0`, `bin.boomopen`, scripts, engines) | [../../package.json](../../package.json) |
 | Release rules (`npmPublish: false`) | [../../.releaserc.json](../../.releaserc.json) |
 | Public README (Quick Start, platforms, `/settings`) | [../../README.md](../../README.md) |
-| CLI installer & 12 subcommands | [../../cli/install.js](../../cli/install.js), [../../cli/tool-config.js](../../cli/tool-config.js) |
-| Automated test suites (`30` suites) | [../../cli/install.test.js](../../cli/install.test.js), [../../cli/docs-content.test.js](../../cli/docs-content.test.js) |
+| CLI installer & 14 subcommands | [../../cli/install.js](../../cli/install.js), [../../cli/tool-config.js](../../cli/tool-config.js) |
+| Automated test suites (`34` suites) | [../../cli/install.test.js](../../cli/install.test.js), [../../cli/docs-content.test.js](../../cli/docs-content.test.js) |
 | CI & Release workflows | [../../.github/workflows/ci.yml](../../.github/workflows/ci.yml), [../../.github/workflows/release.yml](../../.github/workflows/release.yml) |

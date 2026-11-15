@@ -29,7 +29,7 @@
 
 ## Purpose
 
-BoomOpen Workflow Kit (`v5.5.0`) transforms a single AI coding assistant into an orchestrated engineering organization of **21 specialist agents**, **18 Elastic Golden Diamond teams**, **32 base slash commands (`84` command files)**, and **`1,462` indexed skills** (`22` Core Skills + `1,440` On-Demand Library Skills). It pairs low-latency direct execution on small tasks (**Mode A**) with parallel contract-locked multi-agent sharding and deterministic CLI verification gates on complex engineering work (**Mode B**) across all **5 supported AI coding platforms**.
+BoomOpen Workflow Kit (`v5.5.0`) transforms a single AI coding assistant into an orchestrated engineering organization of **22 specialist agents** (including `spec-reconciler`), **18 Elastic Golden Diamond teams**, **33 base slash commands (`89` command files)**, **5 execution presets** (including `carbon-guardrails`), and **`1,462` indexed skills** (`22` Core Skills + `1,440` On-Demand Library Skills). It pairs low-latency direct execution on small tasks (**Mode A**) with parallel contract-locked multi-agent sharding and deterministic CLI verification gates on complex engineering work (**Mode B**) across all **5 supported AI coding platforms**.
 
 ---
 
@@ -51,10 +51,10 @@ BoomOpen Workflow Kit `v5.5.0` resolves these challenges through six integrated 
 
 1. **Non-destructive 5-platform global installation** — Installs once into Antigravity (`~/.gemini/`), Claude Code (`~/.claude/`), OpenAI Codex (`~/.codex/`), Cursor (`~/.cursor/`), and GitHub Copilot (`~/.copilot/`), tracked by SHA-256 ownership manifests (`~/.boomopen/manifests/<tool>.json`) and automatic backups (`~/.boomopen/backups/`).
 2. **Smart-Hybrid Mode A / Mode B Gate & 17-Language Routing** — Known-target micro-edits (`<= 2` files, `1` domain) execute directly in Mode A with zero orchestration tax; unscoped exploration, `> 2` files, `>= 2` domains, natural-language workflow requests across **17 languages**, or explicit `/cmd` workflows trigger Mode B with **4-Tier Dynamic Elastic Swarm Sharding (`role#shard`, `<= 3-4 OWNED_FILES` per shard)** and **Scoped Warm Sub-agent Reuse (`send_message`)**.
-3. **21 specialist agents & 18 Elastic Golden Diamond teams** — Dedicated domain specialists (`backend-engineer`, `frontend-engineer`, `database-architect`, `researcher`, `debugger`, `security-engineer`, `tester`, `reviewer`, etc.) and adversarial teams scaling from `1-1-1` (`3` agents) up to `1 Tech Lead + 1..6 Parallel Shard Executors + 1..3 Parallel Critics`.
-4. **32 base slash commands (`84` flat command files)** — `79` flat workflow files in `commands/*.md` plus `5` shared protocols in `commands/_ref/*.md`, spanning `/cook`, `/code`, `/plan`, `/design`, `/research`, `/brainstorm`, `/debug`, `/fix`, `/test`, `/review`, `/report`, `/docs`, `/deploy`, `/autopilot`, `/conduct`, `/ask`, `/settings`, `/orchestrate`, `/save`, `/recap`, and specialized utilities.
+3. **22 specialist agents & 18 Elastic Golden Diamond teams** — Dedicated domain specialists (`backend-engineer`, `frontend-engineer`, `database-architect`, `researcher`, `debugger`, `spec-reconciler`, `security-engineer`, `tester`, `reviewer`, etc.) and adversarial teams scaling from `1-1-1` (`3` agents) up to `1 Tech Lead + 1..6 Parallel Shard Executors + 1..3 Parallel Critics`.
+4. **33 base slash commands (`89` flat command files)** — `83` flat workflow files in `commands/*.md` plus `6` shared protocols in `commands/_ref/*.md`, spanning `/cook`, `/code`, `/plan`, `/design`, `/research`, `/brainstorm`, `/debug`, `/fix`, `/test`, `/review`, `/audit`, `/report`, `/docs`, `/deploy`, `/autopilot`, `/conduct`, `/ask`, `/settings`, `/orchestrate`, `/save`, `/recap`, and specialized utilities.
 5. **2-Step `O(1)` Skills Vault (`HSOL v5.5`)** — `22` pre-loaded Core Skills (`skills/`) plus `1,440` dormant Library Skills (`skills_library/`) indexed in `matrix-skills/compact-index.json` (`1,462` total skills across `19` domains), resolved on demand via `skill-seeker` with zero idle prompt overhead.
-6. **12 deterministic `boomopen` CLI subcommands** — `install`, `uninstall`, `list`, `settings` (including Local Web UI on `http://127.0.0.1:4567`), `doctor`, `check --strict-phase --no-stubs`, `research`, `design`, `plan`, `cook`, `ledger` (Multi-Session Autopilot), and `conduct` (Cross-Engine Conductor & 6-Task Multi-Engine Council).
+6. **14 deterministic `boomopen` CLI subcommands** — `install`, `uninstall`, `list`, `settings` (5 presets + Local Web UI on `http://127.0.0.1:4567`), `doctor`, `check --strict-phase --no-stubs`, `research`, `design`, `plan`, `cook`, `reconcile` (Wave 2.5 spec-to-code wiring scanner), `audit` (multi-round whole-project audit ledger), `ledger` (Multi-Session Autopilot), and `conduct` (Cross-Engine Conductor & 6-Task Multi-Engine Council). For large overnight multi-phase runs, pair `/goal` + `/autopilot` + `/audit` to drive all phases through 5 gates + Wave 2.5 reconciliation and stop at Round 1 `/audit` for review.
 
 ---
 
@@ -111,7 +111,7 @@ This checklist takes a new user or contributor from zero to productive with Boom
 - [ ] Install for your AI platform(s): `node cli/install.js install --all` (or `npm run install:antigravity`, `npm run install:claude`, `npm run install:codex`, `npm run install:cursor`, `npm run install:copilot`)
 - [ ] Optionally link `boomopen` onto your global `PATH`: `npm link`
 - [ ] Run the health audit: `npm run doctor` (or `boomopen doctor`) to verify source bundles, `1,462` indexed skills, and installed platform layouts
-- [ ] Inspect or customize presets (`smart-hybrid`, `solo-fast`, `deep-architect`, `adversarial-team`): `npm run settings` or launch the Web Control Center via `npm run settings:ui` (`http://127.0.0.1:4567`)
+- [ ] Inspect or customize the 5 presets (`smart-hybrid`, `carbon-guardrails`, `solo-fast`, `deep-architect`, `adversarial-team`): `npm run settings` or launch the Web Control Center via `npm run settings:ui` (`http://127.0.0.1:4567`)
 
 ### Minutes 20–30: Read Core Concepts
 
@@ -136,7 +136,7 @@ This checklist takes a new user or contributor from zero to productive with Boom
 ### Minutes 50–60: Documentation, Autopilot, and Multi-Engine Council
 
 - [ ] Run `/docs:core` in a project to generate `./documents/` technical knowledge packs
-- [ ] Explore `/autopilot:init` (`boomopen ledger`) for multi-session spec-to-code roadmaps
+- [ ] Explore `/autopilot:init` (`boomopen ledger`) for multi-session spec-to-code roadmaps, or run `/goal` + `/autopilot` + `/audit` for unattended overnight multi-phase builds (see [04-getting-started.md](./04-getting-started.md))
 - [ ] Run `boomopen conduct probe` to detect installed CLI engines for `/conduct:council`
 
 ---
@@ -150,7 +150,7 @@ This checklist takes a new user or contributor from zero to productive with Boom
 | Public README (`v5.5.0` architecture, 6 pillars, quick start) | [../../README.md](../../README.md) |
 | Core rules (4-Tier Elastic Swarm, 17-Language Routing, `L1-L10`) | [../../rules/CORE.md](../../rules/CORE.md) |
 | Error recovery (`E0-E6` deterministic self-healing) | [../../rules/ERRORS.md](../../rules/ERRORS.md) |
-| Specialist agents (`21`) & Golden Diamond teams (`18`) | [../../agents/](../../agents/), [../../agents/teams/](../../agents/teams/) |
-| CLI entrypoint (`12` subcommands) | [../../cli/install.js](../../cli/install.js) |
-| Commands directory (`32` base commands, `84` files) | [../../commands/](../../commands/) |
+| Specialist agents (`22`) & Golden Diamond teams (`18`) | [../../agents/](../../agents/), [../../agents/teams/](../../agents/teams/) |
+| CLI entrypoint (`14` subcommands) | [../../cli/install.js](../../cli/install.js) |
+| Commands directory (`33` base commands, `89` files) | [../../commands/](../../commands/) |
 | Knowledge source base index | [../knowledge-source-base/00-index.md](../knowledge-source-base/00-index.md) |

@@ -39,7 +39,7 @@ export const DEFAULT_OG_IMAGE = '/media/poster_en.png'
 
 const SKILLS_FMT = formatCount(KIT_STATS.skills)
 const LIB_SKILLS_FMT = formatCount(KIT_STATS.librarySkills)
-const CMD_COUNT = KIT_STATS.commands.length || 32
+const CMD_COUNT = KIT_STATS.commands.length || 33
 const DOMAIN_TOTAL = KIT_STATS.domains.length || 19
 
 export const SEO_ROUTES: readonly PageSeoEntry[] = [
@@ -100,8 +100,8 @@ export const SEO_ROUTES: readonly PageSeoEntry[] = [
     pathname: '/architecture',
     priority: 0.85,
     title: {
-      en: `Smart-Hybrid 3-Wave Architecture & 12 CLI Gates — ${SITE_NAME}`,
-      vi: `Kiến Trúc 3-Wave Smart-Hybrid & 12 Cổng CLI — ${SITE_NAME}`,
+      en: `Smart-Hybrid 3-Wave Architecture & 14 CLI Gates — ${SITE_NAME}`,
+      vi: `Kiến Trúc 3-Wave Smart-Hybrid & 14 Cổng CLI — ${SITE_NAME}`,
     },
     description: {
       en: `Deep dive into Tier 0 Direct vs Tier 1 Elastic Swarm sharding (<= 4 OWNED_FILES/shard), Contract-First 3-Wave DAGs, Warm Sub-agent Reuse, Multi-Session Autopilot, and Multi-Engine Council.`,
@@ -168,7 +168,7 @@ export function formatDocumentTitle(entry: PageSeoEntry, locale: Locale = 'en'):
 export function renderLlmsTxt(stats: KitStats = KIT_STATS): string {
   const skillsTotal = formatCount(stats.skills)
   const libTotal = formatCount(stats.librarySkills)
-  const cmdTotal = stats.commands.length || 32
+  const cmdTotal = stats.commands.length || 33
   const domainTotal = stats.domains.length || 19
 
   return [
@@ -193,13 +193,13 @@ export function renderLlmsTxt(stats: KitStats = KIT_STATS): string {
     'node cli/install.js doctor',
     '```',
     '',
-    '## Deterministic CLI Subcommands (12)',
+    '## Deterministic CLI Subcommands (14)',
     '- `install` / `uninstall` / `list` / `doctor` / `settings`: SHA-256 manifest lifecycle & Control Center UI (`--ui`)',
-    '- `research` / `design` / `plan` / `cook`: Static `< 50ms` artifact validators (`RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`) & wave packet compilers',
-    '- `ledger` / `conduct` / `check`: `.boomopen/project-ledger.json` phase ratchet, Multi-Engine Council (`claude,codex,antigravity`), and Pragmatic 2-Tier static gate (`--strict-phase --no-stubs`)',
+    '- `research` / `design` / `plan` / `cook` / `reconcile`: Static `< 50ms` artifact validators (`RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`, `REC-G1..G4`) & wave packet compilers',
+    '- `audit` / `ledger` / `conduct` / `check`: Multi-round whole-project audit (`.boomopen/audit-ledger.json`), `.boomopen/project-ledger.json` phase ratchet, Multi-Engine Council (`claude,codex,antigravity`), and Pragmatic 2-Tier static gate (`--strict-phase --no-stubs`)',
     '',
     '## Documentation & Interactive Catalogs',
-    `- [Overview & Launch Trailer](${SITE_URL}/): Bilingual EN/VI showcase, 3-Wave Swarm Visualizer, and 12-Gate CLI Playground`,
+    `- [Overview & Launch Trailer](${SITE_URL}/): Bilingual EN/VI showcase, 3-Wave Swarm Visualizer, and 14-Gate CLI Playground`,
     `- [Slash Commands Catalog](${SITE_URL}/commands): Searchable reference of all ${cmdTotal} workflow routers and variants`,
     `- [Agents & Golden Diamond Teams](${SITE_URL}/agents): ${stats.agents} specialist agents and ${stats.teams} adversarial review teams`,
     `- [Skills Vault Explorer](${SITE_URL}/skills): ${skillsTotal} indexed skills across ${domainTotal} engineering domains`,

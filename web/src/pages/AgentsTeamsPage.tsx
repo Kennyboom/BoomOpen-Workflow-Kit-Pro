@@ -15,7 +15,7 @@ import { useLanguage } from '../i18n/context'
 import type { AgentSpec, BilingualText } from '../types/ui-contract'
 
 /**
- * Workforce directory showcasing 21 specialist agents, 18 Elastic Golden Diamond
+ * Workforce directory showcasing 22 specialist agents, 18 Elastic Golden Diamond
  * teams (72 files), our mission of adversarial review, and 1,462 indexed skills.
  */
 type WorkforceTabId = 'all' | 'agents' | 'teams'

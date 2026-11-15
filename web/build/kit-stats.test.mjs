@@ -127,14 +127,14 @@ test('commands.ts, agents.ts, teams.ts, skills.ts & platforms.ts match 100% of d
   /** @type {import('../src/data/kitStats').KitStats} */
   const stats = JSON.parse(fs.readFileSync(KIT_STATS_FILE, 'utf8'))
 
-  // 1. All 32 base slash commands
+  // 1. All 33 base slash commands
   const commandsTs = fs.readFileSync(path.join(WEB_DATA_DIR, 'commands.ts'), 'utf8')
   assert.ok(commandsTs.includes('export const COMMANDS_CATALOG'), 'commands.ts must export COMMANDS_CATALOG')
   const seededCommands = [...commandsTs.matchAll(/defineSeed\(\s*'([^']+)'/g)].map((m) => m[1]).sort()
   const diskCommands = stats.commands.map((c) => c.name).sort()
   assert.deepEqual(seededCommands, diskCommands, 'commands.ts must explicitly seed every base command in commands/')
 
-  // 2. All 21 specialist agents
+  // 2. All 22 specialist agents
   const agentsTs = fs.readFileSync(path.join(WEB_DATA_DIR, 'agents.ts'), 'utf8')
   assert.ok(agentsTs.includes('export const SPECIALIST_AGENTS'), 'agents.ts must export SPECIALIST_AGENTS')
   const listedAgents = [...agentsTs.matchAll(/\bid:\s*'([^']+)'/g)].map((m) => m[1]).sort()

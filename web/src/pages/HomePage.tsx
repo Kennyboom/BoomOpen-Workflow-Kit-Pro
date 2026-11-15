@@ -16,7 +16,7 @@ import type { PlatformId } from '../types/ui-contract';
 
 /**
  * Mission: BoomOpen-Workflow-Kit-Pro v5.5 flagship overview page with live ground-truth telemetry
- * (1,462 indexed skills), bilingual 1080p launch trailer, 3-wave swarm, 12 CLI gates, and trusted 5-IDE setup.
+ * (1,462 indexed skills), bilingual 1080p launch trailer, 3-wave swarm, 14 CLI gates, and trusted 5-IDE setup.
  */
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas';
@@ -201,7 +201,7 @@ export function HomePage() {
         <SwarmVisualizer />
       </section>
 
-      {/* 4. 12 Deterministic CLI Compilers & Gates Playground */}
+      {/* 4. 14 Deterministic CLI Compilers & Gates Playground */}
       <section aria-labelledby="home-cli-heading" className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
         <div className="space-y-2">
           <div className="font-mono text-[clamp(0.72rem,0.1vw+0.7rem,0.78rem)] leading-snug font-semibold uppercase tracking-widest text-primary">

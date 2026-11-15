@@ -57,14 +57,14 @@ interface RawKitStatsShape {
 
 const DEFAULT_PLATFORMS = 5
 const DEFAULT_I18N_LOCALES = 17
-const DEFAULT_AGENTS = 21
+const DEFAULT_AGENTS = 22
 const DEFAULT_TEAMS = 18
 const DEFAULT_TEAM_ROLES = 54
 const DEFAULT_SKILLS = 1462
 const DEFAULT_CORE_SKILLS = 22
 const DEFAULT_LIBRARY_SKILLS = 1440
-const DEFAULT_WORKFLOW_FILES = 79
-const DEFAULT_REF_FILES = 5
+const DEFAULT_WORKFLOW_FILES = 83
+const DEFAULT_REF_FILES = 6
 
 function normalizeKitStats(raw: RawKitStatsShape): KitStats {
   const teams = raw.teams ?? DEFAULT_TEAMS

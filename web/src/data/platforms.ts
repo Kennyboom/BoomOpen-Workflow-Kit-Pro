@@ -34,8 +34,8 @@ export const PLATFORMS: readonly PlatformSpec[] = [
     verifyCommand: DOCTOR_VERIFY_COMMAND,
     uninstallCommand: 'node cli/install.js uninstall claude',
     summary: {
-      en: 'Dispatches parallel Task/Agent shards with disjoint OWNED_FILES write locks, SendMessage warm reuse, 84 slash commands, and 21 specialist profiles.',
-      vi: 'Điều phối các shard Task/Agent song song với khóa ghi OWNED_FILES tách biệt, tái sử dụng phiên ấm qua SendMessage, đủ 84 lệnh slash và 21 chuyên gia.',
+      en: 'Dispatches parallel Task/Agent shards with disjoint OWNED_FILES write locks, SendMessage warm reuse, 89 command files (33 slash commands), and 22 specialist profiles.',
+      vi: 'Điều phối các shard Task/Agent song song với khóa ghi OWNED_FILES tách biệt, tái sử dụng phiên ấm qua SendMessage, đủ 89 tệp lệnh (33 lệnh slash) và 22 chuyên gia.',
     },
   },
   {
@@ -48,8 +48,8 @@ export const PLATFORMS: readonly PlatformSpec[] = [
     verifyCommand: DOCTOR_VERIFY_COMMAND,
     uninstallCommand: 'node cli/install.js uninstall codex',
     summary: {
-      en: 'Ships 21 native TOML role configs, spawn_agent + send_input multi-agent orchestration, and 84 generated $boomopen-* command skill bundles.',
-      vi: 'Trang bị 21 cấu hình TOML bản địa, điều phối đa tác tử qua spawn_agent + send_input và 84 gói kỹ năng lệnh $boomopen-* tự động biên dịch.',
+      en: 'Ships 22 native TOML role configs, spawn_agent + send_input multi-agent orchestration, and 83 generated $boomopen-* command skill bundles.',
+      vi: 'Trang bị 22 cấu hình TOML bản địa, điều phối đa tác tử qua spawn_agent + send_input và 83 gói kỹ năng lệnh $boomopen-* tự động biên dịch.',
     },
   },
   {
@@ -62,8 +62,8 @@ export const PLATFORMS: readonly PlatformSpec[] = [
     verifyCommand: DOCTOR_VERIFY_COMMAND,
     uninstallCommand: 'node cli/install.js uninstall cursor',
     summary: {
-      en: 'Integrates always-on .mdc workspace rules, parallel Task subagents, 84 global slash workflows, and on-demand 1,462-skill resolution inside Cursor IDE.',
-      vi: 'Tích hợp quy tắc .mdc luôn bật, subagent Task chạy song song, 84 workflow slash toàn cục và tra cứu kho 1,462 kỹ năng trực tiếp trong Cursor IDE.',
+      en: 'Integrates always-on .mdc workspace rules, parallel Task subagents, 83 global slash workflows (89 command files), and on-demand 1,462-skill resolution inside Cursor IDE.',
+      vi: 'Tích hợp quy tắc .mdc luôn bật, subagent Task chạy song song, 83 workflow slash toàn cục (89 tệp lệnh) và tra cứu kho 1,462 kỹ năng trực tiếp trong Cursor IDE.',
     },
   },
   {

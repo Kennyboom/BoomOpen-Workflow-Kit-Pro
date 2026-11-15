@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
-import { ArrowRight, BookOpen, CheckCircle2, FolderGit2, Lock, ShieldCheck, Sliders } from 'lucide-react'
+import { ArrowRight, BookOpen, Check, CheckCircle2, Copy, FolderGit2, Lock, Moon, ShieldCheck, Sliders } from 'lucide-react'
 import { clsx } from 'clsx'
 import { SEO } from '../components/seo/SEO'
 import { ActionLink, CopyCommandBar, StatusBadge, SurfaceCard } from '../components/ui/Primitives'
 import { KIT_STATS, formatCount } from '../data/kitStats'
+import { useCopyCommand } from '../hooks/useCopyCommand'
 import { useLanguage } from '../i18n/context'
 
 /**
@@ -18,9 +19,25 @@ export function ArchitecturePage() {
   const { locale, t } = useLanguage()
   const reduceMotion = useReducedMotion()
   const [selectedPresetIdx, setSelectedPresetIdx] = useState(0)
+  const { copied: promptCopied, copyFailed: promptCopyFailed, copy: copyPrompt } = useCopyCommand()
+  const promptRef = useRef<HTMLElement | null>(null)
 
   const copy = t.architecturePage
   const activePreset = copy.controlCenter.presets[selectedPresetIdx] ?? copy.controlCenter.presets[0]
+  const overnight = copy.specRatchet.overnightPlaybook
+
+  const handleCopyPrompt = async () => {
+    const ok = await copyPrompt(overnight.prompt)
+    if (!ok && promptRef.current && typeof window !== 'undefined') {
+      const selection = window.getSelection()
+      if (selection) {
+        const range = document.createRange()
+        range.selectNodeContents(promptRef.current)
+        selection.removeAllRanges()
+        selection.addRange(range)
+      }
+    }
+  }
 
   return (
     <div className="min-h-dvh bg-canvas text-ink">
@@ -137,13 +154,13 @@ export function ArchitecturePage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h3 className="font-display text-[clamp(1.1rem,0.35vw+1rem,1.3rem)] leading-tight font-semibold text-ink">
                 {locale === 'vi'
-                  ? '4 Chế Độ Cấu Hình Định Sẵn (Đồng Bộ < 10ms Sang 5 IDE)'
-                  : '4 Built-In Execution Presets (< 10ms AOT Sync Across 5 IDEs)'}
+                  ? '5 Chế Độ Cấu Hình Định Sẵn (Đồng Bộ < 10ms Sang 5 IDE)'
+                  : '5 Built-In Execution Presets (< 10ms AOT Sync Across 5 IDEs)'}
               </h3>
               <StatusBadge tone="amber">{activePreset.lineBudget}</StatusBadge>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
               {copy.controlCenter.presets.map((preset, idx) => {
                 const isSelected = idx === selectedPresetIdx
                 return (
@@ -271,14 +288,52 @@ export function ArchitecturePage() {
               </div>
             </div>
 
-            <CopyCommandBar
-              command={copy.specRatchet.auditCommand}
-              label={copy.specRatchet.ledgerFile}
-              copyLabel={t.common.copy}
-              copiedLabel={t.common.copied}
-              manualCopyHint={t.common.copyManualHint}
-              compact
-            />
+            <CopyCommandBar command={copy.specRatchet.auditCommand} label={copy.specRatchet.ledgerFile} copyLabel={t.common.copy} copiedLabel={t.common.copied} manualCopyHint={t.common.copyManualHint} compact />
+          </SurfaceCard>
+
+          <SurfaceCard variant="elevated" className="space-y-5 lg:col-span-12">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="space-y-2">
+                <StatusBadge tone="amber">
+                  <Moon aria-hidden="true" className="size-3.5" />
+                  <span className="uppercase tracking-wider">{overnight.badge}</span>
+                </StatusBadge>
+                <h3 className="font-display text-[clamp(1.2rem,0.6vw+1rem,1.5rem)] leading-tight font-semibold tracking-tight text-ink">{overnight.title}</h3>
+                <p className="max-w-prose text-[clamp(0.875rem,0.12vw+0.84rem,0.95rem)] leading-relaxed font-normal text-muted">{overnight.subtitle}</p>
+              </div>
+              <button
+                type="button"
+                aria-label={`${t.common.copy}: ${overnight.promptLabel}`}
+                onClick={() => { void handleCopyPrompt() }}
+                className={clsx(
+                  'inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-[10px] border px-3.5 py-2 font-mono text-[clamp(0.75rem,0.1vw+0.73rem,0.8125rem)] leading-none font-semibold transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
+                  FOCUS_RING,
+                  promptCopied ? 'border-accent/50 bg-accent/15 text-accent' : 'border-line-strong bg-canvas text-ink hover:border-primary/60',
+                )}
+              >
+                {promptCopied ? <Check aria-hidden="true" className="size-4 text-accent" /> : <Copy aria-hidden="true" className="size-4 text-primary" />}
+                <span>{promptCopied ? t.common.copied : t.common.copy}</span>
+              </button>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-2">
+              {overnight.modes.map((row) => (
+                <div key={row.workflow} className="rounded-xl border border-hairline bg-canvas p-4 space-y-1.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <code className="font-mono text-[clamp(0.82rem,0.12vw+0.79rem,0.9rem)] font-semibold text-primary">{row.workflow}</code>
+                    <StatusBadge tone="neutral" mono={false}>{row.scope}</StatusBadge>
+                  </div>
+                  <p className="max-w-prose text-[clamp(0.825rem,0.1vw+0.8rem,0.9rem)] leading-relaxed font-normal text-muted">{row.behavior}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-xl border border-hairline bg-canvas p-4 space-y-2">
+              <div className="font-mono text-[clamp(0.72rem,0.1vw+0.7rem,0.78rem)] font-semibold uppercase tracking-wider text-subtle">{overnight.promptLabel}</div>
+              <code ref={promptRef} className="block whitespace-pre-wrap font-mono text-[clamp(0.8rem,0.1vw+0.77rem,0.875rem)] leading-relaxed text-ink">{overnight.prompt}</code>
+              <div aria-live="polite" className="sr-only">{promptCopied ? t.common.copied : promptCopyFailed ? t.common.copyManualHint : ''}</div>
+              {promptCopyFailed && <p className="text-[clamp(0.75rem,0.1vw+0.73rem,0.8125rem)] text-warning">{t.common.copyManualHint}</p>}
+            </div>
           </SurfaceCard>
         </section>
 
@@ -288,39 +343,23 @@ export function ArchitecturePage() {
               <FolderGit2 aria-hidden="true" className="size-3.5" />
               <span className="uppercase tracking-wider">{copy.artifactRouting.badge}</span>
             </StatusBadge>
-            <h2 id="artifact-routing-heading" className="font-display text-[clamp(1.45rem,1.2vw+1.1rem,2rem)] leading-tight font-semibold tracking-tight text-ink">
-              {copy.artifactRouting.title}
-            </h2>
-            <p className="max-w-prose text-[clamp(0.925rem,0.15vw+0.88rem,1rem)] leading-relaxed font-normal text-muted">
-              {copy.artifactRouting.subtitle}
-            </p>
+            <h2 id="artifact-routing-heading" className="font-display text-[clamp(1.45rem,1.2vw+1.1rem,2rem)] leading-tight font-semibold tracking-tight text-ink">{copy.artifactRouting.title}</h2>
+            <p className="max-w-prose text-[clamp(0.925rem,0.15vw+0.88rem,1rem)] leading-relaxed font-normal text-muted">{copy.artifactRouting.subtitle}</p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <SurfaceCard variant="elevated" as="article" className="space-y-3">
               <StatusBadge tone="amber">DEFAULT · ZERO GIT NOISE</StatusBadge>
-              <h3 className="font-display text-[clamp(1.1rem,0.35vw+1rem,1.3rem)] leading-tight font-semibold text-ink">
-                {copy.artifactRouting.brainCard.title}
-              </h3>
-              <code className="block rounded-lg border border-hairline bg-canvas px-3 py-2 font-mono text-[clamp(0.78rem,0.1vw+0.75rem,0.85rem)] leading-relaxed text-primary">
-                {copy.artifactRouting.brainCard.pathPattern}
-              </code>
-              <p className="max-w-prose text-[clamp(0.875rem,0.12vw+0.84rem,0.95rem)] leading-relaxed font-normal text-muted">
-                {copy.artifactRouting.brainCard.summary}
-              </p>
+              <h3 className="font-display text-[clamp(1.1rem,0.35vw+1rem,1.3rem)] leading-tight font-semibold text-ink">{copy.artifactRouting.brainCard.title}</h3>
+              <code className="block rounded-lg border border-hairline bg-canvas px-3 py-2 font-mono text-[clamp(0.78rem,0.1vw+0.75rem,0.85rem)] leading-relaxed text-primary">{copy.artifactRouting.brainCard.pathPattern}</code>
+              <p className="max-w-prose text-[clamp(0.875rem,0.12vw+0.84rem,0.95rem)] leading-relaxed font-normal text-muted">{copy.artifactRouting.brainCard.summary}</p>
             </SurfaceCard>
 
             <SurfaceCard variant="default" as="article" className="space-y-3">
               <StatusBadge tone="cobalt">EXPLICIT · /docs WORKFLOWS</StatusBadge>
-              <h3 className="font-display text-[clamp(1.1rem,0.35vw+1rem,1.3rem)] leading-tight font-semibold text-ink">
-                {copy.artifactRouting.workspaceCard.title}
-              </h3>
-              <code className="block rounded-lg border border-hairline bg-canvas px-3 py-2 font-mono text-[clamp(0.78rem,0.1vw+0.75rem,0.85rem)] leading-relaxed text-accent">
-                {copy.artifactRouting.workspaceCard.pathPattern}
-              </code>
-              <p className="max-w-prose text-[clamp(0.875rem,0.12vw+0.84rem,0.95rem)] leading-relaxed font-normal text-muted">
-                {copy.artifactRouting.workspaceCard.summary}
-              </p>
+              <h3 className="font-display text-[clamp(1.1rem,0.35vw+1rem,1.3rem)] leading-tight font-semibold text-ink">{copy.artifactRouting.workspaceCard.title}</h3>
+              <code className="block rounded-lg border border-hairline bg-canvas px-3 py-2 font-mono text-[clamp(0.78rem,0.1vw+0.75rem,0.85rem)] leading-relaxed text-accent">{copy.artifactRouting.workspaceCard.pathPattern}</code>
+              <p className="max-w-prose text-[clamp(0.875rem,0.12vw+0.84rem,0.95rem)] leading-relaxed font-normal text-muted">{copy.artifactRouting.workspaceCard.summary}</p>
             </SurfaceCard>
           </div>
         </section>

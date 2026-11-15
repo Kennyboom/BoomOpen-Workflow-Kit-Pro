@@ -9,11 +9,11 @@
 
 ## Quick Summary
 
-BoomOpen Workflow Kit (`@boomopen/workflow-kit` `v5.5.0` — **Multi-Platform Unified & Smart-Hybrid Edition**) is an open-source multi-agent orchestration operating system that transforms a single AI coding assistant into a coordinated engineering workforce of **21 specialist agents** and **18 Elastic Golden Diamond teams** (`72` team files = `54` role definitions + `18` `_team.md` coordinators). It installs non-destructively across **5 unified platforms** — **Antigravity (Gemini)**, **Claude Code**, **OpenAI Codex**, **Cursor**, and **GitHub Copilot** — backed by SHA-256 per-file ownership manifests (`~/.boomopen/manifests/<tool>.json`), automatic user backups (`~/.boomopen/backups/`), and `< 10ms` Ahead-of-Time (AOT) settings synchronization (`<!-- BOOMOPEN-SETTINGS-START/END -->`).
+BoomOpen Workflow Kit (`@boomopen/workflow-kit` `v5.5.0` — **Multi-Platform Unified & Smart-Hybrid Edition**) is an open-source multi-agent orchestration operating system that transforms a single AI coding assistant into a coordinated engineering workforce of **22 specialist agents** (including `spec-reconciler`) and **18 Elastic Golden Diamond teams** (`72` team files = `54` role definitions + `18` `_team.md` coordinators). It installs non-destructively across **5 unified platforms** — **Antigravity (Gemini)**, **Claude Code**, **OpenAI Codex**, **Cursor**, and **GitHub Copilot** — backed by SHA-256 per-file ownership manifests (`~/.boomopen/manifests/<tool>.json`), automatic user backups (`~/.boomopen/backups/`), **5 execution presets** (including `carbon-guardrails`), and `< 10ms` Ahead-of-Time (AOT) settings synchronization (`<!-- BOOMOPEN-SETTINGS-START/END -->`).
 
-At runtime, the framework pairs a **Smart-Hybrid Mode A / Mode B Gate** and **17-Language Natural-Language Workflow Routing** with **2-Step `O(1)` Progressive Skill Resolution (`HSOL v5.5`)**. Through `skill-seeker` and the pre-compiled `matrix-skills/compact-index.json` (`1,462` indexed skills = `22` Core Skills in `skills/` + `1,440` On-Demand Library Skills in `skills_library/` across `19` domains), agents load only the exact `SKILL.md` required for the active task with zero idle prompt bloat. Complex multi-file tasks scale dynamically via **4-Tier Elastic Swarm Sharding (`role#shard`, `<= 3-4 OWNED_FILES` per shard)**, **32 base slash commands** (`84` command files = `79` flat `commands/*.md` + `5` shared `commands/_ref/*.md` protocols), **10 Orchestration Laws (`L1-L10`)**, **Multi-Session Project Autopilot (`/autopilot`)**, and **Cross-Engine Multi-Model Councils (`/conduct`)**.
+At runtime, the framework pairs a **Smart-Hybrid Mode A / Mode B Gate** and **17-Language Natural-Language Workflow Routing** with **2-Step `O(1)` Progressive Skill Resolution (`HSOL v5.5`)**. Through `skill-seeker` and the pre-compiled `matrix-skills/compact-index.json` (`1,462` indexed skills = `22` Core Skills in `skills/` + `1,440` On-Demand Library Skills in `skills_library/` across `19` domains), agents load only the exact `SKILL.md` required for the active task with zero idle prompt bloat. Complex multi-file tasks scale dynamically via **4-Tier Elastic Swarm Sharding (`role#shard`, `<= 3-4 OWNED_FILES` per shard)**, **33 base slash commands** (`89` command files = `83` flat `commands/*.md` + `6` shared `commands/_ref/*.md` protocols, including `/audit`), **10 Orchestration Laws (`L1-L10`)**, **Multi-Session Project Autopilot (`/autopilot`)**, **Multi-Round Whole-Project Audit (`/audit`)**, and **Cross-Engine Multi-Model Councils (`/conduct`)**.
 
-Built on **Node.js `>=18.0.0`** using only Node.js built-in modules (`cli/install.js` + `40` modular `cli/*.js` files), the core CLI has **zero runtime npm dependencies** and exposes **12 deterministic `boomopen` subcommands** (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `ledger`, `conduct`). The repository is distributed as a **source-only GitHub repository** (`https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro`, `.releaserc.json` sets `"npmPublish": false`), verified by **`30` automated `node:test` suites**, cross-OS GitHub Actions CI/Release pipelines (`.github/workflows/ci.yml` & `.github/workflows/release.yml`), `7` Python workspace helper scripts (`scripts/`), and a React 19 + TypeScript + Vite + Tailwind CSS v4 marketing web application (`web/`).
+Built on **Node.js `>=18.0.0`** using only Node.js built-in modules (`cli/install.js` + `43` modular `cli/*.js` files), the core CLI has **zero runtime npm dependencies** and exposes **14 deterministic `boomopen` subcommands** (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`). The repository is distributed as a **source-only GitHub repository** (`https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro`, `.releaserc.json` sets `"npmPublish": false`), verified by **`34` automated `node:test` suites**, cross-OS GitHub Actions CI/Release pipelines (`.github/workflows/ci.yml` & `.github/workflows/release.yml`), `7` Python workspace helper scripts (`scripts/`), and a React 19 + TypeScript + Vite + Tailwind CSS v4 marketing web application (`web/`).
 
 ---
 
@@ -34,8 +34,8 @@ Built on **Node.js `>=18.0.0`** using only Node.js built-in modules (`cli/instal
 |---|------|-------------|
 | 1 | [01-project-identity.md](./01-project-identity.md) | Project name, `v5.5.0` identity, repository, problem/solution statement, key benefits, and First 60 Minutes onboarding checklist |
 | 2 | [02-tech-stack.md](./02-tech-stack.md) | Categorized technology stack — Node.js `>=18.0.0` zero-dependency CLI, Python helpers, React 19 + Vite web app, `node:test`, and GitHub Actions CI/Release |
-| 3 | [03-features.md](./03-features.md) | Complete `v5.5.0` feature inventory: 5 platforms, 4-Tier Elastic Swarm, 21 agents, 18 Golden Diamond teams, 32 base commands (`84` files), `1,462` skills, and 12 CLI subcommands |
-| 4 | [04-getting-started.md](./04-getting-started.md) | Prerequisites, source-only installation, 5-platform install paths, `boomopen` CLI & npm scripts, running the `30` `node:test` suites, contributor workflow, and troubleshooting |
+| 3 | [03-features.md](./03-features.md) | Complete `v5.5.0` feature inventory: 5 platforms, 4-Tier Elastic Swarm, 22 agents, 18 Golden Diamond teams, 33 base commands (`89` files), `1,462` skills, 5 presets, and 14 CLI subcommands |
+| 4 | [04-getting-started.md](./04-getting-started.md) | Prerequisites, source-only installation, 5-platform install paths, `boomopen` CLI & npm scripts, `/goal` + `/autopilot` + `/audit` overnight playbook, running the `34` `node:test` suites, and troubleshooting |
 
 ---
 
@@ -56,16 +56,17 @@ Built on **Node.js `>=18.0.0`** using only Node.js built-in modules (`cli/instal
 | Website | https://boomopen-workflow-kit-ten.vercel.app |
 | Production Dependencies | `0` (zero runtime npm dependencies) |
 | Dev Dependencies | `9` (`semantic-release` + Conventional Commits release plugins only) |
-| CLI Subcommands | `12` (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `ledger`, `conduct`) |
+| CLI Subcommands | `14` (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`) |
+| Settings Presets | `5` (`smart-hybrid`, `carbon-guardrails`, `solo-fast`, `deep-architect`, `adversarial-team`) |
 | Supported Platforms | `5` (Antigravity/Gemini, Claude Code, OpenAI Codex, Cursor, GitHub Copilot) + `6` root entrypoints (`<= 250` lines) |
 | Core Rules | `7` on-demand files in `rules/*.md` (`<= 300` lines each) |
-| Slash Commands | `32` base commands across `84` files (`79` flat `commands/*.md` + `5` `commands/_ref/*.md`, `<= 450` lines each) |
-| Specialist Agents | `21` (`agents/*.md`, `<= 450` lines each) |
+| Slash Commands | `33` base commands across `89` files (`83` flat `commands/*.md` + `6` `commands/_ref/*.md`, `<= 450` lines each) |
+| Specialist Agents | `22` (`agents/*.md`, including `spec-reconciler`, `<= 450` lines each) |
 | Specialist Teams | `18` Elastic Golden Diamond teams (`72` files = `54` role files + `18` `_team.md`, `<= 450` lines each) |
 | Skills Vault | `1,462` indexed in `matrix-skills/compact-index.json` (`22` Core in `skills/` + `1,440` Library in `skills_library/`) |
 | Skill Domains | `19` YAML domain matrices + `_index.yaml` + `_dynamic.yaml` |
 | Natural-Language Routing | `17` supported languages (`en` + `16` `i18n/README.*.md` locales) |
-| Automated Test Suites | `30` `node:test` suites (`29` `cli/*.test.js` + `web/build/kit-stats.test.mjs`) |
+| Automated Test Suites | `34` `node:test` suites (`33` `cli/*.test.js` + `web/build/kit-stats.test.mjs`) |
 | CI/CD Pipelines | GitHub Actions cross-OS CI (`.github/workflows/ci.yml`) & guarded manual release (`.github/workflows/release.yml`) |
 
 ---
@@ -91,7 +92,7 @@ Built on **Node.js `>=18.0.0`** using only Node.js built-in modules (`cli/instal
 
 ## Scope Boundaries and Operational Notes
 
-1. **Deterministic CLI Gates vs. Host Model Reasoning** — `npm test` executes `30` `node:test` suites covering installer safety, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `ledger`, `conduct`, and Markdown contract invariants in sandboxed profiles, while live multi-agent reasoning quality depends on the user's selected host LLM (`Model: "inherit"` Pro High policy).
+1. **Deterministic CLI Gates vs. Host Model Reasoning** — `npm test` executes `34` `node:test` suites covering installer safety, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`, and Markdown contract invariants in sandboxed profiles, while live multi-agent reasoning quality depends on the user's selected host LLM (`Model: "inherit"` Pro High policy).
 2. **Source-Only Distribution by Design** — `.releaserc.json` configures `@semantic-release/npm` with `"npmPublish": false`. Users install directly from `https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro` via `git clone` and `node cli/install.js install <tool>` (or `npm link` -> `boomopen`).
 3. **Platform-Specific Execution Primitives** — All 5 platforms share identical commands, agents, teams, rules, and skills, while adapting sub-agent dispatch to each host's native primitives (`invoke_subagent` + `send_message` on Antigravity, Task subagents + optional `--with-hooks` `PreToolUse` guard on Claude Code, `agents/boomopen/*.toml` multi-agent roles on OpenAI Codex, and native subagents or TIER 2 embodiment fallback on Cursor and GitHub Copilot).
 4. **Outcome Benchmarks Context** — Reported productivity targets (`70%` faster time-to-production, `70%` fewer bugs, `85%` token cost reduction) reflect structural gains from parallel shard execution, 4-gate/5-gate artifact compilers, and `O(1)` on-demand skill loading rather than a synthetic LLM benchmark harness.
@@ -108,8 +109,8 @@ Built on **Node.js `>=18.0.0`** using only Node.js built-in modules (`cli/instal
 | Release history | [../../CHANGELOG.md](../../CHANGELOG.md) |
 | Core orchestration rules | [../../rules/CORE.md](../../rules/CORE.md) |
 | Skill resolution rules | [../../rules/SKILLS.md](../../rules/SKILLS.md) |
-| CLI entrypoint & 12 subcommands | [../../cli/install.js](../../cli/install.js) |
-| Specialist agents (`21`) & teams (`18`) | [../../agents/](../../agents/), [../../agents/teams/](../../agents/teams/) |
-| Flat command workflows (`84` files) | [../../commands/](../../commands/) |
+| CLI entrypoint & 14 subcommands | [../../cli/install.js](../../cli/install.js) |
+| Specialist agents (`22`) & teams (`18`) | [../../agents/](../../agents/), [../../agents/teams/](../../agents/teams/) |
+| Flat command workflows (`89` files) | [../../commands/](../../commands/) |
 | Compiled `O(1)` skill index (`1,462` skills) | [../../matrix-skills/compact-index.json](../../matrix-skills/compact-index.json) |
 | CI & Release workflows | [../../.github/workflows/ci.yml](../../.github/workflows/ci.yml), [../../.github/workflows/release.yml](../../.github/workflows/release.yml) |
