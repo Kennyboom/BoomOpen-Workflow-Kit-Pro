@@ -55,6 +55,13 @@ Whenever a task spans DB migrations, shared API/DTO contracts, or `> 3` UI files
   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --git --run-verify
   ```
 
+### WAVE 2.5 — SPEC-TO-CODE RECONCILIATION & SELF-COMPLETION (`commands/_ref/reconcile-loop.md`)
+- Before launching Wave 3 QA, eliminate unwired island shards (`REC-G1`), frontend/backend `/api/...` route mismatches (`REC-G2`), uncited `[SC-*]` sub-clauses (`REC-G3`), and missing `.env.example` keys (`REC-G4`):
+  ```bash
+  node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js reconcile <dir> --plan "<plan-path>" --strict --json
+  ```
+- Spawn `spec-reconciler` (`agents/spec-reconciler.md`) to run the reverse `30%–70%` middle-slice spec audit. Whenever `gaps[]` exist, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook amend-plan "<plan-path>" --from-reconcile "<reconcile-path>"` and execute `Wave 2.5` delta/wiring shards (`integrator#wiring-1..k` / `{role}#delta-1..k`, up to `3` rounds) until `reconcile --strict` reports **`0` gaps**.
+
 ### WAVE 3 — PARALLEL CROSS-STACK VERIFICATION & ADVERSARIAL REVIEW (`1..3` Critics + Testers)
 - Spawn `tester#1..k` (`agents/tester.md`) AND `reviewer` (`agents/reviewer.md`, plus `security-engineer` when auth/data/API is touched, or Cross-Engine `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "..."` when configured) **concurrently in one wave**.
 - Run full repo strict check and (whenever UI files were modified) portable Python UX & WCAG 2.2 AA scripts:

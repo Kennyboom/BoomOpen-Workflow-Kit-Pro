@@ -54,7 +54,7 @@ node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook state --artifact
      - `doc_slices`: Scoped slice array (`["docs/PRD.md#L142-L168"]`)
      - `verbatim_quote`: Key constraint or formula quoted verbatim from the spec
      - `acceptance_criteria`: Non-empty array of concrete, testable `Given/When/Then` assertions (`["AC1: ..."]`)
-   - **🚫 ANTI-BUNDLING LAW (STRICT)**: Never merge multiple endpoints, tables, screens, or business rules into a single vague item. Decompose every distinct endpoint, state transition, validation rule, and UI state into its own atomic `REQ-xxx`.
+   - **🚫 ANTI-BUNDLING LAW (STRICT)**: Never merge multiple endpoints, tables, screens, or business rules into a single vague item. Decompose every distinct endpoint, state transition, validation rule, and UI state into its own atomic `REQ-xxx` and explicit `- [ ] [SC-xxx]` sub-clauses (`- **Source Doc**: \`docs/PRD.md#L142-L168\``) for Wave 2.5 `reconcile --strict` traceability.
 
 ---
 

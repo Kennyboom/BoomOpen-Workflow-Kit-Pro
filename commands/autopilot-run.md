@@ -1,13 +1,13 @@
 ---
-description: "🏛️ Autopilot Run — Execute Active Project Phase via Scoped Context Slice, Elastic Golden Diamond Swarm, Cross-Engine Conductor, and 4-Layer Anti-Regression Ratchet"
+description: "🏛️ Autopilot Run — Execute Active Project Phase via Scoped Context Slice, Elastic Golden Diamond Swarm, Wave 2.5 Spec Reconciliation, and 5-Layer Anti-Regression Ratchet"
 version: "5.5"
 category: orchestration
 execution-mode: execute
 ---
 
-# /autopilot:run — Incremental Multi-Phase Execution & 4-Layer Quality Ratchet
+# /autopilot:run — Incremental Multi-Phase Execution & 5-Layer Quality Ratchet
 
-> **MISSION**: Execute the active phase (`Phase K`) from `.boomopen/project-ledger.json` with **Zero-Prompt Onboarding (~2,000-token Scoped Context Slice)**, **Direct Ledger/Plan-to-Executor Dispatch (`≤ 3–4` files/shard, 0 middleman re-planning hop)**, **Warm Session Reuse (`send_message`)**, and the **Mandatory 4-Layer Phase Quality Ratchet**.
+> **MISSION**: Execute the active phase (`Phase K`) from `.boomopen/project-ledger.json` with **Zero-Prompt Onboarding (~2,000-token Scoped Context Slice)**, **Direct Ledger/Plan-to-Executor Dispatch (`≤ 3–4` files/shard, 0 middleman re-planning hop)**, **Wave 2.5 Spec-to-Code Reconciliation (`boomopen reconcile`)**, and the **Mandatory 5-Layer Phase Quality Ratchet** (`ledger verify --reconcile` runs LAST as Gate 5).
 
 <phase_or_options>$ARGUMENTS</phase_or_options>
 
@@ -61,9 +61,9 @@ $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\le
 
 ---
 
-## 🛡️ STEP 3: MANDATORY 4-LAYER PHASE QUALITY RATCHET (NON-NEGOTIABLE)
+## 🛡️ STEP 3: MANDATORY 5-LAYER PHASE QUALITY RATCHET (NON-NEGOTIABLE)
 
-`Phase K` is **FORBIDDEN** from being marked complete until all 4 gates pass `100%`:
+`Phase K` is **FORBIDDEN** from being marked complete until all 5 gates pass `100%` **in exact order** (`ledger verify` MUST run **LAST as Gate 5**):
 
 ### Gate 1 — Anti-Stub, Wave Boundary & Pragmatic 2-Tier Gate (`--strict-phase --no-stubs`)
 ```bash
@@ -78,17 +78,23 @@ Run the full automated test suite (`Phase 1` through `Phase K`) and verify **`0`
 $$\text{PassedTests}(\text{Phase } K) \ge \text{baseline\_passed\_tests} + |\text{REQ}(\text{Phase } K)|$$
 - On failure → route to the warm engineer shard via `send_message` (or escalate via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role debugger --engine <engines.debugger> --prompt "<failure-context>"`).
 
-### Gate 3 — Deterministic Ledger Verification (`ledger verify` + `ledger status`)
-Agents must **NEVER** flip `"passes": true` by hand! Run:
+### Gate 3 — Wave 2.5 Spec-to-Code Reconciliation & Self-Completion (`commands/_ref/reconcile-loop.md`)
 ```bash
-node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger verify --phase <Phase_K_ID> --passed-tests <TotalPassedTests>
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js reconcile <project_dir> --ledger ".boomopen/project-ledger.json" --strict --json
+```
+- Spawn `spec-reconciler` (`agents/spec-reconciler.md`, `TypeName: "self"`, `Model: "inherit"`) to verify `REC-G1..G4` (zero island modules, `/api/...` route parity, `[SC-*]` sub-clauses, `.env.example` parity) and reverse-audit `Phase K` `doc_slices` (including the middle `30%–70%` spec lines).
+- If any wiring or spec-clause gap is found → auto-amend (`cook amend-plan` when `PLAN` exists) and dispatch warm delta/wiring shards up to `3` rounds until `reconcile --strict` reports **`0` gaps**.
+
+### Gate 4 — Adversarial Spec & Security Review (`Author ≠ Critic`)
+Spawn/reuse `reviewer` + `tester` (+ `security-engineer` loading `security-auditor` skill when auth/data/API touched) via `invoke_subagent(TypeName: "self", Model: "inherit")` / `send_message` (or `conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`) against `doc_slices` and `.boomopen/contracts/SHARED_CONTRACT.md`. Resolve all `P0`/`P1` findings via warm `send_message` before Gate 5.
+
+### Gate 5 — Deterministic Final Ledger Verification (`ledger verify --reconcile` — RUNS LAST!)
+Agents must **NEVER** flip `"passes": true` by hand, and must **NEVER** run `ledger verify` before Gates 3 & 4 pass! Run:
+```bash
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger verify --phase <Phase_K_ID> --passed-tests <TotalPassedTests> --run-verify --reconcile --strict-locks
 node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger status
 ```
-- Deterministically verifies disk deliverables, runs `--strict-phase`, enforces the monotonic test ratchet, marks `Phase K` `"verified"`, advances `active_cursor` to `Phase K+1`, and refreshes `.boomopen/ROADMAP-PROGRESS.md`.
-
-### Gate 4 — Adversarial Spec Audit (`Author ≠ Critic`) & Cohesive Brain Progress Artifact
-1. Spawn/reuse `reviewer` + `tester` (+ `security-engineer` loading `security-auditor` skill when auth/data/API touched) via `invoke_subagent(TypeName: "self", Model: "inherit")` / `send_message` (or `conduct dispatch --role reviewer --engine cross_family --prompt "<diff-and-contract>"`) against `doc_slices` and `.boomopen/contracts/SHARED_CONTRACT.md`.
-2. Write/update **1 cohesive Brain status artifact** at `<appDataDir>\brain\<conversation-id>\REPORT-autopilot-{project}.md` (`<= 500` lines, `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: false }`).
+- Deterministically verifies disk deliverables, `--strict-phase`, `read_only_prior_tests` git lock integrity (`--strict-locks`), `REC-G1..G4` reconciliation (`--reconcile`), `--run-verify` commands, and the monotonic test ratchet, then marks `Phase K` `"verified"`, advances `active_cursor` to `Phase K+1`, refreshes `.boomopen/ROADMAP-PROGRESS.md`, and updates `<appDataDir>\brain\<conversation-id>\REPORT-autopilot-{project}.md` (`<= 500` lines, `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: false }`).
 
 ---
 

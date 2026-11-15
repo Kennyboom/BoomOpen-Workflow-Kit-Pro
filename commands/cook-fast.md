@@ -59,11 +59,13 @@ execution-mode: execute
 2. **Enforce Pragmatic 2-Tier Coding Standards**:
    - **Tier 1 (Zero Tolerance)**: Zero explicit `any`, no debug `console.log` in app code, `try/catch` + typed error handling at async/API boundaries, named `SCREAMING_SNAKE_CASE` constants, clean sorted imports.
    - **Tier 2 (Cohesive Structure)**: `~200–350` lines target (`≤ 400` soft / `≤ 500` hard ceiling), focused functions, guard clauses.
-3. **Mandatory Deterministic Verification (Iterative Self-Healing Until Green)**:
-   - If `PLAN-{feature}.md` exists, verify the wave:
+3. **Mandatory Deterministic Verification & Wave 2.5 Reconcile (Iterative Self-Healing Until Green)**:
+   - If `PLAN-{feature}.md` exists, verify the wave and run `REC-G1..G4` reconciliation (`commands/_ref/reconcile-loop.md`):
      ```bash
      node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js reconcile <dir> --plan "<plan-path>" --strict
      ```
+     *(If `cook state` surfaced `specDrift: true` or `reconcile` flags an island module / mismatched `/api/...` route / missing `.env.example` key, wire & self-complete via `cook amend-plan` before finishing.)*
    - Run project build/typecheck, unit/integration tests, and strict code check:
      ```bash
      node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs

@@ -41,11 +41,13 @@ execution-mode: execute
 - **Tier 2 (Cohesive Structure)**: Single responsibility per file (`~200–350` lines target, `≤ 400` soft / `≤ 500` hard ceiling), focused functions (`~20–40` lines logic, `~40–80` UI/handlers), guard clauses (`≤ 3–4` nesting levels). Active settings in `~/.boomopen/settings.json` or `./.boomopen.json` override line defaults.
 - If `PLAN-{feature}.md` exists, mark completed tasks `[ ]` → `[x]` (`ArtifactMetadata: { Summary, UserFacing: true, RequestFeedback: false }`).
 
-### Step 3: Mandatory End-to-End Verification (Self-Heal Until Green)
-1. **Wave Gate** *(when `PLAN-{feature}.md` exists)*:
+### Step 3: Mandatory End-to-End Verification & Wave 2.5 Reconcile (Self-Heal Until Green)
+1. **Wave & Reconciliation Gate** *(when `PLAN-{feature}.md` exists — `commands/_ref/reconcile-loop.md`)*:
    ```bash
    node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 1 --git --run-verify
+   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js reconcile <dir> --plan "<plan-path>" --strict
    ```
+   *(If `cook state` reported `specDrift: true` or `reconcile` catches an island module, mismatched `/api/...` route, uncited `[SC-*]`, or missing `.env.example` key, wire & complete via `cook amend-plan` before finishing.)*
 2. **Build, Tests & Strict Anti-Stub Check**:
    Run project typecheck/build (`tsc --noEmit` or equivalent), unit/integration tests, and:
    ```bash

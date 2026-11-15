@@ -3,7 +3,7 @@
 /**
  * CLI Execution State Detector, Wave Handoff Packet Compiler & Post-Wave Verification Engine (`boomopen cook`).
  * Bridges `PLAN-{feature}.md` (+ optional `DESIGN-{feature}.md`) to parallel `role#shard` execution
- * and enforces deterministic Post-Wave Gates `COOK-G1..G4`.
+ * and enforces deterministic Post-Wave Gates `COOK-G1..G4` + `amend-plan` Wave 2.5 reconciliation.
  */
 
 const { spawnSync } = require('node:child_process');
@@ -14,20 +14,20 @@ const { inspectSourceFile, resolveActiveStandards } = require('./checker.js');
 const { CODE_EXTENSIONS } = require('./checker-rules.js');
 const { EXIT_OK, EXIT_FAIL, EXIT_USAGE, parseSubcommandArgs, splitCommaOption, runVerifyCommands } = require('./cli-args.js');
 const { validateDesign, extractDesignContract } = require('./design.js');
+const { hashFileSha256 } = require('./ledger.js');
 const { readCleanText } = require('./markdown-fences.js');
 const { parsePlanMarkdown, validatePlan } = require('./plan.js');
 
 const VERIFY_TIMEOUT_MS = 60000;
 const GIT_TIMEOUT_MS = 15000;
-const TRANSIENT_DOC_RE = /^(?:PLAN|DESIGN|DESIGN-SPEC|SCOUT|RESEARCH|BRAINSTORM|TEST|REVIEW|MAILBOX|REPORT)(?:[-_.].*)?\.md$/i;
+const TRANSIENT_DOC_RE = /^(?:PLAN|DESIGN|DESIGN-SPEC|SCOUT|RESEARCH|BRAINSTORM|TEST|REVIEW|MAILBOX|REPORT|RECONCILE)(?:[-_.].*)?\.md$/i;
 
 function normPath(p) {
   return String(p || '').trim().replace(/^['"`]+|['"`]+$/g, '').replace(/\\/g, '/').replace(/^\.\//, '').replace(/\/+$/, '');
 }
 
 function pathsMatchOrInside(candidate, target) {
-  const c = normPath(candidate).toLowerCase();
-  const t = normPath(target).toLowerCase();
+  const [c, t] = [normPath(candidate).toLowerCase(), normPath(target).toLowerCase()];
   return Boolean(c && t) && (c === t || c.startsWith(`${t}/`));
 }
 
@@ -60,6 +60,21 @@ function collectCandidateDirs(cwd, artifactDir) {
   return dirs;
 }
 
+function detectPlanSpecDrift(planPath, cwd) {
+  if (!planPath || !fs.existsSync(planPath)) return false;
+  const text = readCleanText(planPath);
+  for (const lineMatch of text.matchAll(/Spec-SHA256\**\s*:\s*(.+)$/gim)) {
+    for (const m of lineMatch[1].matchAll(/`?([^,\s`=]+?)\s*=\s*(?:sha256:)?([A-Za-z0-9_-]{4,128})`?/g)) {
+      const [rel, expected] = [normPath(m[1]), m[2].toLowerCase()];
+      const candAbs = [path.resolve(cwd, rel), path.resolve(path.dirname(planPath), rel)].find((p) => fs.existsSync(p) && fs.statSync(p).isFile());
+      if (!candAbs) return true;
+      const actual = hashFileSha256(candAbs).toLowerCase();
+      if (expected.length === 64 ? actual !== expected : !actual.startsWith(expected)) return true;
+    }
+  }
+  return false;
+}
+
 function detectCookState(options = {}) {
   const cwd = path.resolve(options.cwd || process.cwd());
   const dirs = collectCandidateDirs(cwd, options.artifactDir);
@@ -78,20 +93,19 @@ function detectCookState(options = {}) {
       if (m) { feature = m[1]; break; }
     }
   }
-  if (plan) return { feature, artifacts, recommendedStage: 'STAGE_4_EXECUTE', reason: 'Approved PLAN artifact detected; fast-forward directly to Wave Packet execution.', nextCommand: `boomopen cook packets "${plan}"` };
-  if (design) return { feature, artifacts, recommendedStage: 'STAGE_3_PLAN', reason: 'Approved DESIGN artifact detected; extract DESIGN_CONTRACT and generate PLAN.', nextCommand: `boomopen design contract "${design}"` };
+  if (plan) {
+    const specDrift = detectPlanSpecDrift(plan, cwd);
+    return { feature, artifacts, specDrift, recommendedStage: 'STAGE_4_EXECUTE', reason: specDrift ? 'Approved PLAN detected, but Spec-SHA256 drift was found on disk.' : 'Approved PLAN artifact detected; fast-forward directly to Wave Packet execution.', nextCommand: `boomopen cook packets "${plan}"` };
+  }
+  if (design) return { feature, artifacts, specDrift: false, recommendedStage: 'STAGE_3_PLAN', reason: 'Approved DESIGN artifact detected; extract DESIGN_CONTRACT and generate PLAN.', nextCommand: `boomopen design contract "${design}"` };
   if (scout || research || brainstorm) {
     const briefSource = research || brainstorm;
-    return { feature, artifacts, recommendedStage: 'STAGE_2_DESIGN_OR_PLAN', reason: 'Prior SCOUT/RESEARCH/BRAINSTORM discovery artifacts detected; proceed to Design or Planning.', nextCommand: briefSource ? `boomopen research brief "${briefSource}"` : 'boomopen plan validate <plan.md>' };
+    return { feature, artifacts, specDrift: false, recommendedStage: 'STAGE_2_DESIGN_OR_PLAN', reason: 'Prior SCOUT/RESEARCH/BRAINSTORM discovery artifacts detected; proceed to Design or Planning.', nextCommand: briefSource ? `boomopen research brief "${briefSource}"` : 'boomopen plan validate <plan.md>' };
   }
-  return { feature, artifacts, recommendedStage: 'STAGE_1_DISCOVER', reason: 'No prior workflow artifacts found; start Stage 1 parallel Research & Scouting.', nextCommand: 'boomopen cook state --json' };
+  return { feature, artifacts, specDrift: false, recommendedStage: 'STAGE_1_DISCOVER', reason: 'No prior workflow artifacts found; start Stage 1 parallel Research & Scouting.', nextCommand: 'boomopen cook state --json' };
 }
 
-function usageMissingError(msg) {
-  const err = new Error(msg);
-  err.code = 'ENOENT_USAGE';
-  return err;
-}
+const usageMissingError = (msg) => Object.assign(new Error(msg), { code: 'ENOENT_USAGE' });
 
 function loadPlanInput(planOrPath, cwd) {
   if (planOrPath && typeof planOrPath === 'object' && Array.isArray(planOrPath.tasks)) return planOrPath;
@@ -115,30 +129,29 @@ function resolveDesignMarkdown(options, cwd) {
 
 function sortPhasesTopologically(phases) {
   const list = Array.isArray(phases) ? [...phases] : [];
-  const byId = new Map(list.map((p) => [p.phase_id, p]));
-  const state = new Map();
-  const ordered = [];
+  const [byId, state, ordered] = [new Map(list.map((p) => [p.phase_id, p])), new Map(), []];
   const visit = (id) => {
     if (state.has(id) || !byId.has(id)) return;
     state.set(id, 1);
-    const p = byId.get(id);
-    for (const dep of p.dependsOn || p.depends_on || []) visit(dep);
-    state.set(id, 2);
-    ordered.push(p);
+    for (const dep of byId.get(id).dependsOn || byId.get(id).depends_on || []) visit(dep);
+    state.set(id, 2); ordered.push(byId.get(id));
   };
   for (const p of list) visit(p.phase_id);
   return ordered;
 }
 
 function renderShardPrompt(s) {
+  const srcLine = s.sourceDoc ? `\n- **Source Doc**: \`${s.sourceDoc}\`` : '';
   const acLine = s.acceptance.length ? `\n- **Acceptance Criteria**: ${s.acceptance.join(', ')}` : '';
+  const acFull = s.acceptanceDetails?.length ? `\n- **AC Specifications**:\n${s.acceptanceDetails.map((d) => `  - ${d}`).join('\n')}` : '';
+  const scFull = s.subClauses?.length ? `\n- **Sub-Clauses**:\n${s.subClauses.map((c) => `  - [${c.checked ? 'x' : ' '}] ${c.text || `[${c.id}]`}`).join('\n')}` : '';
   const owned = s.ownedFiles.length ? s.ownedFiles.map((f) => `- \`${f}\``).join('\n') : '- NONE (Read-Only)';
   const ro = s.readOnlyFiles.length ? s.readOnlyFiles.map((f) => `- \`${f}\``).join('\n') : '- All files outside OWNED_FILES';
   const tests = s.testFiles.length ? `\n- **Test Files**: ${s.testFiles.map((f) => `\`${f}\``).join(', ')}` : '';
   return [
     `# 📦 5-FIELD HANDOFF PACKET — Wave ${s.wave} | ${s.id} (${s.role})`, '',
     '## 1. MISSION & ACCEPTANCE CRITERIA',
-    `- **Task**: ${s.id} — ${s.title}\n- **Assigned Shard**: \`${s.role}\` (Wave ${s.wave})${acLine}`, '',
+    `- **Task**: ${s.id} — ${s.title}\n- **Assigned Shard**: \`${s.role}\` (Wave ${s.wave})${srcLine}${acLine}${acFull}${scFull}`, '',
     '## 2. SHARED_CONTRACT', s.sharedContract || 'No explicit SHARED_CONTRACT block declared.', '',
     '## 3. OWNED_FILES (Exclusive Write Lock)', owned, '',
     '## 4. READ_ONLY_FILES (Strictly Do Not Modify)', ro, '',
@@ -151,7 +164,8 @@ function matchesWaveFilter(waveObj, filterVal) {
   if (filterVal === undefined || filterVal === null || filterVal === '') return true;
   const raw = String(filterVal).trim().toUpperCase();
   if (/^\d+$/.test(raw)) return waveObj.wave === Number.parseInt(raw, 10);
-  return waveObj.phaseId.toUpperCase() === raw || `WAVE-${waveObj.wave}` === raw || `PHASE-${waveObj.wave}` === raw;
+  const pid = waveObj.phaseId.toUpperCase();
+  return pid === raw || pid === `WAVE-${raw}` || pid === `PHASE-${raw}` || `WAVE-${waveObj.wave}` === raw || `PHASE-${waveObj.wave}` === raw;
 }
 
 function compileWavePackets(planOrPath, options = {}) {
@@ -165,9 +179,7 @@ function compileWavePackets(planOrPath, options = {}) {
   const designMd = resolveDesignMarkdown(options, cwd);
   const designBlock = designMd ? extractDesignContract(designMd).markdownBlock : '';
   let sharedContract = plan.sharedContract || '';
-  if (designBlock && !sharedContract.includes('DESIGN_CONTRACT')) {
-    sharedContract = sharedContract ? `${sharedContract}\n\n${designBlock}` : designBlock;
-  }
+  if (designBlock && !sharedContract.includes('DESIGN_CONTRACT')) sharedContract = sharedContract ? `${sharedContract}\n\n${designBlock}` : designBlock;
 
   const priorOwned = new Set();
   const allWaves = sortPhasesTopologically(plan.phases || []).map((phase, idx) => {
@@ -176,18 +188,18 @@ function compileWavePackets(planOrPath, options = {}) {
     const ownedPerTask = tasks.map((t) => t.ownedFiles.map(normPath).filter(Boolean));
     const testsPerTask = tasks.map((t) => (t.testFiles || []).map(normPath).filter(Boolean));
     const shards = tasks.map((t, sIdx) => {
-      const ownedFiles = ownedPerTask[sIdx];
-      const testFiles = testsPerTask[sIdx];
+      const [ownedFiles, testFiles] = [ownedPerTask[sIdx], testsPerTask[sIdx]];
       const ownSet = new Set([...ownedFiles, ...testFiles]);
       const siblingOwned = ownedPerTask.flatMap((list, j) => (j === sIdx ? [] : list));
       const siblingFiles = [...new Set([...siblingOwned, ...testsPerTask.flatMap((list, j) => (j === sIdx ? [] : list))])];
       const declaredRo = (t.readOnlyFiles || []).map(normPath).filter(Boolean);
       const strictReadOnlyFiles = [...new Set([...declaredRo, ...priorOwned])].filter((f) => !ownSet.has(f));
       const readOnlyFiles = [...new Set([...declaredRo, ...siblingOwned, ...priorOwned])].filter((f) => !ownSet.has(f));
+      const acceptanceDetails = (t.acceptance || []).map((id) => plan.acceptanceDetails?.[id]).filter(Boolean);
       const shard = {
-        id: t.reqId, title: t.title, role: t.agent || 'unassigned', wave, acceptance: t.acceptance || [],
-        ownedFiles, testFiles, readOnlyFiles, strictReadOnlyFiles, siblingFiles,
-        verifyCmd: t.verifyCmd || '', sharedContract, prompt: '',
+        id: t.reqId, title: t.title, role: t.agent || 'unassigned', wave, sourceDoc: t.sourceDoc || '',
+        acceptance: t.acceptance || [], acceptanceDetails, subClauses: t.subClauses || [],
+        ownedFiles, testFiles, readOnlyFiles, strictReadOnlyFiles, siblingFiles, verifyCmd: t.verifyCmd || '', sharedContract, prompt: '',
       };
       shard.prompt = renderShardPrompt(shard);
       return shard;
@@ -203,34 +215,24 @@ function compileWavePackets(planOrPath, options = {}) {
 }
 
 function listGitChangedFiles(cwd) {
-  const res = spawnSync('git', ['-C', cwd, 'status', '--porcelain', '-z', '-uall'], {
-    encoding: 'utf8', timeout: GIT_TIMEOUT_MS, windowsHide: true,
-  });
+  const res = spawnSync('git', ['-C', cwd, 'status', '--porcelain', '-z', '-uall'], { encoding: 'utf8', timeout: GIT_TIMEOUT_MS, windowsHide: true });
   if (res.error || res.status !== 0) {
-    const detail = (res.stderr || (res.error && res.error.message) || 'not a git repository').trim();
-    return { ok: false, files: [], error: detail };
+    return { ok: false, files: [], error: (res.stderr || (res.error && res.error.message) || 'not a git repository').trim() };
   }
-  const parts = res.stdout.split('\0');
-  const files = [];
+  const [parts, files] = [res.stdout.split('\0'), []];
   for (let i = 0; i < parts.length; i++) {
     const entry = parts[i];
     if (!entry || entry.length < 4) continue;
-    const xy = entry.slice(0, 2);
-    const p1 = normPath(entry.slice(3));
+    const [xy, p1] = [entry.slice(0, 2), normPath(entry.slice(3))];
     if (p1) files.push(p1);
-    if (xy[0] === 'R' || xy[0] === 'C' || xy[1] === 'R' || xy[1] === 'C') {
-      const p2 = normPath(parts[++i] || '');
-      if (p2) files.push(p2);
-    }
+    if (xy[0] === 'R' || xy[0] === 'C' || xy[1] === 'R' || xy[1] === 'C') { const p2 = normPath(parts[++i] || ''); if (p2) files.push(p2); }
   }
   return { ok: true, files: [...new Set(files)], error: null };
 }
 
 function resolveChangedFilesForWave(cwd, options, g1) {
   if (Array.isArray(options.changedFiles)) return { list: options.changedFiles, fromGit: false };
-  if (typeof options.changedFiles === 'string' && options.changedFiles.trim()) {
-    return { list: splitCommaOption(options.changedFiles), fromGit: false };
-  }
+  if (typeof options.changedFiles === 'string' && options.changedFiles.trim()) return { list: splitCommaOption(options.changedFiles), fromGit: false };
   const autoGit = options.git !== false && options.noGit !== true && fs.existsSync(path.join(cwd, '.git'));
   if (!options.git && !autoGit) return { list: null, fromGit: false };
   const gitRes = listGitChangedFiles(cwd);
@@ -246,8 +248,7 @@ function verifyWaveExecution(planOrPath, options = {}) {
   const compiled = compileWavePackets(planOrPath, { ...options, cwd });
   const [g1, g2, g3, g4, warnings] = [[...compiled.errors], [], [], [], []];
   const shardKey = options.shard ? String(options.shard).trim().toLowerCase() : '';
-  const selected = compiled.waves.flatMap((w) => w.shards)
-    .filter((s) => !shardKey || s.id.toLowerCase() === shardKey || s.role.toLowerCase() === shardKey);
+  const selected = compiled.waves.flatMap((w) => w.shards).filter((s) => !shardKey || s.id.toLowerCase() === shardKey || s.role.toLowerCase() === shardKey);
   if (selected.length === 0 && g1.length === 0) g1.push(`[COOK-G1] No shards matched wave="${options.wave ?? 'all'}" shard="${options.shard ?? 'all'}".`);
 
   const allowedFiles = [...new Set(selected.flatMap((s) => [...s.ownedFiles, ...s.testFiles]))];
@@ -255,23 +256,18 @@ function verifyWaveExecution(planOrPath, options = {}) {
   const roSource = shardKey && fromGit ? selected.flatMap((s) => s.strictReadOnlyFiles || s.readOnlyFiles) : selected.flatMap((s) => s.readOnlyFiles);
   const readOnlyPool = [...new Set(roSource)].filter((ro) => !allowedFiles.some((own) => normPath(ro).toLowerCase() === normPath(own).toLowerCase()));
   const siblingPool = shardKey && fromGit ? [...new Set(selected.flatMap((s) => s.siblingFiles || []))] : [];
-  const isCarvedOutByOwned = (ch, ro) => allowedFiles.some(
-    (own) => pathsMatchOrInside(ch, own) && normPath(own).toLowerCase().startsWith(`${normPath(ro).toLowerCase()}/`)
-  );
+  const isCarvedOutByOwned = (ch, ro) => allowedFiles.some((own) => pathsMatchOrInside(ch, own) && normPath(own).toLowerCase().startsWith(`${normPath(ro).toLowerCase()}/`));
 
   if (rawChanged) {
     for (const ch of rawChanged.map(normPath).filter(Boolean)) {
       if (ch.startsWith('.boomopen/')) continue;
       if (readOnlyPool.some((ro) => pathsMatchOrInside(ch, ro) && !isCarvedOutByOwned(ch, ro))) g1.push(`[COOK-G1] Read-only file mutated during wave: "${ch}".`);
       else if (siblingPool.some((sib) => pathsMatchOrInside(ch, sib))) continue;
-      else if (!TRANSIENT_DOC_RE.test(path.basename(ch)) && !allowedFiles.some((own) => pathsMatchOrInside(ch, own))) {
-        g1.push(`[COOK-G1] Unauthorized file modified outside wave OWNED_FILES: "${ch}".`);
-      }
+      else if (!TRANSIENT_DOC_RE.test(path.basename(ch)) && !allowedFiles.some((own) => pathsMatchOrInside(ch, own))) g1.push(`[COOK-G1] Unauthorized file modified outside wave OWNED_FILES: "${ch}".`);
     }
   }
 
-  const activeStd = resolveActiveStandards(cwd, { cwd, homeDir: options.homeDir });
-  const checkedFiles = [];
+  const [activeStd, checkedFiles] = [resolveActiveStandards(cwd, { cwd, homeDir: options.homeDir }), []];
   for (const rel of allowedFiles) {
     const abs = path.resolve(cwd, rel);
     try {
@@ -291,17 +287,11 @@ function verifyWaveExecution(planOrPath, options = {}) {
   if (options.runVerify) {
     const cmds = [...new Set(selected.map((s) => s.verifyCmd).filter(Boolean))];
     if (cmds.length === 0 && selected.length > 0) g4.push('[COOK-G4] No concrete verification command defined on target shard(s).');
-    for (const failMsg of runVerifyCommands(cmds, cwd, options.timeoutMs || VERIFY_TIMEOUT_MS)) {
-      g4.push(`[COOK-G4] ${failMsg}`);
-    }
+    for (const failMsg of runVerifyCommands(cmds, cwd, options.timeoutMs || VERIFY_TIMEOUT_MS)) g4.push(`[COOK-G4] ${failMsg}`);
   }
 
   const errors = [...g1, ...g2, ...g3, ...g4];
-  return {
-    valid: errors.length === 0, errors, warnings,
-    gates: { G1: g1.length === 0, G2: g2.length === 0, G3: g3.length === 0, G4: g4.length === 0 },
-    checkedFiles,
-  };
+  return { valid: errors.length === 0, errors, warnings, gates: { G1: g1.length === 0, G2: g2.length === 0, G3: g3.length === 0, G4: g4.length === 0 }, checkedFiles };
 }
 
 function runCookPreflight(planOrPath, options = {}) {
@@ -315,24 +305,22 @@ function runCookPreflight(planOrPath, options = {}) {
   return { valid: errors.length === 0, errors, warnings: designVal ? designVal.warnings : [], packets };
 }
 
-const COOK_HELP = `Usage: boomopen cook <state|packets|verify-wave|preflight|help> [options]
+const COOK_HELP = `Usage: boomopen cook <state|packets|verify-wave|preflight|amend-plan|help> [options]
   state [dir] [--artifact-dir <dir>] [--feature <slug>] [--json]
   packets <plan.md> [--plan <plan.md>] [--design <design.md>] [--wave <n>] [--out <file>] [--json]
   verify-wave <plan.md> [--wave <n>] [--shard <id>] [--changed <a,b>] [--git|--no-git] [--run-verify] [--json]
-  preflight <plan.md> [--plan <plan.md>] [--design <design.md>] [--json]`;
+  preflight <plan.md> [--plan <plan.md>] [--design <design.md>] [--json]
+  amend-plan <plan.md> --from-reconcile <path> [--wave <n>] [--json]`;
 
 const COOK_ARG_SPEC = {
-  defaults: { artifactDir: null, feature: null, plan: null, design: null, wave: null, shard: null, changed: null, out: null, git: false, noGit: false, runVerify: false, force: false, json: false, help: false },
+  defaults: { artifactDir: null, feature: null, plan: null, design: null, wave: null, shard: null, changed: null, out: null, fromReconcile: null, git: false, noGit: false, runVerify: false, force: false, json: false, help: false },
   booleanFlags: { '-h': 'help', '--help': 'help', '--json': 'json', '--git': 'git', '--no-git': 'noGit', '--run-verify': 'runVerify', '--force': 'force' },
-  valueFlags: { '--artifact-dir': 'artifactDir', '--feature': 'feature', '--plan': 'plan', '--design': 'design', '--wave': 'wave', '--shard': 'shard', '--changed': 'changed', '--out': 'out', '--output': 'out' },
+  valueFlags: { '--artifact-dir': 'artifactDir', '--feature': 'feature', '--plan': 'plan', '--design': 'design', '--wave': 'wave', '--shard': 'shard', '--changed': 'changed', '--out': 'out', '--output': 'out', '--from-reconcile': 'fromReconcile' },
 };
 
 function runCookCli(args = [], env = {}) {
   const { flags, positional, error } = parseSubcommandArgs(args, COOK_ARG_SPEC);
-  if (error) {
-    if (!env.silent) console.error(`❌ boomopen cook: ${error}\n\n${COOK_HELP}`);
-    return EXIT_USAGE;
-  }
+  if (error) { if (!env.silent) console.error(`❌ boomopen cook: ${error}\n\n${COOK_HELP}`); return EXIT_USAGE; }
   const sub = (positional[0] || 'help').toLowerCase();
   if (flags.help || sub === 'help') { if (!env.silent) console.log(COOK_HELP); return EXIT_OK; }
   const cwd = path.resolve(env.cwd || process.cwd());
@@ -344,12 +332,23 @@ function runCookCli(args = [], env = {}) {
       if (!env.silent) console.log(flags.json ? JSON.stringify(st, null, 2) : `🧭 Stage: ${st.recommendedStage} — ${st.reason}\n   Next: ${st.nextCommand}`);
       return EXIT_OK;
     }
-    if (sub !== 'packets' && sub !== 'verify-wave' && sub !== 'preflight') {
+    if (!['packets', 'verify-wave', 'preflight', 'amend-plan'].includes(sub)) {
       if (!env.silent) console.error(`❌ Unknown cook subcommand "${sub}"\n\n${COOK_HELP}`);
       return EXIT_USAGE;
     }
     const planFile = flags.plan || positional[1];
     if (!planFile) { if (!env.silent) console.error(`❌ boomopen cook ${sub} requires a <plan.md> path.\n\n${COOK_HELP}`); return EXIT_USAGE; }
+    if (sub === 'amend-plan') {
+      if (!flags.fromReconcile) { if (!env.silent) console.error(`❌ boomopen cook amend-plan requires --from-reconcile <path>.\n\n${COOK_HELP}`); return EXIT_USAGE; }
+      const { amendPlanWithDeltaWave } = require('./reconcile.js');
+      const res = amendPlanWithDeltaWave(planFile, flags.fromReconcile, { cwd, wave: flags.wave });
+      if (!env.silent) {
+        if (flags.json) console.log(JSON.stringify(res, null, 2));
+        else if (res.valid) console.log(res.amended ? `✅ Amended ${planFile} with ${res.phaseId} (${res.addedTasks} delta shard(s))` : `✅ No reconcile gaps to amend in ${planFile}`);
+        else for (const err of res.errors) console.error(`❌ ${err}`);
+      }
+      return res.valid ? EXIT_OK : EXIT_FAIL;
+    }
     if (sub === 'packets') {
       const res = compileWavePackets(planFile, { cwd, designPath: flags.design, wave: flags.wave, force: flags.force });
       const md = res.waves.map((w) => `# 🌊 WAVE ${w.wave}: ${w.title}\n\n${w.shards.map((s) => `${s.prompt}\n\n---`).join('\n')}`).join('\n\n');
