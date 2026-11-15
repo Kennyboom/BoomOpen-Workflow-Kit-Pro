@@ -150,11 +150,20 @@ test('evaluateCommand allows ordinary commands, including safe deletes', async (
 test('extractCommand understands Claude, Gemini, Antigravity, OpenAI and argv payloads', async () => {
   const { extractCommand } = await loadHook();
   assert.equal(extractCommand({ tool_name: 'Bash', tool_input: { command: 'rm -rf /' } }), 'rm -rf /');
+  assert.equal(
+    extractCommand({ hookEventName: 'PreToolUse', toolCall: { id: 'toolu_01', name: 'run_command', args: { CommandLine: 'npm test' } } }),
+    'npm test'
+  );
+  assert.equal(
+    extractCommand({ toolCall: { id: 'toolu_02', name: 'run_command', arguments: JSON.stringify({ CommandLine: 'rm -rf /' }) } }),
+    'rm -rf /'
+  );
   assert.equal(extractCommand({ tool_args: { CommandLine: 'ls' } }), 'ls');
   assert.equal(extractCommand({ arguments: JSON.stringify({ command: 'pwd' }) }), 'pwd');
   assert.equal(extractCommand({ tool_input: { command: ['rm', '-rf', '/'] } }), 'rm -rf /');
   assert.equal(extractCommand({ command: 'whoami' }), 'whoami');
   assert.equal(extractCommand({ tool_input: { file_path: 'a.txt' } }), '');
+  assert.equal(extractCommand({ hookEventName: 'PreToolUse', toolCall: { id: 'toolu_03', name: 'read_file', args: { Path: 'a.txt' } } }), '');
 });
 
 function runHook(stdin, scriptPath = HOOK_PATH) {
@@ -173,6 +182,29 @@ test('hook process blocks with exit code 2 and a deny decision, allows silently 
 
   const notJson = runHook('rm -rf /');
   assert.equal(notJson.status, EXIT_BLOCK, 'raw non-JSON input is evaluated as a command');
+});
+
+test('Antigravity 2.0 PreToolUse protocol outputs JSON decision allow/deny on stdout with exit 0', () => {
+  const agyAllowed = runHook(
+    JSON.stringify({ hookEventName: 'PreToolUse', toolCall: { id: 't1', name: 'run_command', args: { CommandLine: 'npm test' } } })
+  );
+  assert.equal(agyAllowed.status, 0, agyAllowed.stderr);
+  assert.deepEqual(JSON.parse(agyAllowed.stdout), { decision: 'allow' });
+
+  const agyNonShell = runHook(
+    JSON.stringify({ hookEventName: 'PreToolUse', toolCall: { id: 't2', name: 'read_file', args: { Path: 'README.md' } } })
+  );
+  assert.equal(agyNonShell.status, 0, agyNonShell.stderr);
+  assert.deepEqual(JSON.parse(agyNonShell.stdout), { decision: 'allow' });
+
+  const agyBlocked = runHook(
+    JSON.stringify({ hookEventName: 'PreToolUse', toolCall: { id: 't3', name: 'run_command', args: { CommandLine: 'Remove-Item C:\\ -Recurse -Force' } } })
+  );
+  assert.equal(agyBlocked.status, 0, 'Antigravity hooks.json expects clean exit 0 with JSON deny decision on stdout');
+  assert.match(agyBlocked.stderr, /BLOCKED/);
+  const parsedDeny = JSON.parse(agyBlocked.stdout);
+  assert.equal(parsedDeny.decision, 'deny');
+  assert.match(parsedDeny.reason, /BLOCKED by BoomOpen Workflow Kit/);
 });
 
 test('hook fails closed on an oversized payload', () => {

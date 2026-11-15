@@ -21,7 +21,7 @@ const {
   CODEX_MARKER_END,
   isKitOwnedText,
 } = require('./markers.js');
-const { HOOK_SCRIPT_NAME, isClaudeHookRegistered } = require('./hook-registration.js');
+const { HOOK_SCRIPT_NAME, isClaudeHookRegistered, isAntigravityHookRegistered } = require('./hook-registration.js');
 const { loadManifest } = require('./manifest.js');
 const { getVSCodePromptsFolder } = require('./platform-paths.js');
 const { FRAMEWORK_FILE_LIST } = require('./tool-config.js');
@@ -312,16 +312,18 @@ function checkInstallState(key, layout, homeDir) {
     notes.push('no install manifest (installed by an older release; reinstall so uninstall and legacy skill cleanup are exact)');
   }
   let hookNote = '';
-  if (key === 'claude') {
+  if (key === 'claude' || key === 'antigravity') {
     let registered = false;
     try {
-      registered = isClaudeHookRegistered(path.join(homeDir, '.claude', 'settings.json'));
+      registered = key === 'claude'
+        ? isClaudeHookRegistered(path.join(homeDir, '.claude', 'settings.json'))
+        : isAntigravityHookRegistered(path.join(homeDir, '.gemini', 'config', 'hooks.json'));
     } catch {
       registered = false;
     }
     hookNote = registered
       ? '; guard hook registered'
-      : '; guard hook not registered (opt-in: boomopen install claude --with-hooks)';
+      : `; guard hook not registered (opt-in: boomopen install ${key} --with-hooks)`;
   }
   return {
     name: `${layout.name}: install state`,

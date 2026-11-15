@@ -49,7 +49,8 @@ function parseMaybeJson(value) {
 
 export function extractCommand(payload) {
   if (!payload || typeof payload !== 'object') return '';
-  const sources = [payload.tool_input, payload.toolInput, payload.tool_args, payload.toolArgs, parseMaybeJson(payload.arguments), payload.params, payload];
+  const tc = payload.toolCall && typeof payload.toolCall === 'object' ? payload.toolCall : null;
+  const sources = [tc?.args, parseMaybeJson(tc?.arguments), payload.tool_input, payload.toolInput, payload.tool_args, payload.toolArgs, parseMaybeJson(payload.arguments), payload.params, payload];
   for (const source of sources) {
     if (!source || typeof source !== 'object') continue;
     for (const key of ['CommandLine', 'commandLine', 'command', 'cmd', 'script', 'argv', 'args']) {
@@ -216,17 +217,13 @@ function resolveSegments(rest) {
 }
 
 function normalizeTarget(target) {
-  let t = target.trim().toLowerCase().replace(/\\/g, '/').replace(/\/{2,}/g, '/').replace(/(?:\/(?:\*|\.))+$/, '');
-  t = t
+  let t = target.trim().toLowerCase().replace(/\\/g, '/').replace(/\/{2,}/g, '/').replace(/(?:\/(?:\*|\.))+$/, '')
     .replace(/^(?:\$env:(?:systemdrive|homedrive)|%(?:systemdrive|homedrive)%)(?=\/|$)/, 'c:')
     .replace(/^(?:\$env:(?:systemroot|windir)|%(?:systemroot|windir)%)(?=\/|$)/, 'c:/windows')
     .replace(/^(?:\$env:programfiles|%(?:programfiles|programfiles\(x86\))%)(?=\/|$)/, 'c:/program files')
     .replace(/^(?:\$env:programdata|%programdata%)(?=\/|$)/, 'c:/programdata');
   const home = HOME_HEAD.exec(t);
-  if (home) {
-    const { stack, depth } = resolveSegments(home[2] || '');
-    return depth <= 0 ? home[1] : [home[1], ...stack].join('/');
-  }
+  if (home) { const { stack, depth } = resolveSegments(home[2] || ''); return depth <= 0 ? home[1] : [home[1], ...stack].join('/'); }
   if (t.startsWith('$') || t.startsWith('%')) return t;
   const drive = /^([a-z]):(\/.*)?$/.exec(t);
   if (drive) return `${drive[1]}:/${resolveSegments(drive[2] || '').stack.join('/')}`;
@@ -365,9 +362,17 @@ function readStdin() {
   });
 }
 
-function block(reason) {
+const isAntigravityPayload = (p) => Boolean(p && typeof p === 'object' && (p.toolCall || p.hookEventName === 'PreToolUse'));
+
+function allow(antigravity) {
+  if (antigravity) process.stdout.write('{"decision":"allow"}\n');
+  return EXIT_ALLOW;
+}
+
+function block(reason, antigravity = false) {
   const message = `BLOCKED by BoomOpen Workflow Kit: ${reason}.`;
   process.stderr.write(`${message}\n`);
+  if (antigravity) { process.stdout.write(`${JSON.stringify({ decision: 'deny', reason: message })}\n`); return EXIT_ALLOW; }
   const hookSpecificOutput = { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: message };
   process.stdout.write(`${JSON.stringify({ decision: 'deny', reason: message, permission: 'deny', hookSpecificOutput })}\n`);
   return EXIT_BLOCK;
@@ -376,11 +381,13 @@ function block(reason) {
 export async function main() {
   let raw;
   try { raw = await readStdin(); } catch (error) { return block(error instanceof Error ? error.message : String(error)); }
-  let command;
-  try { command = extractCommand(JSON.parse(raw || '{}')); } catch { command = raw.trim(); }
-  if (!command) return EXIT_ALLOW;
+  let parsed = null;
+  try { parsed = JSON.parse(raw || '{}'); } catch { parsed = null; }
+  const antigravity = isAntigravityPayload(parsed);
+  const command = parsed !== null ? extractCommand(parsed) : raw.trim();
+  if (!command) return allow(antigravity);
   const result = evaluateCommand(command);
-  return result.allowed ? EXIT_ALLOW : block(result.reason);
+  return result.allowed ? allow(antigravity) : block(result.reason, antigravity);
 }
 
 function isEntryPoint() {

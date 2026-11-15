@@ -67,6 +67,7 @@
 - **4-Tier Elastic Swarm Sizing**: Tier 0 (`0` subagents for `≤ 2` known files) | Tier 1 (`2–3` subagents for `3–5` files) | Tier 2 (`4–6` subagents for `6–12` files or `3–5` vectors/domains) | Tier 3 (`7–10+` subagents for `13+` files / full-repo audits, up to `execution.maxParallelSubagents`).
 - **Scoped Role-Shard Keys (`role#shard`)**: When multiple sub-agents of the same role run in parallel (e.g., `backend-engineer#auth`, `backend-engineer#billing`, `scouter#1`, `scouter#2`), assign disjoint `OWNED_FILES` (`≤ 3–4` files/shard) and track `role#shard → conversationId` for Warm Session Reuse (`send_message`).
 - **Elastic Golden Diamond (`:team`)**: Scales from `1-1-1` (`3` agents for `≤ 4` files) to `1 Tech Lead + N Parallel Executors (2–6) + M Parallel Critics (1–3)` when tasks span `≥ 2` domains or `> 4` files.
+- **🛑 Turn-End Silence Guard (Anti-Repetition & Zero-Waiting-Loop Rule)**: Immediately after dispatching parallel subagents via `invoke_subagent` (or asynchronous background tasks), output **ONLY a brief single-paragraph summary (≤ 2–3 sentences)** listing the spawned roles/vectors and **STOP GENERATING TOKENS IMMEDIATELY** (call no more tools, emit end-of-turn). **NEVER** simulate waiting, poll in text, or generate repetitive status phrases (*"Subagents đang chạy...", "Subagents đang xử lý...", "Subagents sẽ phản hồi...", "Subagents đang tổng hợp..."*). Antigravity automatically wakes the session up when subagents reply.
 
 ---
 

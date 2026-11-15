@@ -63,6 +63,7 @@ handoffs:
   - **Cognitive Load Sharding Law**: Each sub-agent owns **at most `3–4` heavy files or `1` deep research/audit vector** (`N_agents = min(maxParallelSubagents, max(ceil(Files / 3.5), Domains, Vectors))`).
   - **4-Tier Elastic Swarm Sizing**: Tier 0 (`0` subagents for `≤ 2` known files) | Tier 1 (`2–3` subagents for `3–5` files) | Tier 2 (`4–6` subagents for `6–12` files or `3–5` vectors/domains) | Tier 3 (`7–10+` subagents for `13+` files / full-repo audits).
   - **Scoped Role-Shard Keys (`role#shard`) & Elastic Golden Diamond (`:team`)**: Assign disjoint `OWNED_FILES` (`≤ 3–4` files/shard) to `backend-engineer#auth`, `scouter#1`, etc. (`role#shard → conversationId` for Warm Reuse), and scale `:team` from `1-1-1` (`≤ 4` files) to `1 Tech Lead + N Parallel Executors (2–6) + M Parallel Critics (1–3)` when tasks span `≥ 2` domains or `> 4` files.
+  - **🛑 Turn-End Silence Guard**: Immediately after dispatching parallel subagents or background tasks, output at most 2–3 concise sentences and stop generating tokens immediately (call 0 tools; never repeat waiting status phrases).
 
 ---
 

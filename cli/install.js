@@ -56,6 +56,9 @@ const {
     registerClaudeHook,
     unregisterClaudeHook,
     isClaudeHookRegistered,
+    registerAntigravityHook,
+    unregisterAntigravityHook,
+    isAntigravityHookRegistered,
     describeManualRegistration,
     HOOK_SCRIPT_NAME,
 } = require('./hook-registration.js');
@@ -223,16 +226,26 @@ function finishLedger(ledger, notes) {
 }
 
 /**
- * The destructive-command guard is copied into every framework folder but is opt-in:
- * `install claude --with-hooks` registers it as a Claude Code PreToolUse hook (an existing
- * registration is refreshed on reinstall); for Gemini CLI / Antigravity the exact manual
- * registration is printed.
+ * The destructive-command guard is copied into every framework folder and is opt-in:
+ * `install <claude|antigravity> --with-hooks` registers it as a PreToolUse hook (an existing
+ * registration is refreshed on reinstall).
  */
 function registerHooks(key, tool, notes, optInHooks = false) {
     const hookPath = path.join(tool.paths.frameworkPath, 'hooks', HOOK_SCRIPT_NAME);
     if (key === 'antigravity') {
-        notes.push(`Guard:       opt-in hook copied to ${hookPath}; to enable it:`);
-        for (const line of describeManualRegistration(hookPath)) notes.push(`             ${line}`);
+        const hooksJsonPath = path.join(tool.paths.antigravity, 'hooks.json');
+        if (!optInHooks && !isAntigravityHookRegistered(hooksJsonPath)) {
+            notes.push('Guard:       opt-in hook not registered (run `boomopen install antigravity --with-hooks` to enable)');
+            for (const line of describeManualRegistration(hookPath).slice(1)) notes.push(`             ${line}`);
+            return;
+        }
+        try {
+            registerAntigravityHook(hooksJsonPath, hookPath);
+            notes.push(`Guard:       destructive-command hook registered in ${hooksJsonPath}`);
+        } catch (error) {
+            warnLine(`   ⚠️  Guard hook not registered: ${error instanceof Error ? error.message : String(error)}`);
+            notes.push('Guard:       NOT registered (see warning above)');
+        }
         return;
     }
     if (key !== 'claude') return;
@@ -387,6 +400,14 @@ function uninstallTool(key) {
     const instructionPaths = plan.instructionFiles.map((f) => f.dest).concat(plan.legacyInstructionFiles);
     steps.uninstallInstructionFiles(instructionPaths, kitInstructionTexts(tool, plan, ROOT));
     if (key === 'codex') steps.unmergeCodexConfigFile(path.join(tool.paths.home, 'config.toml'));
+    if (key === 'antigravity') {
+        const hooksJsonPath = path.join(tool.paths.antigravity, 'hooks.json');
+        try {
+            if (unregisterAntigravityHook(hooksJsonPath) === 'removed') notes.push('Guard:       hook removed from hooks.json');
+        } catch (error) {
+            logError('hook', hooksJsonPath, error);
+        }
+    }
     if (key === 'claude') {
         try {
             if (unregisterClaudeHook(path.join(tool.paths.home, 'settings.json')) === 'removed') notes.push('Guard:       hook removed from settings.json');
@@ -454,7 +475,7 @@ Commands:
 
 Options:
   --all              With install/uninstall: every supported tool
-  --with-hooks       Also register the opt-in destructive-command guard (Claude Code PreToolUse hook)
+  --with-hooks       Also register the opt-in destructive-command guard (Antigravity / Claude Code PreToolUse hook)
   --force            Accepted for compatibility (files are always compared by content)
   -v, --version      Print the kit version
   -h, --help         Show this help
