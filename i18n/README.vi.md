@@ -161,13 +161,14 @@ boomopen conduct probe
 
 ## 🎛️ Hướng Dẫn Lựa Chọn Chế Độ & Bảng Cài Đặt (`/settings` Control Center)
 
-Mặc định ngay sau khi cài đặt, BoomOpen v5.5 tự động kích hoạt cấu hình **Recommended (`⚡ smart-hybrid`)** lưu tại `~/.boomopen/settings.json` và nhúng trực tiếp vào `~/.gemini/GEMINI.md` (cùng 4 nền tảng còn lại) với **độ trễ Turn 1 = 0ms**. Bạn có thể tùy ý chuyển đổi giữa **4 Chế Độ Vận Hành (Presets)** hoặc tinh chỉnh **20 thông số enum + 2 thông số giới hạn dòng** qua 3 cách:
+Mặc định ngay sau khi cài đặt, BoomOpen v5.5 tự động kích hoạt cấu hình **Recommended (`⚡ smart-hybrid`)** lưu tại `~/.boomopen/settings.json` và nhúng trực tiếp vào `~/.gemini/GEMINI.md` (cùng 4 nền tảng còn lại) với **độ trễ Turn 1 = 0ms**. Bạn có thể tùy ý chuyển đổi giữa **5 Chế Độ Vận Hành (Presets)** hoặc tinh chỉnh **20 thông số enum + 2 thông số giới hạn dòng** qua 3 cách:
 
-### 1️⃣ Bảng 4 Chế Độ Vận Hành (Preset Profiles)
+### 1️⃣ Bảng 5 Chế Độ Vận Hành (5 Preset Profiles)
 
 | Bộ Cấu Hình (`Preset`) | Chế Độ Thực Thi (`execution.mode`) | Biến Thể Lệnh Mặc Định | Khi Hỏi "Nghiên cứu / Ý tưởng" Tự Nhiên (`naturalLanguageResearchTrigger`) | Chuẩn Code (`codingStandards`) | Khi Nào Nên Dùng? |
 |:-----------------------|:-----------------------------------|:----------------------:|:-------------------------------------------------------------------------:|:------------------------------:|:------------------|
 | **⚡ `smart-hybrid`** *(Mặc định Recommended)* | **`auto`** (Việc nhỏ `≤ 2 files` chạy **Mode A** siêu tốc; việc lớn `> 2 files` hoặc `/cmd` chạy **Mode B Multi-Agent**) | `auto` | **`auto_team`** *(Tự động kích hoạt hội đồng 3-Agent `/research:team` / `/brainstorm:team` Golden Triangle)* | `pragmatic` (`400/500` dòng) | Chế độ cân bằng hoàn hảo cho công việc hàng ngày: nhanh ở task nhỏ, cực sâu khi nghiên cứu & làm tính năng lớn |
+| **🛡️ `carbon-guardrails`** | **`mode_a`** *(Tối đa `≤ 10 files` chạy trực tiếp — "Carbon Cầm Lái, BoomOpen Gác Cổng")* | `auto` | `off` *(Không tự cướp luồng NL; chỉ chạy khi gõ `/cmd` tường minh)* | `pragmatic` (`400/500` dòng) | Dùng với Antigravity Orchestrator Carbon — để Carbon tự điều phối tác vụ thường ngày nhưng vẫn giữ rào chắn chuẩn code & kiểm định E2E nghiêm ngặt |
 | **🚀 `solo-fast`** | **`mode_a`** *(Ép chạy trực tiếp 1 Agent, tắt gọi sub-agent để phản hồi tức thì)* | `fast` | `off` *(Trả lời trực tiếp trong chat trừ khi gõ `/brainstorm`)* | `relaxed` (`600/800` dòng) | Khi cần sửa gấp hotfix, làm prototype nhanh, viết script nhỏ hoặc tiết kiệm tối đa token |
 | **🧠 `deep-architect`** | **`mode_b`** *(Luôn bật điều phối Đa Tác Tử Mode B cho mọi tác vụ)* | `hard` | `auto_hard` *(Tự động chạy `/research:hard` / `/brainstorm:hard` 5-Lens Research)* | `strict` (`300/400` dòng) | Khi thiết kế kiến trúc hệ thống phức tạp, dự án mới hoặc refactor đa tầng |
 | **🔺 `adversarial-team`** | **`team`** *(Luôn bật hội đồng 3-Agent đối kháng Golden Triangle `:team`)* | `team` | **`auto_team`** *(Hội đồng 3-Agent phản biện chéo qua `MAILBOX`)* | `strict` (`300/400` dòng) | Dự án trọng điểm (Fintech, Core Platform, Game 3D lớn) đòi hỏi chất lượng & bảo mật tuyệt đối |
@@ -178,6 +179,7 @@ Mặc định ngay sau khi cài đặt, BoomOpen v5.5 tự động kích hoạt 
    ```text
    /settings                                     # Mở bảng trạng thái + Menu chọn tương tác (ask_question UI)
    /settings preset smart-hybrid                 # Chuyển về chế độ Mặc định Recommended (Auto Mode A/B + auto_team)
+   /settings preset carbon-guardrails            # Chuyển sang Carbon-Guardrails (Carbon Cầm Lái, BoomOpen Gác Cổng)
    /settings preset solo-fast                    # Chuyển sang Mode A (Chạy trực tiếp siêu nhanh)
    /settings preset deep-architect               # Chuyển sang Mode B (Chuyên sâu Multi-Agent)
    /settings preset adversarial-team             # Chuyển sang Golden Triangle 3-Agent (:team)
@@ -224,8 +226,21 @@ Mặc định ngay sau khi cài đặt, BoomOpen v5.5 tự động kích hoạt 
 | **`/autopilot`** | `:init`, `:run`, `:audit` | Điều hành dự án tự hành nhiều phiên qua sổ cái `.boomopen/project-ledger.json` & Cổng Chất Lượng 4 Lớp |
 | **`/conduct`** | `:council`, `:pipeline` | Nhạc trưởng điều phối đa công cụ & Hội đồng đa mô hình song song (`boomopen conduct`) kèm báo cáo tổng hợp 4 phần |
 | **`/orchestrate`** | — | Điều phối đường ống đa tác tử tùy chỉnh xuyên suốt nhiều miền (domains) & phân mảnh (`role#shard`) |
-| **`/settings`** | `preset`, `mode`, `set`, `ui` | Trung tâm điều khiển: cấu hình 20 thông số + 2 giới hạn dòng, chọn 4 Preset, hoặc mở Web UI (`--ui`) |
+| **`/settings`** | `preset`, `mode`, `set`, `ui` | Trung tâm điều khiển: cấu hình 20 thông số + 2 giới hạn dòng, chọn 5 Preset, hoặc mở Web UI (`--ui`) |
 | **`/save` / `/recap`** | — | Lưu trạng thái phiên (`SESSION-HANDOVER.md`) và khôi phục ngữ cảnh trong `< 5 giây` |
+
+### 🌙 Hướng Dẫn Chạy Dự Án Lớn Nhiều Phase (`/autopilot` vs. `/goal` + `/autopilot` + `/audit`)
+
+| Quy Trình | Phạm Vi Phù Hợp | Xử Lý Ngưỡng Context (`~70%`) | Bảo Đảm Chất Lượng & Đối Soát |
+|:----------|:----------------|:------------------------------|:------------------------------|
+| **Chỉ dùng `/autopilot`** | Dự án nhỏ/vừa trong 1 phiên (`< 70%` context) | Chạy trong 1 phiên hội thoại duy nhất; cần gọi lại thủ công nếu đầy context | Khởi tạo `.boomopen/project-ledger.json`, chạy 5 cổng kiểm tra & đối soát Wave 2.5 |
+| **`/goal` + `/autopilot` + `/audit`** | Dự án lớn nhiều phase có thư mục `docs/` (chạy xuyên đêm) | **`/goal`** đóng vai vòng lặp bền bỉ bên ngoài, tự động reset/tiếp tục qua các phase khi context chạm `~70%` | **`/autopilot`** giữ sổ cái `project-ledger.json`, ép qua đủ 5 cổng kiểm tra & reconcile 100% spec từng phase, rồi kích hoạt **`/audit`** nhiều vòng khi xong 100% |
+
+**Prompt mẫu copy-paste chạy xuyên đêm:**
+
+```text
+/goal Dùng /autopilot đọc toàn bộ tài liệu dự án trong thư mục docs/, khởi tạo project-ledger và tự động triển khai tuần tự hết tất cả các phase từ đầu đến cuối (bỏ qua bước chờ duyệt PLAN đầu tiên, mỗi phase bắt buộc qua đủ 5 cổng kiểm tra và reconcile 100% tài liệu). Sau khi hoàn thành 100% các phase thì chạy Vòng 1 của /audit và dừng lại báo cáo để tôi review.
+```
 
 ---
 

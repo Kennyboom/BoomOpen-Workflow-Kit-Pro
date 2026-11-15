@@ -1,11 +1,11 @@
 <div align="center">
   <h1>⚡ BoomOpen Workflow Kit v5.5.0</h1>
-  <p><strong>نظام تشغيل القوى العاملة الذكية Smart-Hybrid متعدد المنصات — 21 وكيلاً متخصصاً، 18 فريق المثلث الذهبي وخزينة تضم +1,460 مهارة عند الطلب</strong></p>
+  <p><strong>نظام تشغيل القوى العاملة الذكية Smart-Hybrid متعدد المنصات — 22 وكيلاً متخصصاً، 18 فريق المثلث الذهبي وخزينة تضم +1,460 مهارة عند الطلب</strong></p>
 
   <p>
     <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
-    <a href="#agents"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
+    <a href="#agents"><img src="https://img.shields.io/badge/Agents-22%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 22 Specialists + 18 Teams" /></a>
     <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
     <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
@@ -34,13 +34,13 @@
 
 ## 🌟 ما هو BoomOpen Workflow Kit v5.5؟
 
-**BoomOpen Workflow Kit v5.5 (الإصدار الموحد متعدد المنصات والهجين الذكي)** هو نظام تشغيل مفتوح المصدر متعدد الوكلاء (Multi-Agent) يحوّل مساعد البرمجة الفردي بالذكاء الاصطناعي إلى منظمة هندسية متكاملة تضم **21 وكيلاً متخصصاً (Specialist Agents)**، و**18 فريقاً تنافسياً بنموذج المثلث الذهبي (Golden Triangle Teams)**، و**22 مهارة أساسية (Core Skills)**، وأكثر من **1,440 مهارة مكتبية متخصصة (`skills_library`)**.
+**BoomOpen Workflow Kit v5.5 (الإصدار الموحد متعدد المنصات والهجين الذكي)** هو نظام تشغيل مفتوح المصدر متعدد الوكلاء يحوّل مساعد البرمجة الفردي بالذكاء الاصطناعي إلى منظمة هندسية متكاملة تضم **22 وكيلاً متخصصاً**، و**18 فريق المثلث الذهبي (`72` ملف فريق)**، و**33 أمر سلاش (`89` ملف أوامر ومراجع)**، و**14 أمر CLI**، و**22 مهارة أساسية**، و**1,440 مهارة مكتبية متخصصة (`skills_library/`)**.
 
-على عكس القوالب الجامدة أو الأطر الثقيلة التي تسبب تأخيراً وتضخماً في السياق مع كل جولة، يجمع BoomOpen v5.5 بين **بوابة أولوية الوكلاء الفرعيين منذ الجولة 1 (Proactive Sub-agent First Gate)**، و**التوجيه الطبيعي بـ 17 لغة**، و**تقسيم الأسراب المرن رباعي المستويات (`role#shard`)**، و**التشغيل الذاتي متعدد الجلسات (`/autopilot`)**، و**موجه المحركات المتعددة (`/conduct`)**:
-- **🚀 وكلاء فرعيون متوازيون منذ الجولة 1 وتنسيق الوضع B**: استكشاف الكود غير المحدد (`> 2` ملفات)، والميزات متعددة المجالات (`≥ 2` مجالات)، ونوايا سير العمل باللغة الطبيعية عبر **جميع اللغات الـ 17 المدعومة**، أو أوامر `/cmd` الصريحة تُطلق فوراً شظايا متوازية (`role#shard`، بحد أقصى `3–4 OWNED_FILES` لكل شظية) مع **التفريع المتوازي DAG**، و**الإرسال المباشر من الخطة إلى المنفذ**، و**أقفال العقود (`SHARED_CONTRACT` + `OWNED_FILES`)**، و**إعادة الاستخدام الدافئ (`role#shard -> conversationId` عبر `send_message`)**، بالإضافة إلى دفتر `/autopilot` (`boomopen ledger`) ومجالس المحركات المتعددة `/conduct` (`boomopen conduct`).
-- **⚡ الوضع A — التنفيذ الدقيق للملفات المعروفة مسبقاً (0 ثانية تشغيل بارد)**: الأسئلة والأجوبة البسيطة، وشرح الكود، والتعديلات الصغيرة عندما تكون **الملفات المستهدفة (`≤ 2`) معروفة مسبقاً منذ الجولة 1** (بدون استكشاف وبدون `/cmd`) تُنفَّذ وتُختبَر وتُتحقَّق **مباشرة** مع فرض **معايير البرمجة العملية ذات المستويين** و**الاختبار وإصلاح الأخطاء المستمر**.
-
-- **📚 خزينة ضخمة تضم 1,462 مهارة بدون تضخم السياق (Zero Context Bloat)**: تجمع بين **22 مهارة أساسية (`skills/`)** و**1,440 مهارة تخصصية (`skills_library/`)** مُجمَّعة مسبقاً في `matrix-skills/compact-index.json` للبحث الفوري `O(1)` من خطوتين — مما يمنح الذكاء الاصطناعي إتقاناً فورياً في الواجهات الخلفية والأمامية، تطبيقات الجوال، محركات الألعاب (Unity/Unreal/Godot)، الذكاء الاصطناعي والبيانات (BigQuery)، السحابة/DevOps وأمن OWASP دون استهلاك نافذة السياق.
+على عكس القوالب الجامدة التي تسبب تضخماً في السياق، يجمع BoomOpen v5.5 بين **بوابة أولوية الوكلاء الفرعيين منذ الجولة 1**، و**التوجيه الطبيعي بـ 17 لغة**، و**تقسيم الأسراب المرن رباعي المستويات (`role#shard`)**، و**المطابقة التلقائية بين المواصفات والكود في الموجة Wave 2.5 (`boomopen reconcile`)**، و**التدقيق متعدد الجولات بعد الإكمال (`/audit` و`boomopen audit`)**، و**التشغيل الذاتي متعدد الجلسات (`/autopilot`)**، و**موجه المحركات المتعددة (`/conduct`)**:
+- **🚀 وكلاء فرعيون متوازيون منذ الجولة 1 وWave 2.5 وتنسيق الوضع B**: استكشاف الكود (`> 2` ملفات)، الميزات متعددة المجالات (`≥ 2` مجالات)، الطلبات الطبيعية بـ **17 لغة**، أو أوامر `/cmd` الصريحة تطلق شظايا متوازية (`role#shard`، بحد أقصى `3–4 OWNED_FILES`) مع **تفريع DAG**، و**إرسال مباشر من الخطة للمنفذ**، و**أقفال العقود (`SHARED_CONTRACT` + `OWNED_FILES`)**، و**المطابقة التلقائية Wave 2.5 (`boomopen reconcile` + `spec-reconciler` + `/cook amend-plan`)**، و**إعادة الاستخدام الدافئ (`role#shard -> conversationId` عبر `send_message`)**.
+- **🏛️ التشغيل الذاتي (`/autopilot`)، التدقيق متعدد الجولات (`/audit`) ومجلس المحركات (`/conduct`)**: استيعاب المواصفات في سجل `.boomopen/project-ledger.json` بحماية SHA-256 وبوابة 4 طبقات (`boomopen check --strict-phase --no-stubs`)؛ وتنفيذ تدقيق شامل متعدد الجولات بعد الإكمال (`/audit` ← `/audit:fix` ← `/audit:round2` عبر `.boomopen/audit-ledger.json`) لتغطية RTM وتدفق UI→API→DB ومحرك الحماية من التسريب ثنائي الطبقات (`security_scan.py` v6).
+- **⚡ الوضع A — التنفيذ الدقيق للملفات المعروفة (0 ثانية تشغيل بارد)**: الأسئلة والتعديلات الصغيرة عندما تكون **الملفات (`≤ 2`) معروفة مسبقاً منذ الجولة 1** تُنفَّذ مباشرة وفق **معايير البرمجة العملية ذات المستويين** و**الاختبار المستمر**.
+- **📚 خزينة تضم 1,462 مهارة بدون تضخم السياق**: **22 مهارة أساسية (`skills/`)** و**1,440 مهارة متخصصة (`skills_library/`)** مفهرسة مسبقاً في `matrix-skills/compact-index.json` لبحث `O(1)` من خطوتين دون إثقال نافذة الأوامر.
 
 ---
 
@@ -59,7 +59,7 @@ flowchart TD
     Dispatch -->|":fast / :hard"| Direct["⚡ إرسال مباشر من الخطة للمهندسين بالتوازي<br/>(backend-engineer + frontend-engineer)"]
     Dispatch -->|":team"| Triangle["🔺 فريق المثلث الذهبي للمراجعة التنافسية<br/>(TechLead ⇄ Executor ⇄ Reviewer عبر MAILBOX)"]
 
-    Direct --> Verify["🧪 المرحلة 4: التحقق وإعادة استخدام الجلسات النشطة<br/>tester + reviewer (حلقة send_message 0 ثانية)"]
+    Direct --> Verify["🧪 المرحلة 4: مطابقة Wave 2.5 والتحقق<br/>spec-reconciler + tester + reviewer (حلقة 0 ثانية)"]
     Triangle --> Verify
 ```
 
@@ -70,19 +70,28 @@ flowchart TD
 ## 🧠 الركائز الست الأساسية للإصدار v5.5
 
 1. **🌐 تكافؤ موحد عبر 5 منصات (`platforms/*`)**:
-   - تثبيت أصلي متكامل لكل من **Google Antigravity 2.0 (Gemini)** و**Claude Code** و**OpenAI Codex** و**Cursor** و**GitHub Copilot** من بنية موحدة واحدة.
-2. **📏 معايير البرمجة العملية ذات المستويين (منع التجزئة الميكانيكية للملفات)**:
-   - **المستوى 1 — قواعد صارمة للجودة والأمان (عدم تسامح مطلق)**: المسؤولية الواحدة (Single Responsibility)، **منع `any` الصريح تماماً**، **منع ترك `console.log` للتصحيح** في كود الإنتاج، إلزامية `try/catch` مع معالجة الأخطاء المحددة بالأنواع عند حدود async/API، الثوابت بصيغة `SCREAMING_SNAKE_CASE`، مبدأ DRY (`≥ 3`)، وترتيب عبارات الاستيراد.
-   - **المستوى 2 — إرشادات هيكلية مرنة (الترابط أولاً)**: يستهدف الملف المترابط `~200–350 سطراً` مع سقف مرن يصل إلى `~400–450 سطراً` (التقسيم الإجباري فقط عند تجاوز `500 سطر` أو خلط عدة مجالات؛ وتُستثنى ملفات الاختبارات والأنواع والوثائق). الدوال المنطقية `~20–40 سطراً` (ودوال واجهة المستخدم/المعالجات `~40–80 سطراً`).
-3. **🎯 تقسيم الأسراب المرن رباعي المستويات (`role#shard`) والإرسال المباشر وإعادة الاستخدام الدافئ (`send_message`)**:
-   - بمجرد إنشاء `PLAN-{feature}.md`، يرسل المنسق المهام **مباشرة** إلى شظايا مهندسي المجال (`backend-engineer#shard-1`، `frontend-engineer#shard-2`، `database-architect#shard-1`، بحد أقصى `3–4 OWNED_FILES` لكل شظية) دون قفزة وسيطة زائدة عبر `tech-lead`.
-   - يتم تتبع الوكلاء الفرعيين النشطين في **سجل جلسات مقسّم (`role#shard → conversationId`)** وإعادة استخدامهم عبر `send_message` بزمن بدء **0 ثانية** مع **الاحتفاظ الكامل (100%) بسياق الملفات**.
-4. **🤝 التنفيذ المتوازي القائم على العقود (`SHARED_CONTRACT` + `OWNED_FILES`)**:
-   - تقفل الخطط متعددة المجالات نقاط نهاية API ومخططات DTO وملكية الكتابة الحصرية للملفات (`OWNED_FILES` مقابل `READ_ONLY_FILES`) قبل إطلاق المهندسين بالتوازي، مما يقضي تماماً على تعارضات الكتابة.
-5. **🔍 تشخيص السبب الجذري 5-Whys (SPIE v3.0) وشجرة Git نظيفة 100%**:
-   - يتتبع `debugger` كل خطأ عبر 3 فرضيات مرتبة وسلسلة سببية **5-Whys** (`لماذا 1 العرض المباشر` ← `لماذا 5 السبب الجذري النظامي`). تُحفظ جميع المخرجات المؤقتة (`PLAN`، `DEBUG`، `TEST`، `REVIEW`، `MAILBOX`) في `<appDataDir>\brain\<conversation-id>\` للحفاظ على نظافة شجرة عمل Git بنسبة 100%.
-6. **🩺 أدوات تشخيص CLI مدمجة (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check` & `doctor`) وفهرس مهارات بسرعة O(1)**:
-   - يتحقق `npm run doctor` من حزم المنصات الخمس، و21 وكيلاً، و72 ملف فريق، و84 ملف أوامر (`79` مسار عمل + `5` في `_ref/`)، وملف `matrix-skills/compact-index.json` (`1,462` مهارة مفهرسة). يفحص `boomopen check <dir> [--strict-phase --no-stubs]` طول الملفات، و`any` الصريح في TypeScript، و`console.log` المتبقي، وتعليقات `TODO`/`FIXME` المؤجلة، والدوال الفارغة (Stubs)، والتلاعب بالاختبارات. كما توفّر أوامر `boomopen research` و`boomopen design` و`boomopen plan` و`boomopen cook` و`boomopen ledger` و`boomopen conduct` ترجمة العقود وحزم التسليم المرحلية ومجالس المحركات المتعددة.
+   - تثبيت أصلي متكامل لكل من **Google Antigravity 2.0 (Gemini)** و**Claude Code** و**OpenAI Codex** و**Cursor** و**GitHub Copilot** من بنية موحدة.
+2. **📏 معايير البرمجة العملية ذات المستويين (منع التجزئة الميكانيكية)**:
+   - **المستوى 1 — عدم تسامح**: المسؤولية الواحدة، **منع `any` الصريح**، **منع ترك `console.log` للتصحيح**، إلزامية `try/catch` عند حدود async/API، ثوابت `SCREAMING_SNAKE_CASE`، مبدأ DRY (`≥ 3`)، وترتيب الاستيراد.
+   - **المستوى 2 — إرشادات مرنة**: يستهدف الملف المترابط `~200–350 سطراً` بسقف مرن `400` وتقسيم إلزامي فقط عند `>500 سطر` (تُستثنى الاختبارات والأنواع والوثائق). الدوال المنطقية `~20–40 سطراً` (`~40–80` لواجهة المستخدم/المعالجات).
+3. **🎯 تقسيم الأسراب (`role#shard`) والإرسال المباشر وإعادة الاستخدام الدافئ (`send_message`)**:
+   - فور جاهزية `PLAN-{feature}.md`، يرسل المنسق المهام **مباشرة** إلى الشظايا (`<= 3–4 OWNED_FILES`) دون وسيط `tech-lead`، ويعيد استخدام الجلسات (`role#shard → conversationId`) بزمن بدء **0 ثانية**.
+4. **🤝 التنفيذ القائم على العقود (`SHARED_CONTRACT` + `OWNED_FILES`) ومطابقة Wave 2.5 (`spec-reconciler`)**:
+   - تُقفل نقاط API ومخططات DTO وملكية الملفات قبل التوازي؛ وفي **الموجة Wave 2.5** يتحقق `boomopen reconcile` و`spec-reconciler` و`/cook amend-plan` من مطابقة `docs/` مع الكود الفعلي لرصد الوحدات المعزولة وفروق المسارات/البيئة ونواقص `[SC-*]`.
+5. **🔍 تشخيص 5-Whys (SPIE v3.0)، التدقيق متعدد الجولات (`/audit`) وشجرة Git نظيفة 100%**:
+   - يحلل `debugger` عبر 3 فرضيات + **5-Whys**؛ ويدير `/audit` جولات تدريجية بمحرك الحماية من التسريب ثنائي الطبقات (`security_scan.py` v6). تُحفظ المخرجات المؤقتة في `<appDataDir>\brain\<conversation-id>\`.
+6. **🩺 حزمة CLI من 14 أمراً وفهرس مهارات بسرعة O(1)**:
+   - يتحقق `npm run doctor` من 5 منصات، و**22 وكيلاً**، و**72 ملف فريق** (18 مجلداً)، و**89 ملف أوامر** (`83` مسار عمل + `6` في `_ref/`)، و`compact-index.json` (`1,462` مهارة). الأوامر الـ 14 (`research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`, `check`, `doctor`, `settings`, `install`, `uninstall`, `list`) تضمن التحقق الحتمي.
+
+---
+
+## 🔍 المطابقة التلقائية Wave 2.5 والتدقيق متعدد الجولات (`/audit`)
+
+- **🔄 Wave 2.5 — المطابقة التلقائية بين المواصفات والكود (`boomopen reconcile` + `spec-reconciler` + `/cook amend-plan`)**: قبل إغلاق أي مرحلة، يطابق `spec-reconciler` متطلبات `docs/` و`PLAN` مع التنفيذ الفعلي (`REC-G1..G4`) ويكتشف عناصر `[SC-*]` الناقصة والملفات المعزولة وتعارضات المسارات ومتغيرات البيئة، ثم يستكمل النواقص عبر `/cook amend-plan`.
+- **🛡️ التدقيق متعدد الجولات بعد الإكمال (`/audit`) ومحرك الحماية من التسريب ثنائي الطبقات v6**:
+  1. **الجولة 1 (`/audit` أو `/autopilot:audit`)**: تدقيق شامل للقراءة فقط (تغطية RTM، تدفق UI→API→DB العمودي، وفحص `security_scan.py` v6 لكشف تسريبات الأسرار وPII والحقن).
+  2. **مراجعة المستخدم**: تراجع تقرير `AUDIT-{project}-r1.md` وتعتمد قائمة الإصلاحات.
+  3. **الإصلاح والجولة 2 (`/audit:fix` ← `/audit:round2`)**: تعالج الشظايا الأعطال المعتمدة مع قفل اختبارات الانحدار وتشغّل `/audit:round2` حتى الوصول إلى **0 ملاحظات** في `.boomopen/audit-ledger.json`.
 
 ---
 
@@ -103,123 +112,124 @@ flowchart TD
 ## 🚀 البدء السريع والتثبيت
 
 ```bash
-# 1. استنساخ المستودع
+# 1. استنساخ المستودع والتثبيت لمساعدك (أو --all للجميع)
 git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
 cd BoomOpen-Workflow-Kit-Pro
+npm run install:antigravity   # أو: install:claude | install:codex | install:cursor | install:copilot | install:all
 
-# 2. التثبيت لمساعد البرمجة الخاص بك (اختر واحداً أو --all للجميع)
-npm run install:antigravity   # Google Antigravity 2.0 (Gemini)
-npm run install:claude        # Anthropic Claude Code
-npm run install:codex         # OpenAI Codex CLI
-npm run install:cursor        # Cursor AI Editor
-npm run install:copilot       # GitHub Copilot (VS Code)
-npm run install:all           # التثبيت لجميع المنصات الخمس دفعة واحدة
-
-# 3. التحقق من التثبيت (قراءة فقط)
+# 2. التحقق من التثبيت واستخدام أوامر CLI الـ 14
 npm run doctor
 npm link
 boomopen research validate path/to/RESEARCH.md
 boomopen design validate path/to/DESIGN.md
 boomopen plan validate path/to/PLAN.md
 boomopen cook preflight path/to/PLAN.md
+boomopen reconcile path/to/your/project --plan path/to/PLAN.md
+boomopen audit init --docs docs/prd.md,docs/arch.md
 boomopen check path/to/your/project --strict-phase --no-stubs
 boomopen ledger status
 boomopen conduct probe
 ```
 
-> الحزمة **غير منشورة على npm** — ثبّتها من هذا المستودع فقط. اختياري: يضيف `npm link` الأمر `boomopen` إلى PATH (دون أي تنزيل من npm).
+> الحزمة **غير منشورة على npm** — ثبّتها من هذا المستودع فقط (`npm link` يضيف `boomopen` إلى PATH). للإزالة: `boomopen uninstall <tool>`.
 
 ---
 
-## 🎛️ الإعدادات الموحدة واختيار وضع التشغيل (مركز التحكم `/settings`)
+## 🎛️ الإعدادات الموحدة والملفات الجاهزة الخمسة (`/settings`)
 
-يتضمن BoomOpen v5.5 **مركز تحكم موحد بزمن انتقال صفري** يتيح لك تبديل أوضاع التنفيذ (`auto` و`mode_a` و`mode_b` و`team`) و4 ملفات تعريف جاهزة و20 إعداداً للنظام (+ 2 لحدود الأسطر) عبر **المنصات الخمس** في أقل من `< 10ms` (**بزمن تأخير 0ms في الجولة الأولى**):
+يدير BoomOpen v5.5 **20 مفتاح إعداد + حدَّين للأسطر** عبر **المنصات الخمس** في أقل من `< 10ms` (**بزمن تأخير 0ms في الجولة الأولى**)، مع **5 ملفات جاهزة بنقرة واحدة**:
 
-| الملف الجاهز (`Preset`) | وضع التنفيذ (`execution.mode`) | النمط الافتراضي | البحث باللغة الطبيعية (`naturalLanguageResearchTrigger`) | معايير الكود (`codingStandards`) | الاستخدام الأمثل |
+| الملف الجاهز (`Preset`) | الوضع (`execution.mode`) | النمط الافتراضي | مشغل اللغة الطبيعية (`naturalLanguageResearchTrigger`) | معايير الكود | الاستخدام الأمثل |
 |:---|:---|:---:|:---:|:---:|:---|
-| **⚡ `smart-hybrid`** *(الموصى به افتراضياً)* | **`auto`** (`≤ 2 ملفات` ← Mode A مباشر؛ `> 2 ملفات` أو `/cmd` ← Mode B) | `auto` | **`auto_team`** *(يوجه البحث والأفكار تلقائياً إلى `/research:team` / `/brainstorm:team` المثلث الذهبي)* | `pragmatic` (`400/500` سطر) | الهندسة اليومية الشاملة: سريع في المهام الصغيرة وعميق في المعماريات المعقدة |
-| **🚀 `solo-fast`** | **`mode_a`** *(فرض التنفيذ الفردي المباشر بدون وكلاء فرعيين)* | `fast` | `off` *(رد مباشر في المحادثة ما لم يُكتب `/brainstorm`)* | `relaxed` (`600/800` سطر) | الإصلاحات العاجلة، النماذج الأولية السريعة، وتوفير استهلاك الرموز (Tokens) |
-| **🧠 `deep-architect`** | **`mode_b`** *(فرض منسق الوكلاء المتعددين Mode B في كل مهمة)* | `hard` | `auto_hard` *(تشغيل `/research:hard` / `/brainstorm:hard` خماسي العدسات تلقائياً)* | `strict` (`300/400` سطر) | تصميم الأنظمة المعقدة والمشاريع الجديدة وإعادة الهيكلة متعددة النطاقات |
-| **🔺 `adversarial-team`** | **`team`** *(فرض فريق المثلث الذهبي من 3 وكلاء `:team` دائماً)* | `team` | **`auto_team`** *(مراجعة ونقاش تنافسي بين 3 وكلاء عبر `MAILBOX`)* | `strict` (`300/400` سطر) | أنظمة الإنتاج الحرجة، التدقيق الأمني، والإصدارات الخالية من العيوب |
-
-### ثلاث طرق لتغيير الوضع (أمر المحادثة `/settings`، لوحة الويب المحلية، وواجهة CLI)
+| **⚡ `smart-hybrid`** *(الافتراضي)* | **`auto`** (`≤ 2 ملفات` ← Mode A؛ `> 2` أو `/cmd` ← Mode B) | `auto` | **`auto_team`** *(توجيه البحث والأفكار تلقائياً إلى `/research:team` / `/brainstorm:team`)* | `pragmatic` (`400/500`) | الهندسة اليومية الشاملة: سريع في المهام الصغيرة وعميق في البنى المعقدة |
+| **🛡️ `carbon-guardrails`** | **`mode_a`** *(يتولى Antigravity Carbon القيادة مباشرة حتى `≤ 10 ملفات`)* | `auto` | `off` *(بلا استحواذ على اللغة الطبيعية؛ مسارات BoomOpen بأمر `/cmd` صريح فقط)* | `pragmatic` (`400/500`) | قيادة **Antigravity Orchestrator Carbon** للاستكشاف والتعديلات اليومية مع فرض قواعد `400/500` سطر وتحقق `strict_e2e` وضوابط `/cmd` |
+| **🚀 `solo-fast`** | **`mode_a`** *(تنفيذ فردي مباشر بدون وكلاء فرعيين)* | `fast` | `off` *(رد مباشر ما لم يُكتب `/brainstorm`)* | `relaxed` (`600/800`) | الإصلاحات العاجلة، النماذج الأولية السريعة، وتوفير الرموز |
+| **🧠 `deep-architect`** | **`mode_b`** *(منسق الوكلاء المتعددين في كل مهمة)* | `hard` | `auto_hard` *(تشغيل `/research:hard` / `/brainstorm:hard` خماسي العدسات)* | `strict` (`300/400`) | تصميم الأنظمة المعقدة والمشاريع الجديدة وإعادة الهيكلة |
+| **🔺 `adversarial-team`** | **`team`** *(فريق المثلث الذهبي من 3 وكلاء `:team` دائماً)* | `team` | **`auto_team`** *(مراجعة تنافسية بين 3 وكلاء عبر `MAILBOX`)* | `strict` (`300/400`) | الإنتاج الحرج، التدقيق الأمني، والإصدارات الخالية من العيوب |
 
 ```bash
-# 1. أمر سلاش داخل المحادثة (قائمة تفاعلية أو أمر مباشر)
-/settings                                     # فتح القائمة التفاعلية (ask_question UI)
-/settings preset smart-hybrid                 # التبديل إلى الوضع الافتراضي الموصى به (Auto Mode A/B + auto_team)
-/settings preset solo-fast                    # التبديل إلى التنفيذ المباشر السريع (Mode A)
-/settings preset deep-architect               # التبديل إلى منسق الوكلاء المتعددين (Mode B)
-/settings preset adversarial-team             # التبديل إلى فريق المثلث الذهبي من 3 وكلاء (:team)
-/settings mode auto | mode_a | mode_b | team  # تغيير وضع التنفيذ (execution.mode) مباشرة
-
-# 2. لوحة تحكم الويب المحلية (http://127.0.0.1:4567)
-boomopen settings --ui
-
-# 3. طرفية CLI (عام ~/.boomopen/settings.json وخاص بالمشروع ./.boomopen.json)
-boomopen settings status
-boomopen settings preset adversarial-team
-cd path/to/your/project
-boomopen settings set execution.mode mode_a --project
-boomopen settings reset
+# في المحادثة (/settings) | لوحة الويب (boomopen settings --ui) | طرفية CLI
+/settings                                     # القائمة التفاعلية (ask_question UI)
+/settings preset carbon-guardrails            # تفعيل قيادة Carbon مع ضوابط BoomOpen
+/settings preset smart-hybrid                 # الوضع الافتراضي Smart-Hybrid
+/settings mode auto | mode_a | mode_b | team  # تغيير وضع التنفيذ مباشرة
+boomopen settings preset carbon-guardrails    # تطبيق عام ومزامنة المنصات الخمس
+boomopen settings set execution.mode mode_a --project   # كتابة ./.boomopen.json في المشروع الحالي فقط
 ```
-
-> يكتب `--project` الملف `./.boomopen.json` دائماً في المجلد الذي تشغّل منه الأمر، لذا شغّله داخل مشروعك وليس داخل نسخة الحزمة. بدون `npm link` استبدل `boomopen` بـ `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`.
 
 ---
 
-## 🎯 مرجع أوامر Slash
+## 🌙 دليل التشغيل الليلي للمشاريع الكبيرة متعددة المراحل (`/autopilot` مقابل `/goal` + `/autopilot` + `/audit`)
+
+| الأسلوب | نطاق الجلسة والسياق | ضبط الخطة والجودة | أنسب حالة |
+|:---|:---|:---|:---|
+| **`/autopilot` بمفرده** | جلسة واحدة — يتوقف بسلاسة قرب **~70% من السياق** و**يتوقف مؤقتاً لاعتماد `PLAN` الأولي** | يدير `.boomopen/project-ledger.json` والبوابات الخمس ومطابقة Wave 2.5 `reconcile` و`/audit`، لكنه يتطلب استئنافاً يدوياً بين المراحل | المشاريع المتوسطة أو العمل التفاعلي مرحلةً بمرحلة |
+| **`/goal` + `/autopilot` + `/audit`** *(موصى به ليلاً)* | **`/goal` يقود التنفيذ تلقائياً عبر مراحل متعددة طوال الليل** متجاوزاً حدود الجلسة الواحدة | يضمن `/autopilot` تتبعاً محكماً عبر `project-ledger.json` والبوابات الخمس ومطابقة Wave 2.5 (`reconcile`) و**الجولة 1 من `/audit`** في النهاية | المشاريع الضخمة متعددة الوثائق للتنفيذ الليلي المستقل حتى تقرير التدقيق الشامل |
+
+**أمر جاهز للنسخ (للتشغيل الليلي):**
+
+```text
+/goal ابنِ المشروع بالكامل من المواصفات في docs/ باستخدام /autopilot.
+أنشئ وحافظ على .boomopen/project-ledger.json، ونفّذ PLAN عبر جميع المراحل دون إسقاط أي متطلب،
+وشغّل مطابقة Wave 2.5 (boomopen reconcile) وبوابات التحقق في نهاية كل مرحلة،
+وبعد إكمال جميع المراحل شغّل الجولة 1 من /audit لإعداد تقرير تدقيق كامل لمراجعتي صباحاً.
+```
+
+---
+
+## 🎯 مرجع أوامر Slash (33 أمراً / 89 ملفاً)
 
 | الأمر | الأنماط | الغرض الأساسي |
 |---------|----------|-----------------|
-| **`/cook`** | `:fast`, `:hard`, `:team` | تطوير الميزات المتكامل من البداية للنهاية (بحث/استكشاف ← تخطيط ← برمجة متوازية ← اختبار ← مراجعة) |
-| **`/code`** | `:fast`, `:hard`, `:team` | تنفيذ البرمجة مباشرة استناداً إلى ملف خطة `PLAN-{feature}.md` موجود |
+| **`/cook`** | `:fast`, `:hard`, `:team`, `amend-plan` | تطوير الميزات المتكامل (بحث ← تخطيط ← برمجة متوازية ← Wave 2.5 ← مراجعة) |
+| **`/code`** | `:fast`, `:hard`, `:team` | تنفيذ البرمجة مباشرة من ملف `PLAN-{feature}.md` موجود |
 | **`/plan`** | `:fast`, `:hard`, `:team` | إنشاء مخططات التنفيذ مع `SHARED_CONTRACT` و`OWNED_FILES` ومعايير Given/When/Then |
-| **`/fix`** | `:fast`, `:hard`, `:team` | إصلاح الأخطاء من جذورها مع التحقق الإلزامي باختبارات الانحدار (Regression Tests) |
-| **`/debug`** | `:fast`, `:hard`, `:team` | تحقيق عميق في السبب الجذري عبر 3 فرضيات + سلسلة **5-Whys (SPIE v3.0)** (`DEBUG-{issue}.md`) |
-| **`/test`** | `:fast`, `:hard`, `:team` | تشغيل متوازٍ DAG لمجموعات الاختبار + اكتشاف الحالات الحدية غير المغطاة (`tester` + `scouter`) |
-| **`/review`** | `:fast`, `:hard`, `:team` | تدقيق متوازٍ رباعي الأبعاد (البنية المعمارية، جودة الكود، أمان OWASP، الأداء) |
-| **`/design`** | `:fast`, `:hard`, `:team` | تصميم بنية النظام ومخطط قاعدة البيانات ومواصفات واجهة وتجربة المستخدم (`DESIGN.md`) |
-| **`/docs`** | `:core`, `:business`, `:audit` | توليد أو مزامنة وثائق البنية المعمارية والأعمال المهيكلة ذات المستويين (`./documents/`) |
-| **`/deploy`** | `:check`, `:preview`, `:production`, `:rollback` | بوابات الجاهزية قبل النشر، بيئات المعاينة، الإطلاق للإنتاج والتراجع الآمن |
-| **`/research`** | `:fast`, `:hard`, `:team` | محرك البحث العميق المستقل (تثليث 4 مصادر، بحث 3 موجات ومجلس 3 متجهات) |
+| **`/fix`** | `:fast`, `:hard`, `:team` | إصلاح الأخطاء من جذورها مع التحقق الإلزامي باختبارات الانحدار |
+| **`/debug`** | `:fast`, `:hard`, `:team` | تحقيق عبر 3 فرضيات + سلسلة **5-Whys (SPIE v3.0)** (`DEBUG-{issue}.md`) |
+| **`/test`** | `:fast`, `:hard`, `:team` | تشغيل متوازٍ DAG للاختبارات + اكتشاف الحالات الحدية (`tester` + `scouter`) |
+| **`/review`** | `:fast`, `:hard`, `:team` | تدقيق متوازٍ رباعي الأبعاد (البنية، جودة الكود، أمان OWASP، الأداء) |
+| **`/audit`** | `:run`, `:fix`, `:round2`, `:auto` | تدقيق شامل متعدد الجولات بعد الإكمال (تغطية RTM، تدفق UI→API→DB، الحماية ثنائية الطبقات v6، إصلاحات `/audit:fix` وإعادة تدقيق `/audit:round2` حتى 0 ملاحظات) |
+| **`/design`** | `:fast`, `:hard`, `:team` | بنية النظام ومخطط قاعدة البيانات ومواصفات UI/UX (`DESIGN.md`) |
+| **`/docs`** | `:core`, `:business`, `:audit` | توليد أو مزامنة وثائق البنية والأعمال ثنائية المستوى (`./documents/`) |
+| **`/deploy`** | `:check`, `:preview`, `:production`, `:rollback` | بوابات الجاهزية، بيئات المعاينة، الإطلاق للإنتاج والتراجع الآمن |
+| **`/research`** | `:fast`, `:hard`, `:team` | محرك البحث العميق (تثليث 4 مصادر، 3 موجات ومجلس 3 متجهات) |
 | **`/brainstorm`** | `:fast`, `:hard`, `:team` | اكتشاف المتطلبات بالطريقة السقراطية، تحليل المفاضلات وتوليد الأفكار |
-| **`/report`** | `:fast`, `:hard`, `:team` | تقارير تنفيذية وتقنية شاملة مدعومة بالمقاييس والمخططات |
-| **`/autopilot`** | `:init`, `:run`, `:audit` | منسق المشاريع المستقل متعدد الجلسات عبر سجل `.boomopen/project-ledger.json` وبوابة الجودة رباعية الطبقات |
-| **`/conduct`** | `:council`, `:pipeline` | المنسق عبر المحركات ومجلس النماذج المتوازي (`boomopen conduct`) مع تقرير التوافق الرباعي |
+| **`/report`** | `:fast`, `:hard`, `:team` | تقارير تنفيذية وتقنية شاملة بالمقاييس والمخططات |
+| **`/autopilot`** | `:init`, `:run`, `:audit` | منسق المشاريع المستقل متعدد الجلسات عبر `.boomopen/project-ledger.json` وبوابة 4 طبقات |
+| **`/conduct`** | `:council`, `:pipeline` | المنسق عبر المحركات ومجلس النماذج المتوازي (`boomopen conduct`) مع التوافق الرباعي |
 | **`/orchestrate`** | — | تنسيق خطوط أنابيب مخصصة متعددة الوكلاء عبر عدة مجالات |
-| **`/settings`** | `preset`, `mode`, `set`, `ui` | مركز التحكم الموحد: تبديل `Auto` / `Mode A` / `Mode B` / `Team` أو فتح واجهة الويب (`--ui`) |
-| **`/save` / `/recap`** | — | حفظ حالة الجلسة (`SESSION-HANDOVER.md`) واستعادة السياق الكامل في أقل من `< 5 ثوانٍ` |
+| **`/settings`** | `preset`, `mode`, `set`, `ui` | مركز التحكم الموحد: 20 مفتاحاً + حدان للأسطر، **5 ملفات جاهزة** أو واجهة الويب (`--ui`) |
+| **`/save` / `/recap`** | — | حفظ حالة الجلسة (`SESSION-HANDOVER.md`) واستعادة السياق في `< 5 ثوانٍ` |
 
 ---
 
 <a id="agents"></a>
 
-## 🤖 21 وكيلاً متخصصاً و18 فريقاً بنموذج المثلث الذهبي
+## 🤖 22 وكيلاً متخصصاً و18 فريقاً بنموذج المثلث الذهبي (`72` ملفاً)
 
 | الفئة | الوكلاء المتخصصون (`agents/*.md`) | فرق المثلث الذهبي (`agents/teams/*-team/`) |
 |----------|-----------------------------------|------------------------------------------------|
 | **الهندسة والتنفيذ** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer`, `database-architect`, `devops-engineer` | `backend-team`, `frontend-team`, `fullstack-team`, `mobile-team`, `game-team`, `database-team`, `devops-team` |
-| **البنية المعمارية والتخطيط** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
-| **الجودة والأمان وتصحيح الأخطاء** | `debugger`, `tester`, `reviewer`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
-| **البحث وإدارة المعرفة** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
+| **البنية والتخطيط** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
+| **الجودة والأمان والتصحيح** | `debugger`, `tester`, `reviewer`, **`spec-reconciler`**, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
+| **البحث والمعرفة** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
 
 ---
 
 <a id="skills"></a>
 
-## 📚 خزينة +1,460 مهارة (22 مهارة أساسية + 1,440 مهارة مكتبية)
+## 📚 خزينة 1,462 مهارة (22 أساسية + 1,440 مكتبية)
 
-يأتي BoomOpen مزوداً بواحدة من أكبر منظومات المهارات الهندسية في المصادر المفتوحة، والمصممة لاستهلاك **0 توكن في وضع الخمول** عبر **الاستعلام التدريجي O(1) من خطوتين** (`<skills>` ← `matrix-skills/compact-index.json` ← تحميل ملف `SKILL.md` المطلوب فقط عند الطلب):
+مصممة لاستهلاك **0 توكن في الخمول** عبر **الاستعلام التدريجي O(1) من خطوتين** (`<skills>` ← `matrix-skills/compact-index.json` ← `SKILL.md` عند الطلب):
 
-| طبقة / مجال المهارات | العدد | أبرز المهارات والقدرات | آلية التحميل |
+| مجال المهارات | العدد | أبرز القدرات | التحميل |
 |:---|:---:|:---|:---|
-| **⚡ الطبقة 1: المهارات الأساسية (`skills/`)** | **22** | `clean-code`, `debugger`, `plan-writing`, `brainstorming`, `frontend-design`, `frontend-architecture`, `design-spec`, `api-patterns`, `database-design`, `testing-patterns`, `skill-seeker` | مفهرسة مسبقاً في `<skills>` للوصول الفوري في الجولة الأولى |
-| **🎨 تصميم UI/UX، الحركة وأنظمة التصميم** | **42** | Anti-AI-Slop Visual Craft، نظام ألوان OKLCH وشبكات Bento، Motion v12 + CSS View Transitions، عناصر واجهة مجردة (`cmdk`/`vaul`/`sonner`)، Figma MCP + W3C DTCG Tokens، WCAG 2.2 AA/AAA، iOS 18 HIG وMaterial 3 Expressive | عند الطلب عبر `compact-index.json` (`matrix-skills/design.yaml`) |
-| **🌐 الويب، الخلفية والأنظمة الموزعة** | **390+** | Next.js/React 19، FastAPI، NestJS، خدمات Go/Rust المصغرة، GraphQL، gRPC، بنية Redis/Kafka الحدثية، أنظمة SaaS متعددة المستأجرين | عند الطلب عبر `compact-index.json` (`skills_library/`) |
-| **🤖 الذكاء الاصطناعي، وكلاء LLM وهندسة البيانات** | **320+** | خطوط RAG، خوادم LangGraph/MCP، هندسة الأوامر، Vertex AI، تحليلات BigQuery، dbt، Spark، قواعد البيانات المتجهة | عند الطلب عبر `compact-index.json` (`skills_library/`) |
-| **☁️ السحابة، DevOps، Kubernetes والأمن السيبراني** | **300+** | Terraform/OpenTofu، بنية AWS/GCP/Azure، Docker/K8s GitOps، خطوط CI/CD، تدقيق OWASP Top 10، مصادقة Zero-Trust | عند الطلب عبر `compact-index.json` (`skills_library/`) |
-| **📱 الجوال، محركات الألعاب والمجالات المتخصصة** | **410+** | iOS Swift/SwiftUI، Android Kotlin، React Native، Flutter، Unity 6، Unreal Engine 5، Godot 4، WebGL/Three.js، التمويل الكمي، Web3 | عند الطلب عبر `compact-index.json` (`skills_library/`) |
+| **⚡ الطبقة 1: الأساسية (`skills/`)** | **22** | `clean-code`, `debugger`, `plan-writing`, `brainstorming`, `frontend-design`, `design-spec`, `api-patterns`, `database-design`, `testing-patterns`, `skill-seeker` | مفهرسة في `<skills>` |
+| **🎨 تصميم UI/UX والحركة** | **42** | Anti-AI-Slop Craft، ألوان OKLCH، Bento Grids، Motion v12، Figma MCP + W3C DTCG، WCAG 2.2 AA/AAA، iOS 18 HIG وMaterial 3 | `compact-index.json` |
+| **🌐 الويب والخلفية والحافة** | **390+** | React 19، Next.js 15، Tailwind v4، TanStack، Hono RPC + Zod OpenAPI، Rust Axum، Supabase RLS، Drizzle + Neon/Turso | `skills_library/` |
+| **🤖 الذكاء الاصطناعي والبيانات** | **320+** | FastMCP 2025، OpenAI/Claude/Google ADK، Vercel AI SDK v4، RAG، BigQuery، dbt، Spark | `skills_library/` |
+| **☁️ السحابة، DevOps والأمان** | **300+** | Cloudflare Workers/D1/R2، Terraform/OpenTofu، Docker/K8s، Vitest + MSW v2، Better Auth، OWASP LLM 2025 | `skills_library/` |
+| **📱 الجوال والألعاب و3D Web** | **410+** | Unity 6 DOTS، Godot 4، WebGPU/Three.js TSL، Colyseus، Tauri v2، SwiftUI، Kotlin، React Native، Flutter | `skills_library/` |
 
 ---
 
@@ -227,17 +237,17 @@ boomopen settings reset
 
 ```text
 BoomOpen-Workflow-Kit-Pro/
-├── agents/                  # 21 تعريفاً للوكلاء المتخصصين + 18 فريقاً للمثلث الذهبي (54 ملف دور + 18 _team.md، 72 ملفاً)
-├── cli/                     # أداة التثبيت (install.js)، الطبيب (doctor.js)، الفاحص (checker.js)، الإعدادات (settings.js), research.js, design.js, plan.js, cook.js، السجل (ledger.js) والمنسق (conductor.js)
-├── commands/                # 79 مسار عمل لأوامر Slash (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 بروتوكولات _ref/ (84 ملفاً)
-├── documents/               # وثائق ثنائية المستوى للبنية المعمارية والمجال وقاعدة الكود والمعايير
-├── i18n/                    # وثائق متعددة اللغات (16 ترجمة كاملة لملف README)
-├── matrix-skills/           # مصفوفات مهارات YAML حسب المجال + ملف compact-index.json المجمّع مسبقاً (1,462 مهارة)
+├── agents/                  # 22 وكيلاً متخصصاً (بما فيهم spec-reconciler) + 18 فريقاً (72 ملفاً)
+├── cli/                     # 14 أمر CLI: install, doctor, checker, settings, research, design, plan, cook, reconcile, audit, ledger & conductor
+├── commands/                # 83 مسار عمل (33 أمراً) + 6 بروتوكولات _ref/ (89 ملفاً)
+├── documents/               # وثائق ثنائية المستوى للبنية والمجال وقاعدة الكود والمعايير
+├── i18n/                    # 16 ترجمة كاملة لملف README
+├── matrix-skills/           # مصفوفات YAML + ملف compact-index.json المجمّع (1,462 مهارة)
 ├── platforms/               # قوالب موحدة للمنصات الخمس (antigravity/, claude/, codex/, copilot/, cursor/)
-├── rules/                   # قواعد الوضع B المحملة عند الطلب (CORE, PHASES, AGENTS, TEAMS, SKILLS, ERRORS, REFERENCE)
+├── rules/                   # قواعد الوضع B عند الطلب (CORE, PHASES, AGENTS, TEAMS, SKILLS, ERRORS, REFERENCE)
 ├── scripts/                 # نصوص Python للأتمتة والتحقق (checklist.py, verify_all.py وغيرها)
-├── skills/                  # 22 مهارة أساسية (clean-code, debugger, plan-writing, frontend-design وغيرها)
-├── skills_library/          # 1,440 مهارة متخصصة تُحمّل عند الطلب عبر بحث سريع من خطوتين
+├── skills/                  # 22 مهارة أساسية
+├── skills_library/          # 1,440 مهارة متخصصة تُحمّل عند الطلب
 └── GEMINI.md | CLAUDE.md | CODEX.md | COPILOT.md | CURSOR.md | AGENT.md
 ```
 

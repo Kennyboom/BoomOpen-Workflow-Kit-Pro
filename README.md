@@ -170,11 +170,12 @@ node cli/install.js uninstall <tool>   # or: boomopen uninstall <tool>
 
 BoomOpen v5.5 includes a **Zero-Latency Unified Control Center** managing **20 configurable enum settings keys + 2 custom line-limit keys** (`execution.mode`, `execution.swarmScaling`, `execution.maxParallelSubagents`, `workflows.*`, `models.subagentPolicy`, `engines.{researcher,planner,coder,debugger,reviewer,councilMembers}`, `codingStandards.*`, etc.) across all **5 platforms** in `< 10ms` with **0ms Turn-1 latency** (via AOT `<!-- BOOMOPEN-SETTINGS-START -->` injection into `GEMINI.md`, `CLAUDE.md`, `CODEX.md`, `CURSOR.md`, and `COPILOT.md`).
 
-### 1️⃣ Four One-Click Preset Profiles & Execution Modes
+### 1️⃣ Five One-Click Preset Profiles & Execution Modes
 
 | Preset Profile | Execution Mode (`execution.mode`) | Default `/cmd` Variant | Natural-Language Research (`naturalLanguageResearchTrigger`) | Coding Standards | Best Used For |
 |:---------------|:----------------------------------|:----------------------:|:------------------------------------------------------------:|:----------------:|:--------------|
 | **⚡ `smart-hybrid`** *(Default Recommended)* | **`auto`** (`≤ 2 files` → Mode A Direct; `> 2 files` or `/cmd` → Mode B) | `auto` | **`auto_team`** *(Auto-routes NL research to `/research:team` and ideation to `/brainstorm:team` Golden Triangle)* | `pragmatic` (`400/500` lines) | Daily full-stack engineering — fast on small tasks, deep on complex architectures |
+| **🛡️ `carbon-guardrails`** | **`mode_a`** *(Direct up to `≤ 10 files` — Carbon drives, BoomOpen guards)* | `auto` | `off` *(Zero NL hijacking; explicit `/cmd` only)* | `pragmatic` (`400/500` lines) | Antigravity Orchestrator Carbon — lets Carbon drive daily tasks while enforcing strict BoomOpen coding & E2E guardrails |
 | **🚀 `solo-fast`** | **`mode_a`** *(Force Direct Solo Execution, 0s sub-agent latency)* | `fast` | `off` *(Direct chat reply unless `/brainstorm` is typed)* | `relaxed` (`600/800` lines) | Urgent hotfixes, rapid prototyping, scripts & minimal token usage |
 | **🧠 `deep-architect`** | **`mode_b`** *(Force Strict Multi-Agent Orchestrator on every task)* | `hard` | `auto_hard` *(Auto-routes NL research to `/research:hard` and ideation to `/brainstorm:hard`)* | `strict` (`300/400` lines) | Complex system architecture, greenfield design & multi-domain refactors |
 | **🔺 `adversarial-team`** | **`team`** *(Force 3-Agent Golden Triangle `:team` on all workflows)* | `team` | **`auto_team`** *(3-Agent adversarial ideation & review)* | `strict` (`300/400` lines) | Mission-critical production code, security audits & zero-defect releases |
@@ -185,6 +186,7 @@ BoomOpen v5.5 includes a **Zero-Latency Unified Control Center** managing **20 c
   ```text
   /settings                                     # Open interactive clickable menu (via native ask_question UI)
   /settings preset smart-hybrid                 # Switch to Smart-Hybrid default (Recommended)
+  /settings preset carbon-guardrails            # Switch to Carbon-Guardrails (Carbon drives, BoomOpen guards)
   /settings preset solo-fast                    # Switch to Mode A Solo Fast mode
   /settings preset deep-architect               # Switch to Mode B Multi-Agent Architect mode
   /settings preset adversarial-team             # Switch to Golden Triangle 3-Agent Team mode
@@ -232,8 +234,21 @@ BoomOpen v5.5 includes a **Zero-Latency Unified Control Center** managing **20 c
 | **`/autopilot`** | `:init`, `:run`, `:audit` | Multi-session autonomous project orchestrator with `.boomopen/project-ledger.json` & 4-Layer Phase Ratchet |
 | **`/conduct`** | `:council`, `:pipeline` | Cross-engine conductor & parallel multi-engine council (`boomopen conduct`) with 4-Part Consensus Synthesis |
 | **`/orchestrate`** | — | Custom multi-agent pipeline orchestration across multiple domains & shards |
-| **`/settings`** | `preset`, `mode`, `set`, `ui` | Unified Control Center: configure 20 enum + 2 line-limit settings, 4 presets, or open Web UI (`--ui`) |
+| **`/settings`** | `preset`, `mode`, `set`, `ui` | Unified Control Center: configure 20 enum + 2 line-limit settings, 5 presets, or open Web UI (`--ui`) |
 | **`/save` / `/recap`** | — | Persist session state (`SESSION-HANDOVER.md`) and restore full context in `< 5s` |
+
+### 🌙 Overnight Large Multi-Phase Project Guide (`/autopilot` vs. `/goal` + `/autopilot` + `/audit`)
+
+| Workflow | Best Scope | Context Window Behavior | Quality & Spec Guarantees |
+|:---------|:-----------|:------------------------|:--------------------------|
+| **`/autopilot` alone** | Single-session or small/medium builds (`< 70%` context) | Runs inside one conversation session; manual resume needed if context fills | Initializes `.boomopen/project-ledger.json`, enforces 5 verification gates & Wave 2.5 reconciliation |
+| **`/goal` + `/autopilot` + `/audit`** | Large multi-phase projects with `docs/` (overnight autonomous runs) | **`/goal`** acts as the persistent outer runner across phases and auto-resets/continues when context hits `~70%` | **`/autopilot`** enforces ledger state, 5 verification gates & Wave 2.5 spec-reconciliation per phase, then triggers multi-round **`/audit`** at 100% completion |
+
+**Ready-to-copy overnight prompt:**
+
+```text
+/goal Use /autopilot to read all project documentation in docs/, initialize project-ledger.json, and autonomously implement every phase sequentially from start to finish (skip the initial PLAN approval pause; every phase must pass all 5 verification gates and reconcile 100% against the specs). After 100% of phases are complete, run Round 1 of /audit and stop with a report for my review.
+```
 
 ---
 

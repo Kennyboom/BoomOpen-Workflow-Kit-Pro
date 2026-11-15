@@ -33,7 +33,7 @@ const RULES_MAX = DOC_LINE_LIMITS.rules;
 const COMMANDS_MAX = DOC_LINE_LIMITS.commands;
 const I18N_MAX = DOC_LINE_LIMITS.i18n;
 const DOCUMENTED_COMMANDS = [
-  '/cook', '/code', '/plan', '/fix', '/debug', '/test', '/review', '/design',
+  '/cook', '/code', '/plan', '/fix', '/debug', '/test', '/review', '/audit', '/design',
   '/docs', '/deploy', '/research', '/brainstorm', '/report', '/autopilot', '/conduct',
   '/orchestrate', '/save', '/settings',
 ];
