@@ -359,3 +359,39 @@ test('settings CLI: help, unknown subcommands, read-only status (L15)', async ()
     box.cleanup();
   }
 });
+
+test('carbon-guardrails preset renders a <3KB slim Antigravity GEMINI.md and restores full template on switch-back', () => {
+  const box = sandbox();
+  try {
+    const geminiMd = path.join(box.homeDir, '.gemini', 'GEMINI.md');
+    const fullShipped = fs.readFileSync(path.join(REPO_ROOT, 'platforms', 'antigravity', 'GEMINI.md'), 'utf8');
+    const userNote = '# Personal Antigravity Note\n- Always answer in Vietnamese.\n';
+    write(geminiMd, `${userNote}\n<!-- boomopen-workflow-kit-START -->\n${fullShipped.trimEnd()}\n<!-- boomopen-workflow-kit-END -->\n`);
+
+    const slimSync = syncSettingsToInstalledPlatforms(PRESETS['carbon-guardrails'], { homeDir: box.homeDir });
+    assert.ok(slimSync.updatedFiles.includes(geminiMd));
+    const slimContent = fs.readFileSync(geminiMd, 'utf8');
+    assert.ok(slimContent.startsWith(userNote), 'user preamble outside kit block stays intact');
+    const kitStart = slimContent.indexOf('<!-- boomopen-workflow-kit-START -->');
+    const kitBlock = slimContent.slice(kitStart);
+    assert.ok(Buffer.byteLength(kitBlock, 'utf8') < 3000, `expected <3000 bytes, got ${Buffer.byteLength(kitBlock, 'utf8')}`);
+    assert.match(kitBlock, /CARBON-GUARDRAILS EDITION/);
+    assert.match(kitBlock, /\*\*Active Preset\*\*: `carbon-guardrails`/);
+    assert.doesNotMatch(kitBlock, /Anti-Solo-Crawling Rule/);
+
+    // Idempotent second sync
+    const secondSync = syncSettingsToInstalledPlatforms(PRESETS['carbon-guardrails'], { homeDir: box.homeDir });
+    assert.deepEqual(secondSync.writtenFiles, []);
+
+    // Switch back to smart-hybrid restores the full Mode-B template seamlessly
+    const restoredSync = syncSettingsToInstalledPlatforms(PRESETS['smart-hybrid'], { homeDir: box.homeDir });
+    assert.ok(restoredSync.writtenFiles.includes(geminiMd));
+    const restored = fs.readFileSync(geminiMd, 'utf8');
+    assert.ok(restored.startsWith(userNote));
+    assert.match(restored, /GEMINI\/ANTIGRAVITY SMART-HYBRID EDITION/);
+    assert.match(restored, /Anti-Solo-Crawling Rule/);
+    assert.match(restored, /\*\*Active Preset\*\*: `smart-hybrid`/);
+  } finally {
+    box.cleanup();
+  }
+});

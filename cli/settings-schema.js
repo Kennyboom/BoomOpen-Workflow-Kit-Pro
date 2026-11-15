@@ -14,7 +14,7 @@ const CODING_STANDARDS_PRESETS = {
 };
 
 const ALLOWED_ENUMS = {
-  preset: ['smart-hybrid', 'solo-fast', 'deep-architect', 'adversarial-team', 'custom'],
+  preset: ['smart-hybrid', 'carbon-guardrails', 'solo-fast', 'deep-architect', 'adversarial-team', 'custom'],
   'execution.mode': ['auto', 'mode_a', 'mode_b', 'team'],
   'execution.modeAThresholdFiles': [1, 2, 3, 5, 10],
   'execution.swarmScaling': ['elastic', 'hyper_swarm', 'conservative'],
@@ -67,7 +67,7 @@ const ALLOWED_ENUMS = {
 };
 
 const SETTING_DESCRIPTIONS = {
-  preset: 'Named configuration profile (smart-hybrid, solo-fast, deep-architect, adversarial-team, custom)',
+  preset: 'Named configuration profile (smart-hybrid, carbon-guardrails, solo-fast, deep-architect, adversarial-team, custom)',
   'execution.mode': 'Orchestration gate mode (auto Proactive Sub-agent First, mode_a Direct, mode_b Orchestrator, team Golden Triangle)',
   'execution.modeAThresholdFiles': 'Max known-target files allowed in Mode A before spawning parallel sub-agents',
   'execution.swarmScaling': 'Sub-agent swarm scaling strategy (elastic 1->2-3->4-6->8+, hyper_swarm aggressive sharding, conservative 2-3 cap)',
@@ -121,6 +121,28 @@ const DEFAULT_SETTINGS = {
 
 const PRESETS = {
   'smart-hybrid': structuredClone(DEFAULT_SETTINGS),
+  'carbon-guardrails': {
+    version: KIT_VERSION,
+    preset: 'carbon-guardrails',
+    execution: { mode: 'mode_a', modeAThresholdFiles: 10, swarmScaling: 'elastic', maxParallelSubagents: 8 },
+    workflows: { defaultVariant: 'auto', naturalLanguageResearchTrigger: 'off' },
+    models: { subagentPolicy: 'quality_first' },
+    research: { depth: '5_lens_deep' },
+    clarification: { style: 'autonomous_first' },
+    teams: { maxDebateRounds: 3 },
+    codingStandards: { ...CODING_STANDARDS_PRESETS.pragmatic, preset: 'pragmatic' },
+    verification: { level: 'strict_e2e' },
+    deliverables: { routing: 'brain_artifacts' },
+    language: { response: 'auto' },
+    engines: {
+      researcher: 'current',
+      planner: 'current',
+      coder: 'current',
+      debugger: 'current',
+      reviewer: 'current',
+      councilMembers: 'claude,codex,antigravity',
+    },
+  },
   'solo-fast': {
     version: KIT_VERSION,
     preset: 'solo-fast',

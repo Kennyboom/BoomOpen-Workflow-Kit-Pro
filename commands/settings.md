@@ -31,7 +31,7 @@ If the user passes subcommands or flags in `<arguments>`, execute immediately **
 | User Input | CLI Command to Execute |
 |:-----------|:-----------------------|
 | `/settings status` | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js settings status` |
-| `/settings preset <smart-hybrid\|solo-fast\|deep-architect\|adversarial-team> [--project]` | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js settings preset <name> [--project]` |
+| `/settings preset <smart-hybrid\|carbon-guardrails\|solo-fast\|deep-architect\|adversarial-team> [--project]` | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js settings preset <name> [--project]` |
 | `/settings mode <auto\|mode_a\|mode_b\|team> [--project]` | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js settings set execution.mode <mode> [--project]` |
 | `/settings get [dotted.key] [--json]` | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js settings get [dotted.key] [--json]` |
 | `/settings set <dotted.key> <value> [--project]` | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js settings set <dotted.key> <value> [--project]` |
@@ -87,6 +87,7 @@ Invoke the platform's native **`ask_question`** tool (or numbered Markdown menu 
 
 1. **Question 1 — Preset Profile or Execution Mode**:
    - `(Recommended) ⚡ Preset: smart-hybrid (Mode A ≤2 files, Elastic Swarm max 8 sub-agents, auto_team NL routing, Brain Artifacts)`
+   - `🛡️ Preset: carbon-guardrails (Carbon Drives, BoomOpen Guards: <3KB Antigravity Slim GEMINI.md, Mode A ≤10 files, NL off, strict Pragmatic 400/500 & E2E)`
    - `🚀 Preset: solo-fast (Force Mode A Direct Execution, Conservative max 3 sub-agents, :fast variant, relaxed 600/800 lines)`
    - `🧠 Preset: deep-architect (Force Mode B Orchestrator, Elastic Swarm max 12 sub-agents, :hard variant, strict 300/400 lines)`
    - `🔺 Preset: adversarial-team (Force Elastic Golden Diamond :team + Cross-Engine Council, Hyper Swarm max 12 sub-agents, strict E2E)`

@@ -18,7 +18,7 @@ const { spawnSync } = require('node:child_process');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const FIXTURE_DIRS = ['cli', 'agents', 'commands', 'rules', 'documents', 'matrix-skills', 'skills', 'platforms', 'scripts'];
-const FIXTURE_FILES = ['README.md', 'SKILL.md', 'AGENT.md', 'CLAUDE.md', 'COPILOT.md', 'SECURITY.md', 'package.json'];
+const FIXTURE_FILES = ['README.md', 'SKILL.md', 'AGENT.md', 'CLAUDE.md', 'COPILOT.md', 'GEMINI.md', 'SECURITY.md', 'package.json'];
 const CLI_TIMEOUT_MS = 240000;
 
 /** Create a unique temp directory under os.tmpdir(). */

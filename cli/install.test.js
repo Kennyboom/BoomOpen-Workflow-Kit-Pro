@@ -318,7 +318,12 @@ test('Settings schema: version follows package.json, smart-hybrid defaults and 2
     const val = getSettingByKey(DEFAULT_SETTINGS, key);
     assert.ok(ALLOWED_ENUMS[key].includes(val), `DEFAULT_SETTINGS.${key} (${val}) not in ALLOWED_ENUMS`);
   }
-  assert.deepEqual(Object.keys(PRESETS), ['smart-hybrid', 'solo-fast', 'deep-architect', 'adversarial-team']);
+  assert.deepEqual(Object.keys(PRESETS), ['smart-hybrid', 'carbon-guardrails', 'solo-fast', 'deep-architect', 'adversarial-team']);
+  assert.equal(PRESETS['carbon-guardrails'].execution.mode, 'mode_a');
+  assert.equal(PRESETS['carbon-guardrails'].execution.modeAThresholdFiles, 10);
+  assert.equal(PRESETS['carbon-guardrails'].workflows.naturalLanguageResearchTrigger, 'off');
+  assert.equal(PRESETS['carbon-guardrails'].codingStandards.preset, 'pragmatic');
+  assert.equal(PRESETS['carbon-guardrails'].verification.level, 'strict_e2e');
   assert.equal(PRESETS['solo-fast'].execution.mode, 'mode_a');
   assert.equal(PRESETS['deep-architect'].execution.mode, 'mode_b');
   assert.equal(PRESETS['adversarial-team'].execution.mode, 'team');
@@ -336,7 +341,7 @@ test('Settings persistence (global + project), presets, set and reset work in an
     assert.equal(initial.preset, 'smart-hybrid');
     assert.equal(initial.workflows.naturalLanguageResearchTrigger, 'auto_team');
 
-    for (const presetName of ['solo-fast', 'deep-architect', 'adversarial-team', 'smart-hybrid']) {
+    for (const presetName of ['carbon-guardrails', 'solo-fast', 'deep-architect', 'adversarial-team', 'smart-hybrid']) {
       const applied = applyPreset(presetName, { homeDir, cwd, scope: 'global', sync: false });
       assert.equal(applied.settings.preset, presetName);
       assert.equal(applied.settings.execution.mode, PRESETS[presetName].execution.mode);

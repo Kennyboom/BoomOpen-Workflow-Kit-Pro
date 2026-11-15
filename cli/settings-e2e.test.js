@@ -7,7 +7,7 @@ const { spawnSync } = require('node:child_process');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const FIXTURE_DIRS = ['cli', 'agents', 'commands', 'rules', 'documents', 'matrix-skills', 'skills', 'platforms'];
-const FIXTURE_FILES = ['README.md', 'SKILL.md', 'AGENT.md', 'CLAUDE.md', 'COPILOT.md', 'package.json'];
+const FIXTURE_FILES = ['README.md', 'SKILL.md', 'AGENT.md', 'CLAUDE.md', 'COPILOT.md', 'GEMINI.md', 'package.json'];
 const CLI_TIMEOUT_MS = 180000;
 
 const tempDir = (prefix) => fs.mkdtempSync(path.join(os.tmpdir(), prefix));
@@ -101,6 +101,18 @@ test('every installed file with a settings block is synced; user files and other
     for (const file of [vsCodePromptsFile(home), path.join(home, '.cursor', 'rules', 'boomopen-workflow-kit.mdc')]) {
       assert.equal(fs.existsSync(file), false, `${file} must be removed by uninstall after a settings sync`);
     }
+
+    // Antigravity --with-hooks + carbon-guardrails E2E: <3KB GEMINI.md, hooks.json active, clean uninstall
+    fs.unlinkSync(userGemini);
+    runCli(kitRoot, home, cwd, ['install', 'antigravity', '--with-hooks']);
+    runCli(kitRoot, home, cwd, ['settings', 'preset', 'carbon-guardrails']);
+    const agGemini = path.join(home, '.gemini', 'GEMINI.md');
+    const agHooks = path.join(home, '.gemini', 'config', 'hooks.json');
+    assert.ok(Buffer.byteLength(read(agGemini), 'utf8') < 3000, 'carbon-guardrails GEMINI.md must be < 3KB');
+    assert.match(read(agHooks), /boomopen-guard/);
+    runCli(kitRoot, home, cwd, ['uninstall', 'antigravity']);
+    assert.equal(fs.existsSync(agGemini), false);
+    assert.equal(fs.existsSync(agHooks), false);
   } finally {
     for (const dir of [home, cwd, kitRoot]) fs.rmSync(dir, { recursive: true, force: true });
   }

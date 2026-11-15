@@ -79,6 +79,7 @@ const I18N = {
     previewBadge: '0ms Turn-1 Overhead',
     presets: [
       { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Default v5.5)', desc: 'Mode A <= 2 known files; Proactive Sub-agent First on Turn 1 for > 2 files, unscoped exploration, or /cmd; 17-language NL workflow routing.' },
+      { id: 'carbon-guardrails', title: '🛡️ Carbon-Guardrails (<3KB Antigravity Slim)', desc: 'Carbon drives, BoomOpen guards: <3KB GEMINI.md (-87% prompt tax), Mode A (≤10 files), NL trigger off, strict Pragmatic 400/500 & E2E gates + opt-in /cmd.' },
       { id: 'solo-fast', title: '🚀 Solo-Fast (Direct Mode A)', desc: 'Force Mode A Direct Execution (≤10 files), conservative swarm (max 3), :fast variant, Relaxed 600/800 lines.' },
       { id: 'deep-architect', title: '🧠 Deep-Architect (Strict Mode B)', desc: 'Force Mode B Multi-Agent Orchestrator (max 12), :hard variant, Strict 300/400 lines, council/cross_family routing.' },
       { id: 'adversarial-team', title: '🔺 Adversarial-Team (Golden Triangle)', desc: 'Force Golden Triangle :team, hyper_swarm (max 12), Strict 300/400 lines, council/cross_family review.' },
@@ -109,6 +110,7 @@ const I18N = {
     previewBadge: '0ms Độ trễ Turn-1',
     presets: [
       { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Mặc định v5.5)', desc: 'Mode A <= 2 file đã biết; Tự động gọi Sub-agent ngay Turn 1 khi > 2 file, khám phá codebase, hoặc /cmd; Định tuyến tự nhiên 17 ngôn ngữ.' },
+      { id: 'carbon-guardrails', title: '🛡️ Carbon-Guardrails (Carbon Cầm Lái, BoomOpen Gác Cổng)', desc: 'Bản siêu gọn <3KB cho Antigravity (-87% token mỗi lượt): Carbon tự lái Mode A (≤10 file), tắt bắt câu tự nhiên, giữ chặt chuẩn 400/500 dòng, E2E & lệnh /cmd chủ động.' },
       { id: 'solo-fast', title: '🚀 Solo-Fast (Trực tiếp Mode A)', desc: 'Ưu tiên Mode A trực tiếp (≤10 file), conservative (tối đa 3 sub-agent), biến thể :fast, giới hạn 600/800 dòng.' },
       { id: 'deep-architect', title: '🧠 Deep-Architect (Mode B Nghiêm ngặt)', desc: 'Bắt buộc Mode B đa tác tử (tối đa 12), biến thể :hard, chuẩn 300/400 dòng, định tuyến council/cross_family.' },
       { id: 'adversarial-team', title: '🔺 Adversarial-Team (Tam Giác Vàng)', desc: 'Kích hoạt Golden Triangle :team, hyper_swarm (tối đa 12), chuẩn 300/400 dòng, phản biện council/cross_family.' },

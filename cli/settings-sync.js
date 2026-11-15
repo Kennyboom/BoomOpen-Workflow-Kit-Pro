@@ -31,12 +31,24 @@ const { loadGlobalSettings } = require('./settings-store.js');
 
 const KIT_DIR_NAME = 'boomopen-workflow-kit';
 const COPILOT_AGENT_FILE = 'boomopen-workflow-kit.agent.md';
+const ANTIGRAVITY_EDITION_TAG = 'GEMINI/ANTIGRAVITY ';
+const CARBON_SLIM_TAG = 'GEMINI/ANTIGRAVITY CARBON-GUARDRAILS EDITION';
 const FENCE_PATTERN = /^\s*(```|~~~)/;
 
 function renderActiveSettingsMarkdown(settings = DEFAULT_SETTINGS) {
   const s = validateAndSanitizeSettings(settings, DEFAULT_SETTINGS);
   const cs = s.codingStandards;
   const t = s.execution.modeAThresholdFiles;
+  if (s.preset === 'carbon-guardrails') {
+    return [
+      SETTINGS_MARKER_START,
+      '## 🎛️ ACTIVE USER SETTINGS (`~/.boomopen/settings.json` | `/settings`)',
+      `- **Active Preset**: \`${s.preset}\` | **Execution Mode (\`execution.mode\`)**: \`${s.execution.mode}\` (\`≤ ${t}\` files direct; Carbon drives daily tasks) | **Swarm**: \`${s.execution.swarmScaling}\` (max \`${s.execution.maxParallelSubagents}\`)`,
+      `- **Workflows**: \`defaultVariant = ${s.workflows.defaultVariant}\` | \`naturalLanguageResearchTrigger = ${s.workflows.naturalLanguageResearchTrigger}\` (explicit \`/cmd\` only — zero NL hijacking)`,
+      `- **Standards**: \`${cs.preset}\` (Soft \`${cs.softFileLines}\` / Hard \`${cs.hardFileLines}\`L, \`forbidExplicitAny = ${cs.forbidExplicitAny}\`, \`warnConsoleLog = ${cs.warnConsoleLog}\`) | \`verification = ${s.verification.level}\` | \`deliverables = ${s.deliverables.routing}\` | \`lang = ${s.language.response}\``,
+      SETTINGS_MARKER_END,
+    ].join('\n');
+  }
   return [
     SETTINGS_MARKER_START,
     '## 🎛️ ACTIVE USER SETTINGS OVERRIDE (Managed via `/settings` & `~/.boomopen/settings.json`)',
@@ -176,6 +188,57 @@ function editableRange(content) {
   return end === -1 ? null : { start, end };
 }
 
+function renderAntigravitySlimBody(settings) {
+  return [
+    `# ⚡ BoomOpen Workflow Kit v5.5 — ${CARBON_SLIM_TAG}`,
+    '',
+    '> **CARBON DRIVES, BOOMOPEN GUARDS**: Native **Antigravity 2.0 / Orchestrator Carbon** drives daily planning, exploration, multi-file edits, `/plan`, `/boost`, `/teamwork`, `run_workflow`, and `swarm` directly. Load `~/.gemini/config/skills/boomopen-workflow-kit/commands/{cmd}.md` **ONLY** when an explicit BoomOpen `/cmd` is typed (`/autopilot`, `/conduct`, `/design:hard`, `/cook:team`, `/review:team`, `/settings`).',
+    '',
+    renderActiveSettingsMarkdown(settings),
+    '',
+    '---',
+    '',
+    '## 📏 PRAGMATIC 2-TIER STANDARDS & VERIFICATION (MANDATORY)',
+    '1. **Tier 1 (Zero Tolerance)**: Single Responsibility; **NO explicit `any`** (`unknown` + Zod/Type Guard or `<T>`); **NO debug `console.log`** in app UI/API/Services; `try/catch` + typed errors at async/API boundaries; `SCREAMING_SNAKE_CASE` constants; DRY (`≥ 3`) & sorted imports.',
+    '2. **Tier 2 (`400` Soft / `500` Hard Lines)**: Cohesive files `~200–350`L (split `> 500`L or multi-domain; tests/types/docs exempt); functions `~20–40`L (logic) / `~40–80`L (UI); nesting `≤ 4`; params `≤ 5`.',
+    '3. **E2E Verification & Silence Guard**: Run build/typecheck/tests end-to-end until `0` errors remain before reporting. After launching background tasks or subagents, output at most 2–3 concise sentences and end the turn with `0` tool calls (never repeat waiting status phrases).',
+    '',
+    '## 🛠️ OPT-IN CLI GATES, VAULT & ROUTING',
+    '- **CLI (`~/.gemini/config/skills/boomopen-workflow-kit/cli/install.js`)**: `check . --strict-phase --no-stubs` | `ledger` | `conduct` | `design` | `plan` | `research` | `cook` | `settings` | `doctor`.',
+    '- **Vault & Routing**: `1,440` library skills in `matrix-skills/compact-index.json`; artifacts → `<appDataDir>\\brain\\<conversation-id>\\`; reply in user\'s language, code/comments in English.',
+  ].join('\n');
+}
+
+function loadAntigravityFullTemplate(homeDir) {
+  const candidates = [
+    path.join(__dirname, '..', 'platforms', 'antigravity', 'GEMINI.md'),
+    path.join(__dirname, '..', 'GEMINI.md'),
+    path.join(homeDir, '.gemini', 'config', 'skills', KIT_DIR_NAME, 'GEMINI.md'),
+  ];
+  for (const candidate of candidates) {
+    try {
+      if (fs.existsSync(candidate)) return fs.readFileSync(candidate, 'utf8');
+    } catch {
+      // try next candidate
+    }
+  }
+  return null;
+}
+
+function syncAntigravityGeminiRegion(region, active, homeDir, hasKitBlock) {
+  const eol = region.includes('\r\n') ? '\r\n' : '\n';
+  const wrap = (body) => {
+    const normalized = body.replace(/\r?\n/g, eol).trimEnd();
+    return hasKitBlock ? `${KIT_BLOCK_START}${eol}${normalized}${eol}` : `${normalized}${eol}`;
+  };
+  if (active.preset === 'carbon-guardrails') return wrap(renderAntigravitySlimBody(active));
+  if (region.includes(CARBON_SLIM_TAG)) {
+    const fullTemplate = loadAntigravityFullTemplate(homeDir);
+    if (fullTemplate) return wrap(injectSettingsBlockIntoText(fullTemplate, active));
+  }
+  return injectSettingsBlockIntoText(region, active);
+}
+
 /** @returns {{ status: 'absent'|'written'|'current'|'skipped'|'failed', reason?: string }} */
 function syncOneFile(filePath, active, homeDir) {
   let current;
@@ -194,7 +257,11 @@ function syncOneFile(filePath, active, homeDir) {
   const found = findSettingsBlock(region);
   if (found.state === 'none') return { status: 'skipped', reason: 'no settings block' };
   if (found.state === 'malformed') return { status: 'skipped', reason: `damaged settings markers: ${found.reason}` };
-  const updated = current.slice(0, range.start) + injectSettingsBlockIntoText(region, active) + current.slice(range.end);
+  const isAntigravityGemini = path.basename(filePath) === 'GEMINI.md' && region.includes(ANTIGRAVITY_EDITION_TAG);
+  const nextRegion = isAntigravityGemini
+    ? syncAntigravityGeminiRegion(region, active, homeDir, current.includes(KIT_BLOCK_START))
+    : injectSettingsBlockIntoText(region, active);
+  const updated = current.slice(0, range.start) + nextRegion + current.slice(range.end);
   if (updated === current) return { status: 'current' };
   try {
     fs.writeFileSync(filePath, updated, 'utf8');
@@ -256,6 +323,7 @@ function syncSettingsToInstalledPlatforms(settings, options = {}) {
 
 module.exports = {
   renderActiveSettingsMarkdown,
+  renderAntigravitySlimBody,
   findSettingsBlock,
   injectSettingsBlockIntoText,
   getFrameworkPaths,

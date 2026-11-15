@@ -26,7 +26,7 @@ const FRAMEWORK_FILE_LIST = 'install-files.json';
 // that commands reference as ~/.{TOOL}/skills/boomopen-workflow-kit/scripts/<name>.py.
 const CORE_DIRS = ['agents', 'rules', 'documents', 'commands', 'matrix-skills', 'cli', 'scripts'];
 // package.json ships too: it is the single source of the kit version for the installed CLI copy.
-const ROOT_FILES = ['README.md', 'SKILL.md', 'package.json'];
+const ROOT_FILES = ['README.md', 'SKILL.md', 'GEMINI.md', 'package.json'];
 // Copied verbatim: documents explain the placeholders, skills_library is vendored third-party content.
 const VERBATIM_DIRS = new Set(['documents', 'skills_library']);
 
