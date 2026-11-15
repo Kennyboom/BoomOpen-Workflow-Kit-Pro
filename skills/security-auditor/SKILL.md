@@ -2,78 +2,75 @@
 name: security-auditor
 description: Expert security auditor specializing in DevSecOps, OWASP Top 10, AI/LLM Agent Security, Better Auth / OAuth 2.1, and compliance frameworks.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: "5.5.0"
+version: "6.0.0"
 ---
 
-# Security Auditor — OWASP Web, AI/Agentic Top 10 & DevSecOps (v5.5.0)
+# Security Auditor — 2-Layer Anti-Leakage Scanner v6, Route Census & Taint Audit (v6.0)
 
-> **PURPOSE**: Audit and harden modern full-stack, cloud, and AI/Agentic codebases against **OWASP Web & API Top 10**, **OWASP 2025/2026 Top 10 for LLM & Agentic Applications**, **OAuth 2.1 / Better Auth**, and credential leaks.
+> **PURPOSE**: Enforce **2-Layer Zero-Blind-Spot Security** across modern full-stack, desktop/IPC, and AI/Agentic codebases:
+> - **Layer 1 (Deterministic CLI Census & M1–M6 Static Gate)**: Zero-cap secret/PII/boundary scanning (`security_scan.py` + `security_rules.py`) paired with 100% deterministic entrypoint extraction (`route_census.py` via `--emit-routes`).
+> - **Layer 2 (Dynamic Endpoint-Sharded Source-to-Sink Audit)**: Parallel `security-engineer#ep-1..k` shards (`<= 8–10` endpoints/shard) proving `audited_entrypoints == extracted_entrypoints` via the **8-Column Endpoint Security & Anti-Leakage Matrix** and **4 Source-to-Sink Taint Checklists**.
 
 ---
 
-## 🔧 Automated Security Verification
+## 🔧 Layer 1: Automated Security, API & Schema Verification Gates
 
-| Tool / CLI | Purpose | Canonical Command |
-|------------|---------|-------------------|
-| `scripts/security_scan.py` | Scans source code for 2026 secret tokens (`sk-ant-...`, `sk-proj-...`, GitHub PATs, Google/Slack/AWS/Stripe keys, PEM blocks, DB URLs) and dangerous Web/SQL/Shell/TLS sinks while skipping `.env.example` & test fixtures | `python ~/.{TOOL}/skills/security-auditor/scripts/security_scan.py <project_path> [--json]` |
+| Tool / CLI | Coverage & Purpose | Canonical Command |
+|------------|--------------------|-------------------|
+| `scripts/security_scan.py` | **M1–M6 Anti-Leakage & Route Census**: Tracked `.env`/keys/service-accounts/Dockerfile secrets (M1), provider tokens + Shannon entropy `>= 3.7` secrets (M2), `NEXT_PUBLIC_`/`VITE_` & `"use client"` DB leaks + Electron/sourcemap boundaries (M3), auth/cookie logs + `500` `err.stack`/`sqlMessage` JSON leaks + Web storage tokens (M4), multi-line SQLi (`$queryRawUnsafe` vs safe tagged `` sql`...` ``), command exec, traversal, `cors` + credentials, unverified `jwt.decode`, TLS & SSRF (M5), plus 100% entrypoint extraction (M6) | `python ~/.{TOOL}/skills/security-auditor/scripts/security_scan.py <project_path> --json --emit-routes [--strict-leaks]` |
+| `api_validator.py` | Zero-cap backend route, `"use server"` action, tRPC procedure & OpenAPI contract validator with strict word-bounded auth guard detection | `python ~/.{TOOL}/skills/api-patterns/scripts/api_validator.py <project_path> [--json]` |
+| `schema_validator.py` | Zero-cap Prisma & Drizzle schema validator with per-table foreign-key index checks and `--strict` non-zero exit enforcement | `python ~/.{TOOL}/skills/database-design/scripts/schema_validator.py <project_path> --strict [--json]` |
 | `boomopen check` | Static Tier 1 safety gate (`0` explicit `any`, `0` hollow stubs, `0` deferred markers) | `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <target_dir> --strict-phase --no-stubs` |
 
 > `python` means your Python 3 launcher: use `python3` on macOS/Linux, or `py -3` on Windows, if `python` is not on PATH.
 
 ---
 
-## 1. OWASP Web & API Top 10 Hardening Checklist
+## 🔀 Layer 2: Dynamic Endpoint Sharding (`security-engineer#ep-1..k`)
 
-1. **Broken Object & Function Level Authorization (BOLA / BFLA)**:
-   - Enforce tenant and ownership scoping (`WHERE id = $1 AND org_id = $2`) on **every** read/write query — never rely solely on UI route hiding or client-supplied IDs.
-2. **Injection Prevention (SQL, Command, XSS, Template)**:
-   - Use parameterized queries / typed ORM bindings (Drizzle, Prisma, SQLx) exclusively — zero string concatenation or f-string SQL.
-   - Never pass untrusted input to `eval()`, `new Function()`, `child_process.exec()`, or `subprocess.run(..., shell=True)`.
-   - Sanitize rich HTML with `DOMPurify.sanitize()` before any `dangerouslySetInnerHTML` sink and enforce strict `Content-Security-Policy` headers.
-3. **Server-Side Request Forgery (SSRF) & Path Traversal**:
-   - Validate outbound webhook/fetch URLs against protocol (`https:` only), hostname allowlists, and DNS-resolved IP ranges (blocking RFC 1918, `127.0.0.0/8`, `169.254.169.254` cloud metadata, and IPv6 loopback).
-   - Resolve user-supplied file paths via `fs.realpathSync` / `Path.resolve()` and assert strict containment inside the allowed root directory.
-4. **Secrets & Cryptographic Hygiene**:
-   - Store secrets exclusively in environment variables / KMS / secret managers; commit `.env.example` with non-sensitive placeholders only.
-   - Enforce TLS 1.3 (`verify=True`, never disable `NODE_TLS_REJECT_UNAUTHORIZED`), Argon2id / scrypt password hashing, and constant-time HMAC webhook verification (`crypto.timingSafeEqual`).
+1. **Extract 100% Entrypoints First (`0` Silent File Cap)**:
+   - Run `security_scan.py <dir> --json --emit-routes` to enumerate every Next.js App/Pages route, `"use server"` exported async function, Express/Fastify/Hono/NestJS handler, tRPC `publicProcedure`/`protectedProcedure`, FastAPI/Flask route, Go/Rust HTTP route, Tauri `#[tauri::command]`, Electron `ipcMain.handle`/`ipcMain.on`, and AI `tool()` / MCP server tool.
+2. **Shard by Endpoint Budget (`<= 8–10` Entrypoints / Shard)**:
+   - Partition `route_census.entrypoints` into disjoint `security-engineer#ep-1..k` shards (`k = ceil(total / 9)`), keeping each shard within `<= 8–10` entrypoints (`<= 3–4` heavy files) so zero routes are skimmed or truncated.
+   - Hard coverage invariant: **`audited_entrypoints == extracted_entrypoints`** (`100%` of census IDs `EP-001..EP-N` must appear in the final matrix).
 
 ---
 
-## 2. OWASP 2025/2026 Top 10 for LLM & Agentic Applications
+## 🧭 Mandatory 4 Source-to-Sink Taint Checklists
 
-| Risk Vector | Mandatory Defense Pattern |
-|-------------|---------------------------|
-| **LLM01 — Indirect Prompt Injection** | Treat all RAG documents, scraped web pages, emails, Git issues, and tool outputs as **untrusted data**; separate system instructions from untrusted content with explicit structural delimiters and never let retrieved text escalate permissions. |
-| **LLM02 — Sensitive Information Disclosure** | Scope RAG vector queries strictly by caller ACLs (`user_id` / `tenant_id` pre-filtering before similarity search); redact PII and credentials from prompts, traces, and error logs. |
-| **LLM05 — Improper Output Handling** | Validate structured LLM outputs with strict **Zod / JSON Schema** parsers before passing them to SQL queries, shell commands, URL redirects, or DOM renderers (render LLM Markdown safely without raw HTML execution). |
-| **LLM06 / Agentic — Excessive Agency & MCP/Tool Abuse** | Grant tools minimum read/write scope; validate every MCP/tool argument against schema + path/URL sandboxes; require **explicit human-in-the-loop confirmation** before destructive mutations (deleting data, sending external emails, transferring funds, modifying IAM). |
-| **LLM10 — Unbounded Consumption (Denial of Wallet)** | Enforce per-user rate limits, max input size, max tool-loop iterations, request timeouts, and token/spend circuit breakers on all AI endpoints. |
-
----
-
-## 3. Modern Authentication: Better Auth & OAuth 2.1 + PKCE
-
-- **OAuth 2.1 Mandatory Controls**: Require **Authorization Code + PKCE (`S256`)** for all public and confidential clients; forbid deprecated Implicit (`response_type=token`) and Resource Owner Password flows; enforce exact redirect URI matching.
-- **Session & Token Hardening (`better-auth-typescript`)**:
-  - Prefer opaque server-backed sessions or short-lived access tokens stored in **`HttpOnly; Secure; SameSite=Lax` (or `Strict`)** cookies — **never** persist raw session JWTs or refresh tokens in `localStorage`.
-  - Rotate session tokens on privilege elevation, enforce CSRF protection on state-changing cookie endpoints, and support **WebAuthn / Passkeys** and TOTP MFA.
+1. **Checklist 1 — BOPLA & Outbound Read Leakage (`Read Source -> Serializer Sink`)**:
+   - Enforce explicit DTO / column projection (`select`, `omit`, typed response schema) on every read query — never serialize raw ORM entities exposing `passwordHash`, `totpSecret`, billing keys, internal flags, or cross-tenant PII.
+   - Block `500` responses from serializing `err.stack` / `sqlMessage`; forbid `(NEXT_PUBLIC|VITE|EXPO_PUBLIC|NUXT_PUBLIC|PUBLIC)_*` secrets, `"use client"` server-DB imports, `productionBrowserSourceMaps: true`, and auth header/cookie log dumps.
+2. **Checklist 2 — BOLA, Mass Assignment & TOCTOU Writes (`Mutation Input -> DB State`)**:
+   - Bind every write/delete/action query to server-verified caller identity + tenant ownership (`WHERE id = $1 AND org_id = $2`) — never trust client-supplied `userId`/`orgId` or `"use server"` hidden form arguments.
+   - Enforce strict allowlist schemas (`z.object(...).strict()`) blocking `role`, `isAdmin`, `plan`, or `balance` mass assignment, and wrap balance/inventory/quota mutations in atomic transactions or conditional `UPDATE ... WHERE` guards against TOCTOU races.
+3. **Checklist 3 — Injection, Traversal, SSRF, CORS & Webhook HMAC (`Untrusted Input -> OS/Net/DB Sink`)**:
+   - Allow parameterized bindings / safe tagged `` sql`...${v}` `` only; ban `$queryRawUnsafe`, `$executeRawUnsafe`, interpolated `sql.raw()`, `eval`, `child_process.exec`, and `spawn(..., { shell: true })`.
+   - Enforce `realpath` root-containment on file paths, DNS + IP-range allowlists on outbound `fetch` (blocking RFC 1918, `127.0.0.0/8`, `169.254.169.254`), non-wildcard `cors` when `credentials: true`, verified `jwt.verify()`, TLS verification (`rejectUnauthorized: true`), and raw-body `crypto.timingSafeEqual` HMAC + timestamp replay checks on webhooks.
+4. **Checklist 4 — LLM, RAG & MCP / Agentic Tool Boundary (`Prompt/Context -> Tool/Output Sink`)**:
+   - Isolate untrusted RAG chunks, web pages, emails, and tool results from system prompts; pre-filter vector search by caller `tenant_id` / `user_id` ACLs before similarity ranking.
+   - Validate structured LLM outputs with Zod/JSON Schema before downstream SQL/HTML/URL sinks, sandbox MCP/`tool()` file/network scopes with human-in-the-loop confirmation on destructive actions, and enforce per-user rate/token/spend circuit breakers.
 
 ---
 
-## 4. 2026 Specialized Security Skills (`skills_library/`)
+## 📊 Mandatory 8-Column Endpoint Security & Anti-Leakage Matrix
 
-| Security Domain | Skill Path | Focus Area |
-|-----------------|------------|------------|
-| **OWASP Top 10 for LLM & AI Agents (2025/2026)** | `../../skills_library/owasp-llm-agent-security-2025/SKILL.md` (`skills_library/owasp-llm-agent-security-2025/SKILL.md`) | Indirect prompt injection defense, MCP tool sandboxing, RAG tenant ACLs |
-| **Better Auth, OAuth 2.1, Passkeys & RBAC** | `../../skills_library/better-auth-typescript/SKILL.md` (`skills_library/better-auth-typescript/SKILL.md`) | TypeScript authentication, WebAuthn/Passkeys, multi-tenant RBAC, session hardening |
-| **Terraform / OpenTofu & IaC Security** | `../../skills_library/terraform-opentofu-production/SKILL.md` (`skills_library/terraform-opentofu-production/SKILL.md`) | `trivy` / `checkov` policy gates, state encryption, least-privilege IAM |
-| **Vulnerability Scanner & Dependency Audit** | `../../skills_library/vulnerability-scanner/SKILL.md` (`skills_library/vulnerability-scanner/SKILL.md`) | Lockfile CVE auditing, SBOM hygiene, supply-chain hardening |
+Every security review or `/security-audit` report MUST include this 8-column census table covering `100%` of extracted entrypoints (`audited_entrypoints == extracted_entrypoints`):
+
+| ID (`EP-NNN`) | Entrypoint (`METHOD path/symbol`) | `file:line` | AuthN Guard | AuthZ / Tenant Scope (`BOLA`) | Input Schema | Response Projection / Anti-Leak (`BOPLA`) | Sink & Rate-Limit Verdict |
+|---------------|-----------------------------------|-------------|-------------|-------------------------------|--------------|-------------------------------------------|---------------------------|
+| `EP-001` | `POST /api/orders` | `app/api/orders/route.ts:14` | `getSession()` | `org_id == session.orgId` | `CreateOrderSchema` | `OrderPublicDto` (`0` internal fields) | Safe ORM + `20/min` limit (`PASS`) |
 
 ---
 
-## 5. Audit Deliverable Format (`REVIEW` / `SECURITY` Findings)
+## 🔐 Modern Authentication (Better Auth & OAuth 2.1) & Vault References
 
-Report every security finding ordered by severity (`CRITICAL` → `HIGH` → `MEDIUM` → `LOW`) with:
-1. **Location & Evidence**: Exact `file:line` citation and CWE / OWASP Web or LLM category.
-2. **Exploit Scenario**: Concrete attack path and blast radius (without exposing real secret values in reports).
-3. **Remediation & Verification**: Minimal code fix + verification via `security_scan.py` and regression tests.
+- **OAuth 2.1 + Better Auth**: Enforce Authorization Code + PKCE (`S256`), exact redirect URIs, `HttpOnly; Secure; SameSite=Lax|Strict` session cookies (never store raw session JWTs/refresh tokens in `localStorage`/`sessionStorage`), CSRF protection on cookie mutations, and WebAuthn/Passkeys + TOTP MFA.
+- **Specialized Vault Skills (`~/.{TOOL}/skills_library/`)**:
+  - `owasp-llm-agent-security-2025/SKILL.md` — Indirect prompt injection, MCP sandboxing, RAG tenant ACLs.
+  - `better-auth-typescript/SKILL.md` — Better Auth sessions, OAuth 2.1, Passkeys, multi-tenant RBAC.
+  - `terraform-opentofu-production/SKILL.md` & `vulnerability-scanner/SKILL.md` — IaC policy gates & lockfile CVE auditing.
+
+## 📄 Finding Remediation Format
+
+Order findings `CRITICAL` → `HIGH` → `MEDIUM` → `LOW` with: (1) clickable `[file:line](file:///...)` + CWE/OWASP/Checklist tag, (2) step-by-step source-to-sink exploit scenario (redacting live secrets), and (3) non-bypassable patch diff verified by `security_scan.py --json --emit-routes` + regression tests.
