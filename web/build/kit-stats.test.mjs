@@ -94,15 +94,15 @@ test('committed kit-stats.json and public discovery files match repository groun
   assert.deepEqual(committed, expected, 'run `npm --prefix web run stats` to regenerate kit-stats.json')
   assert.equal(committed.platforms, 5)
   assert.equal(committed.i18nLocales, 17)
-  assert.equal(committed.agents, 21)
+  assert.equal(committed.agents, 22)
   assert.equal(committed.teams, 18)
   assert.equal(committed.teamRoles, 54)
   assert.equal(committed.teamFiles, 72)
   assert.equal(committed.coreSkills, 22)
   assert.equal(committed.librarySkills, 1440)
   assert.equal(committed.skills, 1462)
-  assert.equal(committed.commands.length, 32)
-  assert.equal(committed.commandFiles, 84)
+  assert.equal(committed.commands.length, 33)
+  assert.equal(committed.commandFiles, 89)
   assert.deepEqual(checkKitStats(REPO_ROOT, KIT_STATS_FILE), { inSync: true })
 
   for (const discoveryFile of ['robots.txt', 'sitemap.xml', 'llms.txt']) {
@@ -221,7 +221,7 @@ test('commands.ts, agents.ts, teams.ts, skills.ts & platforms.ts match 100% of d
   assert.ok(!('@xyflow/react' in (webPkg.dependencies ?? {})), '@xyflow/react must not remain in web/package.json')
 
   const llmsTxt = fs.readFileSync(path.join(PUBLIC_DIR, 'llms.txt'), 'utf8')
-  for (const sub of ['install', 'uninstall', 'list', 'doctor', 'settings', 'research', 'design', 'plan', 'cook', 'ledger', 'conduct', 'check']) {
+  for (const sub of ['install', 'uninstall', 'list', 'doctor', 'settings', 'research', 'design', 'plan', 'cook', 'reconcile', 'audit', 'ledger', 'conduct', 'check']) {
     assert.ok(llmsTxt.includes(`\`${sub}\``), `public/llms.txt must document CLI subcommand ${sub}`)
   }
 

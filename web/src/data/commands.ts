@@ -179,7 +179,14 @@ const COMMAND_SEEDS: readonly CommandSeed[] = [
     '"Nâng cấp giao diện trang chủ lên đẳng cấp thiết kế flagship sắc nét"',
   ),
 
-  // Quality & Security (6)
+  // Quality & Security (7)
+  defineSeed(
+    'audit', 'quality-security',
+    'Stateful multi-round whole-project post-completion audit (.boomopen/audit-ledger.json): RTM spec completeness, vertical flow continuity, 2-layer security & anti-leakage, user-approved sharded fixing, and monotonic test ratchet.',
+    'Kiểm toán toàn diện dự án nhiều vòng sau khi code xong (.boomopen/audit-ledger.json): độ phủ đặc tả RTM, tính liên thông luồng dọc, bảo mật & chống rò rỉ 2 lớp, sửa lỗi theo lựa chọn người dùng và chốt chặn kiểm thử đơn điệu.',
+    '"Run a full multi-round project audit against our specs and let me pick which findings to fix"',
+    '"Audit toàn diện dự án sau khi code xong đối chiếu tài liệu và cho anh chọn mục cần sửa"',
+  ),
   defineSeed(
     'review', 'quality-security',
     'Evidence-backed code and repository audit (including Golden Diamond :team) classifying defects by severity with exact file:line proof.',

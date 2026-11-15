@@ -33,6 +33,8 @@ const { runPlanCli, parsePlanMarkdown, validatePlan, compilePlanToLedger } = req
 const { runDesignCli, parseDesignMarkdown, validateDesign, extractDesignContract } = require('./design.js');
 const { runResearchCli, parseResearchMarkdown, validateResearch, extractResearchBrief } = require('./research.js');
 const { runCookCli, detectCookState, compileWavePackets, verifyWaveExecution, runCookPreflight } = require('./cook.js');
+const { runReconcileCli, scanProjectReconciliation, amendPlanWithDeltaWave } = require('./reconcile.js');
+const { runAuditCli, initAuditLedger, getRoundSlice, recordRoundFindings, applyUserDecisions, verifyRoundFixes } = require('./audit.js');
 const { runConductorCli, dispatchToEngine, runMultiEngineCouncil, resolveEngineForRole } = require('./conductor.js');
 const {
     loadSettings,
@@ -466,6 +468,8 @@ Commands:
   doctor             Kit source and installed-platform health checks (read-only)
   check [dir]        Audit source files against the Pragmatic 2-Tier Coding Standards
   cook [subcmd]      State detection, wave handoff packets & post-wave verification (see "cook help")
+  reconcile [dir]    Wave 2.5 spec-to-code reconciliation, island detector & route/env parity (see "reconcile --help")
+  audit [subcmd]     Stateful multi-round whole-project audit ledger & fix ratchet (see "audit help")
   research [subcmd]  Validate RESEARCH/BRAINSTORM.md (4 gates) & extract HANDOFF_BRIEF (see "research help")
   design [subcmd]    Validate DESIGN.md (4 gates) & extract DESIGN_CONTRACT (see "design help")
   plan [subcmd]      Validate PLAN.md (5 gates) & compile to project-ledger.json (see "plan help")
@@ -632,7 +636,7 @@ async function main(argv = process.argv.slice(2)) {
     const isSettings = command === 'settings' || command === 'config';
     const isConduct = command === 'conduct' || command === 'conductor';
     // These subcommands parse their own options, including --help.
-    const ownsHelp = isSettings || isConduct || command === 'doctor' || command === 'check' || command === 'ledger' || command === 'plan' || command === 'design' || command === 'research' || command === 'cook';
+    const ownsHelp = isSettings || isConduct || command === 'doctor' || command === 'check' || command === 'ledger' || command === 'plan' || command === 'design' || command === 'research' || command === 'cook' || command === 'reconcile' || command === 'audit';
     if (!command && (flags.has('--version') || flags.has('-v'))) return printLine(KIT_VERSION);
 
     if (!command || command === 'help' || ((flags.has('--help') || flags.has('-h')) && !ownsHelp)) {
@@ -661,6 +665,18 @@ async function main(argv = process.argv.slice(2)) {
         case 'cook': {
             // state, packets, verify-wave, preflight, --help
             const code = runCookCli(rest, { cwd: process.cwd(), homeDir: HOME });
+            if (code !== 0) process.exitCode = code;
+            return undefined;
+        }
+        case 'reconcile': {
+            // [dir], --plan, --specs, --ledger, --strict, --json, --help
+            const code = runReconcileCli(rest, { cwd: process.cwd(), homeDir: HOME });
+            if (code !== 0) process.exitCode = code;
+            return undefined;
+        }
+        case 'audit': {
+            // init, slice, record, approve, verify-fix, status, --help
+            const code = runAuditCli(rest, { cwd: process.cwd(), homeDir: HOME });
             if (code !== 0) process.exitCode = code;
             return undefined;
         }
@@ -739,6 +755,15 @@ module.exports = {
     compileWavePackets,
     verifyWaveExecution,
     runCookPreflight,
+    runReconcileCli,
+    scanProjectReconciliation,
+    amendPlanWithDeltaWave,
+    runAuditCli,
+    initAuditLedger,
+    getRoundSlice,
+    recordRoundFindings,
+    applyUserDecisions,
+    verifyRoundFixes,
     runResearchCli,
     parseResearchMarkdown,
     validateResearch,

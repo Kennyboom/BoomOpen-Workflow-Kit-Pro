@@ -49,6 +49,8 @@ export type CliCommandId =
   | 'design'
   | 'plan'
   | 'cook'
+  | 'reconcile'
+  | 'audit'
   | 'ledger'
   | 'conduct'
   | 'check'

@@ -1,11 +1,11 @@
 <div align="center">
   <h1>⚡ BoomOpen Workflow Kit v5.5.0</h1>
-  <p><strong>Hệ Điều Hành Nhân Sự AI Đa Nền Tảng — 21 Đặc Vụ Chuyên Gia, 18 Đội Hình Tam Giác Vàng &amp; Kho Hơn 1.460+ Kỹ Năng Chuyên Sâu</strong></p>
+  <p><strong>Hệ Điều Hành Nhân Sự AI Đa Nền Tảng — 22 Đặc Vụ Chuyên Gia, 18 Đội Hình Tam Giác Vàng &amp; Kho Hơn 1.460+ Kỹ Năng Chuyên Sâu</strong></p>
 
   <p>
     <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#-các-nền-tảng-ai-được-hỗ-trợ"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
-    <a href="#-21-đặc-vụ-chuyên-gia--18-đội-hình-tam-giác-vàng"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
+    <a href="#-22-đặc-vụ-chuyên-gia--18-đội-hình-tam-giác-vàng"><img src="https://img.shields.io/badge/Agents-22%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 22 Specialists + 18 Teams" /></a>
     <a href="#-kho-hơn-1460-kỹ-năng-chuyên-sâu-22-kỹ-năng-lõi--1440-kỹ-năng-thư-viện"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
     <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
@@ -38,7 +38,7 @@
     <a href="#-cài-đặt-nhanh--kiểm-định"><b>🚀 Cài Đặt Nhanh</b></a> •
     <a href="#-hướng-dẫn-lựa-chọn-chế-độ--bảng-cài-đặt-settings-control-center"><b>🎛️ Chế Độ &amp; Cài Đặt</b></a> •
     <a href="#-bảng-tham-chiếu-lệnh-slash"><b>🎯 Lệnh Slash</b></a> •
-    <a href="#-21-đặc-vụ-chuyên-gia--18-đội-hình-tam-giác-vàng"><b>🤖 21 Agents &amp; 18 Teams</b></a> •
+    <a href="#-22-đặc-vụ-chuyên-gia--18-đội-hình-tam-giác-vàng"><b>🤖 22 Agents &amp; 18 Teams</b></a> •
     <a href="#-kho-hơn-1460-kỹ-năng-chuyên-sâu-22-kỹ-năng-lõi--1440-kỹ-năng-thư-viện"><b>📚 Kho 1.460+ Kỹ Năng</b></a>
   </p>
 </div>
@@ -60,11 +60,11 @@
 
 ## 🌟 BoomOpen Workflow Kit v5.5 là gì?
 
-**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** là hệ điều hành đa tác tử (Multi-Agent) mã nguồn mở giúp biến một AI Coding Assistant đơn lẻ thành một tổ chức kỹ thuật hoàn chỉnh gồm **21 Đặc vụ Chuyên gia (Specialist Agents)**, **18 Đội hình Tam Giác Vàng (Golden Triangle Teams)**, **22 Kỹ năng Lõi (`skills/`)** và **Kho 1.440 Kỹ Năng Chuyên Sâu (`skills_library/`)**.
+**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** là hệ điều hành đa tác tử (Multi-Agent) mã nguồn mở giúp biến một AI Coding Assistant đơn lẻ thành một tổ chức kỹ thuật hoàn chỉnh gồm **22 Đặc vụ Chuyên gia (Specialist Agents)**, **18 Đội hình Tam Giác Vàng (Golden Triangle Teams)**, **33 lệnh Slash (`89` file quy trình & tham chiếu)**, **22 Kỹ năng Lõi (`skills/`)** và **Kho 1.440 Kỹ Năng Chuyên Sâu (`skills_library/`)**.
 
-Khác với các bộ prompt đơn lẻ hoặc các wrapper nặng nề gây lãng phí ngữ cảnh ở mọi lượt hội thoại, BoomOpen v5.5 kết hợp **Cổng Ưu Tiên Sub-agent Ngay Từ Turn 1 (Proactive Sub-agent First Gate)**, **Định Tuyến Ngôn Ngữ Tự Nhiên 17 Ngôn Ngữ**, **Phân Mảnh Bầy Đàn Đàn Hồi 4 Tầng (`role#shard`)**, **Điều Hành Dự Án Tự Hành Nhiều Phiên (`/autopilot`)**, và **Nhạc Trưởng Đa Công Cụ & Hội Đồng Đa Mô Hình (`/conduct`)** cùng **Cơ Chế Nạp Kỹ Năng O(1) Không Gây Phình Ngữ Cảnh**:
-- **🚀 Phân Tán Sub-agent Song Song Ngay Turn 1 & Điều Phối Đa Tác Tử Mode B**: Khi cần khám phá codebase (`> 2 files`), phát triển tính năng đa tầng (`≥ 2 domains`), yêu cầu quy trình bằng ngôn ngữ tự nhiên trên **cả 17 ngôn ngữ** (`Plan`, `Design`, `Research`, `Brainstorm`, `Review`, `Debug`, `Fix`, `Test`, `Cook`, `Code`, `Autopilot`, `Conduct`, `Docs`, `Report`, `Deploy`), hoặc gọi lệnh `/cmd`, hệ thống lập tức khởi chạy song song các phân mảnh sub-agent (`role#shard`, tối đa `3–4 OWNED_FILES`/shard) ngay ở Turn 1 với **DAG Parallel Fan-Out**, **Direct Plan-to-Executor Dispatch**, **Khóa Hợp Đồng & Quyền Ghi File (`SHARED_CONTRACT` + `OWNED_FILES`)**, và **Tái Sử Dụng Sub-agent Nóng (`role#shard -> conversationId` qua `send_message`)**.
-- **🏛️ Điều Hành Dự Án Nhiều Phiên (`/autopilot` & `boomopen ledger`) & Hội Đồng Đa Nền Tảng (`/conduct` & `boomopen conduct`)**: Đọc hiểu tài liệu PRD/spec thành sổ cái `.boomopen/project-ledger.json` bất biến kèm khóa chống trượt SHA-256 và Cổng Chất Lượng 4 Lớp (`boomopen check --strict-phase --no-stubs`), hoặc điều phối song song Claude Code, OpenAI Codex, Antigravity, Cursor và Copilot trong **Hội Đồng Đa Mô Hình** (`.boomopen/conductor/runs/<runId>-COUNCIL-SYNTHESIS.md`) và **Đường Ống Phân Vai (`Author != Critic`)**.
+Khác với các bộ prompt đơn lẻ hoặc các wrapper nặng nề gây lãng phí ngữ cảnh ở mọi lượt hội thoại, BoomOpen v5.5 kết hợp **Cổng Ưu Tiên Sub-agent Ngay Từ Turn 1 (Proactive Sub-agent First Gate)**, **Định Tuyến Ngôn Ngữ Tự Nhiên 17 Ngôn Ngữ**, **Phân Mảnh Bầy Đàn Đàn Hồi 4 Tầng (`role#shard`)**, **Tự Động Đối Soát & Bù Thiếu Code Wave 2.5 (`boomopen reconcile`)**, **Kiểm Toán Toàn Diện Dự Án Nhiều Vòng (`/audit` & `boomopen audit`)**, **Điều Hành Dự Án Tự Hành Nhiều Phiên (`/autopilot`)**, và **Nhạc Trưởng Đa Công Cụ & Hội Đồng Đa Mô Hình (`/conduct`)** cùng **Cơ Chế Nạp Kỹ Năng O(1) Không Gây Phình Ngữ Cảnh**:
+- **🚀 Phân Tán Sub-agent Song Song Ngay Turn 1, Đối Soát Wave 2.5 & Điều Phối Đa Tác Tử Mode B**: Khi cần khám phá codebase (`> 2 files`), phát triển tính năng đa tầng (`≥ 2 domains`), yêu cầu quy trình bằng ngôn ngữ tự nhiên trên **cả 17 ngôn ngữ** (`Plan`, `Design`, `Research`, `Brainstorm`, `Review`, `Audit`, `Debug`, `Fix`, `Test`, `Cook`, `Code`, `Autopilot`, `Conduct`, `Docs`, `Report`, `Deploy`), hoặc gọi lệnh `/cmd`, hệ thống lập tức khởi chạy song song các phân mảnh sub-agent (`role#shard`, tối đa `3–4 OWNED_FILES`/shard) ngay ở Turn 1 với **DAG Parallel Fan-Out**, **Direct Plan-to-Executor Dispatch**, **Khóa Hợp Đồng & Quyền Ghi File (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Đối Soát Spec-to-Code Wave 2.5 (`boomopen reconcile` + `cook amend-plan` tự động bắt module ốc đảo, lệch route/env & sót điều khoản `[SC-*]`)**, và **Tái Sử Dụng Sub-agent Nóng (`role#shard -> conversationId` qua `send_message`)**.
+- **🏛️ Điều Hành Dự Án Nhiều Phiên (`/autopilot`), Kiểm Toán Toàn Diện Sau Hoàn Thiện (`/audit`) & Hội Đồng Đa Nền Tảng (`/conduct`)**: Đọc hiểu tài liệu PRD/spec thành sổ cái `.boomopen/project-ledger.json` bất biến kèm khóa chống trượt SHA-256 và Cổng Chất Lượng 4 Lớp (`boomopen check --strict-phase --no-stubs`); chạy kiểm toán toàn diện dự án nhiều vòng có duyệt người dùng (`/audit` & `boomopen audit` -> `.boomopen/audit-ledger.json`) trên độ phủ RTM, luồng dọc UI->API->DB, Bảo mật & Chống Rò Rỉ 2 Lớp (`security_scan.py` v6); hoặc điều phối song song Claude Code, OpenAI Codex, Antigravity, Cursor và Copilot trong **Hội Đồng Đa Mô Hình** và **Đường Ống Phân Vai (`Author != Critic`)**.
 - **⚡ Mode A — Thực Thi Vi Mô Đích Danh**: Các câu hỏi Q&A, giải thích code, hoặc chỉnh sửa nhỏ khi đã biết chính xác `≤ 2 files` ngay từ Turn 1 được thực thi trực tiếp, tuân thủ nghiêm ngặt **Chuẩn Code Thực Dụng 2 Tầng (Pragmatic 2-Tier Coding Standards)** và **Kiểm Thử & Sửa Lỗi Bền Bỉ**.
 - **📚 Kho Hơn 1.460+ Kỹ Năng Chuyên Sâu Với 0% Phình Bộ Nhớ Ngữ Cảnh**: Được biên dịch sẵn vào chỉ mục `matrix-skills/compact-index.json` (`1.462` kỹ năng) giúp tra cứu 2 bước `O(1)` — trang bị cho AI tri thức chuyên gia tức thì về Backend (Cloudflare D1/R2/DO, Hono RPC, Supabase RLS, Drizzle, Rust Axum), Frontend (React 19/Next.js 15, Tailwind v4, TanStack Start), Mobile (Tauri v2, React Native, Flutter), Game Dev (Unity 6 DOTS, Godot 4, WebGPU/Three.js TSL, Colyseus Netcode), AI/ML & Agent SDKs (MCP FastMCP 2025, OpenAI/Claude/Google ADK), Cloud/DevOps (Terraform/OpenTofu) và Bảo mật OWASP LLM 2025 **mà không làm đầy cửa sổ prompt**.
 
@@ -107,8 +107,8 @@ flowchart TD
    - Bản kế hoạch đa domain khóa trước API endpoints, DTO schemas và phân tách quyền sở hữu file (`OWNED_FILES` vs. `READ_ONLY_FILES`) trước khi khởi chạy song song các kỹ sư, loại bỏ hoàn toàn xung đột ghi đè file.
 5. **🔍 Truy Nguyên Nhân Gốc Rễ 5-Whys (SPIE v3.0) & Giữ Sạch Git Tree 100%**:
    - `debugger` phân tích tối thiểu 3 giả thuyết (`debugger#hyp-1..N`) và chuỗi nhân quả **5-Whys** (`Why 1 Triệu chứng` → `Why 5 Nguyên nhân hệ thống`). Các tài liệu trung gian (`PLAN`, `DEBUG`, `TEST`, `REVIEW`, `MAILBOX`) được ưu tiên lưu vào `<appDataDir>\brain\<conversation-id>\` để giữ sạch cây Git.
-6. **🩺 Bộ Công Cụ CLI Tích Hợp (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check`, `doctor` & `settings`) & Chỉ Mục Kỹ Năng O(1)**:
-   - `npm run doctor` kiểm tra toàn bộ 5 nền tảng, 21 agents, 72 file đội hình trên 18 thư mục team, 84 file lệnh trong `commands/**/*.md` (79 quy trình lệnh + 5 giao thức `_ref/`) và `matrix-skills/compact-index.json` (`1.462` kỹ năng). Bộ biên dịch quy trình tiền định — `boomopen research <validate|brief>`, `boomopen design <validate|contract>`, `boomopen plan <validate|compile>` và `boomopen cook <state|packets|verify-wave|preflight>` — tự động kiểm định tài liệu đầu vào (`RESEARCH-*`, `BRAINSTORM-*`, `DESIGN-*`, `PLAN-*`), biên dịch `HANDOFF_BRIEF` / `DESIGN_CONTRACT` / `.boomopen/project-ledger.json` / gói giao việc 5 trường và khóa `OWNED_FILES` / `READ_ONLY_FILES`. `boomopen check <dir> [--strict-phase --no-stubs]` kiểm tra độ dài file, `any` tường minh, `console.log` sót lại, `TODO`/`FIXME` và stub rỗng; `boomopen ledger` quản lý sổ cái dự án đa phiên; và `boomopen conduct` điều phối 6 tác vụ Hội đồng đa mô hình (`research|brainstorm|plan|design|review|debug`).
+6. **🩺 Bộ Công Cụ CLI 14 Lệnh Tích Hợp (`research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`, `check`, `doctor`, `settings`, `install`, `uninstall`, `list`) & Chỉ Mục Kỹ Năng O(1)**:
+   - `npm run doctor` kiểm tra toàn bộ 5 nền tảng, 22 agents, 72 file đội hình trên 18 thư mục team, 89 file lệnh trong `commands/**/*.md` (83 quy trình lệnh + 6 giao thức `_ref/`) và `matrix-skills/compact-index.json` (`1.462` kỹ năng). Bộ biên dịch quy trình tiền định — `boomopen research <validate|brief>`, `boomopen design <validate|contract>`, `boomopen plan <validate|compile>`, `boomopen cook <state|packets|verify-wave|preflight|amend-plan>`, `boomopen reconcile` và `boomopen audit <init|slice|record|approve|verify-fix|status>` — tự động kiểm định tài liệu đầu vào (`RESEARCH-*`, `BRAINSTORM-*`, `DESIGN-*`, `PLAN-*`), biên dịch `HANDOFF_BRIEF` / `DESIGN_CONTRACT` / `.boomopen/project-ledger.json` / gói giao việc 5 trường, đối soát liên kết Wave 2.5 (`REC-G1..G4`), và điều hành kiểm toán dự án nhiều vòng (`.boomopen/audit-ledger.json`). `boomopen check <dir> [--strict-phase --no-stubs]` kiểm tra độ dài file, `any` tường minh, `console.log` sót lại, `TODO`/`FIXME` và stub rỗng; `boomopen ledger` quản lý sổ cái dự án đa phiên; và `boomopen conduct` điều phối 6 tác vụ Hội đồng đa mô hình (`research|brainstorm|plan|design|review|debug`).
 
 ---
 
@@ -146,6 +146,8 @@ boomopen research validate path/to/RESEARCH.md                  # Kiểm định
 boomopen design validate path/to/DESIGN.md                      # Kiểm định DESIGN-* 6 khối & xuất DESIGN_CONTRACT
 boomopen plan validate path/to/PLAN.md                          # Kiểm định PLAN-* & biên dịch .boomopen/project-ledger.json
 boomopen cook preflight path/to/PLAN.md                         # Xuất gói giao việc 5 trường theo Wave & khóa OWNED_FILES
+boomopen reconcile path/to/your/project --plan path/to/PLAN.md  # Đối soát Spec-to-Code Wave 2.5 (REC-G1..G4)
+boomopen audit init --docs docs/prd.md,docs/arch.md             # Khởi tạo sổ cái kiểm toán dự án nhiều vòng
 boomopen check path/to/your/project --strict-phase --no-stubs
 boomopen ledger status
 boomopen conduct probe
@@ -212,6 +214,7 @@ Mặc định ngay sau khi cài đặt, BoomOpen v5.5 tự động kích hoạt 
 | **`/debug`** | `:fast`, `:hard`, `:team` | Điều tra nguyên nhân gốc rễ theo 3 giả thuyết + chuỗi nhân quả **5-Whys (SPIE v3.0)** (`DEBUG-{issue}.md`) |
 | **`/test`** | `:fast`, `:hard`, `:team` | Chạy DAG Parallel Fan-Out bộ test hiện có + rà soát edge-case chưa phủ (`tester` + `scouter`) |
 | **`/review`** | `:fast`, `:hard`, `:team` | Kiểm định 4 chiều song song (Kiến trúc, Chất lượng Code, Bảo mật OWASP, Hiệu năng) |
+| **`/audit`** | `:run`, `:fix`, `:auto` | Kiểm toán toàn diện dự án nhiều vòng sau khi code xong (Độ phủ RTM, luồng dọc UI->API->DB, Bảo mật & Chống rò rỉ 2 lớp, sửa lỗi theo lựa chọn người dùng qua `boomopen audit`) |
 | **`/design`** | `:fast`, `:hard`, `:team` | Thiết kế kiến trúc hệ thống, lược đồ CSDL và đặc tả UI/UX (`DESIGN.md`) |
 | **`/docs`** | `:core`, `:business`, `:audit` | Khởi tạo và đồng bộ tài liệu kiến trúc & nghiệp vụ chuẩn 2 tầng (`./documents/`) |
 | **`/deploy`** | `:check`, `:preview`, `:production`, `:rollback` | Kiểm tra điều kiện triển khai, môi trường preview, rollout production & rollback an toàn |
@@ -226,13 +229,13 @@ Mặc định ngay sau khi cài đặt, BoomOpen v5.5 tự động kích hoạt 
 
 ---
 
-## 🤖 21 Đặc Vụ Chuyên Gia & 18 Đội Hình Tam Giác Vàng
+## 🤖 22 Đặc Vụ Chuyên Gia & 18 Đội Hình Tam Giác Vàng
 
 | Nhóm Chuyên Môn | Đặc Vụ Chuyên Gia (`agents/*.md`) | Đội Hình Tam Giác Vàng (`agents/teams/*-team/`) |
 |----------|-----------------------------------|------------------------------------------------|
 | **Kỹ Thuật & Thực Thi** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer`, `database-architect`, `devops-engineer` | `backend-team`, `frontend-team`, `fullstack-team`, `mobile-team`, `game-team`, `database-team`, `devops-team` |
 | **Kiến Trúc & Hoạch Định** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
-| **Chất Lượng, Bảo Mật & Gỡ Lỗi** | `debugger`, `tester`, `reviewer`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
+| **Chất Lượng, Bảo Mật & Gỡ Lỗi** | `debugger`, `tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
 | **Nghiên Cứu & Tri Thức** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
 
 ---
@@ -256,9 +259,9 @@ BoomOpen tích hợp một trong những kho kỹ năng kỹ thuật phần mề
 
 ```text
 BoomOpen-Workflow-Kit-Pro/
-├── agents/                  # 21 Đặc vụ Chuyên gia + 18 Đội hình Tam Giác Vàng (54 file vai trò + 18 _team.md, 72 files)
-├── cli/                     # Bộ CLI: install.js, doctor.js, checker.js, settings.js, research.js, design.js, plan.js, cook.js, ledger.js & conductor.js
-├── commands/                # 79 quy trình lệnh Slash (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 giao thức _ref/ (84 files)
+├── agents/                  # 22 Đặc vụ Chuyên gia + 18 Đội hình Tam Giác Vàng (54 file vai trò + 18 _team.md, 72 files)
+├── cli/                     # Bộ CLI 14 lệnh: install.js, doctor.js, checker.js, settings.js, research.js, design.js, plan.js, cook.js, reconcile.js, audit.js, ledger.js & conductor.js
+├── commands/                # 83 quy trình lệnh Slash (33 lệnh: :fast, :hard, :team, :run/:fix/:auto, :init/:run/:audit, :council/:pipeline) + 6 giao thức _ref/ (89 files)
 ├── documents/               # Tài liệu Kiến trúc, Domain, Source-Base & Chuẩn Code 2 tầng
 ├── i18n/                    # Tài liệu đa ngôn ngữ (16 bản dịch đầy đủ cho các ngôn ngữ phổ biến)
 ├── matrix-skills/           # Ma trận kỹ năng YAML theo miền + chỉ mục nén compact-index.json (1.462 kỹ năng)

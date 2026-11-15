@@ -14,12 +14,12 @@ version: "5.5.0"
 
 | Subsystem | Canonical Inventory | Location |
 |-----------|---------------------|----------|
-| **Specialist Agents** | **`21` specialist agents** (`planner`, `tech-lead`, `backend-engineer`, `frontend-engineer`, `database-architect`, `mobile-engineer`, `game-engineer`, `designer`, `researcher`, `scouter`, `brainstormer`, `debugger`, `tester`, `reviewer`, `security-engineer`, `performance-engineer`, `devops-engineer`, `docs-manager`, `business-analyst`, `project-manager`, `reporter`) | `agents/*.md` |
+| **Specialist Agents** | **`22` specialist agents** (`planner`, `tech-lead`, `backend-engineer`, `frontend-engineer`, `database-architect`, `mobile-engineer`, `game-engineer`, `designer`, `researcher`, `scouter`, `brainstormer`, `debugger`, `tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer`, `devops-engineer`, `docs-manager`, `business-analyst`, `project-manager`, `reporter`) | `agents/*.md` |
 | **Adversarial Teams** | **`18` specialist Golden Diamond / Golden Triangle teams (`72` team files)** including `backend-team`, `brainstorm-team`, `database-team`, `debug-team`, `design-team`, `devops-team`, `docs-team`, `frontend-team`, `fullstack-team`, `game-team`, `mobile-team`, `performance-team`, `planning-team`, `project-team`, `qa-team`, `report-team`, `research-team`, `security-team` | `agents/teams/*/` |
-| **Workflow Commands** | **`84` flat command & reference files** across 32 slash commands & 17 natural-language intents | `commands/**/*.md` |
+| **Workflow Commands** | **`89` flat command & reference files** (`83` workflows + `6` `_ref/`) across `33` slash commands & 17 natural-language intents | `commands/**/*.md` |
 | **Skill Ecosystem** | **`22` core skills + `1,440` library skills (`1,462` indexed in `compact-index.json`)** | `skills/` + `skills_library/` + `matrix-skills/compact-index.json` |
 | **Core Rules** | **`7` on-demand Mode B rule specs** (`<= 300` lines each) | `rules/{CORE,AGENTS,PHASES,TEAMS,SKILLS,ERRORS,REFERENCE}.md` |
-| **Deterministic CLI** | **`12` zero-dependency Node.js CLI subcommands** (install, governance, artifact compilers & multi-engine council) | `cli/install.js` (`boomopen`) |
+| **Deterministic CLI** | **`14` zero-dependency Node.js CLI subcommands** (install, governance, artifact compilers, Wave 2.5 reconcile, multi-round audit & multi-engine council) | `cli/install.js` (`boomopen`) |
 
 ---
 
@@ -58,7 +58,7 @@ version: "5.5.0"
 
 ---
 
-## 🛠️ Deterministic CLI Suite (`boomopen` — All 12 Subcommands)
+## 🛠️ Deterministic CLI Suite (`boomopen` — All 14 Subcommands)
 
 Invoke via `boomopen <subcommand>` (when linked) or `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js <subcommand>`:
 
@@ -73,7 +73,9 @@ Invoke via `boomopen <subcommand>` (when linked) or `node ~/.{TOOL}/skills/boomo
 | `research` | `research <validate\|brief> <file> [--mode research\|brainstorm] [--out <f>]` | 4-Gate validator (`RES-G1..G4`) & `HANDOFF_BRIEF` extractor for `RESEARCH` / `BRAINSTORM` |
 | `design` | `design <validate\|contract> <file> [--out <f>] [--json]` | 4-Gate UI spec validator (`DESIGN-G1..G4`) & `DESIGN_CONTRACT` token/props compiler |
 | `plan` | `plan <validate\|compile> <file> [--sync-ledger]` | 5-Gate implementation plan validator (`PLAN-G1..G5`) & Plan-to-Ledger compiler |
-| `cook` | `cook <state\|packets\|verify-wave\|preflight>` | Fast-forward artifact state detector, wave packet compiler & Post-Wave `COOK-G1..G4` verifier |
+| `cook` | `cook <state\|packets\|verify-wave\|preflight\|amend-plan>` | Fast-forward artifact state detector, wave packet compiler, `COOK-G1..G4` verifier & delta plan amender |
+| `reconcile` | `reconcile [dir] [--plan <p>] [--specs <s1,s2>] [--ledger <l>] [--strict]` | Wave 2.5 spec-to-code reconciliation (`REC-G1..G4`: island shards, route parity, `[SC-*]` & `.env.example` parity) |
+| `audit` | `audit <init\|slice\|record\|approve\|verify-fix\|status>` | Stateful multi-round whole-project audit ledger (`.boomopen/audit-ledger.json`) & user-approved fix ratchet |
 | `ledger` | `ledger <init\|from-plan\|validate\|status\|next\|verify\|audit>` | Multi-session `.boomopen/project-ledger.json` phase ratchet & RTM spec completeness auditor |
 | `conduct` | `conduct <probe\|dispatch\|council\|status>` | Cross-engine CLI orchestrator & parallel Multi-Engine Council consensus runner |
 
@@ -92,7 +94,7 @@ Invoke via `boomopen <subcommand>` (when linked) or `node ~/.{TOOL}/skills/boomo
 | Rule File | Purpose | When to Load |
 |-----------|---------|--------------|
 | [`rules/CORE.md`](./rules/CORE.md) | 17-Language Workflow Gate, 4-Tier Dynamic Elastic Swarm, Orchestration Laws, Model Policy | On-demand in Mode B |
-| [`rules/AGENTS.md`](./rules/AGENTS.md) | `21` Specialist Agents, Cognitive Load Sharding (`≤ 3–4` files/shard), Warm Reuse (`role#shard`) | Before delegating to specialist subagents |
+| [`rules/AGENTS.md`](./rules/AGENTS.md) | `22` Specialist Agents, Cognitive Load Sharding (`≤ 3–4` files/shard), Warm Reuse (`role#shard`) | Before delegating to specialist subagents |
 | [`rules/PHASES.md`](./rules/PHASES.md) | DAG-Aware Parallel Fan-Out, Multi-Session `/autopilot` & 4-Layer Phase Ratchet, `/conduct` Phases | When running multi-phase workflows |
 | [`rules/TEAMS.md`](./rules/TEAMS.md) | `18` Elastic Golden Diamond Teams (`72` files) & Cross-Engine Conductor (`boomopen conduct`) | When executing `:team` or `/conduct` variants |
 | [`rules/SKILLS.md`](./rules/SKILLS.md) | Fast 2-Step Progressive Skill Lookup (`<skills>` → `compact-index.json` 22 core + 1,440 library = 1,462 indexed skills) | When resolving domain skills for complex tasks |
@@ -101,12 +103,12 @@ Invoke via `boomopen <subcommand>` (when linked) or `node ~/.{TOOL}/skills/boomo
 
 ---
 
-## 🎯 Workflow Commands (`commands/` — 84 Files)
+## 🎯 Workflow Commands (`commands/` — 89 Files across 33 Slash Commands)
 
 | Command | Router File | Variants |
 |---------|-------------|----------|
-| `/cook` | [`commands/cook.md`](./commands/cook.md) | `fast`, `hard`, `team` (`boomopen cook state\|packets\|verify-wave`) |
-| `/code` | [`commands/code.md`](./commands/code.md) | `fast`, `hard`, `team` (Direct Plan-to-Executor Dispatch) |
+| `/cook` | [`commands/cook.md`](./commands/cook.md) | `fast`, `hard`, `team` (`boomopen cook state\|packets\|verify-wave\|amend-plan` + Wave 2.5 `reconcile`) |
+| `/code` | [`commands/code.md`](./commands/code.md) | `fast`, `hard`, `team` (Direct Plan-to-Executor Dispatch + Wave 2.5 `reconcile`) |
 | `/plan` | [`commands/plan.md`](./commands/plan.md) | `fast`, `hard`, `team` (`boomopen plan validate\|compile`) |
 | `/design` | [`commands/design.md`](./commands/design.md) | `fast`, `hard`, `team` (`boomopen design validate\|contract`) |
 | `/research` | [`commands/research.md`](./commands/research.md) | `fast`, `hard`, `team` (`boomopen research validate\|brief`) |
@@ -115,6 +117,7 @@ Invoke via `boomopen <subcommand>` (when linked) or `node ~/.{TOOL}/skills/boomo
 | `/debug` | [`commands/debug.md`](./commands/debug.md) | `fast`, `hard`, `team` |
 | `/test` | [`commands/test.md`](./commands/test.md) | `fast`, `hard`, `team` |
 | `/review` | [`commands/review.md`](./commands/review.md) | `fast`, `hard`, `team` |
+| `/audit` | [`commands/audit.md`](./commands/audit.md) | `run`, `fix`, `auto` (Multi-Round Whole-Project Post-Completion Audit & User-Approved Fixing via `boomopen audit`) |
 | `/docs` | [`commands/docs.md`](./commands/docs.md) | `core`, `business`, `audit` |
 | `/deploy` | [`commands/deploy.md`](./commands/deploy.md) | `check`, `preview`, `production`, `rollback` |
 | `/report` | [`commands/report.md`](./commands/report.md) | `fast`, `hard`, `team` |

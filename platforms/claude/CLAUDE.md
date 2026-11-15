@@ -111,7 +111,8 @@ REPORTS   = ./reports/{topic}/
 - **`research <validate|brief>`**: Validate `RESEARCH-*` / `BRAINSTORM-*` (`--mode brainstorm`, `RES-G1..G4`) & compile `HANDOFF_BRIEF`.
 - **`design <validate|contract>`**: Validate 6-Block `DESIGN-*` (`DESIGN-G1..G4`) & compile `DESIGN_CONTRACT` (`@theme` CSS + TypeScript props).
 - **`plan <validate|compile>`**: Validate `PLAN-*` (`PLAN-G1..G5`, `≤ 4 OWNED_FILES`/shard) & compile `.boomopen/project-ledger.json`.
-- **`cook <state|packets|verify-wave|preflight>`**: Detect artifacts, compile 5-Field Wave Handoff Packets, & enforce `OWNED_FILES` / `READ_ONLY_FILES` + `--strict-phase --no-stubs`.
+- **`cook <state|packets|verify-wave|preflight|amend-plan>`**: Detect artifacts, compile 5-Field Wave Handoff Packets, enforce `OWNED_FILES` / `READ_ONLY_FILES` + `--strict-phase --no-stubs`, & amend delta waves.
+- **`reconcile` | `audit <init|slice|record|approve|verify-fix|status>`**: Wave 2.5 spec-to-code reconciliation (`REC-G1..G4`: island detector, route & env parity) & stateful multi-round human-gated project audit ledger.
 - **`ledger` | `conduct <probe|dispatch|council|status>` | `check --strict-phase --no-stubs` | `settings` | `doctor`**: DAG ledger, 6-task Multi-Engine Council (`research|brainstorm|plan|design|review|debug`), 2-Tier code gate, settings, & health check.
 
 ---
@@ -142,6 +143,7 @@ REPORTS   = ./reports/{topic}/
 | `/cook`, `/cook:hard`, `/cook:fast`, `/cook:team` | Build new feature end-to-end when no `PLAN` exists yet (*"xây dựng tính năng"*, *"làm tính năng..."*, *"build feature"*, *"implement end-to-end"*, *"开发新功能"*, *"新機能開発"*, *"기능 개발"*) | Load `commands/cook-hard.md` (or `cook-team.md`) |
 | `/code`, `/code:hard`, `/code:fast`, `/code:team` | Execute approved `PLAN` (*"ok em làm đi"*, *"tiến hành đi"*, *"proceed"*, *"go ahead"*, *"implement the plan"*, *"开始执行"*, *"実行して"*, *"진행해"*) — do **NOT** re-run `/plan`! | Direct Plan-to-Executor Dispatch / `commands/code-team.md` |
 | `/autopilot`, `/autopilot:init`, `/autopilot:run`, `/autopilot:audit` | Multi-session / multi-phase project execution from spec docs (*"điều hành dự án nhiều phase"*, *"đọc tài liệu code toàn bộ dự án"*, *"chạy tiếp phase tiếp theo"*, *"autopilot"*, *"multi-phase project"*) | Load `commands/autopilot.md` (`.boomopen/project-ledger.json` gate) |
+| `/audit`, `/audit:run`, `/audit:fix`, `/audit:auto` | Multi-round whole-project post-completion audit & user-approved fixing (*"audit toàn diện dự án"*, *"kiểm toán toàn bộ dự án sau khi code xong"*, *"audit project"*, *"full project audit"*, *"全面项目审计"*, *"プロジェクト全体監査"*) | Load `commands/audit.md` (`.boomopen/audit-ledger.json` gate) |
 | `/conduct`, `/conduct:council`, `/conduct:pipeline` | Multi-engine parallel council consensus or cross-platform pipeline (*"nhiều nền tảng cùng làm rồi tổng hợp"*, *"hội đồng đa mô hình"*, *"chạy song song Claude + Codex + Gemini"*, *"multi-engine council"*, *"cross-engine dispatch"*) | Load `commands/conduct.md` → `commands/conduct-council.md` (or `conduct-pipeline.md`) |
 | `/docs`, `/report`, `/deploy`, `/ask`, `/orchestrate`, `/save`, `/recap`, `/settings` | Docs (*"viết tài liệu"*, *"write docs"* → `commands/docs-core.md`), report (*"báo cáo"*, *"status report"* → `commands/report-hard.md`), deploy (*"deploy"* → `commands/deploy-check.md`), Q&A (`/ask` → `commands/ask.md`), swarm (`/orchestrate` → `commands/orchestrate.md`), session (`/save`, `/recap`), settings (*"cài đặt"*, *"/settings"* → `commands/settings.md`) | Load `commands/{cmd}.md` → `commands/{cmd}-{variant}.md` |
 
@@ -166,7 +168,7 @@ REPORTS   = ./reports/{topic}/
 |------|---------|
 | `CORE.md` | Mode B orchestration laws & deliverable paths |
 | `PHASES.md` | DAG Parallel Fan-Out, Contract-First dispatch, Direct Plan execution |
-| `AGENTS.md` | Tiered execution (21 specialists), Warm Session Reuse, `OWNED_FILES` locks |
+| `AGENTS.md` | Tiered execution (22 specialists), Warm Session Reuse, `OWNED_FILES` locks |
 | `TEAMS.md` | Golden Diamond / Triangle team execution protocol (18 `:team` teams) |
 | `SKILLS.md` | Fast 2-step progressive skill resolution (`1,440` library skills / `1,462` indexed in `compact-index.json`) |
 | `ERRORS.md` / `REFERENCE.md` | Error recovery (`E0` auto-revive) & quick lookup tables |

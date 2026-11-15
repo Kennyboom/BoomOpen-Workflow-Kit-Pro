@@ -1,6 +1,6 @@
 ---
 name: boomopen-workflow-kit-autopilot-audit
-description: "🏛️ Autopilot Audit — End-to-End Requirement Traceability Matrix (RTM), Zero-Omission Spec Audit, and Anti-Regression Verification. Use when the user types /autopilot:audit."
+description: "🏛️ Autopilot Audit — End-to-End RTM Verification + Multi-Round Human-Gated Post-Completion Audit Engine (Zero Pre-Approval Mutation). Use when the user types /autopilot:audit."
 ---
 
 # /autopilot:audit

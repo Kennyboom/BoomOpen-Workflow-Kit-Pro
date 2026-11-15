@@ -1,6 +1,6 @@
 # 📚 REFERENCE
 
-> **VERSION**: 5.5 — Smart-Hybrid Edition | **PURPOSE**: Fast lookup tables for 17-Language Intent-to-Workflow Routing, Research/Design/Plan Validators (`boomopen research|design|plan`), 5-Stage Cook/Code Engine (`boomopen cook`), Multi-Session Autopilot Ledger, Cross-Engine Conductor (`boomopen conduct`), 4-Tier Dynamic Elastic Swarm & Cross-Platform Tools (all 5 platforms)
+> **VERSION**: 5.5 — Smart-Hybrid Edition | **PURPOSE**: Fast lookup tables for 17-Language Intent-to-Workflow Routing, Research/Design/Plan Validators (`boomopen research|design|plan`), 5-Stage Cook/Code + Wave 2.5 Reconcile Engine (`boomopen cook|reconcile`), Stateful Multi-Round Audit (`boomopen audit`), Multi-Session Autopilot Ledger, Cross-Engine Conductor (`boomopen conduct`), 4-Tier Dynamic Elastic Swarm & Cross-Platform Tools (all 5 platforms)
 
 ---
 
@@ -30,7 +30,7 @@ $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\le
 | **2** | **UI/UX & Design Spec**: *"design UI/UX"*, *"thiết kế giao diện / UI"*, *"设计界面"*, *"UI/UXデザイン"*, *"화면 설계"*, *"diseñar UI"* | `commands/design-hard.md` \| `design-team.md` | `DESIGN-{feature}.md` (`≤ 500` lines, `RequestFeedback: true`, `boomopen design validate`) + optional `DESIGN-PREVIEW-{feature}.html` |
 | **3** | **Deep Research**: *"research / deep dive"*, *"nghiên cứu / tìm hiểu sâu"*, *"深入研究"*, *"徹底調査"*, *"심층 조사"*, *"investigar"* | `commands/research-team.md` (`auto_team`) \| `research-hard.md` | `RESEARCH-{topic}.md` (`≤ 500` lines, `RequestFeedback: true` when actionable, `boomopen research <validate\|brief>`) |
 | **4** | **Brainstorm / Ideation**: *"brainstorm / propose ideas"*, *"khám phá / đề xuất ý tưởng"*, *"头脑风暴"*, *"アイデア提案"*, *"브레인스토밍"* | `commands/brainstorm-team.md` (`auto_team`) \| `brainstorm-hard.md` | `BRAINSTORM-{topic}.md` (`≤ 500` lines, `RequestFeedback: true`, `boomopen research <validate\|brief>`) |
-| **5** | **Code / Security / Arch Review**: *"review / audit code"*, *"đánh giá / review / audit"*, *"代码审查"*, *"コード監査"*, *"코드 리뷰"* | `commands/review-team.md` \| `review-hard.md` | `REVIEW-{scope}.md` |
+| **5** | **Code / Security / Project Audit**: *"review / audit code or project"*, *"đánh giá / review / audit toàn diện dự án"*, *"代码审查 / 全面项目审计"*, *"コード監査"* | `commands/review-team.md` \| `review-hard.md` \| `commands/audit.md` (multi-round whole-project) | `REVIEW-{scope}.md` / `.boomopen/audit-ledger.json` |
 | **6** | **Root-Cause Debug**: *"debug / find root cause"*, *"tìm nguyên nhân lỗi / tại sao lỗi"*, *"排查原因"*, *"原因究明"*, *"원인 파악"* | `commands/debug-hard.md` \| `debug-team.md` | `DEBUG-{issue}.md` |
 | **7** | **Multi-File Bug Fix**: *"fix bug / resolve errors"*, *"sửa lỗi / khắc phục sự cố"*, *"修复bug"*, *"バグ修正"*, *"버그 수정"* (`> 2` files) | `commands/fix-hard.md` \| `fix-team.md` | `DEBUG` + `TEST-{issue}.md` |
 | **8** | **Testing & QA**: *"write/run tests"*, *"viết test / kiểm thử"*, *"编写测试"*, *"テスト作成"*, *"테스트 작성"*, *"escribir pruebas"* | `commands/test-hard.md` \| `test-team.md` | `TEST-{feature}.md` (`check --strict-phase --no-stubs`) |
@@ -47,7 +47,7 @@ $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\le
 
 | Model | Permitted Usage | Rule |
 |-------|-----------------|------|
-| `Model: "inherit"` (or `"pro"`) | All 21 specialist agents across engineering, architecture, planning, scouting, research, ideation, debugging, testing, reviewing, security, design, docs | **MANDATORY DEFAULT** (Pro High quality) |
+| `Model: "inherit"` (or `"pro"`) | All 22 specialist agents across engineering, architecture, planning, scouting, research, ideation, debugging, testing, reviewing, reconciliation, security, design, docs | **MANDATORY DEFAULT** (Pro High quality) |
 | `Model: "flash"` | Trivial mechanical chores only (raw log aggregation, simple formatting) | Only when 0 reasoning needed |
 | `Model: "flash_lite"` | **NONE** | **⛔ STRICTLY FORBIDDEN** |
 
@@ -95,19 +95,20 @@ Commands, agents and rules are written in the **Antigravity tool vocabulary** (t
 | `/ask` | `ask.md` | `fast`, `hard` | `/orchestrate` | `orchestrate.md` | Multi-agent domain & shard orchestration |
 | `/code` | `code.md` | `fast`, `hard`, `team` | `/save`, `/recap` | `save.md`, `recap.md` | Save / restore session state & memory |
 | `/autopilot` | `autopilot.md` | `init`, `run`, `audit` | `/settings` | `settings.md` | Unified Settings & Control Center |
+| `/audit` | `audit.md` | `run`, `fix`, `auto` | — | — | Multi-round whole-project audit (`boomopen audit`) |
 | `/conduct` | `conduct.md` | `council`, `pipeline` | — | — | Cross-Engine Conductor (`boomopen conduct`) |
 
 > On Claude Code, `/init`, `/review` and `/status` are also built-in commands; if the built-in one runs, ask for the kit workflow by name (e.g. "run the BoomOpen /review:hard workflow") or use a variant such as `/review:hard`.
 
 ---
 
-## AGENT TABLE (21 Specialist Agents — Default `Model: "inherit"`)
+## AGENT TABLE (22 Specialist Agents — Default `Model: "inherit"`)
 
 | Category | Agents (`role#shard` when horizontally sharded `> 3–4` files) | Primary Tasks |
 |----------|---------------------------------------------------------------|---------------|
 | **meta** | `tech-lead`, `planner` | Architecture review, `:team` Diamond Arbitration, `PLAN` & `SHARED_CONTRACT` + shard allocation |
 | **execution** | `backend-engineer`, `frontend-engineer`, `database-architect`, `mobile-engineer`, `game-engineer` | 3-Wave Contract-First sharded code & schema implementation (`≤ 3–4 OWNED_FILES` per shard) |
-| **validation** | `tester`, `reviewer`, `security-engineer`, `performance-engineer`, `debugger` | Parallel `tester#1..k` QA, code review, OWASP pentest, profiling, root-cause debugging |
+| **validation** | `tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer`, `debugger` | Parallel `tester#1..k` QA, Wave 2.5 spec/wiring reconciliation, code review, OWASP pentest, profiling, debugging |
 | **research** | `researcher`, `scouter`, `brainstormer`, `designer` | Multi-vector external/doc research, codebase mapping, grounded ideation, 6-Block UI/UX specs |
 | **support** | `docs-manager`, `devops-engineer`, `business-analyst`, `project-manager`, `reporter` | Documentation suites, sharded CI/CD & IaC, BRD/requirements, project coordination, status reports |
 
@@ -123,7 +124,9 @@ docs_suite_workspace:   ./documents/knowledge-*/00-index.md
 research_cli_validator: boomopen research <validate|brief> <file.md> [--mode research|brainstorm] [--json] # Evidence/citation gate for RESEARCH & BRAINSTORM + compact downstream brief (< 50ms)
 design_cli_validator:   boomopen design <validate|contract> <design.md> [--json]                           # 4-Gate static design & DESIGN_CONTRACT validator (< 50ms)
 plan_cli_validator:     boomopen plan <validate|compile> <plan.md> [--sync-ledger]  # 5-Gate static plan validator (< 50ms)
-cook_code_cli_engine:   boomopen cook <state|packets|verify-wave|preflight>         # 5-Stage Fast-Forward state, 5-Field Packet emitter & 3-Wave lock/anti-stub gate
+cook_code_cli_engine:   boomopen cook <state|packets|verify-wave|preflight|amend-plan>  # 5-Stage Fast-Forward state, 5-Field Packet emitter, 3-Wave lock gate & delta wave amender
+reconcile_cli_engine:   boomopen reconcile [dir] [--plan <p>] [--specs <s1,s2>] [--strict] # Wave 2.5 REC-G1..G4 island shard, route parity, [SC-*] & .env.example parity scanner
+audit_cli_ledger:       ./.boomopen/audit-ledger.json + ./.boomopen/AUDIT-PROGRESS.md (boomopen audit <init|slice|record|approve|verify-fix|status>)
 strict_quality_gate:    boomopen check <dir> --strict-phase --no-stubs              # Pragmatic 2-Tier quality, line limits & anti-stub/anti-skip verifier
 autopilot_ledger:       ./.boomopen/project-ledger.json + ./.boomopen/ROADMAP-PROGRESS.md (boomopen ledger <init|from-plan|validate|status|next|verify|audit>)
 conductor_runs:         ./.boomopen/conductor/runs/<runId>-COUNCIL-SYNTHESIS.md

@@ -2,7 +2,7 @@
 # boomopen workflow kit — Codex Multi-Agent Configuration
 # =============================================================================
 # This file is MERGED into ~/.codex/config.toml during install.
-# It registers all 21 specialist agents and enables multi-agent orchestration.
+# It registers all 22 specialist agents and enables multi-agent orchestration.
 # =============================================================================
 
 project_doc_fallback_filenames = ["AGENT.md", "CODEX.md", "AGENTS.md", ".agents.md"]
@@ -21,7 +21,7 @@ max_threads = 6
 max_depth = 2
 
 # -----------------------------------------------------------------------------
-# Agent Role Declarations (21 specialists)
+# Agent Role Declarations (22 specialists)
 # -----------------------------------------------------------------------------
 
 [agents.backend-engineer]
@@ -99,6 +99,10 @@ config_file = "agents/boomopen/scouter.toml"
 [agents.security-engineer]
 description = "Principal Security Architect — threat modeling, secure coding, vulnerability assessment"
 config_file = "agents/boomopen/security-engineer.toml"
+
+[agents.spec-reconciler]
+description = "Principal Spec-to-Code Reconciliation Auditor — verifies 100% spec coverage, module wiring, and delta wave gaps"
+config_file = "agents/boomopen/spec-reconciler.toml"
 
 [agents.tech-lead]
 description = "Technical Lead — orchestrates implementation, routes to specialists, ensures quality"

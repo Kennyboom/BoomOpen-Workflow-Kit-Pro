@@ -2,7 +2,7 @@
   "version": "5.5.0",
   "platforms": 5,
   "i18nLocales": 17,
-  "agents": 21,
+  "agents": 22,
   "teams": 18,
   "teamRoles": 54,
   "teamFiles": 72,
@@ -121,6 +121,15 @@
       "description": "Ask Router — Smart-Hybrid Question Answering Router (Mode A Direct, Elastic Parallel Scout & Evidence-Gated Research)"
     },
     {
+      "name": "audit",
+      "variants": [
+        "auto",
+        "fix",
+        "run"
+      ],
+      "description": "Audit Router — Stateful Multi-Round Post-Completion Whole-Project Audit (Spec <-> Code RTM, Cross-Module Flow, 2-Layer Security/Leakage & Human-Gated Fix Loop)"
+    },
+    {
       "name": "auto",
       "variants": [],
       "description": "Autonomous Execution — Full workflow automation"
@@ -132,7 +141,7 @@
         "init",
         "run"
       ],
-      "description": "Autonomous Multi-Session Project Orchestrator — Ingest multi-doc specs into an immutable .boomopen/project-ledger.json, execute multi-phase DAGs with Elastic Golden Diamond swarms, and enforce 4-Layer Zero-Omission & Anti-Regression Quality Gates."
+      "description": "Autonomous Multi-Session Project Orchestrator — Ingest multi-doc specs into an immutable .boomopen/project-ledger.json, execute multi-phase DAGs with Elastic Golden Diamond swarms, and run Human-Gated Multi-Round Post-Completion Audits."
     },
     {
       "name": "brainstorm",
@@ -331,7 +340,7 @@
       "description": "UI/UX Pro Max — Empirical design intelligence (50+ styles, 97 palettes, 57 font pairings) + 2026 OKLCH @theme tokens, 6-Block DESIGN_CONTRACT & 4-Gate CLI validation"
     }
   ],
-  "commandWorkflowFiles": 79,
-  "commandRefFiles": 5,
-  "commandFiles": 84
+  "commandWorkflowFiles": 83,
+  "commandRefFiles": 6,
+  "commandFiles": 89
 }

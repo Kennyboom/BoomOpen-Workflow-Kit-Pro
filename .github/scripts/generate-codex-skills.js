@@ -26,9 +26,9 @@ const DEFAULT_BRAND_COLOR = '#6366F1';
 const FRONTMATTER_PATTERN = /^---\r?\n([\s\S]*?)\r?\n---/;
 const CONTROL_CHARS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g;
 
-/** Brand colour per base command (all 32 base commands in commands/*.md). */
+/** Brand colour per base command (all 33 base commands in commands/*.md). */
 const BRAND_COLORS = {
-  architect: '#6366F1', ask: '#06B6D4', auto: '#6366F1', autopilot: '#8B5CF6',
+  architect: '#6366F1', ask: '#06B6D4', audit: '#DC2626', auto: '#6366F1', autopilot: '#8B5CF6',
   brainstorm: '#EC4899', code: '#3B82F6', conduct: '#7C3AED', cook: '#F59E0B',
   debug: '#EF4444', 'deep-audit': '#DC2626', deploy: '#8B5CF6', design: '#EC4899',
   docs: '#14B8A6', fix: '#EF4444', init: '#0EA5E9', next: '#06B6D4',

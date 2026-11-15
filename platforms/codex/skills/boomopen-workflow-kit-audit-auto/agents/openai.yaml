@@ -1,0 +1,6 @@
+interface:
+  display_name: "/audit:auto"
+  short_description: "🤖 Audit Auto — Explicit Unattended Multi-Round Post-Completion Audit & Auto-Remediation Loop (--auto-fix)"
+  brand_color: "#DC2626"
+policy:
+  allow_implicit_invocation: true

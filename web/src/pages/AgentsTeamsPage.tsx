@@ -40,6 +40,7 @@ const DOMAIN_LABELS: Readonly<Record<string, BilingualText>> = {
   quality: { en: 'QA & Review', vi: 'Kiểm thử & Review' },
   research: { en: 'Research & Docs', vi: 'Nghiên cứu & Tài liệu' },
   security: { en: 'Security', vi: 'Bảo mật' },
+  validation: { en: 'Spec Validation', vi: 'Đối soát Đặc tả' },
 }
 
 function toSlugId(raw: string): string {

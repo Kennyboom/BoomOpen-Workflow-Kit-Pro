@@ -192,7 +192,7 @@ function renderAntigravitySlimBody(settings) {
   return [
     `# ⚡ BoomOpen Workflow Kit v5.5 — ${CARBON_SLIM_TAG}`,
     '',
-    '> **CARBON DRIVES, BOOMOPEN GUARDS**: Native **Antigravity 2.0 / Orchestrator Carbon** drives daily planning, exploration, multi-file edits, `/plan`, `/boost`, `/teamwork`, `run_workflow`, and `swarm` directly. Load `~/.gemini/config/skills/boomopen-workflow-kit/commands/{cmd}.md` **ONLY** when an explicit BoomOpen `/cmd` is typed (`/autopilot`, `/conduct`, `/design:hard`, `/cook:team`, `/review:team`, `/settings`).',
+    '> **CARBON DRIVES, BOOMOPEN GUARDS**: Native **Antigravity 2.0 / Orchestrator Carbon** drives daily planning, exploration, multi-file edits, `/plan`, `/boost`, `/teamwork`, `run_workflow`, and `swarm` directly. Load `~/.gemini/config/skills/boomopen-workflow-kit/commands/{cmd}.md` **ONLY** when an explicit BoomOpen `/cmd` is typed (`/autopilot`, `/audit`, `/conduct`, `/design:hard`, `/cook:team`, `/review:team`, `/settings`).',
     '',
     renderActiveSettingsMarkdown(settings),
     '',
@@ -204,7 +204,7 @@ function renderAntigravitySlimBody(settings) {
     '3. **E2E Verification & Silence Guard**: Run build/typecheck/tests end-to-end until `0` errors remain before reporting. After launching background tasks or subagents, output at most 2–3 concise sentences and end the turn with `0` tool calls (never repeat waiting status phrases).',
     '',
     '## 🛠️ OPT-IN CLI GATES, VAULT & ROUTING',
-    '- **CLI (`~/.gemini/config/skills/boomopen-workflow-kit/cli/install.js`)**: `check . --strict-phase --no-stubs` | `ledger` | `conduct` | `design` | `plan` | `research` | `cook` | `settings` | `doctor`.',
+    '- **CLI (`~/.gemini/config/skills/boomopen-workflow-kit/cli/install.js`)**: `check . --strict-phase --no-stubs` | `reconcile` | `audit` | `ledger` | `conduct` | `design` | `plan` | `research` | `cook` | `settings` | `doctor`.',
     '- **Vault & Routing**: `1,440` library skills in `matrix-skills/compact-index.json`; artifacts → `<appDataDir>\\brain\\<conversation-id>\\`; reply in user\'s language, code/comments in English.',
   ].join('\n');
 }

@@ -1,6 +1,6 @@
 # 🤖 AGENTS
 
-> **VERSION**: 5.5 — Antigravity 2.0 Smart-Hybrid Edition | **LOAD**: When delegating to agents in Mode B | **PURPOSE**: Dynamic Elastic Swarm Sharding, 3-Wave Contract-First Execution, Quality-First Model Policy, Scoped Warm Sub-agent Reuse (`role#shard`) & File Ownership Locks (`21` Specialist Agents + `18` Teams)
+> **VERSION**: 5.5 — Antigravity 2.0 Smart-Hybrid Edition | **LOAD**: When delegating to agents in Mode B | **PURPOSE**: Dynamic Elastic Swarm Sharding, 3-Wave Contract-First Execution + Wave 2.5 Reconciliation, Quality-First Model Policy, Scoped Warm Sub-agent Reuse (`role#shard`) & File Ownership Locks (`22` Specialist Agents + `18` Teams)
 
 ---
 
@@ -10,7 +10,7 @@
 
 | Model Setting | Permitted Scope | Enforcement |
 |---------------|-----------------|-------------|
-| **`Model: "inherit"`** (or `"pro"` — User's Pro High model) | **ALL 21 specialist agents** on engineering, architecture, planning, codebase scouting, debugging, testing, reviewing, security, performance, design, research, ideation, and documentation tasks | **MANDATORY DEFAULT**: Always use `Model: "inherit"` whenever reasoning, code generation, analysis, or review is involved. |
+| **`Model: "inherit"`** (or `"pro"` — User's Pro High model) | **ALL 22 specialist agents** on engineering, architecture, planning, codebase scouting, debugging, testing, reviewing, reconciliation, security, performance, design, research, ideation, and documentation tasks | **MANDATORY DEFAULT**: Always use `Model: "inherit"` whenever reasoning, code generation, analysis, or review is involved. |
 | **`Model: "flash"`** (Latest Flash High) | **Trivial mechanical chores ONLY** (raw log aggregation, simple list formatting, status ping) | Permitted *strictly* when zero architectural or coding judgment is involved. When in doubt, ALWAYS use `Model: "inherit"`. |
 | **`Model: "flash_lite"`** | **NONE** | **⛔ STRICTLY FORBIDDEN**: Never use `flash_lite` in BoomOpen workflows. |
 
@@ -29,6 +29,7 @@ When a domain spans `> 4` files or multiple vectors, horizontally shard the role
 - **Once `PLAN-{feature}.md` passes `boomopen plan validate`** in `:fast`, `:hard`, `:team`, or `/orchestrate`, extract exact wave packets via `boomopen cook packets "<plan.md>" --wave <W>` and **dispatch directly from `PLAN` to sharded specialists**:
   - **Wave 1 (Foundation/Contracts/Tokens)**: `database-architect#schema` + `backend-engineer#contracts` + `frontend-engineer#tokens-primitives` (`globals.css` `@theme inline` + `components/ui/*` from `DESIGN_CONTRACT`).
   - **Wave 2 (Parallel Feature Shards)**: `backend-engineer#1..k` + `frontend-engineer#screen-1..k` + `mobile-engineer#1..k` + `game-engineer#1..k` + `devops-engineer#ci` (with Wave 1 contracts/tokens locked in `READ_ONLY_FILES`), gated by `boomopen cook verify-wave "<plan.md>" --wave 2 --git --run-verify`.
+  - **Wave 2.5 (Spec-to-Code Reconciliation & Delta Auto-Completion)**: `boomopen reconcile --strict` + `spec-reconciler#1..k` catch island shards, route/env mismatches, and omitted `[SC-*]` sub-clauses; any `RECONCILE_DELTA` amends a Delta Wave via `boomopen cook amend-plan` and auto-codes missing slices before QA.
   - **Wave 3 (Parallel QA & Adversarial Audit)**: `tester#1..k` + `reviewer#1..m` + `security-engineer#sec` running concurrently.
 - **DO NOT** waste a turn spawning a middleman `tech-lead` just to re-read and re-shard an already CLI-validated `PLAN-{feature}.md`! Invoke `tech-lead` strictly when scoping an unplanned `:team` task, designing ADRs, or arbitrating `:team` review disputes.
 
@@ -77,13 +78,13 @@ Every `invoke_subagent` prompt or `send_message` brief in Mode B (generated auto
 
 ---
 
-## AGENT CATEGORIES (21 Specialist Agents — Default `Model: "inherit"`)
+## AGENT CATEGORIES (22 Specialist Agents — Default `Model: "inherit"`)
 
 | Category | Agents | Write Tools | Default Model | Purpose |
 |----------|--------|:-----------:|:-------------:|---------|
 | **meta** | `tech-lead`, `planner` | `true` (plans/mailboxes) | `inherit` | Architecture, 6-Block `PLAN` & shard allocation, `:team` arbitration (never write app code) |
 | **execution** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer`, `database-architect` | `true` | `inherit` | 3-Wave Contract-First sharded implementation (`≤ 3–4 OWNED_FILES` per shard) |
-| **validation** | `tester`, `reviewer`, `security-engineer`, `performance-engineer`, `debugger` | `true`/`false` | `inherit` | Sharded QA (`tester#1..k`), adversarial auditing, root-cause debugging |
+| **validation** | `tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer`, `debugger` | `true`/`false` | `inherit` | Sharded QA (`tester#1..k`), Wave 2.5 spec/wiring reconciliation, adversarial & security auditing, root-cause debugging |
 | **research** | `researcher`, `scouter`, `brainstormer`, `designer` | `true` (artifacts) | `inherit` | Multi-vector research, codebase mapping, grounded ideation, 6-Block `DESIGN` specs (`NO APPLICATION CODE`) |
 | **support** | `docs-manager`, `devops-engineer`, `business-analyst`, `project-manager`, `reporter` | `true` | `inherit` | Documentation suites, sharded CI/CD & IaC, requirements, reporting |
 

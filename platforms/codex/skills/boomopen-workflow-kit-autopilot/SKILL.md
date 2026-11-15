@@ -1,6 +1,6 @@
 ---
 name: boomopen-workflow-kit-autopilot
-description: "🏛️ Autonomous Multi-Session Project Orchestrator — Ingest multi-doc specs into an immutable .boomopen/project-ledger.json, execute multi-phase DAGs with Elastic Golden Diamond swarms, and enforce 4-Layer Zero-Omission & Anti-Regression Quality Gates. Use when the user types /autopilot."
+description: "🏛️ Autonomous Multi-Session Project Orchestrator — Ingest multi-doc specs into an immutable .boomopen/project-ledger.json, execute multi-phase DAGs with Elastic Golden Diamond swarms, and run Human-Gated Multi-Round Post-Completion Audits. Use when the user types /autopilot."
 ---
 
 # /autopilot

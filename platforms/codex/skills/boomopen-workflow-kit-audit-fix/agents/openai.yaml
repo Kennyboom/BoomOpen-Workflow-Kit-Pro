@@ -1,0 +1,6 @@
+interface:
+  display_name: "/audit:fix"
+  short_description: "🔧 Audit Fix — Apply Human Approval Decisions, Dispatch Collision-Free RED->GREEN Fix Shards & Auto-Chain into Round k+1 Re-Audit"
+  brand_color: "#DC2626"
+policy:
+  allow_implicit_invocation: true

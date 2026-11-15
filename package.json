@@ -1,7 +1,7 @@
 {
   "name": "@boomopen/workflow-kit",
   "version": "5.5.0",
-  "description": "BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition) - 100% unified orchestration across Antigravity, Claude Code, Codex, Cursor, and GitHub Copilot with 21 Specialist Agents, 18 Golden Triangle Teams, 1,460+ On-Demand Skills Vault, 17-Language Natural-Language Routing, 4-Tier Dynamic Elastic Swarm Sharding (role#shard), Deterministic CLI Compilers (boomopen research/design/plan/cook), Multi-Session Project Autopilot (boomopen ledger), Cross-Engine Conductor & Multi-Engine Council (boomopen conduct), Pragmatic 2-Tier Coding Standards, Direct Plan-to-Executor Dispatch, Warm Sub-agent Reuse, and CLI doctor/check.",
+  "description": "BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition) - 100% unified orchestration across Antigravity, Claude Code, Codex, Cursor, and GitHub Copilot with 22 Specialist Agents, 18 Golden Triangle Teams, 1,460+ On-Demand Skills Vault, 17-Language Natural-Language Routing, 4-Tier Dynamic Elastic Swarm Sharding (role#shard), Deterministic CLI Compilers (boomopen research/design/plan/cook), Wave 2.5 Spec-to-Code Reconciliation (boomopen reconcile), Stateful Multi-Round Project Audit (boomopen audit), Multi-Session Project Autopilot (boomopen ledger), Cross-Engine Conductor & Multi-Engine Council (boomopen conduct), Pragmatic 2-Tier Coding Standards, Direct Plan-to-Executor Dispatch, Warm Sub-agent Reuse, and CLI doctor/check.",
   "main": "cli/install.js",
   "bin": {
     "boomopen": "./cli/install.js"
@@ -25,13 +25,15 @@
     "doctor": "node cli/install.js doctor",
     "check": "node cli/install.js check",
     "cook": "node cli/install.js cook",
+    "reconcile": "node cli/install.js reconcile",
+    "audit": "node cli/install.js audit",
     "research": "node cli/install.js research",
     "design": "node cli/install.js design",
     "plan": "node cli/install.js plan",
     "ledger": "node cli/install.js ledger",
     "conduct": "node cli/install.js conduct",
-    "test": "node --test cli/checker.test.js cli/cli-e2e.test.js cli/codex-config.test.js cli/conductor.test.js cli/content-integrity.test.js cli/cook.test.js cli/design.test.js cli/docs-content.test.js cli/doctor.test.js cli/hook-guard.test.js cli/hook-registration.test.js cli/install-cli.test.js cli/install-regressions.test.js cli/install-repairs.test.js cli/install-safety.test.js cli/install.test.js cli/instruction-files.test.js cli/ledger.test.js cli/lighthouse-audit.test.js cli/packaging.test.js cli/plan.test.js cli/platform-content.test.js cli/python-scripts.test.js cli/research.test.js cli/settings-e2e.test.js cli/settings-ui.test.js cli/settings.test.js cli/user-files.test.js cli/v55-compilers.test.js cli/vault-content.test.js web/build/kit-stats.test.mjs",
-    "test:unit": "node --test cli/checker.test.js cli/codex-config.test.js cli/conductor.test.js cli/cook.test.js cli/design.test.js cli/doctor.test.js cli/hook-guard.test.js cli/hook-registration.test.js cli/instruction-files.test.js cli/ledger.test.js cli/plan.test.js cli/platform-content.test.js cli/research.test.js cli/settings.test.js cli/user-files.test.js cli/v55-compilers.test.js",
+    "test": "node --test cli/audit.test.js cli/checker.test.js cli/cli-e2e.test.js cli/codex-config.test.js cli/conductor.test.js cli/content-integrity.test.js cli/cook.test.js cli/design.test.js cli/docs-content.test.js cli/doctor.test.js cli/hook-guard.test.js cli/hook-registration.test.js cli/install-cli.test.js cli/install-regressions.test.js cli/install-repairs.test.js cli/install-safety.test.js cli/install.test.js cli/instruction-files.test.js cli/ledger.test.js cli/lighthouse-audit.test.js cli/packaging.test.js cli/plan.test.js cli/platform-content.test.js cli/python-scripts.test.js cli/reconcile.test.js cli/research.test.js cli/security-v6.test.js cli/settings-e2e.test.js cli/settings-ui.test.js cli/settings.test.js cli/user-files.test.js cli/v55-compilers.test.js cli/vault-content.test.js web/build/kit-stats.test.mjs",
+    "test:unit": "node --test cli/audit.test.js cli/checker.test.js cli/codex-config.test.js cli/conductor.test.js cli/cook.test.js cli/design.test.js cli/doctor.test.js cli/hook-guard.test.js cli/hook-registration.test.js cli/instruction-files.test.js cli/ledger.test.js cli/plan.test.js cli/platform-content.test.js cli/reconcile.test.js cli/research.test.js cli/security-v6.test.js cli/settings.test.js cli/user-files.test.js cli/v55-compilers.test.js",
     "lint": "node .github/scripts/check-syntax.js",
     "semantic-release": "semantic-release",
     "test:pack": "node .github/scripts/pack-smoke.js"

@@ -1,6 +1,6 @@
 interface:
   display_name: "/autopilot:run"
-  short_description: "🏛️ Autopilot Run — Execute Active Project Phase via Scoped Context Slice, Elastic Golden Diamond Swarm, Cross-Engine Conductor, and 4-Layer Anti-Regression Ratchet"
+  short_description: "🏛️ Autopilot Run — Execute Active Project Phase via Scoped Context Slice, Elastic Golden Diamond Swarm, Wave 2.5 Spec Reconciliation, and 5-Layer Anti-Regression Ratchet"
   brand_color: "#8B5CF6"
 policy:
   allow_implicit_invocation: true

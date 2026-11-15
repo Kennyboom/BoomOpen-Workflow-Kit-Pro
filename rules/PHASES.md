@@ -1,6 +1,6 @@
 # 🎭 PHASES
 
-> **VERSION**: 5.5 — Antigravity 2.0 Smart-Hybrid Edition | **LOAD**: On-demand when running Mode B workflow phases | **PURPOSE**: 17-Language Intent Gate, **5-Stage Fast-Forward State Machine (`boomopen cook state`)**, **3-Wave Contract-First Execution Topology (`boomopen cook packets|verify-wave`)**, CLI Research/Design/Plan Validation (`boomopen research|design|plan`), Multi-Session Autopilot Ledger, Cross-Engine Conductor (`boomopen conduct`), & Scoped Warm Reuse (`role#shard`)
+> **VERSION**: 5.5 — Antigravity 2.0 Smart-Hybrid Edition | **LOAD**: On-demand when running Mode B workflow phases | **PURPOSE**: 17-Language Intent Gate, **5-Stage Fast-Forward State Machine (`boomopen cook state`)**, **3-Wave + Wave 2.5 Reconciliation Execution Topology (`boomopen cook` + `boomopen reconcile`)**, CLI Research/Design/Plan/Audit Gates (`boomopen research|design|plan|audit`), Multi-Session Autopilot Ledger, Cross-Engine Conductor (`boomopen conduct`), & Scoped Warm Reuse (`role#shard`)
 
 ---
 
@@ -52,7 +52,9 @@ $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\le
 2. **Wave 2 — Parallel Feature & Screen Shards (`Depends On: Wave 1`, `Parallelizable: Yes`)**:
    - Emit exact 5-Field Handoff Packets via `boomopen cook packets "<plan.md>" --wave 2` (with Wave 1 schemas, DTOs, `globals.css`, `components/ui/*`, and existing regression tests locked in `READ_ONLY_FILES`!).
    - Fan out `backend-engineer#api-1..k` + `frontend-engineer#screen-1..k` + `mobile-engineer#1..k` + `game-engineer#1..k` + `devops-engineer#ci` **concurrently in one turn**, then run `boomopen cook verify-wave "<plan.md>" --wave 2 --git --run-verify` (`boomopen check <dir> --strict-phase --no-stubs`).
-3. **Wave 3 — Parallel Testing, Accessibility & Adversarial Review (`Depends On: Wave 2`, `Parallelizable: Yes`)**:
+3. **Wave 2.5 — Spec-to-Code Reconciliation & Delta Auto-Completion (`boomopen reconcile` + `cook amend-plan`)**:
+   - Run `boomopen reconcile <dir> --plan "<plan.md>" --strict` + sharded `spec-reconciler#1..k` (`commands/_ref/reconcile-loop.md`) to catch island shards (`REC-G1`), frontend/backend route mismatches (`REC-G2`), omitted `[SC-*]` sub-clauses (`REC-G3`), and missing `.env.example` keys (`REC-G4`); if `RECONCILE_DELTA` is non-empty, amend a Delta Wave via `boomopen cook amend-plan` and execute immediately!
+4. **Wave 3 — Parallel Testing, Accessibility & Adversarial Review (`Depends On: Wave 2.5`, `Parallelizable: Yes`)**:
    - Fan out `tester#1..k` (`<= 3–4` test files/shard) + `reviewer#1..m` (+ `security-engineer#sec`, `ux_audit.py`, `accessibility_checker.py`, `api_validator.py`) **in parallel**.
    - Route any defect ONLY to the owning warm `role#shard` session via `send_message(Recipient: conversationId)` (`0s` cold-start latency).
 
@@ -60,12 +62,14 @@ $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\le
 
 ---
 
-## 🏛️ MULTI-SESSION AUTOPILOT (`/autopilot`) & 🎼 CROSS-ENGINE CONDUCTOR (`/conduct`)
+## 🏛️ MULTI-SESSION AUTOPILOT (`/autopilot`), 🛡️ WHOLE-PROJECT AUDIT (`/audit`) & 🎼 CONDUCTOR (`/conduct`)
 
 1. **Autopilot Ledger (`.boomopen/project-ledger.json` — `boomopen ledger`)**:
    - **Init / Compile**: Compile an approved `PLAN-{task}.md` via `boomopen ledger from-plan <plan.md>` (or `boomopen plan validate <plan.md> --sync-ledger`), or ingest multi-doc specs via parallel `scouter#doc-1..N` + `boomopen ledger validate`.
-   - **4-Layer Phase Quality Ratchet (`/autopilot:run`)**: Load active Phase $K$ slice via `boomopen ledger next` (prior `test_files` locked in `READ_ONLY_FILES`), execute Elastic Golden Diamond waves, and enforce: **(G1)** `boomopen check --strict-phase --no-stubs`, **(G2)** monotonic cumulative tests $\text{Passed}(P_K) \ge \text{Passed}(P_{K-1}) + |\text{REQ}(P_K)|$, **(G3)** `boomopen ledger verify --phase <Phase_K_ID> --passed-tests <N> --run-verify`, and **(G4)** adversarial spec audit + `phase-K-verified` checkpoint.
-2. **Cross-Engine Conductor (`boomopen conduct`)**:
+   - **4-Layer Phase Quality Ratchet (`/autopilot:run`)**: Load active Phase $K$ slice via `boomopen ledger next` (prior `test_files` locked in `READ_ONLY_FILES`), execute Elastic Golden Diamond waves + Wave 2.5 `boomopen reconcile`, and enforce: **(G1)** `boomopen check --strict-phase --no-stubs`, **(G2)** monotonic cumulative tests $\text{Passed}(P_K) \ge \text{Passed}(P_{K-1}) + |\text{REQ}(P_K)|$, **(G3)** `boomopen ledger verify --phase <Phase_K_ID> --passed-tests <N> --run-verify`, and **(G4)** adversarial spec audit + `phase-K-verified` checkpoint.
+2. **Stateful Multi-Round Whole-Project Audit (`.boomopen/audit-ledger.json` — `boomopen audit` / `/audit`)**:
+   - Post-completion audit loop across 22 specialist agents: `audit init` $\rightarrow$ `audit slice` (4 parallel lenses: RTM Spec Completeness, Vertical Flow Continuity, 2-Layer Security/Anti-Leakage, Code Quality) $\rightarrow$ `audit record` $\rightarrow$ user approval (`audit approve`) $\rightarrow$ sharded fixes + `audit verify-fix` monotonic test ratchet until `0` `P0/P1` blockers remain.
+3. **Cross-Engine Conductor (`boomopen conduct`)**:
    - Probe via `boomopen conduct probe`, then run **Multi-Engine Council** (`boomopen conduct council --task <type> --engines claude,codex,antigravity --prompt "<task>"` $\rightarrow$ 4-Part `COUNCIL-SYNTHESIS.md`) or **Cross-Engine Pipeline** (`boomopen conduct dispatch --role <role> --author-engine <prev> --prompt "<task>"`, enforcing `Author != Critic` and Round-2 Cross-Engine Debug Escalation).
 
 ---

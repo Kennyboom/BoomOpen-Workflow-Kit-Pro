@@ -211,6 +211,17 @@ export const SPECIALIST_AGENTS: readonly AgentSpec[] = [
     },
   },
   {
+    id: 'spec-reconciler',
+    title: { en: 'Principal Spec-to-Code Reconciliation Auditor', vi: 'Kiến trúc sư Đối soát Đặc tả & Liên kết Module' },
+    domain: 'validation',
+    deliverable: 'RECONCILE_DELTA + Wave 2.5 Wiring Gate',
+    modelPolicy: 'inherit',
+    summary: {
+      en: 'Runs Wave 2.5 boomopen reconcile (REC-G1..G4) to detect island shards, frontend/backend route mismatches, missing .env.example keys, and omitted [SC-*] spec sub-clauses.',
+      vi: 'Thực thi đối soát Wave 2.5 boomopen reconcile (REC-G1..G4) nhằm phát hiện module ốc đảo, lệch đường dẫn API frontend/backend, thiếu biến .env.example và sót điều khoản [SC-*].',
+    },
+  },
+  {
     id: 'tech-lead',
     title: { en: 'Golden Diamond Coordinator & Arbiter', vi: 'Trưởng nhóm Kỹ thuật & Trọng tài Kiến trúc' },
     domain: 'architecture',

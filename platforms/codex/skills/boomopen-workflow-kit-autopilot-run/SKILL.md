@@ -1,6 +1,6 @@
 ---
 name: boomopen-workflow-kit-autopilot-run
-description: "🏛️ Autopilot Run — Execute Active Project Phase via Scoped Context Slice, Elastic Golden Diamond Swarm, Cross-Engine Conductor, and 4-Layer Anti-Regression Ratchet. Use when the user types /autopilot:run."
+description: "🏛️ Autopilot Run — Execute Active Project Phase via Scoped Context Slice, Elastic Golden Diamond Swarm, Wave 2.5 Spec Reconciliation, and 5-Layer Anti-Regression Ratchet. Use when the user types /autopilot:run."
 ---
 
 # /autopilot:run

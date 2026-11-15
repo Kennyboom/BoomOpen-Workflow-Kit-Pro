@@ -37,7 +37,8 @@ flowchart TD
      - **Research & Brainstorm (`boomopen research`)**: `research validate <file> [--mode brainstorm]` (`RES-G1..G4`) → `research brief <file>` (`HANDOFF_BRIEF`).
      - **UI/UX Design (`boomopen design`)**: `design validate <file>` (`DESIGN-G1..G4`) → `design contract <file>` (`DESIGN_CONTRACT` CSS `@theme` + TS Props).
      - **Implementation Plan (`boomopen plan`)**: `plan validate <file>` (`PLAN-G1..G5`) → `plan compile <file> [--sync-ledger]` (`.boomopen/project-ledger.json`).
-     - **Feature Execution (`boomopen cook`)**: `cook state` (fast-forward) → `cook packets` (5-Field Shard Packets) → `cook verify-wave` (`COOK-G1..G4` post-wave gate).
+     - **Feature Execution & Wave 2.5 Reconcile (`boomopen cook` + `boomopen reconcile`)**: `cook state` (fast-forward) → `cook packets` (5-Field Shard Packets) → `cook verify-wave` (`COOK-G1..G4` post-wave gate) → `reconcile --strict` + `cook amend-plan` (Wave 2.5 spec/wiring self-completion).
+     - **Whole-Project Post-Completion Audit (`boomopen audit`)**: `audit init` → `audit slice` → `audit record` → `audit approve` → `audit verify-fix` (`.boomopen/audit-ledger.json` multi-round human-gated audit via `commands/audit.md`).
 3. **Path 3 — Known-Target Micro-Direct (`Mode A` — Tier 0, `0` Sub-agents)**:
    - **Trigger**: Simple factual Q&A, code explanation, or micro-edit where the **exact `≤ 2` target files are already known on Turn 1**, `1` domain, `0` exploration needed, no `/cmd` typed, and no workflow intent.
    - **Action**: Execute, test, and verify directly under **Pragmatic 2-Tier Coding Standards** (`boomopen check <dir> --strict-phase --no-stubs`).
@@ -59,7 +60,7 @@ flowchart TD
 | **2** | **UI/UX & Design Spec (`/design`)** | `/design:hard` (`commands/design-hard.md`) or `/design:team` (`commands/design-team.md`) | `design-team`: `scouter` + `researcher` → `designer` (+ `frontend-engineer` critic) | `DESIGN-{feature}.md` (`boomopen design validate`) |
 | **3** | **Deep Research (`/research`)** | `/research:team` (`commands/research-team.md`, `auto_team`) or `/research:hard` | `research-team`: `researcher#v1..v3` + `tech-lead` red-team critic | `RESEARCH-{topic}.md` (`boomopen research validate`) |
 | **4** | **Ideation & Brainstorming (`/brainstorm`)** | `/brainstorm:team` (`commands/brainstorm-team.md`, `auto_team`) or `/brainstorm:hard` | `brainstorm-team`: `researcher` + `scouter` → `brainstormer` + `tech-lead` tarpit critic | `BRAINSTORM-{topic}.md` (`boomopen research validate --mode brainstorm`) |
-| **5** | **Code / Arch / Security Review (`/review`)** | `/review:team` (`commands/review-team.md`) or `/review:hard` (`commands/review-hard.md`) | `qa-team` / `security-team`: `tech-lead` + `reviewer#1..N` + `security-engineer` + `performance-engineer` | `REVIEW-{scope}.md` + `boomopen check --strict-phase --no-stubs` |
+| **5** | **Code / Security Review & Project Audit (`/review`, `/audit`)** | `/review:team` (`commands/review-team.md`), `/review:hard`, or `/audit` (`commands/audit.md` for multi-round whole-project post-completion audit) | `qa-team` / `security-team`: `tech-lead` + `reviewer#1..N` + `spec-reconciler` + `security-engineer` + `performance-engineer` | `REVIEW-{scope}.md` / `.boomopen/audit-ledger.json` + `boomopen check --strict-phase --no-stubs` |
 | **6** | **Root-Cause Debugging (`/debug`)** | `/debug:hard` (`commands/debug-hard.md`) or `/debug:team` (`commands/debug-team.md`) | `debug-team`: `debugger#hyp-1..N` + `scouter` (+ `tech-lead` critic) | `DEBUG-{issue}.md` (5 Whys + Fishbone RCA) |
 | **7** | **Multi-File / Unscoped Bug Fix (`/fix`)** | `/fix:hard` (`commands/fix-hard.md`) or `/fix:team` (`commands/fix-team.md`) *(> 2 files / unknown scope)* | `debugger` + `scouter` → `<engineer>#shard-1..N` → `tester` | `DEBUG-{issue}.md` + Verified Fix + `TEST-{issue}.md` |
 | **8** | **Testing & QA Verification (`/test`)** | `/test:hard` (`commands/test-hard.md`) or `/test:team` (`commands/test-team.md`) | `qa-team`: `tester#unit` + `tester#e2e` (+ `security-engineer` in `:team`) | `TEST-{feature}.md` + `test_runner.py` |
@@ -111,10 +112,10 @@ flowchart TD
   - `ru`: *"мозговой штурм"*, *"предложи идеи"* | `hi`: *"विचार-मंथन"*, *"नए विचार सुझाएं"* | `ar`: *"عصف ذهني"*, *"اقترح أفكاراً"* | `id`: *"curah pendapat"*, *"usulkan ide"*
   - `th`: *"ระดมสมอง"*, *"เสนอไอเดีย"* | `tr`: *"beyin fırtınası"*, *"fikir öner"* | `it`: *"brainstorming"*, *"proporre idee"*
 
-#### 5. 🛡️ Code, Architecture & Security Review (`/review` → `commands/review-team.md` | `commands/review-hard.md`)
-- **When**: User asks to review code, audit architecture/security/quality, inspect a PR, or find repo blind spots.
+#### 5. 🛡️ Code, Architecture, Security Review & Whole-Project Audit (`/review` → `commands/review-team.md` | `commands/review-hard.md`, `/audit` → `commands/audit.md`)
+- **When**: User asks to review code, audit architecture/security/quality, inspect a PR (`/review`), OR run a multi-round post-completion whole-project audit with user-approved fixing (`/audit` → `commands/audit.md`, `.boomopen/audit-ledger.json`, alongside `/autopilot:audit` for ledger-only RTM checks).
 - **17-Language Triggers**:
-  - `en`: *"review code"*, *"audit codebase"*, *"security/architecture review"* | `vi`: *"review code"*, *"đánh giá code"*, *"audit hệ thống"*, *"rà soát lỗi/bảo mật"*
+  - `en`: *"review code"*, *"audit codebase"*, *"full project audit"*, *"security/architecture review"* | `vi`: *"review code"*, *"đánh giá code"*, *"audit toàn diện dự án"*, *"kiểm toán toàn bộ dự án sau khi code xong"*, *"rà soát lỗi/bảo mật"*
   - `zh-CN`: *"代码审查"*, *"审计代码"*, *"安全评估"* | `zh-TW`: *"程式碼審查"*, *"審計代碼"* | `ja`: *"コードレビュー"*, *"コード監査"* | `ko`: *"코드 리뷰"*, *"코드 감사"*
   - `es`: *"revisar código"*, *"auditar código"* | `fr`: *"revue de code"*, *"auditer le code"* | `de`: *"Code-Review"*, *"Architektur-Audit"* | `pt-BR`: *"revisar código"*, *"auditoria de código"*
   - `ru`: *"ревью кода"*, *"аудит кода"* | `hi`: *"कोड रिव्यू करें"*, *"कोड ऑडिट"* | `ar`: *"مراجعة الكود"*, *"تدقيق الكود"* | `id`: *"tinjau kode"*, *"audit kode"*
@@ -201,7 +202,7 @@ flowchart TD
 
 ---
 
-## 3. Canonical 21 Specialist Agents, 18 Teams & 4-Tier Dynamic Elastic Swarm
+## 3. Canonical 22 Specialist Agents, 18 Teams & 4-Tier Dynamic Elastic Swarm
 
 ### 3.1 Canonical Agent & Team Selection Matrix (Default `Model: "inherit"`)
 
@@ -221,6 +222,7 @@ flowchart TD
 | **Root-Cause Debugging (5 Whys / Fishbone)** | `debugger#hyp-1..N` | `debug-team` |
 | **Unit, Integration & E2E Testing** | `tester#unit`, `tester#int`, `tester#e2e` | `qa-team` |
 | **Adversarial Code, Spec & Contract Review** | `reviewer#code`, `reviewer#spec-auditor` | `qa-team`, `fullstack-team` |
+| **Wave 2.5 Spec-to-Code & Wiring Reconciliation** | `spec-reconciler#1..N` (`boomopen reconcile`) | Wave 2.5 `/cook`, `/code`, `/autopilot`, `/audit` |
 | **OWASP / STRIDE / LLM-Agent Security** | `security-engineer#sec` | `security-team` |
 | **Profiling, Latency & Load Optimization** | `performance-engineer#perf` | `performance-team` |
 | **CI/CD, Containers & Cloud Deployment** | `devops-engineer#infra` | `devops-team` |

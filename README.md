@@ -1,11 +1,11 @@
 <div align="center">
   <h1>⚡ BoomOpen Workflow Kit v5.5.0</h1>
-  <p><strong>Multi-Platform Smart-Hybrid AI Workforce OS — 21 Specialist Agents, 18 Golden Triangle Teams &amp; 1,460+ On-Demand Skills Vault</strong></p>
+  <p><strong>Multi-Platform Smart-Hybrid AI Workforce OS — 22 Specialist Agents, 18 Golden Triangle Teams &amp; 1,460+ On-Demand Skills Vault</strong></p>
 
   <p>
     <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
     <a href="#-supported-ai-platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
-    <a href="#-21-specialist-agents--18-golden-triangle-teams"><img src="https://img.shields.io/badge/Agents-21%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 21 Specialists + 18 Teams" /></a>
+    <a href="#-22-specialist-agents--18-golden-triangle-teams"><img src="https://img.shields.io/badge/Agents-22%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 22 Specialists + 18 Teams" /></a>
     <a href="#-1460-skills-vault-22-core--1440-niche-library-skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
     <a href="./LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
@@ -38,7 +38,7 @@
     <a href="#-quick-start--installation"><b>🚀 Quick Start</b></a> •
     <a href="#-unified-settings--mode-selection-settings"><b>🎛️ Mode &amp; Settings</b></a> •
     <a href="#-slash-commands-reference"><b>🎯 Slash Commands</b></a> •
-    <a href="#-21-specialist-agents--18-golden-triangle-teams"><b>🤖 21 Agents &amp; 18 Teams</b></a> •
+    <a href="#-22-specialist-agents--18-golden-triangle-teams"><b>🤖 22 Agents &amp; 18 Teams</b></a> •
     <a href="#-1460-skills-vault-22-core--1440-niche-library-skills"><b>📚 1,460+ Skills Vault</b></a>
   </p>
 </div>
@@ -60,11 +60,11 @@
 
 ## 🌟 What is BoomOpen Workflow Kit?
 
-**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** is an open-source multi-agent operating system that transforms a single AI coding assistant into an orchestrated engineering organization of **21 specialist agents**, **18 adversarial Golden Triangle teams**, **22 Core Skills**, and a **1,440-skill On-Demand Niche Vault (`skills_library/`)**.
+**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** is an open-source multi-agent operating system that transforms a single AI coding assistant into an orchestrated engineering organization of **22 specialist agents**, **18 adversarial Golden Triangle teams**, **33 slash commands (`89` command & reference files)**, **22 Core Skills**, and a **1,440-skill On-Demand Niche Vault (`skills_library/`)**.
 
-Unlike rigid single-prompt templates or heavyweight agent wrappers that add cold-start latency and context bloat to every turn, BoomOpen v5.5 combines a **Proactive Sub-agent First Gate**, **17-Language Natural-Language Workflow Routing**, **4-Tier Dynamic Elastic Swarm Sharding (`role#shard`)**, **Multi-Session Project Autopilot (`/autopilot`)**, and **Cross-Engine Conductor (`/conduct`)** with **O(1) Zero-Bloat Skill Resolution**:
-- **🚀 Turn-1 Zero-Tax Parallel Sub-agents & Mode B Orchestration**: Unscoped codebase exploration (`> 2 files`), multi-domain features (`≥ 2 domains`), natural-language workflow intents across **all 17 supported languages** (`Plan`, `Design`, `Research`, `Brainstorm`, `Review`, `Debug`, `Fix`, `Test`, `Cook`, `Code`, `Autopilot`, `Conduct`, `Docs`, `Report`, `Deploy`), or explicit `/cmd` workflows immediately spawn parallel sub-agent shards on Turn 1 using **4-Tier Dynamic Elastic Swarm Sharding (`role#shard`, `<= 3–4 OWNED_FILES`/shard)**, **DAG Parallel Fan-Out**, **Direct Plan-to-Executor Dispatch**, **Contract-First File Locks (`SHARED_CONTRACT` + `OWNED_FILES`)**, and **Scoped Warm Sub-agent Reuse (`role#shard -> conversationId` via `send_message`)**.
-- **🏛️ Multi-Session Project Autopilot (`/autopilot` & `boomopen ledger`) & Cross-Engine Council (`/conduct` & `boomopen conduct`)**: Ingest multi-document specs into an immutable `.boomopen/project-ledger.json` with SHA-256 drift guards and a 4-Layer Zero-Omission Phase Ratchet (`boomopen check --strict-phase --no-stubs`), or orchestrate Claude Code, OpenAI Codex, Antigravity, Cursor, and Copilot in **Parallel Multi-Engine Councils** (`.boomopen/conductor/runs/<runId>-COUNCIL-SYNTHESIS.md`) and **Role-Division Pipelines (`Author != Critic`)**.
+Unlike rigid single-prompt templates or heavyweight agent wrappers that add cold-start latency and context bloat to every turn, BoomOpen v5.5 combines a **Proactive Sub-agent First Gate**, **17-Language Natural-Language Workflow Routing**, **4-Tier Dynamic Elastic Swarm Sharding (`role#shard`)**, **Wave 2.5 Spec-to-Code Auto-Reconciliation (`boomopen reconcile`)**, **Stateful Multi-Round Human-Gated Project Audit (`/audit` & `boomopen audit`)**, **Multi-Session Project Autopilot (`/autopilot`)**, and **Cross-Engine Conductor (`/conduct`)** with **O(1) Zero-Bloat Skill Resolution**:
+- **🚀 Turn-1 Zero-Tax Parallel Sub-agents, Wave 2.5 Reconciliation & Mode B Orchestration**: Unscoped codebase exploration (`> 2 files`), multi-domain features (`≥ 2 domains`), natural-language workflow intents across **all 17 supported languages** (`Plan`, `Design`, `Research`, `Brainstorm`, `Review`, `Audit`, `Debug`, `Fix`, `Test`, `Cook`, `Code`, `Autopilot`, `Conduct`, `Docs`, `Report`, `Deploy`), or explicit `/cmd` workflows immediately spawn parallel sub-agent shards on Turn 1 using **4-Tier Dynamic Elastic Swarm Sharding (`role#shard`, `<= 3–4 OWNED_FILES`/shard)**, **DAG Parallel Fan-Out**, **Direct Plan-to-Executor Dispatch**, **Contract-First File Locks (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Wave 2.5 Spec-to-Code Auto-Reconciliation (`boomopen reconcile` + `cook amend-plan` catching island shards, route/env parity & `[SC-*]` omissions)**, and **Scoped Warm Sub-agent Reuse (`role#shard -> conversationId` via `send_message`)**.
+- **🏛️ Multi-Session Autopilot (`/autopilot`), Multi-Round Whole-Project Audit (`/audit`) & Cross-Engine Council (`/conduct`)**: Ingest multi-document specs into an immutable `.boomopen/project-ledger.json` with SHA-256 drift guards and a 4-Layer Zero-Omission Phase Ratchet (`boomopen check --strict-phase --no-stubs`); run post-completion multi-round whole-project audits (`/audit` & `boomopen audit` -> `.boomopen/audit-ledger.json`) across RTM spec completeness, vertical UI->API->DB continuity, 2-Layer Security/Anti-Leakage (`security_scan.py` v6), and user-approved sharded fixing; or orchestrate Claude Code, OpenAI Codex, Antigravity, Cursor, and Copilot in **Parallel Multi-Engine Councils** and **Role-Division Pipelines (`Author != Critic`)**.
 - **⚡ Mode A — Known-Target Micro-Direct**: Simple Q&A, code explanations, and micro-edits where the exact `≤ 2 target files` are already known on Turn 1 execute directly while enforcing **Pragmatic 2-Tier Coding Standards** and **Persistent Testing & Bug Fixing**.
 - **📚 Massive 1,460+ Skills Vault with Zero Context Bloat**: Pre-compiled into `matrix-skills/compact-index.json` (`1,462` indexed skills) for `O(1)` 2-step lookup — equipping your AI with instant deep mastery across Backend (Cloudflare D1/R2/DO, Hono RPC, Supabase RLS, Drizzle, Rust Axum), Frontend (React 19/Next.js 15, Tailwind v4, TanStack Start), Mobile (Tauri v2, React Native, Flutter), Game Dev (Unity 6 DOTS, Godot 4, WebGPU/Three.js TSL, Colyseus Netcode), AI/ML & Agent SDKs (MCP FastMCP 2025, OpenAI/Claude/Google ADK), Cloud/DevOps (Terraform/OpenTofu), and OWASP LLM 2025 Cybersecurity **without polluting the prompt window**.
 
@@ -107,8 +107,8 @@ flowchart TD
    - Multi-domain plans lock API endpoints, DTO schemas, and disjoint file ownership (`OWNED_FILES` vs. `READ_ONLY_FILES`) before launching parallel engineers, eliminating write collisions and integration mismatches.
 5. **🔍 5-Whys (SPIE v3.0) Root-Cause Debugging & Clean Git Tree**:
    - `debugger` traces every bug through 3 ranked hypotheses (`debugger#hyp-1..N`) and a 5-Whys causal chain (`Why 1 Symptom` → `Why 5 Systemic Root Cause`). Transient artifacts (`PLAN`, `DEBUG`, `TEST`, `REVIEW`, `MAILBOX`) route to `<appDataDir>\brain\<conversation-id>\` first so your Git working tree stays 100% clean.
-6. **🩺 Built-In CLI Suite (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check`, `doctor` & `settings`) & O(1) Skill Index**:
-   - `npm run doctor` checks the kit source (all 5 platform bundles, 21 agents, 72 team files across 18 team folders, 84 command files in `commands/**/*.md` including 5 in `_ref/`, and `matrix-skills/compact-index.json` with `1,462` indexed skills) plus every installed platform (entry files, framework folder, skills vault). Deterministic workflow compilers — `boomopen research <validate|brief>`, `boomopen design <validate|contract>`, `boomopen plan <validate|compile>`, and `boomopen cook <state|packets|verify-wave|preflight>` — validate upstream artifacts (`RESEARCH-*`, `BRAINSTORM-*`, `DESIGN-*`, `PLAN-*`), compile `HANDOFF_BRIEF` / `DESIGN_CONTRACT` / `.boomopen/project-ledger.json` / 5-Field Wave Handoff Packets, and enforce `OWNED_FILES` / `READ_ONLY_FILES` locks. `boomopen check <dir> [--strict-phase --no-stubs]` audits file length, explicit `any`, leftover `console.log`, deferred `TODO`/`FIXME` comments, hollow stubs, and test gaming; `boomopen ledger` manages multi-session phase gates; and `boomopen conduct` runs cross-engine dispatch and 6-task Multi-Engine Councils (`research|brainstorm|plan|design|review|debug`).
+6. **🩺 Built-In 14-Command CLI Suite (`research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`, `check`, `doctor`, `settings`, `install`, `uninstall`, `list`) & O(1) Skill Index**:
+   - `npm run doctor` checks the kit source (all 5 platform bundles, 22 agents, 72 team files across 18 team folders, 89 command files in `commands/**/*.md` including 6 in `_ref/`, and `matrix-skills/compact-index.json` with `1,462` indexed skills) plus every installed platform (entry files, framework folder, skills vault). Deterministic workflow compilers — `boomopen research <validate|brief>`, `boomopen design <validate|contract>`, `boomopen plan <validate|compile>`, `boomopen cook <state|packets|verify-wave|preflight|amend-plan>`, `boomopen reconcile`, and `boomopen audit <init|slice|record|approve|verify-fix|status>` — validate upstream artifacts (`RESEARCH-*`, `BRAINSTORM-*`, `DESIGN-*`, `PLAN-*`), compile `HANDOFF_BRIEF` / `DESIGN_CONTRACT` / `.boomopen/project-ledger.json` / 5-Field Wave Handoff Packets, verify Wave 2.5 cross-shard wiring (`REC-G1..G4`), and drive stateful multi-round whole-project audits (`.boomopen/audit-ledger.json`). `boomopen check <dir> [--strict-phase --no-stubs]` audits file length, explicit `any`, leftover `console.log`, deferred `TODO`/`FIXME` comments, hollow stubs, and test gaming; `boomopen ledger` manages multi-session phase gates; and `boomopen conduct` runs cross-engine dispatch and 6-task Multi-Engine Councils (`research|brainstorm|plan|design|review|debug`).
 
 ---
 
@@ -148,6 +148,8 @@ boomopen research validate path/to/RESEARCH.md                  # Validate RESEA
 boomopen design validate path/to/DESIGN.md                      # Validate 6-Block DESIGN-* & compile DESIGN_CONTRACT
 boomopen plan validate path/to/PLAN.md                          # Validate PLAN-* & compile .boomopen/project-ledger.json
 boomopen cook preflight path/to/PLAN.md                         # Compile 5-Field Wave Handoff Packets & verify wave locks
+boomopen reconcile path/to/your/project --plan path/to/PLAN.md  # Wave 2.5 spec-to-code reconciliation (REC-G1..G4)
+boomopen audit init --docs docs/prd.md,docs/arch.md             # Initialize stateful multi-round whole-project audit ledger
 boomopen check path/to/your/project --strict-phase --no-stubs   # File length, explicit `any`, console.log, zero stubs/TODOs
 boomopen ledger status                                          # Inspect multi-session .boomopen/project-ledger.json
 boomopen conduct probe                                          # Detect installed AI CLI engines for /conduct
@@ -220,6 +222,7 @@ BoomOpen v5.5 includes a **Zero-Latency Unified Control Center** managing **20 c
 | **`/debug`** | `:fast`, `:hard`, `:team` | 3-Hypothesis + **5-Whys (SPIE v3.0)** causal root-cause investigation (`DEBUG-{issue}.md`) |
 | **`/test`** | `:fast`, `:hard`, `:team` | DAG Parallel Fan-Out test suite execution + uncovered edge-case scouting (`tester` + `scouter`) |
 | **`/review`** | `:fast`, `:hard`, `:team` | 4-way parallel audit (Architecture, Code Quality, Security OWASP, Performance) |
+| **`/audit`** | `:run`, `:fix`, `:auto` | Stateful multi-round whole-project post-completion audit (RTM spec coverage, vertical flow, 2-Layer Security/Anti-Leakage & user-approved sharded fixing via `boomopen audit`) |
 | **`/design`** | `:fast`, `:hard`, `:team` | System architecture, database schema, and UI/UX specification (`DESIGN.md`) |
 | **`/docs`** | `:core`, `:business`, `:audit` | Generate or synchronize structured 2-tier architecture & business documentation (`./documents/`) |
 | **`/deploy`** | `:check`, `:preview`, `:production`, `:rollback` | Pre-deployment readiness gates, preview environments, production rollout & safe rollback |
@@ -234,13 +237,13 @@ BoomOpen v5.5 includes a **Zero-Latency Unified Control Center** managing **20 c
 
 ---
 
-## 🤖 21 Specialist Agents & 18 Golden Triangle Teams
+## 🤖 22 Specialist Agents & 18 Golden Triangle Teams
 
 | Category | Specialist Agents (`agents/*.md`) | Golden Triangle Teams (`agents/teams/*-team/`) |
 |----------|-----------------------------------|------------------------------------------------|
 | **Engineering & Execution** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer`, `database-architect`, `devops-engineer` | `backend-team`, `frontend-team`, `fullstack-team`, `mobile-team`, `game-team`, `database-team`, `devops-team` |
 | **Architecture & Planning** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
-| **Quality, Security & Debug** | `debugger`, `tester`, `reviewer`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
+| **Quality, Security & Debug** | `debugger`, `tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
 | **Research & Knowledge** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
 
 ---
@@ -264,9 +267,9 @@ BoomOpen ships with one of the largest curated engineering skill ecosystems in o
 
 ```text
 BoomOpen-Workflow-Kit-Pro/
-├── agents/                  # 21 Specialist Agent definitions + 18 Golden Triangle Teams (54 role files + 18 _team.md, 72 files)
-├── cli/                     # CLI Suite: install.js, doctor.js, checker.js, settings.js, research.js, design.js, plan.js, cook.js, ledger.js & conductor.js
-├── commands/                # 79 Slash Command workflows (:fast, :hard, :team, :init/:run/:audit, :council/:pipeline) + 5 _ref/ protocols (84 files)
+├── agents/                  # 22 Specialist Agent definitions + 18 Golden Triangle Teams (54 role files + 18 _team.md, 72 files)
+├── cli/                     # 14-Command CLI Suite: install.js, doctor.js, checker.js, settings.js, research.js, design.js, plan.js, cook.js, reconcile.js, audit.js, ledger.js & conductor.js
+├── commands/                # 83 Slash Command workflows (33 commands: :fast, :hard, :team, :run/:fix/:auto, :init/:run/:audit, :council/:pipeline) + 6 _ref/ protocols (89 files)
 ├── documents/               # 2-Tier Architecture, Domain, Source-Base & Coding Standards documentation
 ├── i18n/                    # 16 full-length localized READMEs (vi, zh-CN, zh-TW, ja, ko, es, fr, de, pt-BR, ru, hi, ar, id, th, tr, it)
 ├── matrix-skills/           # Domain YAML skill matrices + pre-compiled compact-index.json (1,462 indexed skills)

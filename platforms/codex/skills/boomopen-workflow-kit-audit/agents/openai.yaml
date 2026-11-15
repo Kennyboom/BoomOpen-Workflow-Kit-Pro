@@ -1,0 +1,6 @@
+interface:
+  display_name: "/audit"
+  short_description: "🔎 Audit Router — Stateful Multi-Round Post-Completion Whole-Project Audit (Spec <-> Code RTM, Cross-Module Flow, 2-Layer Security/Leakage & Human-Gated Fix Loop)"
+  brand_color: "#DC2626"
+policy:
+  allow_implicit_invocation: true

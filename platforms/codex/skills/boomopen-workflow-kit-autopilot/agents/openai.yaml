@@ -1,6 +1,6 @@
 interface:
   display_name: "/autopilot"
-  short_description: "🏛️ Autonomous Multi-Session Project Orchestrator — Ingest multi-doc specs into an immutable .boomopen/project-ledger.json, execute multi-phase DAGs with Elastic Golden Diamond swarms, and enforce 4-Layer Zero-Omission & Anti-Regression Quality Gates."
+  short_description: "🏛️ Autonomous Multi-Session Project Orchestrator — Ingest multi-doc specs into an immutable .boomopen/project-ledger.json, execute multi-phase DAGs with Elastic Golden Diamond swarms, and run Human-Gated Multi-Round Post-Completion Audits."
   brand_color: "#8B5CF6"
 policy:
   allow_implicit_invocation: true

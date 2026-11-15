@@ -1,6 +1,6 @@
 interface:
   display_name: "/autopilot:audit"
-  short_description: "🏛️ Autopilot Audit — End-to-End Requirement Traceability Matrix (RTM), Zero-Omission Spec Audit, and Anti-Regression Verification"
+  short_description: "🏛️ Autopilot Audit — End-to-End RTM Verification + Multi-Round Human-Gated Post-Completion Audit Engine (Zero Pre-Approval Mutation)"
   brand_color: "#8B5CF6"
 policy:
   allow_implicit_invocation: true
