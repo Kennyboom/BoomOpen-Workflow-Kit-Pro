@@ -10,6 +10,8 @@ import { Header } from './Header'
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
 
+const TOP_LUMINANCE_BG = 'radial-gradient(ellipse 65% 28% at 50% 0%, oklch(1 0 0 / 0.04), transparent)'
+
 export interface LayoutProps {
   readonly children?: ReactNode
 }
@@ -40,7 +42,7 @@ class RouteErrorBoundary extends Component<RouteErrorBoundaryProps, RouteErrorBo
   public override render(): ReactNode {
     if (this.state.failedKey === this.props.resetKey) {
       return (
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[74rem] px-4 py-16 sm:px-6 lg:px-8">
           <InlineErrorState
             title={this.props.errorTitle}
             message={this.props.errorDescription}
@@ -56,8 +58,8 @@ class RouteErrorBoundary extends Component<RouteErrorBoundaryProps, RouteErrorBo
 
 function RouteLoadingFallback({ label }: { readonly label: string }) {
   return (
-    <div className="mx-auto max-w-7xl space-y-6 border-t border-hairline px-4 py-12 sm:px-6 lg:px-8">
-      <div className="max-w-prose font-mono text-[clamp(0.8rem,0.12vw+0.78rem,0.875rem)] leading-snug font-semibold text-muted">
+    <div className="mx-auto max-w-[74rem] space-y-6 border-t border-hairline px-4 py-12 sm:px-6 lg:px-8">
+      <div className="max-w-prose font-mono text-[clamp(0.78rem,0.1vw+0.75rem,0.85rem)] leading-snug font-medium text-muted">
         {label}
       </div>
       <SkeletonCard count={3} />
@@ -66,9 +68,8 @@ function RouteLoadingFallback({ label }: { readonly label: string }) {
 }
 
 /**
- * Persistent Flagship Shell — our mission: featured MIT multi-agent layout trusted by
- * developers across 1,462 indexed skills, keeping `<Header />` and `<Footer />` mounted
- * while isolating `<Suspense>` and error recovery inside `<main id="main-content">`.
+ * Persistent Obsidian Monograph shell: subtle top radial luminance with zero neon blobs,
+ * keeping `<Header />` and `<Footer />` mounted while isolating `<Suspense>` inside `<main>`.
  */
 export function Layout({ children }: LayoutProps) {
   const { t } = useLanguage()
@@ -83,11 +84,14 @@ export function Layout({ children }: LayoutProps) {
   }, [pathname, hash])
 
   return (
-    <div className="flex min-h-dvh flex-col bg-canvas text-ink">
+    <div
+      className="flex min-h-dvh flex-col bg-canvas bg-no-repeat text-ink"
+      style={{ backgroundImage: TOP_LUMINANCE_BG }}
+    >
       <a
         href="#main-content"
         className={clsx(
-          'skip-to-main left-4 top-3 inline-flex min-h-11 items-center px-4 py-2 font-sans text-[clamp(0.85rem,0.1vw+0.82rem,0.92rem)] leading-snug font-semibold no-underline shadow-md',
+          'skip-to-main left-4 top-3 inline-flex min-h-11 items-center px-4 py-2 font-sans text-[clamp(0.84rem,0.1vw+0.81rem,0.9rem)] leading-snug font-medium no-underline',
           FOCUS_RING,
         )}
       >
@@ -96,7 +100,11 @@ export function Layout({ children }: LayoutProps) {
 
       <Header />
 
-      <main id="main-content" tabIndex={-1} className="flex-1 min-h-dvh outline-none focus-visible:ring-2 focus-visible:ring-primary">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="flex-1 min-h-dvh outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      >
         <RouteErrorBoundary
           resetKey={pathname}
           errorTitle={t.common.errorTitle}
@@ -108,7 +116,7 @@ export function Layout({ children }: LayoutProps) {
               key={pathname}
               initial={reduceMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.16, ease: 'easeOut' }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
             >
               {children ?? <Outlet />}
             </motion.div>

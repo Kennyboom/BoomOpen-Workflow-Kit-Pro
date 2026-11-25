@@ -34,6 +34,13 @@ export const SITE_ORIGIN = 'https://boomopen.com'
 /** @param {string} value @returns {string} */
 const normalizeLf = (value) => String(value).replace(/\r\n/g, '\n')
 
+/** @param {string} value @returns {string} */
+export const sanitizeDashes = (value) =>
+  String(value)
+    .replace(/\s+\u2014\s+/g, ': ')
+    .replace(/\u2014/g, '-')
+    .replace(/\u2013/g, '-')
+
 /** @param {string} filePath @returns {string} */
 const readText = (filePath) => fs.readFileSync(filePath, 'utf8')
 
@@ -70,7 +77,8 @@ export function readFrontmatterDescription(markdown) {
     }
     value = block.join(' ')
   }
-  return value.replace(/^["']|["']$/g, '').replace(LEADING_SYMBOLS_PATTERN, '').trim()
+  const cleaned = value.replace(/^["']|["']$/g, '').replace(LEADING_SYMBOLS_PATTERN, '').trim()
+  return sanitizeDashes(cleaned)
 }
 
 /**
@@ -127,7 +135,7 @@ export function collectDomains(indexYaml) {
       continue
     }
     const name = /^ {4}name:\s*"?([^"]+?)"?\s*$/.exec(line)
-    if (name && current) current.name = name[1]
+    if (name && current) current.name = sanitizeDashes(name[1])
     const count = /^ {4}skill_count:\s*(\d+)/.exec(line)
     if (count && current) current.count = Number(count[1])
   }
@@ -221,21 +229,21 @@ export function renderLlmsTxt(stats, siteOrigin = SITE_ORIGIN) {
   const cmdTotal = stats.commands.length || 36
   const domainTotal = stats.domains.length || 19
 
-  return [
+  return sanitizeDashes([
     `# BoomOpen Workflow Kit Pro (v${stats.version})`,
     '',
-    `> Smart-Hybrid Multi-Agent Orchestration, Slim \`frontier-guardrails\` Default Preset, Contract-First 3-Wave Swarm Sharding, Wave 2.5 Spec-to-Code Reconciliation, Stateful Multi-Round Project Audit (/audit), Multi-Session Project Autopilot, and Deterministic CLI Compiler Suite across ${stats.platforms} AI coding platforms (Google Antigravity 2.0, Claude Code, OpenAI Codex, Cursor, GitHub Copilot).`,
+    `> Slim \`frontier-guardrails\` default preset (< 2.3 KB, 21 lines, ~600 tokens; \`mode_a\` up to 10 files direct with zero natural-language hijacking), opt-in 3-Wave Contract-First sharding, Wave 2.5 spec-to-code reconciliation, multi-round project audit (/audit), multi-session /autopilot, and 14 local CLI commands across ${stats.platforms} AI coding IDEs (Google Antigravity 2.0, Claude Code, OpenAI Codex, Cursor, GitHub Copilot).`,
     '',
     '## Canonical Inventory',
     `- Production Website: ${siteOrigin}`,
     `- Version: v${stats.version}`,
     `- Platforms (${stats.platforms}): Antigravity 2.0, Claude Code, OpenAI Codex, Cursor, GitHub Copilot`,
-    `- Default Preset: \`frontier-guardrails\` (< 2.5 KB slim guardrails across all 5 IDEs; \`carbon-guardrails\` alias supported)`,
+    `- Default Preset: \`frontier-guardrails\` (< 2.3 KB slim rules across 14 entry files; presets: \`frontier-guardrails\`, \`smart-hybrid\`, \`solo-fast\`, \`deep-architect\`, \`adversarial-team\`, plus \`carbon-guardrails\` alias; 22 config keys = 20 enum + 2 line limits)`,
     `- Slash Commands: ${cmdTotal} base commands (${stats.commandFiles} files: ${stats.commandWorkflowFiles} workflows + ${stats.commandRefFiles} shared references, including /onboard, /pr, /pr:review, /release, /audit, /autopilot, /conduct, /cook, /code)`,
-    `- Specialist Agents: ${stats.agents} domain engineers & auditors`,
-    `- Adversarial Teams: ${stats.teams} Golden Diamond / Triangle teams (${stats.teamFiles} files)`,
+    `- Sub-Agents: ${stats.agents} domain specialists`,
+    `- Review Teams: ${stats.teams} adversarial 3-role review teams (${stats.teamFiles} files: Tech Lead, Executor, Reviewer)`,
     `- Skills Vault: ${skillsTotal} indexed skills (${stats.coreSkills} core + ${libTotal} library across ${domainTotal} domains, shared via ~/.agents/skills_library)`,
-    `- Multilingual Routing: ${stats.i18nLocales} supported languages`,
+    `- Multilingual Routing: ${stats.i18nLocales} supported languages (opt-in via \`smart-hybrid\` or \`workflows.naturalLanguageResearchTrigger\`)`,
     '',
     '## Quick Install (From Git Clone)',
     '```bash',
@@ -245,21 +253,21 @@ export function renderLlmsTxt(stats, siteOrigin = SITE_ORIGIN) {
     'node cli/install.js doctor',
     '```',
     '',
-    '## Deterministic CLI Subcommands (14)',
-    '- `install` / `uninstall` / `list` / `doctor` / `settings`: SHA-256 manifest lifecycle, `--as-plugin` bundle support & Control Center UI (`--ui`)',
-    '- `research` / `design` / `plan` / `cook` / `reconcile`: Static `< 50ms` artifact validators (`RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`), wave packet compilers & Wave 2.5 spec-to-code reconciliation (`REC-G1..G4`)',
-    '- `audit` / `ledger` / `conduct` / `check`: Stateful multi-round human-gated project audit (`.boomopen/audit-ledger.json`, `audit rollback`), `.boomopen/project-ledger.json` phase ratchet (`ledger rollback`), Multi-Engine Council (`claude,codex,antigravity`), and Pragmatic 2-Tier static gate (`--strict-phase --no-stubs`)',
+    '## Local CLI Subcommands (14)',
+    '- `install` / `uninstall` / `list` / `doctor` / `settings`: SHA-256 manifest installer (14 entry files, `--as-plugin` bundle, opt-in `--with-hooks` on Claude/Antigravity/Cursor) & Control Center (`--ui`)',
+    '- `research` / `design` / `plan` / `cook` / `reconcile`: Fast local validators (`RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`), wave packet compilers & Wave 2.5 spec-to-code reconciliation (`REC-G1..G4`)',
+    '- `audit` / `ledger` / `conduct` / `check`: Multi-round project audit (`.boomopen/audit-ledger.json`, `audit rollback --round 1 --yes`), `.boomopen/project-ledger.json` phase ratchet (`ledger rollback --phase PHASE-1 --yes`), Multi-Engine Council (`conduct council --task review --prompt "..."`), and 2-tier static gate (`--strict-phase --no-stubs`)',
     '',
-    '## Documentation & Interactive Catalogs',
-    `- [Overview & Launch Trailer](${siteOrigin}/): Bilingual EN/VI showcase, 3-Wave + Wave 2.5 Swarm Visualizer, and 14-Command CLI Playground`,
-    `- [Slash Commands Catalog](${siteOrigin}/commands): Searchable reference of all ${cmdTotal} workflow routers and variants`,
-    `- [Agents & Golden Diamond Teams](${siteOrigin}/agents): ${stats.agents} specialist agents and ${stats.teams} adversarial review teams`,
+    '## Documentation & Catalogs',
+    `- [Overview & Walkthrough](${siteOrigin}/): Bilingual EN/VI overview, workflow visualizer, and 14-command CLI Playground`,
+    `- [Slash Commands Catalog](${siteOrigin}/commands): Searchable reference of all ${cmdTotal} commands and variants`,
+    `- [Sub-Agents & 3-Role Review Teams](${siteOrigin}/agents): ${stats.agents} sub-agents and ${stats.teams} review teams`,
     `- [Skills Vault Explorer](${siteOrigin}/skills): ${skillsTotal} indexed skills across ${domainTotal} engineering domains`,
-    `- [Architecture & CLI Gates](${siteOrigin}/architecture): Tier 0 vs Tier 1 sharding, frontier-guardrails preset, SHARED_CONTRACT locks, and Autopilot ratchet`,
-    `- [Platform Installation Guide](${siteOrigin}/install): Safe per-IDE setup, doctor verification, and hook configuration`,
+    `- [Architecture & CLI Gates](${siteOrigin}/architecture): frontier-guardrails default, 3-wave sharding, deliverable routing, and /autopilot ratchet`,
+    `- [Git Installation Guide](${siteOrigin}/install): Per-IDE setup, doctor checks, and opt-in hook registration`,
     `- [GitHub Repository](${REPO_GITHUB_URL}): Source code, rules, agents, skills, and release notes`,
     '',
-  ].join('\n')
+  ].join('\n'))
 }
 
 /** @param {KitStats} stats @param {string} [publicDir] @returns {Array<[string, string]>} */

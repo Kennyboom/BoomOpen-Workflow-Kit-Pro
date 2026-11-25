@@ -1,19 +1,18 @@
 import { useMemo, useRef, type KeyboardEvent } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
-import { CheckCircle2, ChevronDown, ExternalLink, ShieldAlert, ShieldCheck, Terminal, Wrench } from 'lucide-react'
+import { Check, ChevronDown, ExternalLink } from 'lucide-react'
 import { clsx } from 'clsx'
 import { SEO } from '../components/seo/SEO'
-import { ActionLink, CopyCommandBar, StatusBadge, SurfaceCard } from '../components/ui/Primitives'
+import { ActionLink, CopyCommandBar } from '../components/ui/Primitives'
 import { CLI_COMMANDS } from '../data/cliSuite'
 import { KIT_STATS, formatCount } from '../data/kitStats'
 import { DOCTOR_VERIFY_COMMAND, INSTALL_ALL_COMMAND, PLATFORMS, REPO_URL } from '../data/platforms'
 import { useLanguage } from '../i18n/context'
-import type { PlatformId } from '../types/ui-contract'
+import type { CliCommandSpec, PlatformId } from '../types/ui-contract'
 
 /**
- * Safe 5-Platform Installer Guide — Obsidian Tungsten & Forge Amber oklch() @theme surfaces.
- * Our mission: SHA-256 manifest-protected installation trusted across 1,462+ indexed skills.
+ * Step-by-step 5-IDE setup guide with SHA-256 manifest path tables and doctor checks.
  */
 type InstallTargetId = PlatformId | 'all'
 
@@ -37,6 +36,114 @@ const VALID_INSTALL_TARGETS = new Set<string>([...PLATFORMS.map((p) => p.id), 'a
 
 function isInstallTargetId(value: string | null): value is InstallTargetId {
   return value !== null && VALID_INSTALL_TARGETS.has(value)
+}
+
+function DoctorAndCliSection({
+  verifyCommand,
+  compilerQuickList,
+}: {
+  readonly verifyCommand: string
+  readonly compilerQuickList: readonly CliCommandSpec[]
+}) {
+  const { locale, t } = useLanguage()
+  const copy = t.installPage
+
+  return (
+    <section aria-labelledby="step-doctor-heading" className="border-b border-hairline py-12">
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="space-y-4 rounded-xl border border-hairline bg-card p-6">
+          <div className="space-y-1">
+            <p className="font-mono text-xs tracking-wider text-subtle uppercase">
+              {locale === 'vi' ? '03 · Kiểm tra với Doctor' : '03 · Verify with Doctor'}
+            </p>
+            <h2 id="step-doctor-heading" className="text-xl font-semibold tracking-tight text-ink">
+              {copy.verification.title}
+            </h2>
+          </div>
+
+          <CopyCommandBar
+            command={verifyCommand}
+            copyLabel={t.common.copy}
+            copiedLabel={t.common.copied}
+            manualCopyHint={t.common.copyManualHint}
+            compact
+          />
+
+          <ul className="space-y-2 pt-1 text-sm leading-relaxed text-muted">
+            {copy.verification.checks.map((check) => (
+              <li key={check} className="flex items-start gap-2.5">
+                <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-accent" />
+                <span>{check}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="space-y-4 rounded-xl border border-hairline bg-card p-6">
+          <div className="space-y-1">
+            <p className="font-mono text-xs tracking-wider text-subtle uppercase">
+              {`CLI · ${CLI_COMMANDS.length} Commands`}
+            </p>
+            <h2 className="text-xl font-semibold tracking-tight text-ink">{copy.globalLink.title}</h2>
+            <p className="text-sm leading-relaxed text-muted">{copy.globalLink.summary}</p>
+          </div>
+
+          <CopyCommandBar
+            command={copy.globalLink.command}
+            copyLabel={t.common.copy}
+            copiedLabel={t.common.copied}
+            manualCopyHint={t.common.copyManualHint}
+            compact
+          />
+
+          <div className="divide-y divide-hairline border-t border-hairline pt-1">
+            {compilerQuickList.map((cli) => (
+              <div key={cli.id} className="flex items-center justify-between gap-3 py-2 font-mono text-xs">
+                <span className="font-medium text-ink">{`boomopen ${cli.id}`}</span>
+                <span className="text-subtle tabular-nums">{`${cli.gates.length} gates`}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function SafeUninstallNote({ maintenanceCommand }: { readonly maintenanceCommand: string }) {
+  const { t } = useLanguage()
+  const copy = t.installPage
+
+  return (
+    <section aria-labelledby="maintenance-heading" className="pt-8">
+      <h2 id="maintenance-heading" className="sr-only">{copy.maintenance.summaryToggle}</h2>
+      <details className="group rounded-xl border border-hairline bg-card">
+        <summary
+          className={clsx(
+            'flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 rounded-xl px-5 py-4 text-sm font-semibold text-ink',
+            FOCUS_RING,
+          )}
+        >
+          <span>{copy.maintenance.summaryToggle}</span>
+          <ChevronDown
+            aria-hidden="true"
+            className="size-4 text-subtle transition-transform duration-150 motion-reduce:transition-none group-open:rotate-180"
+          />
+        </summary>
+        <div className="space-y-3 border-t border-hairline px-5 py-4">
+          <p className="text-sm leading-relaxed text-ink">{copy.maintenance.safetyNotice}</p>
+          <p className="text-xs leading-relaxed text-muted">{copy.maintenance.description}</p>
+          <CopyCommandBar
+            command={maintenanceCommand}
+            copyLabel={t.common.copy}
+            copiedLabel={t.common.copied}
+            manualCopyHint={t.common.copyManualHint}
+            compact
+          />
+        </div>
+      </details>
+    </section>
+  )
 }
 
 export function InstallPage() {
@@ -112,264 +219,142 @@ export function InstallPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-canvas text-ink">
+    <motion.div
+      initial={reduceMotion ? false : { opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.18, ease: 'easeOut' }}
+      className="mx-auto min-h-dvh max-w-[75rem] px-4 py-12 sm:px-6 lg:px-8 lg:py-16"
+    >
       <SEO routeId="install" />
 
-      <motion.div
-        initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.22, ease: 'easeOut' }}
-        className="mx-auto max-w-7xl space-y-14 px-4 py-12 sm:px-6 lg:px-8 lg:py-16"
-      >
-        <header className="space-y-7 border-b border-hairline pb-10">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <StatusBadge tone="amber">
-              <ShieldCheck aria-hidden="true" className="size-3.5" />
-              <span className="uppercase tracking-wider">{copy.eyebrow}</span>
-            </StatusBadge>
-            <StatusBadge tone="emerald">
-              v{KIT_STATS.version} · {KIT_STATS.platforms} IDEs · {formatCount(KIT_STATS.skills)} Skills
-            </StatusBadge>
-          </div>
-
-          <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
-            <div className="space-y-4 lg:col-span-8">
-              <h1 className="font-display text-[clamp(2rem,2.6vw+1.25rem,3.25rem)] leading-tight font-semibold tracking-tight text-ink">
-                {copy.title}
-              </h1>
-              <p className="max-w-prose text-[clamp(1rem,0.25vw+0.94rem,1.125rem)] leading-relaxed font-normal text-muted">
-                {copy.subtitle}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3 lg:col-span-4 lg:justify-end">
-              <ActionLink to={REPO_URL} external variant="primary" trailingIcon={<ExternalLink aria-hidden="true" className="size-4" />}>
-                {t.nav.githubLabel}
-              </ActionLink>
-              <ActionLink to="/architecture" variant="secondary">
-                {t.nav.architecture}
-              </ActionLink>
-            </div>
-          </div>
-
-          <div role="note" className="flex items-start gap-3 rounded-2xl border border-primary/35 bg-primary/10 p-4 sm:p-5">
-            <ShieldAlert aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-primary" />
-            <p className="max-w-prose text-[clamp(0.875rem,0.14vw+0.84rem,0.95rem)] leading-relaxed font-normal text-ink">
-              {copy.gitOnlyNotice}
+      <header className="space-y-5 border-b border-hairline pb-10">
+        <p className="font-mono text-xs tracking-wider text-subtle uppercase">{copy.eyebrow}</p>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-3">
+            <h1 className="text-[clamp(1.85rem,3vw,2.75rem)] leading-[1.12] font-semibold tracking-[-0.032em] text-ink">
+              {copy.title}
+            </h1>
+            <p className="max-w-[58ch] text-base leading-relaxed text-muted">{copy.subtitle}</p>
+            <p className="pt-1 font-mono text-xs text-subtle tabular-nums">
+              {`v${KIT_STATS.version} · ${KIT_STATS.platforms} IDEs · ${formatCount(KIT_STATS.skills)} Skills · Node.js >= 18`}
             </p>
           </div>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            {copy.prerequisites.items.map((req) => (
-              <SurfaceCard key={req.name} variant="subtle" className="space-y-1.5">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-display text-[clamp(0.95rem,0.18vw+0.9rem,1.05rem)] leading-snug font-semibold text-ink">
-                    {req.name}
-                  </span>
-                  <StatusBadge tone="neutral">{req.version}</StatusBadge>
-                </div>
-                <p className="max-w-prose text-[clamp(0.825rem,0.1vw+0.8rem,0.9rem)] leading-relaxed font-normal text-muted">
-                  {req.detail}
-                </p>
-              </SurfaceCard>
-            ))}
+          <div className="flex flex-wrap gap-3">
+            <ActionLink to={REPO_URL} external variant="primary" trailingIcon={<ExternalLink aria-hidden="true" className="size-4" />}>
+              {t.nav.githubLabel}
+            </ActionLink>
+            <ActionLink to="/architecture" variant="ghost">{t.nav.architecture}</ActionLink>
           </div>
-        </header>
+        </div>
+        <p role="note" className="border-l-2 border-line-strong pl-3.5 text-sm leading-relaxed text-muted">
+          {copy.gitOnlyNotice}
+        </p>
+      </header>
 
-        <section aria-labelledby="platform-install-heading" className="space-y-6">
-          <div className="space-y-2">
-            <h2 id="platform-install-heading" className="font-display text-[clamp(1.45rem,1.2vw+1.1rem,2rem)] leading-tight font-semibold tracking-tight text-ink">
-              {copy.steps.title}
-            </h2>
-            <p className="max-w-prose text-[clamp(0.9rem,0.14vw+0.86rem,0.975rem)] leading-relaxed font-normal text-muted">
-              {t.platformsSection.safetyGuarantee}
-            </p>
-          </div>
+      <section aria-labelledby="step-clone-heading" className="space-y-6 border-b border-hairline py-12">
+        <div className="space-y-1.5">
+          <p className="font-mono text-xs tracking-wider text-subtle uppercase">
+            {locale === 'vi' ? '01 · Sao chép & cài đặt' : '01 · Clone & Install'}
+          </p>
+          <h2 id="step-clone-heading" className="text-2xl font-semibold tracking-tight text-ink">{copy.steps.title}</h2>
+          <p className="max-w-[60ch] text-sm leading-relaxed text-muted">{t.platformsSection.safetyGuarantee}</p>
+        </div>
 
-          <div className="grid gap-4 lg:grid-cols-3">
-            {copy.steps.items.map((item) => (
-              <SurfaceCard key={item.step} variant="subtle" className="space-y-2.5">
-                <div className="flex items-center justify-between gap-2">
-                  <StatusBadge tone="amber">{item.step}</StatusBadge>
-                  <code className="truncate font-mono text-[clamp(0.7rem,0.08vw+0.68rem,0.76rem)] leading-tight text-accent">
-                    {item.command}
-                  </code>
-                </div>
-                <div className="font-display text-[clamp(0.975rem,0.2vw+0.92rem,1.08rem)] leading-snug font-semibold text-ink">
-                  {item.title}
-                </div>
-                <p className="max-w-prose text-[clamp(0.825rem,0.1vw+0.8rem,0.9rem)] leading-relaxed font-normal text-muted">
-                  {item.summary}
-                </p>
-              </SurfaceCard>
-            ))}
-          </div>
-
-          {hasUnrecognizedTool && (
-            <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/40 bg-primary/10 px-4 py-3 text-[clamp(0.84rem,0.12vw+0.81rem,0.9rem)] leading-snug text-ink">
-              <span className="flex items-center gap-2">
-                <ShieldAlert aria-hidden="true" className="size-4 shrink-0 text-primary" />
-                <span>{t.platformsSection.unrecognizedToolHint}</span>
-              </span>
-              <code className="rounded bg-canvas px-2 py-1 font-mono text-primary">{`?tool=${rawTool ?? ''}`}</code>
+        <div className="grid divide-y divide-hairline rounded-xl border border-hairline bg-card lg:grid-cols-3 lg:divide-x lg:divide-y-0">
+          {copy.steps.items.map((item, idx) => (
+            <div key={item.step} className="flex flex-col justify-between gap-3 p-5">
+              <div className="space-y-1.5">
+                <div className="font-mono text-xs text-subtle tabular-nums">{`0${idx + 1}`}</div>
+                <h3 className="text-sm font-semibold text-ink">{item.title}</h3>
+                <p className="text-xs leading-relaxed text-muted">{item.summary}</p>
+              </div>
+              <code className="block truncate rounded bg-white/[0.04] px-2.5 py-1.5 font-mono text-xs text-ink">
+                {item.command}
+              </code>
             </div>
-          )}
+          ))}
+        </div>
+      </section>
 
-          <div role="tablist" aria-label={t.platformsSection.tabsAriaLabel} className="flex flex-wrap gap-2 rounded-2xl border border-hairline bg-card p-2">
-            {targets.map((target, index) => {
-              const isSelected = target.id === activeTarget.id
-              return (
-                <button
-                  key={target.id}
-                  ref={(node) => { tabRefs.current[index] = node }}
-                  id={`install-tab-${target.id}`}
-                  role="tab"
-                  type="button"
-                  aria-selected={isSelected}
-                  aria-controls={`install-panel-${target.id}`}
-                  tabIndex={isSelected ? 0 : -1}
-                  onClick={() => setSelectedId(target.id)}
-                  onKeyDown={(event) => handleTabKeyDown(event, index)}
-                  className={clsx(
-                    'inline-flex min-h-11 items-center gap-2 rounded-[10px] border px-4 py-2.5 text-[clamp(0.85rem,0.12vw+0.82rem,0.925rem)] leading-snug transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
-                    FOCUS_RING,
-                    isSelected
-                      ? 'border-primary bg-primary text-primary-ink font-semibold'
-                      : 'border-transparent bg-transparent text-muted hover:border-hairline hover:bg-elevated hover:text-ink font-normal',
-                  )}
-                >
-                  <span>{target.label}</span>
-                </button>
-              )
-            })}
+      <section aria-labelledby="step-ide-heading" className="space-y-6 border-b border-hairline py-12">
+        <div className="space-y-1.5">
+          <p className="font-mono text-xs tracking-wider text-subtle uppercase">
+            {locale === 'vi' ? '02 · Chọn môi trường IDE' : '02 · Select Target IDE'}
+          </p>
+          <h2 id="step-ide-heading" className="text-2xl font-semibold tracking-tight text-ink">
+            {t.platformsSection.title}
+          </h2>
+        </div>
+
+        {hasUnrecognizedTool && (
+          <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line-strong bg-card px-4 py-3 text-sm text-muted">
+            <span>{t.platformsSection.unrecognizedToolHint}</span>
+            <code className="rounded bg-white/[0.04] px-2 py-0.5 font-mono text-xs text-ink">{`?tool=${rawTool ?? ''}`}</code>
           </div>
+        )}
 
-          <div
-            id={`install-panel-${activeTarget.id}`}
-            role="tabpanel"
-            aria-labelledby={`install-tab-${activeTarget.id}`}
-            tabIndex={0}
-            className={clsx('space-y-6 rounded-2xl', FOCUS_RING)}
-          >
-            <SurfaceCard variant="elevated" className="space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2.5">
-                  <StatusBadge tone="amber">STEP 01</StatusBadge>
-                  <h3 className="font-display text-[clamp(1.1rem,0.35vw+1rem,1.3rem)] leading-tight font-semibold text-ink">
-                    {t.platformsSection.safeInstallLabel} — {activeTarget.label}
-                  </h3>
-                </div>
-                <StatusBadge tone="neutral" mono={false}>{activeTarget.vendor}</StatusBadge>
-              </div>
-              <p className="max-w-prose text-[clamp(0.875rem,0.12vw+0.84rem,0.95rem)] leading-relaxed font-normal text-muted">
-                {activeTarget.summary}
-              </p>
-              <CopyCommandBar
-                command={activeTarget.installCommand}
-                label={`${t.platformsSection.safeInstallLabel} (${activeTarget.id})`}
-                copyLabel={t.common.copy}
-                copiedLabel={t.common.copied}
-                manualCopyHint={t.common.copyManualHint}
-              />
-            </SurfaceCard>
+        <div role="tablist" aria-label={t.platformsSection.tabsAriaLabel} className="flex flex-wrap gap-1.5 rounded-xl border border-hairline bg-card p-1.5">
+          {targets.map((target, index) => {
+            const isSelected = target.id === activeTarget.id
+            return (
+              <button
+                key={target.id}
+                ref={(node) => { tabRefs.current[index] = node }}
+                id={`install-tab-${target.id}`}
+                role="tab"
+                type="button"
+                aria-selected={isSelected}
+                aria-controls={`install-panel-${target.id}`}
+                tabIndex={isSelected ? 0 : -1}
+                onClick={() => setSelectedId(target.id)}
+                onKeyDown={(event) => handleTabKeyDown(event, index)}
+                className={clsx(
+                  'inline-flex min-h-11 items-center rounded-lg px-3.5 py-2 text-sm transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
+                  FOCUS_RING,
+                  isSelected ? 'bg-primary font-semibold text-primary-ink' : 'bg-transparent font-normal text-muted hover:bg-white/[0.04] hover:text-ink',
+                )}
+              >
+                {target.label}
+              </button>
+            )
+          })}
+        </div>
 
-            <SurfaceCard variant="default" className="space-y-5">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2.5">
-                  <StatusBadge tone="emerald">STEP 02</StatusBadge>
-                  <h3 className="font-display text-[clamp(1.1rem,0.35vw+1rem,1.3rem)] leading-tight font-semibold text-ink">
-                    {copy.verification.title}
-                  </h3>
-                </div>
-                <StatusBadge tone="emerald">{copy.verification.badge}</StatusBadge>
-              </div>
-
-              <CopyCommandBar
-                command={activeTarget.verifyCommand}
-                label={t.platformsSection.verifyDoctorLabel}
-                copyLabel={t.common.copy}
-                copiedLabel={t.common.copied}
-                manualCopyHint={t.common.copyManualHint}
-                compact
-              />
-
-              <div className="grid gap-3 md:grid-cols-2">
-                <div className="rounded-xl border border-hairline bg-canvas p-4 space-y-1">
-                  <div className="font-mono text-[clamp(0.72rem,0.08vw+0.7rem,0.78rem)] leading-tight uppercase tracking-wider text-subtle">
-                    {t.platformsSection.entryPointLabel}
-                  </div>
-                  <code className="block font-mono text-[clamp(0.825rem,0.1vw+0.8rem,0.9rem)] leading-relaxed text-primary">
-                    {activeTarget.entryFile}
-                  </code>
-                </div>
-                <div className="rounded-xl border border-hairline bg-canvas p-4 space-y-1">
-                  <div className="font-mono text-[clamp(0.72rem,0.08vw+0.7rem,0.78rem)] leading-tight uppercase tracking-wider text-subtle">
-                    {t.platformsSection.installPathLabel}
-                  </div>
-                  <code className="block font-mono text-[clamp(0.825rem,0.1vw+0.8rem,0.9rem)] leading-relaxed text-accent">
-                    {activeTarget.frameworkPath}
-                  </code>
-                </div>
-              </div>
-
-              <ul className="grid gap-2 sm:grid-cols-2 text-[clamp(0.85rem,0.12vw+0.82rem,0.925rem)] leading-relaxed text-muted">
-                {copy.verification.checks.map((check) => (
-                  <li key={check} className="flex max-w-prose items-start gap-2">
-                    <CheckCircle2 aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-accent" />
-                    <span>{check}</span>
-                  </li>
-                ))}
-              </ul>
-            </SurfaceCard>
-
-            <SurfaceCard variant="default" className="space-y-5">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2.5">
-                  <StatusBadge tone="cobalt">STEP 03</StatusBadge>
-                  <h3 className="font-display text-[clamp(1.1rem,0.35vw+1rem,1.3rem)] leading-tight font-semibold text-ink">{copy.globalLink.title}</h3>
-                </div>
-                <StatusBadge tone="cobalt">
-                  <Terminal aria-hidden="true" className="size-3.5" />
-                  <span>{CLI_COMMANDS.length} CLI Gates</span>
-                </StatusBadge>
-              </div>
-              <p className="max-w-prose text-[clamp(0.875rem,0.12vw+0.84rem,0.95rem)] leading-relaxed font-normal text-muted">{copy.globalLink.summary}</p>
-              <CopyCommandBar command={copy.globalLink.command} copyLabel={t.common.copy} copiedLabel={t.common.copied} manualCopyHint={t.common.copyManualHint} compact />
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {compilerQuickList.map((cli) => (
-                  <div key={cli.id} className="rounded-xl border border-hairline bg-canvas p-3.5 space-y-1.5">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-mono text-[clamp(0.825rem,0.1vw+0.8rem,0.9rem)] leading-tight font-semibold text-primary">boomopen {cli.id}</span>
-                      <span className="font-mono text-[clamp(0.7rem,0.08vw+0.68rem,0.75rem)] leading-none text-subtle tabular-nums">{cli.gates.length} gates</span>
-                    </div>
-                    <code className="block truncate font-mono text-[clamp(0.72rem,0.08vw+0.7rem,0.78rem)] leading-relaxed text-ink">{cli.invocation}</code>
-                  </div>
-                ))}
-              </div>
-            </SurfaceCard>
+        <div
+          id={`install-panel-${activeTarget.id}`}
+          role="tabpanel"
+          aria-labelledby={`install-tab-${activeTarget.id}`}
+          tabIndex={0}
+          className={clsx('space-y-5 rounded-xl border border-hairline bg-card p-6', FOCUS_RING)}
+        >
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h3 className="text-lg font-semibold tracking-tight text-ink">
+              {`${t.platformsSection.safeInstallLabel}: ${activeTarget.label}`}
+            </h3>
+            <span className="font-mono text-xs text-subtle">{activeTarget.vendor}</span>
           </div>
-        </section>
-
-        <section aria-labelledby="maintenance-heading" className="border-t border-hairline pt-8">
-          <h2 id="maintenance-heading" className="sr-only">{copy.maintenance.summaryToggle}</h2>
-          <details className="group rounded-2xl border border-hairline bg-card specular-surface">
-            <summary className={clsx('flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-5 py-4 font-display text-[clamp(0.975rem,0.2vw+0.92rem,1.1rem)] leading-snug font-semibold text-ink', FOCUS_RING)}>
-              <span className="flex items-center gap-2.5">
-                <Wrench aria-hidden="true" className="size-4 text-muted" />
-                <span>{copy.maintenance.summaryToggle}</span>
-              </span>
-              <span className="flex items-center gap-2">
-                <StatusBadge tone="neutral">{copy.maintenance.badge}</StatusBadge>
-                <ChevronDown aria-hidden="true" className="size-4 text-muted transition-transform duration-150 motion-reduce:transition-none group-open:rotate-180" />
-              </span>
-            </summary>
-            <div className="space-y-4 border-t border-hairline px-5 py-5">
-              <p className="max-w-prose text-[clamp(0.875rem,0.12vw+0.84rem,0.95rem)] leading-relaxed font-normal text-accent">{copy.maintenance.safetyNotice}</p>
-              <p className="max-w-prose text-[clamp(0.85rem,0.12vw+0.82rem,0.925rem)] leading-relaxed font-normal text-muted">{copy.maintenance.description}</p>
-              <CopyCommandBar command={activeTarget.maintenanceCommand} label={`${copy.maintenance.commandHeading} (${activeTarget.label})`} copyLabel={t.common.copy} copiedLabel={t.common.copied} manualCopyHint={t.common.copyManualHint} compact />
+          <p className="max-w-[62ch] text-sm leading-relaxed text-muted">{activeTarget.summary}</p>
+          <CopyCommandBar
+            command={activeTarget.installCommand}
+            copyLabel={t.common.copy}
+            copiedLabel={t.common.copied}
+            manualCopyHint={t.common.copyManualHint}
+          />
+          <div className="divide-y divide-hairline rounded-lg border border-hairline">
+            <div className="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <span className="font-mono text-xs text-subtle">{t.platformsSection.entryPointLabel}</span>
+              <code className="font-mono text-xs text-ink">{activeTarget.entryFile}</code>
             </div>
-          </details>
-        </section>
-      </motion.div>
-    </div>
+            <div className="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <span className="font-mono text-xs text-subtle">{t.platformsSection.installPathLabel}</span>
+              <code className="font-mono text-xs text-ink">{activeTarget.frameworkPath}</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <DoctorAndCliSection verifyCommand={activeTarget.verifyCommand} compilerQuickList={compilerQuickList} />
+      <SafeUninstallNote maintenanceCommand={activeTarget.maintenanceCommand} />
+    </motion.div>
   )
 }

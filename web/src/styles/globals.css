@@ -1,29 +1,29 @@
 @import "tailwindcss";
 
 /*
- * Obsidian Tungsten & Forge Amber — Perceptual OKLCH Design Tokens (v5.5)
- * Loaded over HTTPS with accessible input::placeholder & [aria-label] defaults.
+ * Obsidian Monograph: Perceptual OKLCH Design Tokens (v5.5)
+ * Minimalist technical dark palette with solid Platinum primary controls.
  */
 @layer base {
   :root {
-    --surface-canvas: oklch(0.13 0.010 255);
-    --surface-panel: oklch(0.165 0.012 255);
-    --surface-elevated: oklch(0.20 0.014 255);
-    --surface-overlay: oklch(0.16 0.012 255 / 0.86);
-    --border-hairline: oklch(0.96 0.006 255 / 0.09);
-    --border-strong: oklch(0.96 0.006 255 / 0.18);
-    --text-primary: oklch(0.95 0.006 85);
-    --text-secondary: oklch(0.72 0.012 255);
-    --text-muted: oklch(0.58 0.012 255);
-    --brand-primary: oklch(0.78 0.165 72);
-    --brand-primary-hover: oklch(0.83 0.165 72);
-    --brand-primary-ink: oklch(0.16 0.02 72);
-    --signal-accent: oklch(0.74 0.155 162);
-    --signal-cobalt: oklch(0.72 0.14 235);
-    --signal-warning: oklch(0.80 0.15 82);
-    --signal-danger: oklch(0.65 0.20 26);
+    --surface-canvas: oklch(0.115 0.006 260);
+    --surface-panel: oklch(0.148 0.007 260);
+    --surface-elevated: oklch(0.182 0.008 260);
+    --surface-overlay: oklch(0.13 0.007 260 / 0.84);
+    --border-hairline: oklch(1 0 0 / 0.075);
+    --border-strong: oklch(1 0 0 / 0.16);
+    --text-primary: oklch(0.98 0.003 260);
+    --text-secondary: oklch(0.71 0.008 260);
+    --text-muted: oklch(0.55 0.008 260);
+    --brand-primary: oklch(0.965 0.004 260);
+    --brand-primary-hover: oklch(1 0 0);
+    --brand-primary-ink: oklch(0.115 0.006 260);
+    --signal-accent: oklch(0.74 0.14 160);
+    --signal-cobalt: oklch(0.76 0.04 250);
+    --signal-warning: oklch(0.78 0.12 75);
+    --signal-danger: oklch(0.64 0.19 25);
     --radius-panel: 16px;
-    --radius-control: 10px;
+    --radius-control: 8px;
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -59,8 +59,10 @@
   h2,
   h3,
   h4 {
-    font-family: "Space Grotesk", system-ui, sans-serif;
-    letter-spacing: -0.024em;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    letter-spacing: -0.032em;
+    line-height: 1.1;
+    font-weight: 600;
     text-wrap: balance;
   }
 
@@ -72,7 +74,7 @@
   pre,
   kbd,
   samp {
-    font-family: "JetBrains Mono", monospace;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
     font-variant-numeric: tabular-nums;
   }
 
@@ -95,7 +97,7 @@
   }
 
   ::selection {
-    background-color: oklch(0.78 0.165 72 / 0.24);
+    background-color: oklch(0.965 0.004 260 / 0.18);
     color: var(--text-primary);
   }
 }
@@ -107,8 +109,11 @@
   --color-elevated: var(--surface-elevated);
   --color-overlay: var(--surface-overlay);
   --color-hairline: var(--border-hairline);
+  --color-hairline-strong: var(--border-strong);
   --color-line-strong: var(--border-strong);
   --color-ink: var(--text-primary);
+  --color-ink-secondary: var(--text-secondary);
+  --color-ink-muted: var(--text-muted);
   --color-muted: var(--text-secondary);
   --color-subtle: var(--text-muted);
   --color-primary: var(--brand-primary);
@@ -118,14 +123,13 @@
   --color-cobalt: var(--signal-cobalt);
   --color-warning: var(--signal-warning);
   --color-danger: var(--signal-danger);
-  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 .specular-surface {
-  box-shadow: 0 12px 32px rgba(12, 13, 14, 0.45);
-  background-image: linear-gradient(180deg, oklch(1 0 0 / 0.045) 0px, transparent 1px);
+  box-shadow: inset 0px 1px 0px 0px oklch(1 0 0 / 0.045);
 }
 
 .tabular-metrics {
@@ -138,7 +142,7 @@
   transform: translateY(-200%);
   background-color: var(--brand-primary);
   color: var(--brand-primary-ink);
-  font-weight: 700;
+  font-weight: 600;
   border-radius: var(--radius-control);
 }
 

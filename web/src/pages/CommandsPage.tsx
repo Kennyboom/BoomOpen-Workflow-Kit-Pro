@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
-import { Diamond, FileCode2, Globe2, RotateCcw, Terminal } from 'lucide-react'
+import { RotateCcw } from 'lucide-react'
 import { CommandRowCard } from '../components/catalogs/CommandRowCard'
 import { SEO } from '../components/seo/SEO'
 import {
@@ -9,8 +9,6 @@ import {
   EmptyCatalogState,
   FilterPill,
   SearchField,
-  StatusBadge,
-  SurfaceCard,
 } from '../components/ui/Primitives'
 import { COMMAND_CATEGORIES, COMMANDS_CATALOG } from '../data/commands'
 import { formatCount, KIT_STATS, TEAM_COMMANDS } from '../data/kitStats'
@@ -18,8 +16,7 @@ import { useLanguage } from '../i18n/context'
 import type { CommandFilterKey } from '../i18n/types'
 
 /**
- * Interactive 36-command & 93-file catalog built around our mission of deterministic
- * contract-first workflows, adversarial review, and 1,462 indexed skills.
+ * Scannable 36-command directory with URL-synced search and category filters.
  */
 const FILTER_KEYS: readonly CommandFilterKey[] = ['all', ...COMMAND_CATEGORIES]
 
@@ -110,91 +107,53 @@ export function CommandsPage() {
   }
 
   const resultsSummary = `${formatCount(filteredCommands.length)} / ${formatCount(COMMANDS_CATALOG.length)} ${t.common.resultsCount}`
+  const inlineMetrics =
+    locale === 'vi'
+      ? `${formatCount(KIT_STATS.commands.length)} lệnh nền tảng · ${formatCount(KIT_STATS.commandFiles)} đặc tả (${formatCount(KIT_STATS.commandWorkflowFiles)} workflow + ${formatCount(KIT_STATS.commandRefFiles)} _ref) · ${formatCount(TEAM_COMMANDS.length)} lệnh :team · ${formatCount(KIT_STATS.i18nLocales)} ngôn ngữ`
+      : `${formatCount(KIT_STATS.commands.length)} Base Commands · ${formatCount(KIT_STATS.commandFiles)} Specs (${formatCount(KIT_STATS.commandWorkflowFiles)} workflows + ${formatCount(KIT_STATS.commandRefFiles)} _ref) · ${formatCount(TEAM_COMMANDS.length)} :team · ${formatCount(KIT_STATS.i18nLocales)} Locales`
 
   return (
     <motion.div
-      initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
-      className="mx-auto min-h-dvh max-w-7xl space-y-10 px-4 py-12 sm:px-6 lg:px-8"
+      transition={{ duration: 0.18, ease: 'easeOut' }}
+      className="mx-auto min-h-dvh max-w-[75rem] space-y-8 px-4 py-12 sm:px-6 lg:px-8 lg:py-16"
     >
       <SEO routeId="commands" />
 
-      <header className="space-y-5 border-b border-hairline pb-8">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <StatusBadge tone="amber">
-            <Terminal aria-hidden="true" className="size-3.5" />
-            <span className="tracking-wider uppercase">{t.commandsPage.eyebrow}</span>
-          </StatusBadge>
-          <StatusBadge tone="emerald">
-            <FileCode2 aria-hidden="true" className="size-3.5" />
-            <span>{t.commandsPage.workflowFilesBadge}</span>
-          </StatusBadge>
-        </div>
-
-        <h1 className="font-display text-[clamp(2rem,2.4vw+1.25rem,3.1rem)] leading-tight font-semibold tracking-tight text-ink">
+      <header className="space-y-3.5 border-b border-hairline pb-8">
+        <p className="font-mono text-xs tracking-wider text-subtle uppercase">
+          {t.commandsPage.eyebrow}
+        </p>
+        <h1 className="text-[clamp(1.85rem,3vw,2.75rem)] leading-[1.12] font-semibold tracking-[-0.032em] text-ink">
           {t.commandsPage.title}
         </h1>
-
-        <p className="max-w-prose text-[clamp(0.975rem,0.25vw+0.92rem,1.125rem)] leading-relaxed font-normal text-muted">
+        <p className="max-w-[58ch] text-base leading-relaxed text-muted">
           {t.commandsPage.subtitle}
         </p>
-
-        <div className="grid gap-3 pt-2 sm:grid-cols-2 lg:grid-cols-4">
-          <SurfaceCard variant="subtle" className="space-y-1 p-4">
-            <div className="font-mono text-[clamp(1.35rem,0.6vw+1.15rem,1.75rem)] leading-tight font-semibold text-primary tabular-nums">
-              {formatCount(KIT_STATS.commands.length)}
-            </div>
-            <div className="text-[clamp(0.8rem,0.12vw+0.77rem,0.875rem)] leading-snug font-normal text-muted">
-              {locale === 'vi' ? 'Nhóm lệnh /cmd nền tảng' : 'Base /cmd workflow families'}
-            </div>
-          </SurfaceCard>
-
-          <SurfaceCard variant="subtle" className="space-y-1 p-4">
-            <div className="font-mono text-[clamp(1.35rem,0.6vw+1.15rem,1.75rem)] leading-tight font-semibold text-ink tabular-nums">
-              {`${formatCount(KIT_STATS.commandWorkflowFiles)} + ${formatCount(KIT_STATS.commandRefFiles)} = ${formatCount(KIT_STATS.commandFiles)}`}
-            </div>
-            <div className="text-[clamp(0.8rem,0.12vw+0.77rem,0.875rem)] leading-snug font-normal text-muted">
-              {t.commandsPage.workflowFilesBadge}
-            </div>
-          </SurfaceCard>
-
-          <SurfaceCard variant="subtle" className="space-y-1 p-4">
-            <div className="inline-flex items-center gap-1.5 font-mono text-[clamp(1.35rem,0.6vw+1.15rem,1.75rem)] leading-tight font-semibold text-accent tabular-nums">
-              <Diamond aria-hidden="true" className="size-4 text-primary" />
-              <span>{formatCount(TEAM_COMMANDS.length)}</span>
-            </div>
-            <div className="text-[clamp(0.8rem,0.12vw+0.77rem,0.875rem)] leading-snug font-normal text-muted">
-              {t.commandsPage.teamVariantBadge}
-            </div>
-          </SurfaceCard>
-
-          <SurfaceCard variant="subtle" className="space-y-1 p-4">
-            <div className="inline-flex items-center gap-1.5 font-mono text-[clamp(1.35rem,0.6vw+1.15rem,1.75rem)] leading-tight font-semibold text-cobalt tabular-nums">
-              <Globe2 aria-hidden="true" className="size-4" />
-              <span>{formatCount(KIT_STATS.i18nLocales)}</span>
-            </div>
-            <div className="text-[clamp(0.8rem,0.12vw+0.77rem,0.875rem)] leading-snug font-normal text-muted">
-              {locale === 'vi'
-                ? 'Ngôn ngữ định tuyến ý định tự nhiên'
-                : 'Supported natural-language locales'}
-            </div>
-          </SurfaceCard>
-        </div>
+        <p className="pt-1 font-mono text-xs text-subtle tabular-nums">
+          {inlineMetrics}
+        </p>
       </header>
 
-      <section aria-labelledby="commands-directory-heading" className="space-y-6">
-        <SurfaceCard variant="default" className="space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2
-              id="commands-directory-heading"
-              className="font-display text-[clamp(1.25rem,0.5vw+1.1rem,1.55rem)] leading-tight font-semibold text-ink"
-            >
-              {locale === 'vi' ? 'Danh mục Lệnh & Bộ lọc Quy trình' : 'Interactive Command Directory'}
-            </h2>
+      <section aria-label={t.commandsPage.title} className="space-y-6">
+        <div className="space-y-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="w-full sm:max-w-md">
+              <SearchField
+                id="commands-catalog-search"
+                label={t.commandsPage.searchLabel}
+                value={query}
+                onChange={setQuery}
+                placeholder={t.commandsPage.searchPlaceholder}
+                clearLabel={t.common.clearSearch}
+                resultCountLabel={resultsSummary}
+              />
+            </div>
+
             {hasActiveFilters && (
               <ActionButton
-                variant="secondary"
+                variant="ghost"
                 icon={<RotateCcw aria-hidden="true" className="size-4" />}
                 onClick={handleResetFilters}
               >
@@ -203,16 +162,6 @@ export function CommandsPage() {
             )}
           </div>
 
-          <SearchField
-            id="commands-catalog-search"
-            label={t.commandsPage.searchLabel}
-            value={query}
-            onChange={setQuery}
-            placeholder={t.commandsPage.searchPlaceholder}
-            clearLabel={t.common.clearSearch}
-            resultCountLabel={resultsSummary}
-          />
-
           <div
             id="commands-category-filter-bar"
             role="group"
@@ -220,17 +169,16 @@ export function CommandsPage() {
             className="flex flex-wrap gap-2"
           >
             {FILTER_KEYS.map((categoryKey) => (
-              <div key={categoryKey} id={`command-filter-${categoryKey}`}>
-                <FilterPill
-                  label={t.commandsPage.categories[categoryKey]}
-                  count={categoryCounts[categoryKey]}
-                  active={activeCategory === categoryKey}
-                  onSelect={() => setActiveCategory(categoryKey)}
-                />
-              </div>
+              <FilterPill
+                key={categoryKey}
+                label={t.commandsPage.categories[categoryKey]}
+                count={categoryCounts[categoryKey]}
+                active={activeCategory === categoryKey}
+                onSelect={() => setActiveCategory(categoryKey)}
+              />
             ))}
           </div>
-        </SurfaceCard>
+        </div>
 
         {filteredCommands.length === 0 ? (
           <EmptyCatalogState

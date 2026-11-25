@@ -12,8 +12,8 @@ const InstallPage = lazy(() => import('./pages/InstallPage').then((m) => ({ defa
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })))
 
 /**
- * Declarative Flagship Router (1,462 indexed skills) — pairs code-split route modules
- * with `<Layout />` skeleton Suspense, AnimatePresence transitions, and legacy redirects.
+ * Declarative router for the BoomOpen showcase: pairs code-split route modules
+ * with `<Layout />` skeleton Suspense, subtle motion transitions, and legacy redirects.
  */
 export function App() {
   return (

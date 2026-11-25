@@ -19,8 +19,24 @@ import {
   renderSitemapXml,
 } from './kit-stats.mjs'
 
-const WEB_DATA_DIR = path.join(REPO_ROOT, 'web', 'src', 'data')
+const WEB_DIR = path.join(REPO_ROOT, 'web')
+const WEB_DATA_DIR = path.join(WEB_DIR, 'src', 'data')
 const CANONICAL_REPO_URL = 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro'
+const BINARY_ASSET_EXTENSIONS = new Set([
+  '.png',
+  '.jpg',
+  '.jpeg',
+  '.gif',
+  '.webp',
+  '.avif',
+  '.ico',
+  '.mp4',
+  '.webm',
+  '.woff',
+  '.woff2',
+  '.ttf',
+  '.otf',
+])
 
 /** @param {string} markdown @returns {string[]} */
 function readBaseAgentsFromFrontmatter(markdown) {
@@ -47,10 +63,33 @@ function readBaseAgentsFromFrontmatter(markdown) {
   return list
 }
 
-test('readFrontmatterDescription handles plain, quoted and folded values', () => {
+/** @param {string} dirPath @returns {string[]} */
+function walkTextFiles(dirPath) {
+  /** @type {string[]} */
+  const collected = []
+  for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
+    const full = path.join(dirPath, entry.name)
+    if (entry.isDirectory()) {
+      collected.push(...walkTextFiles(full))
+    } else if (entry.isFile() && !BINARY_ASSET_EXTENSIONS.has(path.extname(entry.name).toLowerCase())) {
+      collected.push(full)
+    }
+  }
+  return collected
+}
+
+test('readFrontmatterDescription handles plain, quoted, folded, and dash-sanitized values', () => {
   assert.equal(readFrontmatterDescription('---\ndescription: Plain text\n---\n'), 'Plain text')
   assert.equal(readFrontmatterDescription('---\ndescription: "🍳 Quoted"\n---\n'), 'Quoted')
   assert.equal(readFrontmatterDescription('---\ndescription: >-\n  Folded\n  value\nname: x\n---\n'), 'Folded value')
+  assert.equal(
+    readFrontmatterDescription('---\ndescription: "Alpha \u2014 Beta"\n---\n'),
+    'Alpha: Beta',
+  )
+  assert.equal(
+    readFrontmatterDescription('---\ndescription: "200\u2013350 lines\u2014fast"\n---\n'),
+    '200-350 lines-fast',
+  )
   assert.equal(readFrontmatterDescription('# no frontmatter'), '')
 })
 
@@ -88,7 +127,7 @@ test('collectDomains reads names and skill counts', () => {
   ].join('\n')
   assert.deepEqual(collectDomains(yaml), [
     { id: 'backend', name: 'Backend Development', count: 12 },
-    { id: 'ai_ml', name: 'ai_ml' === 'ai_ml' ? 'AI/ML' : '', count: 3 },
+    { id: 'ai_ml', name: 'AI/ML', count: 3 },
   ])
 })
 
@@ -151,7 +190,7 @@ test('commands.ts, agents.ts, teams.ts, skills.ts & platforms.ts match 100% of d
     .sort()
   assert.deepEqual(listedAgents, diskAgents, 'agents.ts must match every agents/*.md file on disk')
 
-  // 3. All 18 Golden Diamond teams & 54/54 base-agent role frontmatter definitions
+  // 3. All 18 3-role review teams & 54/54 base-agent role frontmatter definitions
   const teamsTs = fs.readFileSync(path.join(WEB_DATA_DIR, 'teams.ts'), 'utf8')
   assert.ok(teamsTs.includes('export const SPECIALIST_TEAMS'), 'teams.ts must export SPECIALIST_TEAMS')
   const teamBlocks = [
@@ -222,7 +261,7 @@ test('commands.ts, agents.ts, teams.ts, skills.ts & platforms.ts match 100% of d
   }
 
   // 6. URL query deep-linking (useSearchParams), RFC 9110 Range hardening & dead dependency removal
-  const webPkg = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'web', 'package.json'), 'utf8'))
+  const webPkg = JSON.parse(fs.readFileSync(path.join(WEB_DIR, 'package.json'), 'utf8'))
   assert.equal(webPkg.version, stats.version, 'web/package.json version must match kit version')
   assert.ok(!('@xyflow/react' in (webPkg.dependencies ?? {})), '@xyflow/react must not remain in web/package.json')
 
@@ -231,7 +270,7 @@ test('commands.ts, agents.ts, teams.ts, skills.ts & platforms.ts match 100% of d
     assert.ok(llmsTxt.includes(`\`${sub}\``), `public/llms.txt must document CLI subcommand ${sub}`)
   }
 
-  const pagesDir = path.join(REPO_ROOT, 'web', 'src', 'pages')
+  const pagesDir = path.join(WEB_DIR, 'src', 'pages')
   for (const pageFile of ['CommandsPage.tsx', 'AgentsTeamsPage.tsx', 'SkillsPage.tsx', 'InstallPage.tsx', 'HomePage.tsx']) {
     const src = fs.readFileSync(path.join(pagesDir, pageFile), 'utf8')
     assert.ok(src.includes('useSearchParams'), `${pageFile} must sync URL query parameters via useSearchParams`)
@@ -248,7 +287,7 @@ test('SITE_URL / SITE_ORIGIN is https://boomopen.com and llms.txt / sitemap.xml 
   )
   assert.ok(!seoRoutesTs.includes('vercel.app'), 'seoRoutes.ts must not reference vercel.app')
 
-  const indexHtml = fs.readFileSync(path.join(REPO_ROOT, 'web', 'index.html'), 'utf8')
+  const indexHtml = fs.readFileSync(path.join(WEB_DIR, 'index.html'), 'utf8')
   assert.ok(indexHtml.includes('https://boomopen.com/'), 'index.html must use https://boomopen.com/')
   assert.ok(
     indexHtml.includes('https://boomopen.com/media/poster_en.png'),
@@ -256,7 +295,7 @@ test('SITE_URL / SITE_ORIGIN is https://boomopen.com and llms.txt / sitemap.xml 
   )
   assert.ok(!indexHtml.includes('vercel.app'), 'index.html must not reference vercel.app')
 
-  const sitePluginTs = fs.readFileSync(path.join(REPO_ROOT, 'web', 'build', 'site-plugin.ts'), 'utf8')
+  const sitePluginTs = fs.readFileSync(path.join(WEB_DIR, 'build', 'site-plugin.ts'), 'utf8')
   assert.ok(
     sitePluginTs.includes("from './kit-stats.mjs'"),
     'site-plugin.ts must reuse renderLlmsTxt / renderSitemapXml from kit-stats.mjs',
@@ -279,7 +318,7 @@ test('SITE_URL / SITE_ORIGIN is https://boomopen.com and llms.txt / sitemap.xml 
     assert.ok(publicLlms.includes(token), `llms.txt must highlight ${token}`)
   }
 
-  const distDir = path.join(REPO_ROOT, 'web', 'dist')
+  const distDir = path.join(WEB_DIR, 'dist')
   const distLlmsPath = path.join(distDir, 'llms.txt')
   const distSitemapPath = path.join(distDir, 'sitemap.xml')
   if (fs.existsSync(distLlmsPath)) {
@@ -296,4 +335,30 @@ test('SITE_URL / SITE_ORIGIN is https://boomopen.com and llms.txt / sitemap.xml 
       'dist/sitemap.xml must match kit-stats.mjs renderSitemapXml byte-for-byte',
     )
   }
+})
+
+test('web/src, web/public, web/index.html, and web/README.md contain zero em-dash or en-dash characters', () => {
+  const dashPattern = /[\u2014\u2013]/
+  const targets = [
+    path.join(WEB_DIR, 'index.html'),
+    path.join(WEB_DIR, 'README.md'),
+    ...walkTextFiles(path.join(WEB_DIR, 'src')),
+    ...walkTextFiles(PUBLIC_DIR),
+  ]
+
+  /** @type {string[]} */
+  const offenders = []
+  for (const filePath of targets) {
+    const content = fs.readFileSync(filePath, 'utf8')
+    if (dashPattern.test(content)) {
+      const rel = path.relative(REPO_ROOT, filePath).split(path.sep).join('/')
+      offenders.push(rel)
+    }
+  }
+
+  assert.deepEqual(
+    offenders,
+    [],
+    `Found forbidden em-dash (\\u2014) or en-dash (\\u2013) in: ${offenders.join(', ')}`,
+  )
 })

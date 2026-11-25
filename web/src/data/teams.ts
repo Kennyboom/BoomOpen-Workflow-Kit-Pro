@@ -11,8 +11,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '3-Wave Contract-First API & service team locking DTO/OpenAPI schemas before parallel shard execution and adversarial critique.',
-      vi: 'Đội ngũ API & dịch vụ 3 đợt khóa hợp đồng DTO/OpenAPI trước khi phân mảnh thực thi song song và phản biện độc lập.',
+      en: 'Locks DTO and OpenAPI schemas in Wave 1 before parallel backend shard implementation and independent code review.',
+      vi: 'Khóa schema DTO và OpenAPI ở Wave 1 trước khi các nhánh backend triển khai song song và qua bước review độc lập.',
     },
   },
   {
@@ -25,8 +25,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['tech-lead'],
     },
     summary: {
-      en: '2-Stage ideation & strategy team combining autonomous codebase grounding, orthogonal options, and tarpit pre-mortems.',
-      vi: 'Đội ngũ khám phá ý tưởng 2 giai đoạn kết hợp trinh sát codebase, phương án trực giao và mổ xẻ rủi ro trước khi làm.',
+      en: 'Pairs codebase scouting and distinct architecture options with an independent Tech Lead pre-mortem critique.',
+      vi: 'Kết hợp khảo sát mã nguồn và đề xuất phương án kiến trúc với bước phản biện rủi ro độc lập từ Tech Lead.',
     },
   },
   {
@@ -39,8 +39,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '3-Wave expand-contract data team enforcing reversible migrations, lock-free indexing, and RLS policy verification.',
-      vi: 'Đội ngũ dữ liệu 3 đợt đảm bảo migration mở rộng–thu hẹp an toàn, đánh chỉ mục không khóa bảng và kiểm chứng quyền RLS.',
+      en: 'Reviews expand/contract migrations, lock-free index creation, and Row-Level Security policies before rollout.',
+      vi: 'Kiểm soát migration mở rộng và thu hẹp an toàn, đánh chỉ mục không khóa bảng và đối chiếu phân quyền RLS.',
     },
   },
   {
@@ -53,8 +53,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '3-Stage SPIE v3.0 root-cause team pairing parallel hypothesis reproduction with regression-locked surgical patches.',
-      vi: 'Đội ngũ gỡ lỗi SPIE v3.0 3 giai đoạn kết hợp tái hiện giả thuyết song song với bản vá gọn sạch kèm kiểm thử chống hồi quy.',
+      en: 'Separates root-cause reproduction from surgical patch implementation and regression-test review.',
+      vi: 'Tách bạch bước dựng kịch bản tái hiện nguyên nhân gốc với khâu viết bản vá gọn và kiểm tra chống hồi quy.',
     },
   },
   {
@@ -67,8 +67,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '2-Stage visual craft team authoring 6-Block DESIGN specs, OKLCH token ladders, 5-state UI contracts, and WCAG 2.2 AA audits.',
-      vi: 'Đội ngũ thiết kế 2 giai đoạn biên soạn đặc tả DESIGN 6 khối, thang màu OKLCH, hợp đồng 5 trạng thái và kiểm toán WCAG 2.2 AA.',
+      en: 'Authors 6-Block DESIGN specs, OKLCH token scales, and 5-state component contracts audited against WCAG 2.2 AA.',
+      vi: 'Soạn đặc tả DESIGN 6 khối, thang màu OKLCH và hợp đồng component 5 trạng thái được đối chiếu chuẩn WCAG 2.2 AA.',
     },
   },
   {
@@ -81,8 +81,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '3-Wave infrastructure & release team hardening GitHub Actions matrices, declarative IaC, and rollback-ready deployments.',
-      vi: 'Đội ngũ hạ tầng & phát hành 3 đợt gia cố ma trận CI/CD, hạ tầng khai báo (IaC) và kịch bản triển khai sẵn sàng quay lui.',
+      en: 'Hardens CI/CD workflows, OpenTofu/Terraform modules, container configs, and rollback procedures.',
+      vi: 'Rà soát và củng cố pipeline CI/CD, module hạ tầng IaC, cấu hình container cùng quy trình hoàn tác khi có sự cố.',
     },
   },
   {
@@ -95,8 +95,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '3-Wave source-grounded documentation team verifying every CLI flag, route, and Mermaid diagram against live code.',
-      vi: 'Đội ngũ tài liệu kỹ thuật 3 đợt đối chiếu từng cờ lệnh CLI, định tuyến và sơ đồ Mermaid trực tiếp với mã nguồn thực tế.',
+      en: 'Verifies every documented CLI flag, file path, API signature, and Mermaid diagram against live repository code.',
+      vi: 'Đối chiếu từng cờ lệnh CLI, đường dẫn tệp, chữ ký API và sơ đồ Mermaid trong tài liệu với mã nguồn thực tế.',
     },
   },
   {
@@ -109,8 +109,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '3-Wave DESIGN_CONTRACT frontend team shipping accessible, 5-state resilient components across disjoint UI file locks.',
-      vi: 'Đội ngũ giao diện 3 đợt bám sát DESIGN_CONTRACT, xây dựng component chuẩn tiếp cận đủ 5 trạng thái với khóa file độc lập.',
+      en: 'Builds accessible, 5-state UI components from DESIGN_CONTRACT tokens across non-overlapping file locks.',
+      vi: 'Triển khai component giao diện đủ 5 trạng thái từ DESIGN_CONTRACT trên các nhánh sở hữu file tách biệt.',
     },
   },
   {
@@ -123,8 +123,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '3-Wave end-to-end Elastic Golden Diamond uniting database, backend, and frontend executors behind one SHARED_CONTRACT.',
-      vi: 'Đội hình Kim Cương Vàng toàn diện kết nối thực thi cơ sở dữ liệu, backend và frontend quanh một SHARED_CONTRACT duy nhất.',
+      en: 'Full-stack 3-role review team coordinating database, backend, and frontend executors behind one SHARED_CONTRACT.',
+      vi: 'Nhóm 3 vai trò phản biện phối hợp đồng bộ database, backend và frontend quanh một SHARED_CONTRACT thống nhất.',
     },
   },
   {
@@ -137,8 +137,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '3-Wave ECS & frame-budget game team enforcing 60/120 FPS determinism, shader pipelines, and zero-allocation hot loops.',
-      vi: 'Đội ngũ phát triển game 3 đợt đảm bảo khung hình 60/120 FPS ổn định, kiến trúc ECS tất định và vòng lặp không gây trễ bộ nhớ.',
+      en: 'Audits ECS simulation loops, shader pipelines, and 60/120 FPS frame-time budgets for hot-path allocations.',
+      vi: 'Kiểm soát vòng lặp ECS, pipeline shader và ngân sách khung hình 60/120 FPS nhằm tránh cấp phát rác gây giật hình.',
     },
   },
   {
@@ -151,8 +151,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '3-Wave mobile team delivering native-feel iOS 18 & Material 3 apps with safe-area tokens, 44pt/48dp targets, and offline sync.',
-      vi: 'Đội ngũ di động 3 đợt kiến tạo ứng dụng chuẩn iOS 18 & Material 3 với vùng chạm chuẩn xác và đồng bộ ngoại tuyến bền bỉ.',
+      en: 'Delivers iOS 18 and Material 3 mobile screens with 44pt/48dp touch targets, safe-area layout, and offline sync.',
+      vi: 'Xây dựng màn hình di động chuẩn iOS 18 và Material 3 với vùng chạm 44pt/48dp, bố cục safe-area và đồng bộ ngoại tuyến.',
     },
   },
   {
@@ -165,8 +165,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '3-Wave measure-first optimization team requiring before/after p95 benchmarks, EXPLAIN ANALYZE plans, and bundle budgets.',
-      vi: 'Đội ngũ tối ưu hiệu năng 3 đợt bắt buộc đo kiểm trước–sau với chuẩn p95, phân tích EXPLAIN ANALYZE và giới hạn dung lượng gói.',
+      en: 'Requires measured before/after p95 latency numbers, EXPLAIN ANALYZE query plans, and bundle-size verification.',
+      vi: 'Yêu cầu số liệu đo độ trễ p95 trước và sau khi tối ưu, phân tích EXPLAIN ANALYZE và kiểm soát dung lượng gói tải.',
     },
   },
   {
@@ -179,8 +179,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['tech-lead'],
     },
     summary: {
-      en: '2-Stage architecture planning team stress-testing DAG wave dependencies, shard sizes, and blast-radius rollback plans.',
-      vi: 'Đội ngũ lập kế hoạch kiến trúc 2 giai đoạn kiểm định chặt phụ thuộc sóng DAG, kích thước phân mảnh và phương án khôi phục.',
+      en: 'Stress-tests wave dependencies, <= 4 OWNED_FILES shard boundaries, and rollback steps before coding begins.',
+      vi: 'Kiểm tra chéo thứ tự phụ thuộc giữa các wave, giới hạn <= 4 OWNED_FILES mỗi shard và phương án hoàn tác trước khi code.',
     },
   },
   {
@@ -193,8 +193,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['tech-lead'],
     },
     summary: {
-      en: '2-Stage multi-phase governance team compiling RTM traceability, milestone gates, and .boomopen/project-ledger.json specs.',
-      vi: 'Đội ngũ quản trị dự án đa pha thiết lập ma trận truy vết yêu cầu RTM, cổng nghiệm thu cột mốc và sổ cái điều hành tự động.',
+      en: 'Compiles RTM requirement tables, phase milestones, and .boomopen/project-ledger.json tracking for multi-phase builds.',
+      vi: 'Thiết lập bảng truy vết yêu cầu RTM, cột mốc nghiệm thu từng phase và cấu hình .boomopen/project-ledger.json đa phiên.',
     },
   },
   {
@@ -207,8 +207,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['security-engineer', 'performance-engineer'],
     },
     summary: {
-      en: '3-Wave zero-test-gaming QA team reviewed jointly by security and performance critics for edge-case and load resilience.',
-      vi: 'Đội ngũ kiểm thử 3 đợt chống gian lận test, được phản biện kép bởi chuyên gia bảo mật và hiệu năng cho mọi tình huống biên.',
+      en: 'Pairs QA test authoring with joint security and performance review across auth boundaries, edge cases, and load.',
+      vi: 'Kết hợp viết bộ test phủ ca biên với bước phản biện kép từ kỹ sư bảo mật và hiệu năng.',
     },
   },
   {
@@ -221,8 +221,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '2-Stage evidence-mined reporting team auditing every metric and chart against repository state and CLI verification logs.',
-      vi: 'Đội ngũ báo cáo thực chứng 2 giai đoạn kiểm chứng từng con số và biểu đồ đối chiếu trực tiếp với lịch sử Git và nhật ký CLI.',
+      en: 'Cross-checks every status metric, file count, and changelog entry against git history and CLI verification logs.',
+      vi: 'Đối chiếu từng chỉ số tiến độ, số lượng file và nội dung changelog với lịch sử Git cùng kết quả chạy CLI.',
     },
   },
   {
@@ -235,8 +235,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: 'Elastic 3-to-6 vector deep-research team triangulating primary sources and arbitrating contradictions before synthesis.',
-      vi: 'Đội ngũ nghiên cứu chuyên sâu đa hướng (3–6 mũi song song) đối chiếu nguồn gốc và phân xử mâu thuẫn trước khi tổng hợp.',
+      en: 'Splits complex questions across 3-6 parallel research lanes, triangulates primary docs, and resolves contradictions.',
+      vi: 'Chia bài toán nghiên cứu thành 3-6 nhánh chạy song song, đối chiếu tài liệu gốc và làm rõ các điểm mâu thuẫn.',
     },
   },
   {
@@ -249,8 +249,8 @@ export const SPECIALIST_TEAMS: readonly TeamSpec[] = [
       reviewer: ['reviewer'],
     },
     summary: {
-      en: '2-Stage STRIDE, OWASP & agentic security team pairing exploit-proof vulnerability audits with verified defense patches.',
-      vi: 'Đội ngũ bảo mật STRIDE & OWASP 2 giai đoạn kết hợp kiểm toán lỗ hổng có bằng chứng khai thác với bản vá phòng thủ đã xác minh.',
+      en: 'Pairs STRIDE and OWASP vulnerability findings with minimal-diff remediation patches and independent verification.',
+      vi: 'Kết hợp rà soát lỗ hổng STRIDE & OWASP có dẫn chứng cụ thể với bản vá gọn và bước kiểm tra độc lập.',
     },
   },
 ]

@@ -1,359 +1,290 @@
-import { useRef, type KeyboardEvent } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { clsx } from 'clsx';
-import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, CheckCircle2, Cpu, ShieldAlert, ShieldCheck, Sparkles, Terminal } from 'lucide-react';
-import { CliPlayground } from '../components/home/CliPlayground';
-import { SwarmVisualizer } from '../components/home/SwarmVisualizer';
-import { TrailerPlayer } from '../components/home/TrailerPlayer';
-import { SEO } from '../components/seo/SEO';
-import { ActionLink, CopyCommandBar, StatusBadge, SurfaceCard } from '../components/ui/Primitives';
-import { CLI_COMMANDS } from '../data/cliSuite';
-import { KIT_STATS, formatCount } from '../data/kitStats';
-import { INSTALL_ALL_COMMAND, PLATFORMS } from '../data/platforms';
-import { useLanguage } from '../i18n/context';
-import type { PlatformId } from '../types/ui-contract';
+import { useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { clsx } from 'clsx'
+import { motion, useReducedMotion } from 'framer-motion'
+import { ArrowRight, Check, Copy } from 'lucide-react'
+import { CliPlayground } from '../components/home/CliPlayground'
+import { SwarmVisualizer } from '../components/home/SwarmVisualizer'
+import { TrailerPlayer } from '../components/home/TrailerPlayer'
+import { SEO } from '../components/seo/SEO'
+import { ActionLink, CopyCommandBar } from '../components/ui/Primitives'
+import { CLI_COMMANDS } from '../data/cliSuite'
+import { KIT_STATS, formatCount } from '../data/kitStats'
+import { CLONE_SNIPPET, INSTALL_ALL_COMMAND, PLATFORMS } from '../data/platforms'
+import { useCopyCommand } from '../hooks/useCopyCommand'
+import { useLanguage } from '../i18n/context'
+import type { PlatformId } from '../types/ui-contract'
 
 /**
- * Mission: BoomOpen-Workflow-Kit-Pro v5.5 flagship overview page with live ground-truth telemetry
- * (1,462 indexed skills), bilingual 1080p launch trailer, 3-wave swarm, 14 CLI gates, and trusted 5-IDE setup.
+ * Obsidian Monograph flagship homepage: left-aligned architectural hero, seamless hairline
+ * telemetry bar, numbered 01..04 sections, and a concise 5-IDE strip linking to /install.
  */
 const FOCUS_RING =
-  'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas';
+  'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
 
-const PLATFORM_ID_SET = new Set<string>(PLATFORMS.map((p) => p.id));
+const INSTALL_WITH_HOOKS_CMD = `${CLONE_SNIPPET} && node cli/install.js install --all --with-hooks`
+const PLATFORM_ID_SET = new Set<string>(PLATFORMS.map((p) => p.id))
 
 function isPlatformId(value: string | null): value is PlatformId {
-  return value !== null && PLATFORM_ID_SET.has(value);
+  return value !== null && PLATFORM_ID_SET.has(value)
+}
+
+function cleanMetricLabel(rawLabel: string, fallback: string): string {
+  const withoutLeadingCount = rawLabel.replace(/^\d[\d,.]*\s+/, '')
+  if (/\d/.test(withoutLeadingCount)) {
+    return fallback
+  }
+  return withoutLeadingCount
 }
 
 export function HomePage() {
-  const { t, pick } = useLanguage();
-  const reduceMotion = useReducedMotion();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const platformTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const { t } = useLanguage()
+  const reduceMotion = useReducedMotion()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const { copied, copyFailed, copy } = useCopyCommand()
+  const heroCodeRef = useRef<HTMLElement | null>(null)
 
-  const rawTool = searchParams.get('tool');
-  const selectedPlatformId: PlatformId = isPlatformId(rawTool) ? rawTool : 'antigravity';
-  const hasUnrecognizedTool = Boolean(rawTool) && !isPlatformId(rawTool);
+  const rawTool = searchParams.get('tool')
+  const selectedPlatformId: PlatformId = isPlatformId(rawTool) ? rawTool : 'antigravity'
 
-  const setSelectedPlatformId = (nextId: PlatformId) => {
-    const next = new URLSearchParams(searchParams);
-    if (nextId === 'antigravity' && !hasUnrecognizedTool) {
-      next.delete('tool');
+  const handleSelectPlatform = (nextId: PlatformId) => {
+    const next = new URLSearchParams(searchParams)
+    if (nextId === 'antigravity') {
+      next.delete('tool')
     } else {
-      next.set('tool', nextId);
+      next.set('tool', nextId)
     }
-    setSearchParams(next, { replace: true });
-  };
+    setSearchParams(next, { replace: true })
+  }
 
-  const activePlatform =
-    PLATFORMS.find((platform) => platform.id === selectedPlatformId) ?? PLATFORMS[0];
-
-  const heroMetrics = [
-    { id: 'platforms', value: formatCount(KIT_STATS.platforms), label: t.hero.metrics.platforms, detail: t.hero.metrics.details.platforms },
-    { id: 'commands', value: formatCount(KIT_STATS.commands.length), label: t.hero.metrics.commands, detail: `${formatCount(KIT_STATS.commandFiles)} • ${t.hero.metrics.details.commands}` },
-    { id: 'agentsTeams', value: `${formatCount(KIT_STATS.agents)} + ${formatCount(KIT_STATS.teams)}`, label: t.hero.metrics.agentsTeams, detail: `${formatCount(KIT_STATS.teamFiles)} • ${t.hero.metrics.details.agentsTeams}` },
-    { id: 'skills', value: formatCount(KIT_STATS.skills), label: t.hero.metrics.skills, detail: `${formatCount(KIT_STATS.coreSkills)} + ${formatCount(KIT_STATS.librarySkills)} • ${formatCount(KIT_STATS.domains.length)} domains` },
-    { id: 'cliGates', value: formatCount(CLI_COMMANDS.length), label: t.hero.metrics.cliGates, detail: t.hero.metrics.details.cliGates },
-    { id: 'languages', value: formatCount(KIT_STATS.i18nLocales), label: t.hero.metrics.languages, detail: t.hero.metrics.details.languages },
-  ] as const;
-
-  const handlePlatformKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
-    let nextIdx: number | null = null;
-    if (event.key === 'ArrowRight') {
-      nextIdx = (index + 1) % PLATFORMS.length;
-    } else if (event.key === 'ArrowLeft') {
-      nextIdx = (index - 1 + PLATFORMS.length) % PLATFORMS.length;
-    } else if (event.key === 'Home') {
-      nextIdx = 0;
-    } else if (event.key === 'End') {
-      nextIdx = PLATFORMS.length - 1;
-    }
-    if (nextIdx !== null) {
-      event.preventDefault();
-      const target = PLATFORMS[nextIdx];
-      if (target) {
-        setSelectedPlatformId(target.id);
-        platformTabRefs.current[nextIdx]?.focus();
+  const handleHeroCopy = async () => {
+    const ok = await copy(INSTALL_ALL_COMMAND)
+    if (!ok && heroCodeRef.current && typeof window !== 'undefined') {
+      const selection = window.getSelection()
+      if (selection) {
+        const range = document.createRange()
+        range.selectNodeContents(heroCodeRef.current)
+        selection.removeAllRanges()
+        selection.addRange(range)
       }
     }
-  };
+  }
+
+  const heroMetrics = [
+    { id: 'platforms', value: formatCount(KIT_STATS.platforms), label: cleanMetricLabel(t.hero.metrics.platforms, t.hero.metrics.platforms) },
+    { id: 'commands', value: formatCount(KIT_STATS.commands.length), label: cleanMetricLabel(t.hero.metrics.commands, t.nav.commands) },
+    { id: 'agentsTeams', value: `${formatCount(KIT_STATS.agents)} + ${formatCount(KIT_STATS.teams)}`, label: cleanMetricLabel(t.hero.metrics.agentsTeams, t.nav.agents) },
+    { id: 'skills', value: formatCount(KIT_STATS.skills), label: cleanMetricLabel(t.hero.metrics.skills, t.nav.skills) },
+    { id: 'cliGates', value: formatCount(CLI_COMMANDS.length), label: cleanMetricLabel(t.hero.metrics.cliGates, t.hero.metrics.cliGates) },
+    { id: 'languages', value: formatCount(KIT_STATS.i18nLocales), label: cleanMetricLabel(t.hero.metrics.languages, t.hero.metrics.languages) },
+  ] as const
+
+  const installHref = selectedPlatformId === 'antigravity' ? '/install' : `/install?tool=${selectedPlatformId}`
+
+  const renderSectionHeader = (index: string, id: string, eyebrow: string, title: string, subtitle: string) => (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2.5 font-mono text-xs text-subtle tabular-nums">
+        <span>{index}</span>
+        <span aria-hidden="true" className="text-white/20">/</span>
+        <span className="uppercase tracking-[0.08em]">{eyebrow}</span>
+      </div>
+      <h2
+        id={id}
+        className="font-display text-[clamp(1.5rem,2.2vw+0.75rem,2.25rem)] leading-[1.12] font-semibold tracking-[-0.032em] text-ink"
+      >
+        {title}
+      </h2>
+      <p className="max-w-[58ch] text-sm leading-relaxed text-muted sm:text-base">{subtitle}</p>
+    </div>
+  )
 
   return (
-    <div className="min-h-dvh space-y-20 pb-20 pt-8 sm:space-y-24 sm:pt-12">
+    <div className="min-h-dvh">
       <SEO routeId="home" />
 
-      {/* 1. Asymmetric 7:5 Flagship Hero + Live Telemetry Bento */}
-      <section aria-labelledby="home-hero-heading" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* Hero */}
+      <section aria-labelledby="home-hero-heading" className="mx-auto max-w-[74rem] px-4 pt-12 pb-16 sm:px-6 sm:pt-20 sm:pb-24 lg:px-8">
         <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
-          className="grid gap-8 lg:grid-cols-12 lg:items-start"
+          transition={{ duration: 0.18, ease: 'easeOut' }}
+          className="space-y-8"
         >
-          <div className="space-y-6 lg:col-span-7">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <StatusBadge tone="amber">
-                <Sparkles aria-hidden="true" className="size-3.5" />
-                <span>{t.hero.badge}</span>
-              </StatusBadge>
-              <span className="font-mono text-[clamp(0.72rem,0.1vw+0.7rem,0.78rem)] leading-snug font-semibold uppercase tracking-widest text-muted">
-                {t.hero.eyebrow}
-              </span>
-            </div>
+          <div className="inline-flex items-center gap-2 rounded-md border border-hairline bg-white/[0.03] px-2.5 py-1 font-mono text-xs text-muted tabular-nums">
+            <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
+            <span>{`v${KIT_STATS.version} · Open Source MIT`}</span>
+          </div>
 
+          <div className="space-y-5">
             <h1
               id="home-hero-heading"
-              className="font-display text-[clamp(2.25rem,4.2vw+1rem,4.1rem)] leading-[1.08] font-semibold tracking-tight text-ink"
+              className="max-w-[20ch] font-display text-[clamp(2.25rem,4.2vw,3.85rem)] font-semibold tracking-[-0.035em] leading-[1.06] text-ink"
             >
               {t.hero.headline}
             </h1>
-
-            <p className="max-w-prose text-[clamp(0.98rem,0.25vw+0.92rem,1.125rem)] leading-relaxed font-normal text-muted">
-              {t.hero.subheadline}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <ActionLink
-                to="/install"
-                variant="primary"
-                trailingIcon={<ArrowRight aria-hidden="true" className="size-4" />}
-              >
-                {t.hero.primaryCta}
-              </ActionLink>
-              <ActionLink
-                to="/commands"
-                variant="secondary"
-                icon={<Terminal aria-hidden="true" className="size-4 text-primary" />}
-              >
-                {t.hero.secondaryCta}
-              </ActionLink>
-            </div>
-
-            <div className="space-y-2 pt-1">
-              <CopyCommandBar
-                label={t.hero.quickInstallLabel}
-                command={INSTALL_ALL_COMMAND}
-                copyLabel={t.common.copy}
-                copiedLabel={t.common.copied}
-                manualCopyHint={t.common.copyManualHint}
-              />
-              <p className="max-w-prose text-[clamp(0.78rem,0.1vw+0.75rem,0.84rem)] leading-relaxed font-normal text-muted">
-                {t.hero.quickInstallCaption}
-              </p>
-            </div>
+            <p className="max-w-[56ch] text-base leading-relaxed text-muted sm:text-lg">{t.hero.subheadline}</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:col-span-5 lg:grid-cols-2">
-            {heroMetrics.map((metric) => (
-              <SurfaceCard key={metric.id} variant="interactive" className="space-y-2 p-4 sm:p-5">
-                <div className="font-mono text-[clamp(1.4rem,1.2vw+1rem,2rem)] leading-tight font-semibold text-primary tabular-nums">
-                  {metric.value}
-                </div>
-                <div className="font-display text-[clamp(0.92rem,0.18vw+0.88rem,1.02rem)] leading-snug font-semibold text-ink">
-                  {metric.label}
-                </div>
-                <div className="text-[clamp(0.75rem,0.1vw+0.72rem,0.8125rem)] leading-relaxed font-normal text-muted tabular-nums">
-                  {metric.detail}
-                </div>
-              </SurfaceCard>
-            ))}
+          <div className="flex flex-wrap items-center gap-3">
+            <ActionLink to={installHref} variant="primary" trailingIcon={<ArrowRight aria-hidden="true" className="size-4" />}>
+              {t.hero.primaryCta}
+            </ActionLink>
+            <ActionLink to="/commands" variant="secondary">
+              {t.hero.secondaryCta}
+            </ActionLink>
+          </div>
+
+          <div className="max-w-2xl space-y-2 pt-1">
+            <div className="flex items-center justify-between gap-3 rounded-xl border border-hairline bg-[#0B0B0E] px-3.5 py-2 specular-surface">
+              <div className="flex min-w-0 items-center gap-3 overflow-x-auto">
+                <span aria-hidden="true" className="hidden shrink-0 items-center gap-1.5 border-r border-hairline pr-3 sm:inline-flex">
+                  <span className="size-2 rounded-full bg-white/[0.16]" />
+                  <span className="size-2 rounded-full bg-white/[0.16]" />
+                  <span className="size-2 rounded-full bg-white/[0.16]" />
+                </span>
+                <span aria-hidden="true" className="select-none font-mono text-xs text-subtle">$</span>
+                <code
+                  ref={heroCodeRef}
+                  className="whitespace-nowrap font-mono text-[clamp(0.78rem,0.12vw+0.75rem,0.85rem)] leading-relaxed text-ink tabular-nums"
+                >
+                  {INSTALL_ALL_COMMAND}
+                </code>
+              </div>
+
+              <button
+                type="button"
+                aria-label={`${t.common.copy}: ${INSTALL_ALL_COMMAND}`}
+                onClick={() => {
+                  void handleHeroCopy()
+                }}
+                className={clsx(
+                  'inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 font-mono text-xs leading-none font-medium transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
+                  FOCUS_RING,
+                  copied
+                    ? 'border-accent/30 bg-accent/10 text-accent'
+                    : 'border-hairline bg-white/[0.04] text-muted hover:bg-white/[0.08] hover:text-ink',
+                )}
+              >
+                {copied ? <Check aria-hidden="true" className="size-3.5 text-accent" /> : <Copy aria-hidden="true" className="size-3.5" />}
+                <span>{copied ? t.common.copied : t.common.copy}</span>
+              </button>
+            </div>
+            <div aria-live="polite" className="sr-only">
+              {copied ? t.common.copied : copyFailed ? t.common.copyManualHint : ''}
+            </div>
+            <p className="max-w-[56ch] text-xs leading-relaxed text-subtle">{t.hero.quickInstallCaption}</p>
           </div>
         </motion.div>
       </section>
 
-      {/* 2. Official Studio 1080p Bilingual Launch Trailer */}
-      <section aria-labelledby="home-trailer-heading" className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
-        <div className="space-y-2">
-          <div className="font-mono text-[clamp(0.72rem,0.1vw+0.7rem,0.78rem)] leading-snug font-semibold uppercase tracking-widest text-primary">
-            {t.trailer.eyebrow}
-          </div>
-          <h2
-            id="home-trailer-heading"
-            className="font-display text-[clamp(1.5rem,2.2vw+0.75rem,2.35rem)] leading-[1.16] font-semibold tracking-tight text-ink"
-          >
-            {t.trailer.title}
-          </h2>
-          <p className="max-w-prose text-[clamp(0.95rem,0.2vw+0.9rem,1.05rem)] leading-relaxed font-normal text-muted">
-            {t.trailer.subtitle}
-          </p>
+      {/* Architectural Metric Bar */}
+      <div className="mx-auto max-w-[74rem] px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 divide-y divide-hairline border-y border-hairline py-6 sm:grid-cols-3 sm:divide-y-0 sm:divide-x lg:grid-cols-6">
+          {heroMetrics.map((metric, idx) => (
+            <div key={metric.id} className={clsx('px-4 py-3 sm:py-1', idx === 0 && 'sm:pl-0')}>
+              <div className="font-mono text-2xl leading-tight font-semibold text-ink tabular-nums">{metric.value}</div>
+              <div className="mt-1 text-xs leading-snug text-muted">{metric.label}</div>
+            </div>
+          ))}
         </div>
+      </div>
+
+      {/* 01. Launch Walkthrough */}
+      <section aria-labelledby="home-trailer-heading" className="mx-auto max-w-[74rem] space-y-8 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        {renderSectionHeader('01', 'home-trailer-heading', t.trailer.eyebrow, t.trailer.title, t.trailer.subtitle)}
         <TrailerPlayer />
       </section>
 
-      {/* 3. Smart-Hybrid TIER 0 vs TIER 1 & Multi-Engine Council Visualizer */}
-      <section aria-labelledby="home-swarm-heading" className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
-        <div className="space-y-2">
-          <div className="font-mono text-[clamp(0.72rem,0.1vw+0.7rem,0.78rem)] leading-snug font-semibold uppercase tracking-widest text-primary">
-            {t.swarm.eyebrow}
-          </div>
-          <h2
-            id="home-swarm-heading"
-            className="font-display text-[clamp(1.5rem,2.2vw+0.75rem,2.35rem)] leading-[1.16] font-semibold tracking-tight text-ink"
-          >
-            {t.swarm.title}
-          </h2>
-          <p className="max-w-prose text-[clamp(0.95rem,0.2vw+0.9rem,1.05rem)] leading-relaxed font-normal text-muted">
-            {t.swarm.subtitle}
-          </p>
-        </div>
+      {/* 02. Execution Topology */}
+      <section aria-labelledby="home-swarm-heading" className="mx-auto max-w-[74rem] space-y-8 border-t border-hairline px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        {renderSectionHeader('02', 'home-swarm-heading', t.swarm.eyebrow, t.swarm.title, t.swarm.subtitle)}
         <SwarmVisualizer />
       </section>
 
-      {/* 4. 14 Deterministic CLI Compilers & Gates Playground */}
-      <section aria-labelledby="home-cli-heading" className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
-        <div className="space-y-2">
-          <div className="font-mono text-[clamp(0.72rem,0.1vw+0.7rem,0.78rem)] leading-snug font-semibold uppercase tracking-widest text-primary">
-            {t.cliPlayground.eyebrow}
-          </div>
-          <h2
-            id="home-cli-heading"
-            className="font-display text-[clamp(1.5rem,2.2vw+0.75rem,2.35rem)] leading-[1.16] font-semibold tracking-tight text-ink"
-          >
-            {t.cliPlayground.title}
-          </h2>
-          <p className="max-w-prose text-[clamp(0.95rem,0.2vw+0.9rem,1.05rem)] leading-relaxed font-normal text-muted">
-            {t.cliPlayground.subtitle}
-          </p>
-        </div>
+      {/* 03. CLI Compilers & Gates */}
+      <section aria-labelledby="home-cli-heading" className="mx-auto max-w-[74rem] space-y-8 border-t border-hairline px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        {renderSectionHeader('03', 'home-cli-heading', t.cliPlayground.eyebrow, t.cliPlayground.title, t.cliPlayground.subtitle)}
         <CliPlayground />
       </section>
 
-      {/* 5. Unified 5-Platform Matrix & Pure 1-Click Safe Installer */}
-      <section aria-labelledby="home-platforms-heading" className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
-        <div className="space-y-2">
-          <div className="font-mono text-[clamp(0.72rem,0.1vw+0.7rem,0.78rem)] leading-snug font-semibold uppercase tracking-widest text-primary">
-            {t.platformsSection.eyebrow}
-          </div>
-          <h2
-            id="home-platforms-heading"
-            className="font-display text-[clamp(1.5rem,2.2vw+0.75rem,2.35rem)] leading-[1.16] font-semibold tracking-tight text-ink"
+      {/* 04. Supported IDEs Architectural Strip */}
+      <section aria-labelledby="home-platforms-heading" className="mx-auto max-w-[74rem] space-y-8 border-t border-hairline px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          {renderSectionHeader('04', 'home-platforms-heading', t.platformsSection.eyebrow, t.platformsSection.title, t.platformsSection.subtitle)}
+          <ActionLink
+            to={installHref}
+            variant="secondary"
+            trailingIcon={<ArrowRight aria-hidden="true" className="size-4" />}
+            className="self-start sm:self-auto"
           >
-            {t.platformsSection.title}
-          </h2>
-          <p className="max-w-prose text-[clamp(0.95rem,0.2vw+0.9rem,1.05rem)] leading-relaxed font-normal text-muted">
-            {t.platformsSection.subtitle}
-          </p>
+            {t.nav.install}
+          </ActionLink>
         </div>
 
-        {hasUnrecognizedTool && (
-          <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/40 bg-primary/10 px-4 py-3 text-[clamp(0.84rem,0.12vw+0.81rem,0.9rem)] leading-snug text-ink">
-            <span className="flex items-center gap-2">
-              <ShieldAlert aria-hidden="true" className="size-4 shrink-0 text-primary" />
-              <span>{t.platformsSection.unrecognizedToolHint}</span>
-            </span>
-            <code className="rounded bg-canvas px-2 py-1 font-mono text-primary">{`?tool=${rawTool ?? ''}`}</code>
-          </div>
-        )}
-
-        <div
-          role="tablist"
-          aria-label={t.platformsSection.tabsAriaLabel}
-          className="grid grid-cols-2 gap-2 rounded-2xl border border-hairline bg-card p-1.5 sm:grid-cols-3 lg:grid-cols-5 specular-surface"
-        >
-          {PLATFORMS.map((platform, idx) => {
-            const isSelected = platform.id === activePlatform.id;
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {PLATFORMS.map((platform) => {
+            const isSelected = platform.id === selectedPlatformId
+            const displayName = platform.id === 'antigravity' ? 'Antigravity' : platform.name
             return (
               <button
                 key={platform.id}
-                ref={(el) => {
-                  platformTabRefs.current[idx] = el;
-                }}
-                id={`platform-tab-${platform.id}`}
-                role="tab"
                 type="button"
-                tabIndex={isSelected ? 0 : -1}
-                aria-selected={isSelected}
-                aria-controls={`platform-panel-${platform.id}`}
-                onClick={() => setSelectedPlatformId(platform.id)}
-                onKeyDown={(event) => handlePlatformKeyDown(event, idx)}
+                aria-pressed={isSelected}
+                onClick={() => handleSelectPlatform(platform.id)}
                 className={clsx(
-                  'inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border px-3 py-2.5 text-[clamp(0.82rem,0.12vw+0.79rem,0.9rem)] leading-snug transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
+                  'flex min-h-11 flex-col items-start justify-between gap-4 rounded-xl border p-4 text-left transition-colors duration-150 motion-reduce:transition-none cursor-pointer specular-surface',
                   FOCUS_RING,
                   isSelected
-                    ? 'border-primary bg-primary text-primary-ink font-semibold'
-                    : 'border-transparent bg-canvas/60 text-muted hover:border-line-strong hover:text-ink font-normal',
+                    ? 'border-line-strong bg-elevated text-ink'
+                    : 'border-hairline bg-card/50 text-muted hover:border-line-strong hover:text-ink',
                 )}
               >
-                <Cpu aria-hidden="true" className="size-4 shrink-0" />
-                <span className="truncate">{platform.name}</span>
+                <div className="w-full space-y-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-display text-sm font-semibold text-ink">
+                      {displayName}
+                    </span>
+                    <span className="font-mono text-[11px] text-subtle">
+                      ~2.2 KB
+                    </span>
+                  </div>
+                  <div className="text-xs text-subtle">
+                    {platform.vendor}
+                  </div>
+                </div>
+
+                <code className="w-full truncate rounded-md border border-hairline bg-[#070709] px-2.5 py-1.5 font-mono text-[11px] text-muted tabular-nums">
+                  {platform.entryFile}
+                </code>
               </button>
-            );
+            )
           })}
         </div>
 
-        {activePlatform && (
-          <SurfaceCard
-            id={`platform-panel-${activePlatform.id}`}
-            role="tabpanel"
-            aria-labelledby={`platform-tab-${activePlatform.id}`}
-            variant="elevated"
-            className="space-y-5"
-          >
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="space-y-1">
-                <h3 className="font-display text-[clamp(1.2rem,0.5vw+1rem,1.5rem)] leading-tight font-semibold text-ink">
-                  {activePlatform.name}
-                </h3>
-                <div className="font-mono text-[clamp(0.75rem,0.1vw+0.72rem,0.8125rem)] leading-snug font-normal text-muted">
-                  {`${activePlatform.vendor} • v${KIT_STATS.version}`}
-                </div>
-              </div>
-              <StatusBadge tone="emerald">
-                <CheckCircle2 aria-hidden="true" className="size-3.5" />
-                <span>Native v5.5 Parity</span>
-              </StatusBadge>
-            </div>
-
-            <p className="max-w-prose text-[clamp(0.92rem,0.15vw+0.88rem,1rem)] leading-relaxed font-normal text-muted">
-              {pick(activePlatform.summary)}
-            </p>
-
-            <div className="grid gap-3 md:grid-cols-2">
-              <div className="rounded-[10px] border border-hairline bg-canvas p-3.5 space-y-1">
-                <div className="font-mono text-[clamp(0.72rem,0.1vw+0.7rem,0.78rem)] leading-snug font-semibold text-muted">
-                  {t.platformsSection.entryPointLabel}
-                </div>
-                <code className="block overflow-x-auto font-mono text-[clamp(0.8rem,0.12vw+0.77rem,0.86rem)] leading-relaxed font-normal text-cobalt">
-                  {activePlatform.entryFile}
-                </code>
-              </div>
-              <div className="rounded-[10px] border border-hairline bg-canvas p-3.5 space-y-1">
-                <div className="font-mono text-[clamp(0.72rem,0.1vw+0.7rem,0.78rem)] leading-snug font-semibold text-muted">
-                  {t.platformsSection.installPathLabel}
-                </div>
-                <code className="block overflow-x-auto font-mono text-[clamp(0.8rem,0.12vw+0.77rem,0.86rem)] leading-relaxed font-normal text-accent">
-                  {activePlatform.frameworkPath}
-                </code>
-              </div>
-            </div>
-
-            <div className="grid gap-4 lg:grid-cols-2">
-              <CopyCommandBar
-                label={t.platformsSection.safeInstallLabel}
-                command={activePlatform.installCommand}
-                copyLabel={t.common.copy}
-                copiedLabel={t.common.copied}
-                manualCopyHint={t.common.copyManualHint}
-              />
-              <CopyCommandBar
-                label={t.platformsSection.verifyDoctorLabel}
-                command={activePlatform.verifyCommand}
-                copyLabel={t.common.copy}
-                copiedLabel={t.common.copied}
-                manualCopyHint={t.common.copyManualHint}
-              />
-            </div>
-
-            <div className="flex items-center gap-2 font-mono text-[clamp(0.74rem,0.1vw+0.71rem,0.8rem)] leading-relaxed font-normal text-muted">
-              <ShieldCheck aria-hidden="true" className="size-4 shrink-0 text-accent" />
-              <span>{t.platformsSection.safetyGuarantee}</span>
-            </div>
-          </SurfaceCard>
-        )}
+        <div className="grid gap-4 pt-2 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-9">
+            <CopyCommandBar
+              label={t.platformsSection.batchAllLabel}
+              command={INSTALL_WITH_HOOKS_CMD}
+              copyLabel={t.common.copy}
+              copiedLabel={t.common.copied}
+              manualCopyHint={t.common.copyManualHint}
+            />
+          </div>
+          <div className="lg:col-span-3">
+            <ActionLink
+              to={installHref}
+              variant="primary"
+              trailingIcon={<ArrowRight aria-hidden="true" className="size-4" />}
+              className="w-full"
+            >
+              {t.hero.primaryCta}
+            </ActionLink>
+          </div>
+        </div>
       </section>
     </div>
-  );
+  )
 }
-export default HomePage;
+
+export default HomePage
