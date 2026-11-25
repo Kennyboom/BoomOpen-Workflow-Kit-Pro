@@ -10,10 +10,10 @@ export const en: Dictionary = {
     mobileMenuCloseAria: 'Close navigation menu', localeEnShort: 'EN', localeViShort: 'VI',
   },
   hero: {
-    badge: 'v5.5.0 / frontier-guardrails Default',
+    badge: 'v5.5.0 · frontier-guardrails',
     eyebrow: 'Guardrails & Workflows',
-    headline: 'Guardrails and multi-agent workflows for AI coding.',
-    subheadline: 'By default (frontier-guardrails), your native IDE model handles tasks up to 10 files directly with zero natural-language hijacking, backed by < 2.3 KB (21 lines, ~600 tokens) of always-on quality rules across all 5 IDEs. Invoke /plan:hard, /cook:team, /autopilot, or /audit when you need parallel sharding, or switch presets anytime.',
+    headline: 'Quality guardrails for AI coding.',
+    subheadline: 'Ultra-light 2.2 KB rules, 36 slash workflows, and 14 local CLI checks across 5 AI IDEs.',
     primaryCta: 'Install from Git',
     secondaryCta: 'Explore 36 Commands',
     quickInstallLabel: 'Clone & Install',

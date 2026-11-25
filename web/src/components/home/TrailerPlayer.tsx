@@ -9,7 +9,7 @@ import { ActionButton, ActionLink, InlineErrorState, StatusBadge, SurfaceCard } 
 /**
  * Sculpted widescreen cinema stage for the 1080p HD walkthrough video:
  * syncs automatically with the active locale, respects prefers-reduced-motion,
- * and provides spacious chapter cards below the hardware bezel frame.
+ * and provides a compact single-row inline chapter pill bar below the hardware bezel.
  */
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
@@ -28,7 +28,7 @@ function parseChapterParts(rawLabel: string): { readonly timestamp: string; read
   return { timestamp: match[1], title: match[2] }
 }
 
-interface ChapterCardsProps {
+interface ChapterPillBarProps {
   readonly chapters: readonly TrailerChapter[]
   readonly chaptersLabel: string
   readonly activeSeconds: number | undefined
@@ -36,20 +36,20 @@ interface ChapterCardsProps {
   readonly onSelectChapter: (seconds: number, label: string) => void
 }
 
-function ChapterCards({
+function ChapterPillBar({
   chapters,
   chaptersLabel,
   activeSeconds,
   disabled,
   onSelectChapter,
-}: ChapterCardsProps) {
+}: ChapterPillBarProps) {
   return (
     <div
       role="group"
       aria-label={chaptersLabel}
-      className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+      className="mt-4 flex flex-wrap items-center justify-center gap-2 lg:flex-nowrap lg:gap-2.5"
     >
-      {chapters.map((chapter, idx) => {
+      {chapters.map((chapter) => {
         const isSelected = activeSeconds === chapter.seconds
         const { timestamp, title } = parseChapterParts(chapter.label)
         return (
@@ -60,39 +60,26 @@ function ChapterCards({
             disabled={disabled}
             onClick={() => onSelectChapter(chapter.seconds, chapter.label)}
             className={clsx(
-              'specular-surface flex min-h-20 flex-col justify-between gap-3 rounded-2xl border p-4 text-left transition-all duration-150 motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-40 cursor-pointer',
+              'inline-flex min-h-11 min-w-0 items-center gap-2 rounded-full border px-3.5 py-2 text-left text-xs sm:text-[13px] transition-all duration-150 motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-40 cursor-pointer',
               FOCUS_RING,
               isSelected
-                ? 'border-accent/50 bg-elevated text-ink shadow-[0_0_28px_-8px_oklch(0.74_0.14_160/0.35)]'
-                : 'border-white/[0.09] bg-card/70 text-muted hover:border-white/[0.20] hover:bg-card hover:text-ink',
+                ? 'border-accent/45 bg-accent/12 text-ink font-semibold shadow-[0_0_22px_-6px_oklch(0.76_0.155_162/0.35)]'
+                : 'border-white/[0.10] bg-white/[0.03] text-muted font-medium hover:border-white/[0.22] hover:bg-white/[0.07] hover:text-ink',
             )}
           >
-            <div className="flex w-full items-center justify-between gap-2">
-              <div className="flex items-center gap-2 font-mono text-xs tabular-nums">
-                <span className="text-subtle">{`0${idx + 1}`}</span>
-                <span
-                  className={clsx(
-                    'rounded-md border px-2 py-0.5 text-[11px] font-medium',
-                    isSelected
-                      ? 'border-accent/35 bg-accent/15 text-accent'
-                      : 'border-white/[0.08] bg-white/[0.03] text-muted',
-                  )}
-                >
-                  {timestamp}
-                </span>
-              </div>
-              <span
-                className={clsx(
-                  'inline-flex size-7 items-center justify-center rounded-full border',
-                  isSelected
-                    ? 'border-accent/40 bg-accent/15 text-accent'
-                    : 'border-white/[0.10] bg-white/[0.03] text-subtle',
-                )}
-              >
-                <Play aria-hidden="true" className="size-3.5" />
-              </span>
-            </div>
-            <div className="font-display text-[15px] leading-snug font-semibold text-ink">{title}</div>
+            <Play
+              aria-hidden="true"
+              className={clsx('size-3 shrink-0', isSelected ? 'text-accent' : 'text-subtle')}
+            />
+            <span
+              className={clsx(
+                'shrink-0 font-mono text-[11px] tabular-nums',
+                isSelected ? 'text-accent font-semibold' : 'text-subtle',
+              )}
+            >
+              {timestamp}
+            </span>
+            <span className="truncate">{title}</span>
           </button>
         )
       })}
@@ -121,16 +108,12 @@ export function TrailerPlayer() {
   const handlePlayStudioTrailer = () => {
     setManualPlayLocale(locale)
     const node = videoRef.current
-    if (!node) {
-      return
-    }
+    if (!node) return
     setLoadingStreamKey(currentStreamKey)
     try {
       const playPromise = node.play()
       if (playPromise) {
-        void playPromise.catch(() => {
-          setLoadingStreamKey(null)
-        })
+        void playPromise.catch(() => setLoadingStreamKey(null))
       }
     } catch {
       setLoadingStreamKey(null)
@@ -141,9 +124,7 @@ export function TrailerPlayer() {
     setManualPlayLocale(locale)
     setSelectedChapter({ locale, seconds, label })
     const node = videoRef.current
-    if (!node) {
-      return
-    }
+    if (!node) return
     try {
       if (node.readyState >= 1) {
         pendingSeekRef.current = null
@@ -169,10 +150,10 @@ export function TrailerPlayer() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[84rem]">
+    <div className="mx-auto w-full max-w-[82rem]">
       <div className="hardware-bezel">
         <div className="overflow-hidden rounded-[20px] border border-white/[0.09] bg-[#06070A]">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] bg-[#0B0C10] px-4 py-3 sm:px-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] bg-[#0B0C10] px-4 py-2.5 sm:px-6">
             <div className="flex items-center gap-3">
               <span aria-hidden="true" className="hidden items-center gap-1.5 sm:inline-flex">
                 <span className="size-2.5 rounded-full bg-[#FF5F56]/75" />
@@ -193,7 +174,7 @@ export function TrailerPlayer() {
                 </StatusBadge>
               )}
               <span className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-xs text-muted tabular-nums">
-                1920x1080 | H.264 HD
+                1920x1080 · H.264 HD
               </span>
             </div>
           </div>
@@ -238,9 +219,7 @@ export function TrailerPlayer() {
                 src={t.trailer.media.videoSrc}
                 aria-label={t.trailer.media.caption}
                 onLoadStart={() => {
-                  if (manualPlayLocale === locale) {
-                    setLoadingStreamKey(currentStreamKey)
-                  }
+                  if (manualPlayLocale === locale) setLoadingStreamKey(currentStreamKey)
                 }}
                 onLoadedMetadata={() => {
                   if (pendingSeekRef.current !== null && videoRef.current) {
@@ -280,11 +259,7 @@ export function TrailerPlayer() {
           {showReducedMotionBanner && (
             <SurfaceCard variant="subtle" className="m-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl px-5 py-4">
               <div className="max-w-prose text-sm leading-relaxed text-muted">{t.trailer.reducedMotionNotice}</div>
-              <ActionButton
-                variant="primary"
-                icon={<Play aria-hidden="true" className="size-4" />}
-                onClick={handlePlayStudioTrailer}
-              >
+              <ActionButton variant="primary" icon={<Play aria-hidden="true" className="size-4" />} onClick={handlePlayStudioTrailer}>
                 {t.trailer.playStudioCta}
               </ActionButton>
             </SurfaceCard>
@@ -292,7 +267,7 @@ export function TrailerPlayer() {
         </div>
       </div>
 
-      <ChapterCards
+      <ChapterPillBar
         chapters={t.trailer.media.chapters}
         chaptersLabel={t.trailer.chaptersLabel}
         activeSeconds={activeChapter?.seconds}

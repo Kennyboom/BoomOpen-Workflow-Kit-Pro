@@ -10,10 +10,10 @@ export const vi: Dictionary = {
     mobileMenuCloseAria: 'Đóng menu điều hướng', localeEnShort: 'EN', localeViShort: 'VI',
   },
   hero: {
-    badge: 'v5.5.0 / mặc định frontier-guardrails',
+    badge: 'v5.5.0 · frontier-guardrails',
     eyebrow: 'Quy trình & kiểm soát chất lượng',
-    headline: 'Chuẩn hóa chất lượng và điều phối multi-agent cho AI coding.',
-    subheadline: 'Mặc định (frontier-guardrails), model gốc trên IDE xử lý trực tiếp tác vụ tới 10 file, không tự ý bắt câu chat thông thường, đi kèm bộ quy tắc chất lượng gọn nhẹ < 2.3 KB (21 dòng, ~600 token) trên cả 5 IDE. Khi cần triển khai lớn, hãy gọi /plan:hard, /cook:team, /autopilot, /audit hoặc đổi sang preset smart-hybrid, deep-architect, adversarial-team.',
+    headline: 'Chuẩn hóa chất lượng cho AI coding.',
+    subheadline: 'Bộ quy tắc 2.2 KB siêu nhẹ, 36 lệnh quy trình và 14 cổng kiểm tra cho cả 5 AI IDE.',
     primaryCta: 'Cài đặt qua Git',
     secondaryCta: 'Khám phá 36 lệnh',
     quickInstallLabel: 'Clone & cài đặt nhanh',

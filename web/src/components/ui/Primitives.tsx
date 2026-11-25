@@ -47,15 +47,7 @@ const BUTTON_BASE = clsx(
 )
 
 export function ActionButton({
-  variant = 'primary',
-  state = 'default',
-  icon,
-  trailingIcon,
-  disabled,
-  className,
-  type = 'button',
-  children,
-  ...rest
+  variant = 'primary', state = 'default', icon, trailingIcon, disabled, className, type = 'button', children, ...rest
 }: ButtonProps) {
   const isDisabled = Boolean(disabled) || state === 'disabled' || state === 'loading'
   return (
@@ -63,19 +55,11 @@ export function ActionButton({
       type={type}
       disabled={isDisabled}
       aria-busy={state === 'loading' || undefined}
-      className={clsx(
-        BUTTON_BASE,
-        'disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
-        BUTTON_VARIANTS[variant],
-        className,
-      )}
+      className={clsx(BUTTON_BASE, 'disabled:pointer-events-none disabled:opacity-50 cursor-pointer', BUTTON_VARIANTS[variant], className)}
       {...rest}
     >
       {state === 'loading' ? (
-        <span
-          aria-hidden="true"
-          className="inline-block size-4 rounded-full border-2 border-current border-r-transparent animate-spin motion-reduce:animate-none"
-        />
+        <span aria-hidden="true" className="inline-block size-4 rounded-full border-2 border-current border-r-transparent animate-spin motion-reduce:animate-none" />
       ) : (
         icon
       )}
@@ -88,14 +72,7 @@ export function ActionButton({
 export const Button = ActionButton
 
 export function ActionLink({
-  to,
-  external = false,
-  variant = 'secondary',
-  icon,
-  trailingIcon,
-  ariaLabel,
-  className,
-  children,
+  to, external = false, variant = 'secondary', icon, trailingIcon, ariaLabel, className, children,
 }: ActionLinkProps) {
   const classes = clsx(BUTTON_BASE, 'no-underline', BUTTON_VARIANTS[variant], className)
   if (external || to.startsWith('http')) {
@@ -193,7 +170,7 @@ export function SearchField({
         {resultCountLabel && (
           <span
             aria-live="polite"
-            className="font-mono text-sm leading-snug text-subtle tabular-nums"
+            className="shrink-0 whitespace-nowrap font-mono text-sm leading-snug text-subtle tabular-nums"
           >
             {resultCountLabel}
           </span>
