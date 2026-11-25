@@ -5,7 +5,7 @@ import { ActionLink } from '../components/ui/Primitives'
 import { useLanguage } from '../i18n/context'
 
 /**
- * Minimal centered 404 monograph recovery panel.
+ * Expansive centered 404 monograph recovery stage.
  */
 export function NotFoundPage() {
   const { t } = useLanguage()
@@ -13,29 +13,33 @@ export function NotFoundPage() {
   const copy = t.notFoundPage
 
   return (
-    <div className="flex min-h-[72dvh] items-center justify-center bg-canvas px-4 py-16 text-ink sm:px-6">
+    <div className="flex min-h-[76dvh] items-center justify-center bg-canvas px-4 py-20 text-ink sm:px-6">
       <SEO routeId="notFound" />
 
       <motion.div
         initial={reduceMotion ? false : { opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.18, ease: 'easeOut' }}
-        className="w-full max-w-lg rounded-xl border border-hairline bg-card p-8 text-center space-y-5"
+        className="specular-surface w-full max-w-2xl rounded-3xl border border-white/[0.10] bg-card p-12 text-center sm:p-16"
       >
-        <p className="font-mono text-xs tracking-wider text-subtle uppercase tabular-nums">
-          {`${copy.code} · ${copy.eyebrow}`}
-        </p>
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase tabular-nums">
+          <span>{copy.eyebrow}</span>
+        </div>
 
-        <div className="space-y-2.5">
-          <h1 className="text-2xl font-semibold tracking-[-0.028em] text-ink sm:text-3xl">
+        <div className="hero-display-gradient mt-6 font-mono text-[4rem] leading-none font-bold tracking-[-0.04em] text-ink tabular-nums sm:text-[4.5rem]">
+          {copy.code}
+        </div>
+
+        <div className="mt-4 space-y-3">
+          <h1 className="text-2xl font-bold tracking-[-0.028em] text-ink sm:text-3xl">
             {copy.title}
           </h1>
-          <p className="mx-auto max-w-[46ch] text-sm leading-relaxed text-muted">
+          <p className="mx-auto max-w-[48ch] text-base leading-relaxed text-muted sm:text-lg">
             {copy.description}
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3.5">
           <ActionLink
             to="/"
             variant="primary"
@@ -43,7 +47,7 @@ export function NotFoundPage() {
           >
             {copy.backHomeCta}
           </ActionLink>
-          <ActionLink to="/commands" variant="ghost">
+          <ActionLink to="/commands" variant="secondary">
             {copy.exploreCommandsCta}
           </ActionLink>
         </div>

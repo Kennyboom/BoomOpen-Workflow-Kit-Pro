@@ -10,35 +10,39 @@ import type {
   SkeletonCardProps, SurfaceCardProps, SurfaceVariant,
 } from '../../types/ui-contract'
 
-/** Obsidian Monograph 5-State UI Primitives: accessible controls across 1,462 indexed skills. */
+/** Flagship Widescreen 5-State UI Primitives: tactile obsidian glass controls across 1,462 skills. */
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
 
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
-  primary: 'bg-primary text-primary-ink border border-primary hover:bg-primary-hover font-medium',
-  secondary: 'bg-white/[0.03] text-ink border border-hairline hover:border-line-strong hover:bg-white/[0.06] font-medium',
-  ghost: 'bg-transparent text-muted border border-transparent hover:text-ink hover:bg-white/[0.04] font-normal',
-  terminal: 'bg-[#0D0D10] text-ink border border-hairline hover:border-line-strong font-mono font-normal',
+  primary:
+    'bg-primary text-primary-ink border border-white hover:bg-primary-hover shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_10px_28px_-6px_rgba(255,255,255,0.22)]',
+  secondary:
+    'bg-white/[0.05] text-ink border border-white/[0.14] hover:bg-white/[0.09] hover:border-white/[0.24] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+  ghost:
+    'bg-transparent text-muted border border-transparent hover:text-ink hover:bg-white/[0.06] font-medium',
+  terminal:
+    'bg-[#090B10] text-ink border border-white/[0.12] hover:border-white/[0.24] hover:bg-[#0E1118] font-mono font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]',
 }
 
 const BADGE_TONES: Record<BadgeTone, string> = {
-  neutral: 'bg-white/[0.03] text-muted border-hairline',
-  amber: 'bg-white/[0.06] text-ink border-line-strong',
-  cobalt: 'bg-white/[0.04] text-muted border-hairline',
-  emerald: 'bg-accent/10 text-accent border-accent/25',
-  danger: 'bg-danger/10 text-danger border-danger/25',
+  neutral: 'bg-white/[0.05] text-muted border-white/[0.10]',
+  amber: 'bg-white/[0.08] text-ink border-white/[0.16]',
+  emerald: 'bg-accent/12 text-accent border-accent/30',
+  cobalt: 'bg-cobalt/12 text-cobalt border-cobalt/30',
+  danger: 'bg-danger/12 text-danger border-danger/30',
 }
 
 const SURFACE_VARIANTS: Record<SurfaceVariant, string> = {
-  default: 'bg-card border border-hairline specular-surface',
-  elevated: 'bg-elevated border border-hairline specular-surface',
+  default: 'border border-hairline specular-surface',
+  elevated: 'border border-white/[0.12] specular-surface-elevated',
   interactive:
-    'bg-card border border-hairline specular-surface transition-colors duration-150 motion-reduce:transition-none hover:border-line-strong',
-  subtle: 'bg-white/[0.02] border border-hairline',
+    'border border-hairline specular-surface transition-all duration-200 motion-reduce:transition-none hover:border-white/[0.22] hover:-translate-y-0.5 motion-reduce:hover:translate-y-0',
+  subtle: 'bg-white/[0.025] border border-hairline shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]',
 }
 
 const BUTTON_BASE = clsx(
-  'inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-[clamp(0.85rem,0.12vw+0.82rem,0.925rem)] leading-snug transition-colors duration-150 motion-reduce:transition-none',
+  'inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl px-6 py-3 text-[15px] sm:text-base leading-snug font-semibold transition-all duration-150 motion-reduce:transition-none',
   FOCUS_RING,
 )
 
@@ -115,7 +119,7 @@ export function ActionLink({
 export function SurfaceCard({ variant = 'default', as, className, children, ...rest }: SurfaceCardProps) {
   const Tag = as ?? 'div'
   return (
-    <Tag className={clsx('rounded-xl p-5 sm:p-6', SURFACE_VARIANTS[variant], className)} {...rest}>
+    <Tag className={clsx('rounded-3xl p-7 sm:p-8 lg:p-9', SURFACE_VARIANTS[variant], className)} {...rest}>
       {children}
     </Tag>
   )
@@ -125,7 +129,7 @@ export function StatusBadge({ tone = 'neutral', mono = true, className, children
   return (
     <span
       className={clsx(
-        'inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-xs leading-tight font-medium tabular-nums',
+        'inline-flex items-center gap-1.5 rounded-lg border px-3 py-1 text-[13px] leading-snug font-medium tabular-nums',
         mono ? 'font-mono' : 'font-sans',
         BADGE_TONES[tone],
         className,
@@ -147,19 +151,19 @@ export function FilterPill({ label, count, active, onSelect, disabled = false }:
       aria-pressed={active}
       onClick={onSelect}
       className={clsx(
-        'inline-flex min-h-11 items-center gap-2 rounded-lg border px-3.5 py-2 text-[clamp(0.8125rem,0.1vw+0.79rem,0.875rem)] leading-snug transition-colors duration-150 motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-40 cursor-pointer',
+        'inline-flex min-h-11 items-center gap-2.5 rounded-xl border px-4 py-2.5 text-[14px] sm:text-[15px] leading-snug transition-all duration-150 motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-40 cursor-pointer',
         FOCUS_RING,
         active
-          ? 'bg-primary text-primary-ink border-primary font-medium'
-          : 'bg-transparent text-muted border-hairline hover:text-ink hover:border-line-strong font-normal',
+          ? 'border-white bg-primary text-primary-ink font-semibold shadow-[0_8px_22px_-6px_rgba(255,255,255,0.26)]'
+          : 'border-white/[0.10] bg-white/[0.03] text-muted hover:border-white/[0.20] hover:bg-white/[0.07] hover:text-ink font-medium',
       )}
     >
       <span>{label}</span>
       {typeof count === 'number' && (
         <span
           className={clsx(
-            'rounded px-1.5 py-0.5 font-mono text-[11px] leading-none tabular-nums',
-            active ? 'bg-canvas/15 text-primary-ink' : 'bg-white/[0.05] text-subtle',
+            'rounded-md px-2 py-0.5 font-mono text-xs leading-none tabular-nums',
+            active ? 'bg-canvas/18 text-primary-ink font-semibold' : 'bg-white/[0.07] text-subtle',
           )}
         >
           {count.toLocaleString('en-US')}
@@ -182,21 +186,21 @@ export function SearchField({
 }: SearchInputProps) {
   return (
     <div className={clsx('w-full', className)}>
-      <div className="mb-1.5 flex items-center justify-between gap-2">
-        <label htmlFor={id} className="text-xs leading-snug font-medium text-muted">
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <label htmlFor={id} className="text-sm leading-snug font-medium text-muted">
           {label}
         </label>
         {resultCountLabel && (
           <span
             aria-live="polite"
-            className="font-mono text-xs leading-snug text-subtle tabular-nums"
+            className="font-mono text-sm leading-snug text-subtle tabular-nums"
           >
             {resultCountLabel}
           </span>
         )}
       </div>
       <div className="relative flex items-center">
-        <Search aria-hidden="true" className="pointer-events-none absolute left-3.5 size-4 text-subtle" />
+        <Search aria-hidden="true" className="pointer-events-none absolute left-4 size-5 text-subtle" />
         <input
           id={id}
           type="search"
@@ -205,7 +209,7 @@ export function SearchField({
           placeholder={placeholder}
           onChange={(event) => onChange(event.target.value)}
           className={clsx(
-            'min-h-11 w-full rounded-lg border border-hairline bg-[#0D0D10] pl-10 pr-12 py-2.5 text-[clamp(0.9rem,0.12vw+0.87rem,0.95rem)] leading-normal font-normal text-ink transition-colors duration-150 motion-reduce:transition-none hover:border-line-strong',
+            'min-h-13 w-full rounded-2xl border border-white/[0.12] bg-[#0B0D13] pl-12 pr-12 py-3.5 text-base leading-normal font-normal text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-colors duration-150 motion-reduce:transition-none hover:border-white/[0.22] focus:border-white/[0.32]',
             FOCUS_RING,
           )}
           {...rest}
@@ -216,16 +220,30 @@ export function SearchField({
             aria-label={clearLabel}
             onClick={() => onChange('')}
             className={clsx(
-              'absolute right-1 inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-muted hover:text-ink transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
+              'absolute right-1.5 inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl text-muted hover:bg-white/[0.06] hover:text-ink transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
               FOCUS_RING,
             )}
           >
-            <X aria-hidden="true" className="size-4" />
+            <X aria-hidden="true" className="size-4.5" />
           </button>
         )}
       </div>
     </div>
   )
+}
+
+function selectElementText(element: HTMLElement | null): void {
+  if (!element || typeof window === 'undefined') {
+    return
+  }
+  const selection = window.getSelection()
+  if (!selection) {
+    return
+  }
+  const range = document.createRange()
+  range.selectNodeContents(element)
+  selection.removeAllRanges()
+  selection.addRange(range)
 }
 
 export function CopyCommandBar({
@@ -242,31 +260,25 @@ export function CopyCommandBar({
 
   const handleCopy = async () => {
     const ok = await copy(command)
-    if (!ok && codeRef.current && typeof window !== 'undefined') {
-      const selection = window.getSelection()
-      if (selection) {
-        const range = document.createRange()
-        range.selectNodeContents(codeRef.current)
-        selection.removeAllRanges()
-        selection.addRange(range)
-      }
+    if (!ok) {
+      selectElementText(codeRef.current)
     }
   }
 
   return (
     <div className={clsx('w-full', className)}>
-      {label && <div className="mb-1.5 text-xs leading-snug font-medium text-subtle">{label}</div>}
+      {label && <div className="mb-2 text-sm leading-snug font-medium text-muted">{label}</div>}
       <div
         className={clsx(
-          'flex items-center justify-between gap-3 rounded-xl border border-hairline bg-[#0D0D10] px-3.5',
-          compact ? 'py-1.5' : 'py-2',
+          'flex items-center justify-between gap-4 rounded-2xl border border-white/[0.11] bg-[#090B10] px-4 sm:px-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_16px_38px_-18px_rgba(0,0,0,0.75)]',
+          compact ? 'py-2.5' : 'py-3',
         )}
       >
-        <div className="flex min-w-0 items-center gap-2.5 overflow-x-auto">
-          <span aria-hidden="true" className="select-none font-mono text-xs text-subtle">$</span>
+        <div className="flex min-w-0 items-center gap-3 overflow-x-auto py-0.5">
+          <span aria-hidden="true" className="select-none font-mono text-sm font-semibold text-accent">$</span>
           <code
             ref={codeRef}
-            className="whitespace-nowrap font-mono text-[clamp(0.78rem,0.12vw+0.75rem,0.85rem)] leading-relaxed text-ink tabular-nums"
+            className="whitespace-nowrap font-mono text-[14px] sm:text-[15px] leading-relaxed text-ink tabular-nums"
           >
             {command}
           </code>
@@ -278,19 +290,19 @@ export function CopyCommandBar({
             void handleCopy()
           }}
           className={clsx(
-            'inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 font-mono text-xs leading-none font-medium transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
+            'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-4 py-2 font-mono text-[13px] leading-none font-medium transition-all duration-150 motion-reduce:transition-none cursor-pointer',
             FOCUS_RING,
             copied
-              ? 'border-accent/30 bg-accent/10 text-accent'
-              : 'border-hairline bg-white/[0.04] text-muted hover:bg-white/[0.08] hover:text-ink',
+              ? 'border-accent/35 bg-accent/14 text-accent'
+              : 'border-white/[0.12] bg-white/[0.05] text-ink hover:border-white/[0.24] hover:bg-white/[0.10]',
           )}
         >
-          {copied ? <Check aria-hidden="true" className="size-3.5 text-accent" /> : <Copy aria-hidden="true" className="size-3.5" />}
+          {copied ? <Check aria-hidden="true" className="size-4 text-accent" /> : <Copy aria-hidden="true" className="size-4" />}
           <span>{copied ? copiedLabel : copyLabel}</span>
         </button>
       </div>
       <div aria-live="polite" className="sr-only">{copied ? copiedLabel : copyFailed ? manualCopyHint : ''}</div>
-      {copyFailed && <div className="mt-1.5 max-w-prose text-xs leading-relaxed text-muted">{manualCopyHint}</div>}
+      {copyFailed && <div className="mt-2 max-w-prose text-sm leading-relaxed text-muted">{manualCopyHint}</div>}
     </div>
   )
 }
@@ -299,12 +311,12 @@ export const CopyCommandBox = CopyCommandBar
 
 export function SkeletonCard({ count = 3, className }: SkeletonCardProps) {
   return (
-    <div role="status" aria-live="polite" aria-label="Loading content" className={clsx('grid gap-4 sm:grid-cols-2 lg:grid-cols-3', className)}>
+    <div role="status" aria-live="polite" aria-label="Loading content" className={clsx('grid gap-6 sm:grid-cols-2 lg:grid-cols-3', className)}>
       {Array.from({ length: count }, (_, idx) => (
-        <div key={idx} className="rounded-xl border border-hairline bg-card p-6 animate-pulse motion-reduce:animate-none">
-          <div className="mb-4 h-[14px] w-24 rounded bg-elevated" />
-          <div className="mb-2.5 h-[20px] w-3/4 rounded bg-elevated" />
-          <div className="h-[14px] w-full rounded bg-elevated" />
+        <div key={idx} className="rounded-3xl border border-hairline specular-surface p-7 sm:p-8 animate-pulse motion-reduce:animate-none">
+          <div className="mb-5 h-5 w-28 rounded-md bg-elevated" />
+          <div className="mb-3 h-6 w-3/4 rounded-md bg-elevated" />
+          <div className="h-4 w-full rounded-md bg-elevated" />
         </div>
       ))}
     </div>
@@ -321,12 +333,12 @@ export function EmptyCatalogState({ title, description, resetLabel, onReset }: E
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.16, ease: 'easeOut' }}
     >
-      <SurfaceCard variant="subtle" className="flex flex-col items-start gap-4 py-8">
-        <div className="space-y-1.5">
-          <div className="font-display text-[clamp(1.05rem,0.3vw+0.98rem,1.25rem)] leading-tight font-semibold text-ink">
+      <SurfaceCard variant="subtle" className="flex flex-col items-start gap-5 py-10">
+        <div className="space-y-2">
+          <div className="font-display text-xl sm:text-2xl leading-tight font-bold text-ink">
             {title}
           </div>
-          <div className="max-w-prose text-[clamp(0.875rem,0.12vw+0.85rem,0.95rem)] leading-relaxed text-muted">
+          <div className="max-w-prose text-base leading-relaxed text-muted">
             {description}
           </div>
         </div>
@@ -340,14 +352,14 @@ export function EmptyCatalogState({ title, description, resetLabel, onReset }: E
 
 export function InlineErrorState({ title, message, retryLabel, onRetry }: InlineErrorStateProps) {
   return (
-    <div role="alert" className="rounded-xl border border-danger/30 bg-danger/10 p-5 sm:p-6">
-      <div className="flex items-start gap-3">
-        <AlertTriangle aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-danger" />
-        <div className="space-y-2">
-          <div className="font-display text-[clamp(1.02rem,0.25vw+0.96rem,1.18rem)] leading-tight font-semibold text-ink">
+    <div role="alert" className="rounded-3xl border border-danger/30 bg-danger/10 p-7 sm:p-8">
+      <div className="flex items-start gap-4">
+        <AlertTriangle aria-hidden="true" className="mt-1 size-6 shrink-0 text-danger" />
+        <div className="space-y-3">
+          <div className="font-display text-xl sm:text-2xl leading-tight font-bold text-ink">
             {title}
           </div>
-          <div className="max-w-prose text-[clamp(0.875rem,0.12vw+0.85rem,0.95rem)] leading-relaxed text-muted">
+          <div className="max-w-prose text-base leading-relaxed text-muted">
             {message}
           </div>
           {retryLabel && onRetry && <ActionButton variant="secondary" onClick={onRetry}>{retryLabel}</ActionButton>}

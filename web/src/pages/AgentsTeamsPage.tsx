@@ -13,12 +13,11 @@ import { useLanguage } from '../i18n/context'
 import type { AgentSpec, BilingualText } from '../types/ui-contract'
 
 /**
- * Minimalist workforce directory for 22 specialist sub-agents and 18 3-role teams.
+ * Flagship 1440px workforce showcase for 22 specialist sub-agents and 18 3-role review teams.
  */
 type WorkforceTabId = 'agents' | 'teams'
 
 const WORKFORCE_TAB_ORDER: readonly WorkforceTabId[] = ['agents', 'teams']
-
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
 
@@ -40,27 +39,92 @@ const DOMAIN_LABELS: Readonly<Record<string, BilingualText>> = {
   validation: { en: 'Spec Validation', vi: 'Đối soát đặc tả' },
 }
 
+function AgentsHeroHeader() {
+  const { locale, t } = useLanguage()
+  const stats = [
+    { value: formatCount(KIT_STATS.agents), label: locale === 'vi' ? 'Chuyên gia' : 'Specialists' },
+    { value: formatCount(KIT_STATS.teams), label: locale === 'vi' ? 'Đội phản biện' : 'Review Teams' },
+    { value: formatCount(KIT_STATS.teamFiles), label: locale === 'vi' ? 'Tệp vai trò' : 'Role Specs' },
+  ]
+
+  return (
+    <header className="border-b border-white/[0.09] pt-10 pb-12 sm:pt-14 sm:pb-16">
+      <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div>
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+            <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
+            <span>{t.agentsPage.eyebrow}</span>
+          </div>
+          <h1 className="hero-display-gradient text-[clamp(2.5rem,4.4vw,4rem)] leading-[1.06] font-bold tracking-[-0.036em] text-ink">
+            {t.agentsPage.title}
+          </h1>
+          <p className="mt-4 max-w-[58ch] text-lg leading-relaxed text-muted sm:text-xl">
+            {t.agentsPage.subtitle}
+          </p>
+        </div>
+
+        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-white/[0.10] bg-white/[0.025] px-6 py-5 sm:gap-8">
+          {stats.map((stat) => (
+            <div key={stat.label} className="space-y-1">
+              <dd className="text-3xl font-bold tracking-tight text-ink tabular-nums sm:text-4xl">{stat.value}</dd>
+              <dt className="font-mono text-xs tracking-wider text-muted uppercase">{stat.label}</dt>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </header>
+  )
+}
+
 function SpecialistAgentCard({ agent }: { readonly agent: AgentSpec }) {
   const { pick } = useLanguage()
   const domainLabel = DOMAIN_LABELS[agent.domain] ? pick(DOMAIN_LABELS[agent.domain]) : agent.domain
 
   return (
-    <article className="flex h-full flex-col justify-between rounded-xl border border-hairline bg-card p-5 transition-colors duration-150 motion-reduce:transition-none hover:border-line-strong">
-      <div className="space-y-2.5">
-        <div className="flex items-center justify-between gap-2">
-          <code className="font-mono text-sm font-medium text-ink">{agent.id}</code>
-          <span className="rounded bg-white/[0.04] px-2 py-0.5 font-mono text-xs text-subtle">
+    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-white/[0.09] bg-card p-7 transition-colors duration-150 motion-reduce:transition-none hover:border-white/[0.22] sm:p-8">
+      <div>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="space-y-1">
+            <code className="block font-mono text-xl font-bold tracking-tight text-ink">{agent.id}</code>
+            <div className="text-sm font-medium text-ink/80">{pick(agent.title)}</div>
+          </div>
+          <span className="shrink-0 rounded-full border border-white/[0.12] bg-white/[0.04] px-3 py-1 text-xs font-medium text-muted">
             {domainLabel}
           </span>
         </div>
-        <p className="text-sm leading-relaxed text-muted">{pick(agent.summary)}</p>
+        <p className="mt-4 text-[15.5px] leading-relaxed text-muted sm:text-base">{pick(agent.summary)}</p>
       </div>
 
-      <div className="mt-4 flex items-center justify-between gap-3 border-t border-hairline pt-3 font-mono text-xs text-subtle">
-        <span className="truncate">{agent.deliverable}</span>
-        <span className="shrink-0">{`model:${agent.modelPolicy}`}</span>
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.08] pt-5">
+        <code className="max-w-full truncate rounded-lg border border-white/[0.09] bg-[#090B10] px-3 py-1.5 font-mono text-xs text-ink/90 sm:text-[13px]">
+          {agent.deliverable}
+        </code>
+        <span className="shrink-0 font-mono text-xs text-subtle">{`model:${agent.modelPolicy}`}</span>
       </div>
     </article>
+  )
+}
+
+function TeamsScalingBanner() {
+  const { t } = useLanguage()
+  const { diamondSection } = t.agentsPage
+
+  return (
+    <div className="hardware-bezel mt-10 rounded-3xl border border-white/[0.12] bg-[#090B10]/90 p-2.5 sm:p-3">
+      <div className="specular-surface grid gap-6 rounded-2xl border border-white/[0.08] bg-card p-7 sm:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+        <div className="space-y-2">
+          <span className="inline-flex rounded-full border border-white/[0.12] bg-white/[0.04] px-3 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+            {diamondSection.badge}
+          </span>
+          <h2 className="text-2xl font-bold tracking-tight text-ink">{diamondSection.title}</h2>
+          <p className="text-base leading-relaxed text-muted">{diamondSection.subtitle}</p>
+        </div>
+        <div className="space-y-3 rounded-2xl border border-white/[0.09] bg-[#090B10]/80 p-5 font-mono text-xs leading-relaxed text-muted sm:text-[13px]">
+          <p className="text-ink/90">{diamondSection.scalingRule}</p>
+          <p className="border-t border-white/[0.08] pt-3 text-subtle">{diamondSection.mailboxNote}</p>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -157,11 +221,6 @@ export function AgentsTeamsPage() {
     setSearchParams(next, { replace: true })
   }
 
-  const inlineStats =
-    locale === 'vi'
-      ? `${formatCount(KIT_STATS.agents)} Chuyên gia · ${formatCount(KIT_STATS.teams)} Đội 3 vai trò · ${formatCount(KIT_STATS.platforms)} IDE`
-      : `${formatCount(KIT_STATS.agents)} Specialists · ${formatCount(KIT_STATS.teams)} Teams · ${formatCount(KIT_STATS.platforms)} IDEs`
-
   const tabMeta: Readonly<Record<WorkforceTabId, { readonly label: string; readonly count: number }>> = {
     agents: {
       label: locale === 'vi' ? `${formatCount(KIT_STATS.agents)} Chuyên gia` : `${formatCount(KIT_STATS.agents)} Specialists`,
@@ -178,29 +237,19 @@ export function AgentsTeamsPage() {
       initial={reduceMotion ? false : { opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18, ease: 'easeOut' }}
-      className="mx-auto min-h-dvh max-w-[75rem] space-y-8 px-4 py-12 sm:px-6 lg:px-8 lg:py-16"
+      className="mx-auto min-h-dvh max-w-[90rem] px-4 pb-20 sm:px-6 lg:px-8 lg:pb-24"
     >
       <SEO routeId="agents" />
+      <AgentsHeroHeader />
 
-      <header className="space-y-3.5 border-b border-hairline pb-8">
-        <p className="font-mono text-xs tracking-wider text-subtle uppercase">{t.agentsPage.eyebrow}</p>
-        <h1 className="text-[clamp(1.85rem,3vw,2.75rem)] leading-[1.12] font-semibold tracking-[-0.032em] text-ink">
-          {t.agentsPage.title}
-        </h1>
-        <p className="max-w-[58ch] text-base leading-relaxed text-muted">{t.agentsPage.subtitle}</p>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-1 font-mono text-xs text-subtle tabular-nums">
-          <span>{inlineStats}</span>
-          <span aria-hidden="true">·</span>
-          <span>Model: inherit</span>
-          <span aria-hidden="true">·</span>
-          <span>&lt;= 4 OWNED_FILES / shard</span>
-        </div>
-      </header>
-
-      <section aria-label={t.agentsPage.title} className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div role="tablist" aria-label={t.agentsPage.title} className="inline-flex self-start rounded-xl border border-hairline bg-card p-1">
+      <section aria-label={t.agentsPage.title}>
+        <div className="my-8 space-y-5">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div
+              role="tablist"
+              aria-label={t.agentsPage.title}
+              className="specular-surface inline-flex flex-wrap self-start gap-1.5 rounded-2xl border border-white/[0.12] bg-white/[0.03] p-1.5"
+            >
               {WORKFORCE_TAB_ORDER.map((tabId) => {
                 const selected = activeTab === tabId
                 return (
@@ -216,14 +265,14 @@ export function AgentsTeamsPage() {
                     onClick={() => setActiveTab(tabId)}
                     onKeyDown={(event) => handleTabKeyDown(event, tabId)}
                     className={clsx(
-                      'inline-flex min-h-11 items-center gap-2 rounded-lg px-4 py-2 text-sm transition-colors duration-150 motion-reduce:transition-none cursor-pointer tabular-nums',
+                      'inline-flex min-h-13 items-center gap-2.5 rounded-xl px-6 py-3 text-base font-semibold transition-colors duration-150 motion-reduce:transition-none cursor-pointer tabular-nums',
                       FOCUS_RING,
-                      selected ? 'bg-primary font-semibold text-primary-ink' : 'bg-transparent font-normal text-muted hover:text-ink',
+                      selected ? 'bg-primary text-primary-ink' : 'bg-transparent text-muted hover:bg-white/[0.05] hover:text-ink',
                     )}
                   >
                     <span>{tabMeta[tabId].label}</span>
                     {hasFilters && (
-                      <span className={clsx('rounded px-1.5 py-0.5 font-mono text-xs tabular-nums', selected ? 'bg-black/15 text-primary-ink' : 'bg-white/[0.05] text-subtle')}>
+                      <span className={clsx('rounded-md px-2 py-0.5 font-mono text-xs tabular-nums', selected ? 'bg-black/15 text-primary-ink' : 'bg-white/[0.06] text-subtle')}>
                         {formatCount(tabMeta[tabId].count)}
                       </span>
                     )}
@@ -232,25 +281,27 @@ export function AgentsTeamsPage() {
               })}
             </div>
 
-            <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end md:max-w-md">
-              <SearchField
-                id="workforce-directory-search"
-                label={t.agentsPage.searchLabel}
-                value={query}
-                onChange={setQuery}
-                placeholder={t.agentsPage.searchPlaceholder}
-                clearLabel={t.common.clearSearch}
-                resultCountLabel={`${formatCount(visibleCount)} / ${formatCount(totalForTab)} ${t.common.resultsCount}`}
-              />
+            <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end lg:w-auto">
+              <div className="w-full lg:w-[440px]">
+                <SearchField
+                  id="workforce-directory-search"
+                  label={t.agentsPage.searchLabel}
+                  value={query}
+                  onChange={setQuery}
+                  placeholder={t.agentsPage.searchPlaceholder}
+                  clearLabel={t.common.clearSearch}
+                  resultCountLabel={`${formatCount(visibleCount)} / ${formatCount(totalForTab)} ${t.common.resultsCount}`}
+                />
+              </div>
               {hasFilters && (
-                <ActionButton variant="ghost" icon={<RotateCcw aria-hidden="true" className="size-4" />} onClick={handleResetFilters} className="shrink-0">
+                <ActionButton variant="secondary" icon={<RotateCcw aria-hidden="true" className="size-4" />} onClick={handleResetFilters} className="shrink-0">
                   {t.agentsPage.resetCta}
                 </ActionButton>
               )}
             </div>
           </div>
 
-          <div id="workforce-domain-filters" role="group" aria-label={t.agentsPage.domainFilterAria} className="flex flex-wrap gap-2">
+          <div id="workforce-domain-filters" role="group" aria-label={t.agentsPage.domainFilterAria} className="flex flex-wrap gap-2.5">
             <FilterPill label={t.agentsPage.allDomains} active={activeDomain === 'all'} onSelect={() => setActiveDomain('all')} />
             {domains.map((domain) => (
               <FilterPill
@@ -267,12 +318,15 @@ export function AgentsTeamsPage() {
           {visibleCount === 0 ? (
             <EmptyCatalogState title={t.agentsPage.emptyTitle} description={t.agentsPage.emptyBody} resetLabel={t.agentsPage.resetCta} onReset={handleResetFilters} />
           ) : activeTab === 'agents' ? (
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:gap-7 xl:grid-cols-3">
               {filteredAgents.map((agent) => <SpecialistAgentCard key={agent.id} agent={agent} />)}
             </div>
           ) : (
-            <div className="grid gap-4 lg:grid-cols-2">
-              {filteredTeams.map((team) => <TeamDiamondCard key={team.id} team={team} />)}
+            <div>
+              <div className="grid gap-7 xl:grid-cols-2">
+                {filteredTeams.map((team) => <TeamDiamondCard key={team.id} team={team} />)}
+              </div>
+              <TeamsScalingBanner />
             </div>
           )}
         </div>

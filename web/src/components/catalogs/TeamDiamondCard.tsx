@@ -6,8 +6,8 @@ import { useLanguage } from '../../i18n/context'
 import type { TeamSpec } from '../../types/ui-contract'
 
 /**
- * Architectural 3-role team card displaying Tech Lead -> Executor -> Reviewer
- * separated by single-pixel hairlines.
+ * Architectural 3-stage review team card displaying Tech Lead -> Executor -> Reviewer
+ * inside connected glass pipeline cells across the 1440px stage.
  */
 export interface TeamDiamondCardProps {
   readonly team: TeamSpec
@@ -21,7 +21,6 @@ interface PipelineRoleCellProps {
   readonly roleLabel: string
   readonly agents: readonly string[]
   readonly taskNote: string
-  readonly className?: string
 }
 
 function PipelineRoleCell({
@@ -29,26 +28,27 @@ function PipelineRoleCell({
   roleLabel,
   agents,
   taskNote,
-  className,
 }: PipelineRoleCellProps) {
   return (
-    <div className={clsx('space-y-1.5', className)}>
-      <div className="flex items-center gap-1.5 font-mono text-[11px] tracking-wider text-subtle uppercase tabular-nums">
-        <span>{step}</span>
-        <span aria-hidden="true">·</span>
-        <span className="truncate">{roleLabel}</span>
+    <div className="flex flex-col justify-between gap-3.5 rounded-2xl border border-white/[0.09] bg-[#090B10]/80 p-5">
+      <div className="space-y-2.5">
+        <div className="flex items-center gap-2 font-mono text-xs font-medium tracking-wider text-subtle uppercase tabular-nums">
+          <span className="text-ink/85">{step}</span>
+          <span aria-hidden="true">·</span>
+          <span className="truncate">{roleLabel}</span>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {agents.map((agentId) => (
+            <code
+              key={agentId}
+              className="font-mono text-[15px] leading-snug font-bold text-ink"
+            >
+              {agentId}
+            </code>
+          ))}
+        </div>
       </div>
-      <div className="flex flex-wrap gap-1">
-        {agents.map((agentId) => (
-          <code
-            key={agentId}
-            className="rounded bg-white/[0.04] px-1.5 py-0.5 font-mono text-xs font-medium text-ink"
-          >
-            {agentId}
-          </code>
-        ))}
-      </div>
-      <p className="text-xs leading-snug text-subtle">{taskNote}</p>
+      <p className="text-[13px] leading-snug text-muted">{taskNote}</p>
     </div>
   )
 }
@@ -73,18 +73,13 @@ export function TeamDiamondCard({ team }: TeamDiamondCardProps) {
   }
 
   return (
-    <article className="flex h-full flex-col justify-between rounded-xl border border-hairline bg-card p-5 transition-colors duration-150 motion-reduce:transition-none hover:border-line-strong">
-      <div className="space-y-2.5">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="space-y-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-base font-semibold tracking-tight text-ink">
-                {team.dirName}
-              </h3>
-              <span className="rounded bg-white/[0.04] px-2 py-0.5 font-mono text-xs text-subtle">
-                :team
-              </span>
-            </div>
+    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-white/[0.09] bg-card p-8 transition-colors duration-150 motion-reduce:transition-none hover:border-white/[0.22] sm:p-9">
+      <div>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="space-y-1.5">
+            <h3 className="text-[22px] leading-snug font-bold tracking-tight text-ink">
+              {team.dirName}
+            </h3>
             <div className="font-mono text-xs text-subtle">
               {`agents/teams/${team.dirName}/`}
             </div>
@@ -95,51 +90,48 @@ export function TeamDiamondCard({ team }: TeamDiamondCardProps) {
             aria-label={`${t.common.copy}: ${team.triggerCommand}`}
             onClick={handleCopyTrigger}
             className={clsx(
-              'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg border px-3 py-2 font-mono text-xs font-medium transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
+              'inline-flex min-h-11 shrink-0 items-center gap-2.5 rounded-xl border px-4 py-2 font-mono text-sm font-medium transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
               FOCUS_RING,
               copied
                 ? 'border-accent/40 bg-accent/10 text-accent'
-                : 'border-hairline bg-white/[0.03] text-ink hover:border-line-strong',
+                : 'border-white/[0.12] bg-[#090B10] text-ink hover:border-white/[0.28]',
             )}
           >
             <code ref={triggerRef} className="font-mono tabular-nums">
               {team.triggerCommand}
             </code>
             {copied ? (
-              <Check aria-hidden="true" className="size-3.5 text-accent" />
+              <Check aria-hidden="true" className="size-4 text-accent" />
             ) : (
-              <Copy aria-hidden="true" className="size-3.5 text-subtle" />
+              <Copy aria-hidden="true" className="size-4 text-subtle" />
             )}
           </button>
         </div>
 
-        <p className="text-sm leading-relaxed text-muted">
+        <p className="mt-3 text-base leading-relaxed text-muted">
           {pick(team.summary)}
         </p>
       </div>
 
       <div>
-        <div className="mt-4 grid divide-y divide-hairline border-t border-hairline pt-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+        <div className="mt-7 grid gap-4 sm:grid-cols-3">
           <PipelineRoleCell
             step="01"
             roleLabel={t.agentsPage.roleBadges.techlead}
             agents={team.roles.techlead}
             taskNote={locale === 'vi' ? 'Khóa hợp đồng & chia shard' : 'Contract lock & sharding'}
-            className="pb-3 sm:pr-4 sm:pb-0"
           />
           <PipelineRoleCell
             step="02"
             roleLabel={t.agentsPage.roleBadges.executor}
             agents={team.roles.executor}
             taskNote="<= 4 OWNED_FILES / shard"
-            className="py-3 sm:px-4 sm:py-0"
           />
           <PipelineRoleCell
             step="03"
             roleLabel={t.agentsPage.roleBadges.reviewer}
             agents={team.roles.reviewer}
             taskNote={locale === 'vi' ? 'Phản biện độc lập' : 'Adversarial sign-off'}
-            className="pt-3 sm:pt-0 sm:pl-4"
           />
         </div>
 
@@ -147,7 +139,7 @@ export function TeamDiamondCard({ team }: TeamDiamondCardProps) {
           {copied ? t.common.copied : copyFailed ? t.common.copyManualHint : ''}
         </div>
         {copyFailed && (
-          <p className="pt-2 text-xs leading-relaxed text-muted">
+          <p className="pt-2.5 text-xs leading-relaxed text-muted">
             {t.common.copyManualHint}
           </p>
         )}

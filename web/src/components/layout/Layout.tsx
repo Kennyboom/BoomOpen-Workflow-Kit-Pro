@@ -10,7 +10,10 @@ import { Header } from './Header'
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
 
-const TOP_LUMINANCE_BG = 'radial-gradient(ellipse 65% 28% at 50% 0%, oklch(1 0 0 / 0.04), transparent)'
+const VOLUMETRIC_SPOTLIGHT_BG = [
+  'radial-gradient(ellipse 75% 42% at 50% -8%, oklch(0.65 0.12 250 / 0.14), transparent 70%)',
+  'radial-gradient(ellipse 45% 30% at 75% 5%, oklch(0.72 0.14 165 / 0.07), transparent 70%)',
+].join(', ')
 
 export interface LayoutProps {
   readonly children?: ReactNode
@@ -42,7 +45,7 @@ class RouteErrorBoundary extends Component<RouteErrorBoundaryProps, RouteErrorBo
   public override render(): ReactNode {
     if (this.state.failedKey === this.props.resetKey) {
       return (
-        <div className="mx-auto max-w-[74rem] px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[90rem] px-5 py-20 sm:px-8 lg:px-12">
           <InlineErrorState
             title={this.props.errorTitle}
             message={this.props.errorDescription}
@@ -58,8 +61,8 @@ class RouteErrorBoundary extends Component<RouteErrorBoundaryProps, RouteErrorBo
 
 function RouteLoadingFallback({ label }: { readonly label: string }) {
   return (
-    <div className="mx-auto max-w-[74rem] space-y-6 border-t border-hairline px-4 py-12 sm:px-6 lg:px-8">
-      <div className="max-w-prose font-mono text-[clamp(0.78rem,0.1vw+0.75rem,0.85rem)] leading-snug font-medium text-muted">
+    <div className="mx-auto max-w-[90rem] space-y-8 border-t border-hairline px-5 py-16 sm:px-8 lg:px-12">
+      <div className="max-w-prose font-mono text-sm leading-snug font-medium text-muted">
         {label}
       </div>
       <SkeletonCard count={3} />
@@ -68,8 +71,8 @@ function RouteLoadingFallback({ label }: { readonly label: string }) {
 }
 
 /**
- * Persistent Obsidian Monograph shell: subtle top radial luminance with zero neon blobs,
- * keeping `<Header />` and `<Footer />` mounted while isolating `<Suspense>` inside `<main>`.
+ * Expansive 1440px (90rem) flagship architectural stage:
+ * pairs dual volumetric spotlights and a 64px engineering grid with persistent Header and Footer.
  */
 export function Layout({ children }: LayoutProps) {
   const { t } = useLanguage()
@@ -84,14 +87,22 @@ export function Layout({ children }: LayoutProps) {
   }, [pathname, hash])
 
   return (
-    <div
-      className="flex min-h-dvh flex-col bg-canvas bg-no-repeat text-ink"
-      style={{ backgroundImage: TOP_LUMINANCE_BG }}
-    >
+    <div className="relative flex min-h-dvh flex-col bg-canvas text-ink">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[760px] overflow-hidden"
+      >
+        <div
+          className="absolute inset-0"
+          style={{ backgroundImage: VOLUMETRIC_SPOTLIGHT_BG }}
+        />
+        <div className="architectural-grid-bg absolute inset-0" />
+      </div>
+
       <a
         href="#main-content"
         className={clsx(
-          'skip-to-main left-4 top-3 inline-flex min-h-11 items-center px-4 py-2 font-sans text-[clamp(0.84rem,0.1vw+0.81rem,0.9rem)] leading-snug font-medium no-underline',
+          'skip-to-main left-5 top-4 inline-flex min-h-11 items-center px-5 py-2.5 font-sans text-sm leading-snug font-semibold no-underline shadow-lg',
           FOCUS_RING,
         )}
       >
@@ -103,7 +114,7 @@ export function Layout({ children }: LayoutProps) {
       <main
         id="main-content"
         tabIndex={-1}
-        className="flex-1 min-h-dvh outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        className="relative z-10 flex-1 min-h-dvh outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >
         <RouteErrorBoundary
           resetKey={pathname}
@@ -116,7 +127,7 @@ export function Layout({ children }: LayoutProps) {
               key={pathname}
               initial={reduceMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.15, ease: 'easeOut' }}
+              transition={{ duration: 0.16, ease: 'easeOut' }}
             >
               {children ?? <Outlet />}
             </motion.div>

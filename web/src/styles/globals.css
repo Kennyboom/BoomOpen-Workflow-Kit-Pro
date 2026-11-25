@@ -1,29 +1,29 @@
 @import "tailwindcss";
 
 /*
- * Obsidian Monograph: Perceptual OKLCH Design Tokens (v5.5)
- * Minimalist technical dark palette with solid Platinum primary controls.
+ * Obsidian Monograph v5.5: Flagship Widescreen OKLCH Design System
+ * Deep obsidian optical glass, tactile specular highlights, and Platinum primary controls.
  */
 @layer base {
   :root {
-    --surface-canvas: oklch(0.115 0.006 260);
-    --surface-panel: oklch(0.148 0.007 260);
-    --surface-elevated: oklch(0.182 0.008 260);
-    --surface-overlay: oklch(0.13 0.007 260 / 0.84);
-    --border-hairline: oklch(1 0 0 / 0.075);
-    --border-strong: oklch(1 0 0 / 0.16);
-    --text-primary: oklch(0.98 0.003 260);
-    --text-secondary: oklch(0.71 0.008 260);
-    --text-muted: oklch(0.55 0.008 260);
-    --brand-primary: oklch(0.965 0.004 260);
+    --surface-canvas: oklch(0.105 0.008 265);
+    --surface-panel: oklch(0.145 0.010 265);
+    --surface-elevated: oklch(0.185 0.012 265);
+    --surface-overlay: oklch(0.13 0.010 265 / 0.82);
+    --border-hairline: oklch(1 0 0 / 0.09);
+    --border-strong: oklch(1 0 0 / 0.20);
+    --text-primary: oklch(0.985 0.003 260);
+    --text-secondary: oklch(0.76 0.010 260);
+    --text-muted: oklch(0.60 0.012 260);
+    --brand-primary: oklch(0.97 0.004 260);
     --brand-primary-hover: oklch(1 0 0);
-    --brand-primary-ink: oklch(0.115 0.006 260);
-    --signal-accent: oklch(0.74 0.14 160);
-    --signal-cobalt: oklch(0.76 0.04 250);
+    --brand-primary-ink: oklch(0.105 0.008 265);
+    --signal-accent: oklch(0.76 0.155 162);
+    --signal-cobalt: oklch(0.74 0.13 245);
     --signal-warning: oklch(0.78 0.12 75);
     --signal-danger: oklch(0.64 0.19 25);
-    --radius-panel: 16px;
-    --radius-control: 8px;
+    --radius-panel: 24px;
+    --radius-control: 12px;
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -35,12 +35,12 @@
   }
 
   html {
+    font-size: 16px;
     scroll-behavior: smooth;
-    scroll-padding-top: 5rem;
+    scroll-padding-top: 5.5rem;
     background-color: var(--surface-canvas);
     color: var(--text-primary);
     font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-    font-size: clamp(0.95rem, 0.2vw + 0.9rem, 1rem);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -50,6 +50,7 @@
     background-color: var(--surface-canvas);
     color: var(--text-primary);
     font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    font-size: 1rem;
     line-height: 1.6;
     text-rendering: optimizeLegibility;
     overflow-x: clip;
@@ -60,9 +61,9 @@
   h3,
   h4 {
     font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-    letter-spacing: -0.032em;
-    line-height: 1.1;
-    font-weight: 600;
+    letter-spacing: -0.034em;
+    line-height: 1.08;
+    font-weight: 700;
     text-wrap: balance;
   }
 
@@ -84,6 +85,14 @@
     opacity: 1;
   }
 
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-decoration,
+  .input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+  }
+
   [aria-label],
   button,
   a,
@@ -97,7 +106,7 @@
   }
 
   ::selection {
-    background-color: oklch(0.965 0.004 260 / 0.18);
+    background-color: oklch(0.97 0.004 260 / 0.20);
     color: var(--text-primary);
   }
 }
@@ -128,8 +137,63 @@
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
-.specular-surface {
-  box-shadow: inset 0px 1px 0px 0px oklch(1 0 0 / 0.045);
+@layer components {
+  .specular-surface {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.008) 100%),
+      var(--surface-panel);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.10),
+      0 20px 48px -16px rgba(0, 0, 0, 0.65);
+  }
+
+  .specular-surface-elevated {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.012) 100%),
+      var(--surface-elevated);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.13),
+      0 24px 56px -16px rgba(0, 0, 0, 0.72);
+  }
+
+  .hardware-bezel {
+    border-radius: 28px;
+    padding: 10px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.015) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.16),
+      0 40px 100px -24px rgba(0, 0, 0, 0.9);
+  }
+
+  .architectural-grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, #000 35%, transparent 100%);
+    mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, #000 35%, transparent 100%);
+  }
+}
+
+.hero-display-gradient {
+  color: var(--text-primary);
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hero-display-gradient {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 58%, rgba(180, 188, 208, 0.78) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+@media (prefers-contrast: more), (forced-colors: active) {
+  .hero-display-gradient {
+    background: none;
+    color: var(--text-primary);
+  }
 }
 
 .tabular-metrics {

@@ -4,36 +4,59 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { RotateCcw } from 'lucide-react'
 import { clsx } from 'clsx'
 import { SEO } from '../components/seo/SEO'
-import {
-  ActionButton,
-  CopyCommandBar,
-  EmptyCatalogState,
-  FilterPill,
-  SearchField,
-} from '../components/ui/Primitives'
+import { ActionButton, CopyCommandBar, EmptyCatalogState, FilterPill, SearchField } from '../components/ui/Primitives'
 import { KIT_STATS, formatCount } from '../data/kitStats'
-import {
-  ALL_SHOWCASE_SKILLS,
-  CORE_SKILLS_SHOWCASE,
-  FEATURED_LIBRARY_SKILLS,
-  getSkillDomainLabel,
-} from '../data/skills'
+import { ALL_SHOWCASE_SKILLS, CORE_SKILLS_SHOWCASE, FEATURED_LIBRARY_SKILLS, getSkillDomainLabel } from '../data/skills'
 import { useLanguage } from '../i18n/context'
 import type { SkillShowcaseItem } from '../types/ui-contract'
 
 /**
- * Unified 1,462-Skill Explorer with a desktop 2-column sidebar layout
- * and a compact progressive-lookup breakdown at the bottom.
+ * Widescreen 1440px Knowledge Vault Explorer for 1,462 indexed skills across 19 domains.
  */
 type SkillTierFilter = 'all' | 'core' | 'library'
 
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
-
 const VALID_DOMAIN_IDS = new Set(KIT_STATS.domains.map((d) => d.id))
 
 function isSkillTier(value: string | null): value is SkillTierFilter {
   return value === 'all' || value === 'core' || value === 'library'
+}
+
+function SkillsHeroHeader() {
+  const { locale, t } = useLanguage()
+  const copy = t.skillsPage
+  const stats = [
+    { value: formatCount(KIT_STATS.skills), label: locale === 'vi' ? 'Tổng kỹ năng' : 'Indexed Skills' },
+    { value: formatCount(KIT_STATS.coreSkills), label: locale === 'vi' ? 'Cốt lõi' : 'Core Skills' },
+    { value: formatCount(KIT_STATS.domains.length), label: locale === 'vi' ? 'Lĩnh vực' : 'Domains' },
+  ]
+
+  return (
+    <header className="border-b border-white/[0.09] pt-10 pb-12 sm:pt-14 sm:pb-16">
+      <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div>
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+            <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
+            <span>{copy.eyebrow}</span>
+          </div>
+          <h1 className="hero-display-gradient text-[clamp(2.5rem,4.4vw,4rem)] leading-[1.06] font-bold tracking-[-0.036em] text-ink">
+            {copy.title}
+          </h1>
+          <p className="mt-4 max-w-[58ch] text-lg leading-relaxed text-muted sm:text-xl">{copy.subtitle}</p>
+        </div>
+
+        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-white/[0.10] bg-white/[0.025] px-6 py-5 sm:gap-8">
+          {stats.map((stat) => (
+            <div key={stat.label} className="space-y-1">
+              <dd className="text-3xl font-bold tracking-tight text-ink tabular-nums sm:text-4xl">{stat.value}</dd>
+              <dt className="font-mono text-xs tracking-wider text-muted uppercase">{stat.label}</dt>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </header>
+  )
 }
 
 function SkillCard({ skill }: { readonly skill: SkillShowcaseItem }) {
@@ -42,20 +65,29 @@ function SkillCard({ skill }: { readonly skill: SkillShowcaseItem }) {
   const skillPath = isCore ? `skills/${skill.id}/SKILL.md` : `skills_library/${skill.id}/SKILL.md`
 
   return (
-    <article className="flex h-full flex-col justify-between rounded-xl border border-hairline bg-card p-5 transition-colors duration-150 motion-reduce:transition-none hover:border-line-strong">
-      <div className="space-y-2.5">
-        <div className="flex items-center justify-between gap-2">
-          <code className="font-mono text-sm font-semibold text-ink">{skill.id}</code>
-          <span className="rounded bg-white/[0.04] px-2 py-0.5 font-mono text-xs text-subtle">
+    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-white/[0.09] bg-card p-7 transition-colors duration-150 motion-reduce:transition-none hover:border-white/[0.22]">
+      <div>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <code className="font-mono text-xl font-bold tracking-tight text-ink">{skill.id}</code>
+          <span
+            className={clsx(
+              'shrink-0 rounded-full border px-3 py-1 font-mono text-xs font-medium',
+              isCore ? 'border-white/[0.16] bg-white/[0.06] text-ink' : 'border-white/[0.10] bg-white/[0.03] text-muted',
+            )}
+          >
             {isCore ? 'core' : 'library'}
           </span>
         </div>
-        <p className="text-sm leading-relaxed text-muted">{pick(skill.summary)}</p>
+        <p className="mt-3.5 text-base leading-relaxed text-muted">{pick(skill.summary)}</p>
       </div>
 
-      <div className="mt-4 flex items-center justify-between gap-2 border-t border-hairline pt-3 font-mono text-xs text-subtle">
-        <span className="truncate">{skillPath}</span>
-        <span className="shrink-0">{pick(getSkillDomainLabel(skill.domainId))}</span>
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-2.5 border-t border-white/[0.08] pt-4">
+        <code className="max-w-full truncate rounded-lg border border-white/[0.09] bg-[#090B10] px-3 py-1.5 font-mono text-xs text-ink/90">
+          {skillPath}
+        </code>
+        <span className="shrink-0 rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-xs text-muted">
+          {pick(getSkillDomainLabel(skill.domainId))}
+        </span>
       </div>
     </article>
   )
@@ -70,22 +102,19 @@ function DomainSidebar({
 }) {
   const { locale, t, pick } = useLanguage()
   const copy = t.skillsPage
-  const allDomainsLabel =
-    locale === 'vi' ? `Tất cả ${formatCount(KIT_STATS.skills)}` : `All ${formatCount(KIT_STATS.skills)}`
+  const allDomainsLabel = locale === 'vi' ? `Tất cả ${formatCount(KIT_STATS.skills)}` : `All ${formatCount(KIT_STATS.skills)}`
 
   return (
     <aside aria-label={copy.domainsSectionTitle}>
-      <div className="flex gap-2 overflow-x-auto pb-2 lg:hidden">
+      <div className="flex gap-2.5 overflow-x-auto pb-2 lg:hidden">
         <button
           type="button"
           aria-pressed={activeDomain === 'all'}
           onClick={() => onSelectDomain('all')}
           className={clsx(
-            'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg border px-3.5 py-2 text-xs transition-colors cursor-pointer tabular-nums',
+            'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 text-sm transition-colors cursor-pointer tabular-nums',
             FOCUS_RING,
-            activeDomain === 'all'
-              ? 'border-primary bg-primary font-semibold text-primary-ink'
-              : 'border-hairline bg-card text-muted hover:text-ink',
+            activeDomain === 'all' ? 'border-primary bg-primary font-semibold text-primary-ink' : 'border-white/[0.10] bg-card text-muted hover:text-ink',
           )}
         >
           <span>{allDomainsLabel}</span>
@@ -99,15 +128,13 @@ function DomainSidebar({
               aria-pressed={selected}
               onClick={() => onSelectDomain(selected ? 'all' : domain.id)}
               className={clsx(
-                'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg border px-3.5 py-2 text-xs transition-colors cursor-pointer tabular-nums',
+                'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 text-sm transition-colors cursor-pointer tabular-nums',
                 FOCUS_RING,
-                selected
-                  ? 'border-primary bg-primary font-semibold text-primary-ink'
-                  : 'border-hairline bg-card text-muted hover:text-ink',
+                selected ? 'border-primary bg-primary font-semibold text-primary-ink' : 'border-white/[0.10] bg-card text-muted hover:text-ink',
               )}
             >
               <span>{pick(getSkillDomainLabel(domain.id))}</span>
-              <span className={clsx('font-mono', selected ? 'text-primary-ink' : 'text-subtle')}>
+              <span className={clsx('font-mono text-xs', selected ? 'text-primary-ink' : 'text-subtle')}>
                 {formatCount(domain.count)}
               </span>
             </button>
@@ -115,24 +142,25 @@ function DomainSidebar({
         })}
       </div>
 
-      <nav aria-label={copy.domainsSectionTitle} className="hidden space-y-0.5 lg:sticky lg:top-24 lg:block">
-        <div className="mb-2 px-3 font-mono text-xs tracking-wider text-subtle uppercase">
-          {copy.domainsSectionTitle}
-        </div>
+      <nav
+        aria-label={copy.domainsSectionTitle}
+        className="specular-surface hidden space-y-1 rounded-3xl border border-white/[0.10] bg-white/[0.02] p-4 lg:sticky lg:top-24 lg:block"
+      >
+        <div className="mb-3 px-3 font-mono text-xs tracking-wider text-subtle uppercase">{copy.domainsSectionTitle}</div>
         <button
           type="button"
           aria-pressed={activeDomain === 'all'}
           onClick={() => onSelectDomain('all')}
           className={clsx(
-            'flex min-h-11 w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
+            'flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-left text-[15px] transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
             FOCUS_RING,
-            activeDomain === 'all'
-              ? 'bg-white/[0.08] font-medium text-ink'
-              : 'text-muted hover:bg-white/[0.03] hover:text-ink',
+            activeDomain === 'all' ? 'border-white/[0.14] bg-white/[0.09] font-semibold text-ink' : 'border-transparent text-muted hover:bg-white/[0.04] hover:text-ink',
           )}
         >
-          <span>{locale === 'vi' ? 'Tất cả miền' : 'All Domains'}</span>
-          <span className="font-mono text-xs text-subtle tabular-nums">{formatCount(KIT_STATS.skills)}</span>
+          <span>{locale === 'vi' ? 'Tất cả lĩnh vực' : 'All Domains'}</span>
+          <span className="rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-mono text-xs text-ink/90 tabular-nums">
+            {formatCount(KIT_STATS.skills)}
+          </span>
         </button>
 
         {KIT_STATS.domains.map((domain) => {
@@ -144,15 +172,13 @@ function DomainSidebar({
               aria-pressed={selected}
               onClick={() => onSelectDomain(selected ? 'all' : domain.id)}
               className={clsx(
-                'flex min-h-11 w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
+                'flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-left text-[15px] transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
                 FOCUS_RING,
-                selected
-                  ? 'bg-white/[0.08] font-medium text-ink'
-                  : 'text-muted hover:bg-white/[0.03] hover:text-ink',
+                selected ? 'border-white/[0.14] bg-white/[0.09] font-semibold text-ink' : 'border-transparent text-muted hover:bg-white/[0.04] hover:text-ink',
               )}
             >
               <span className="truncate">{pick(getSkillDomainLabel(domain.id))}</span>
-              <span className="shrink-0 font-mono text-xs text-subtle tabular-nums">
+              <span className="shrink-0 rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-mono text-xs text-subtle tabular-nums">
                 {formatCount(domain.count)}
               </span>
             </button>
@@ -163,8 +189,53 @@ function DomainSidebar({
   )
 }
 
+function ProgressiveLookupStage() {
+  const { t } = useLanguage()
+  const { progressiveLookup } = t.skillsPage
+
+  return (
+    <section aria-labelledby="progressive-lookup-heading" className="pt-4">
+      <div className="hardware-bezel rounded-3xl border border-white/[0.12] bg-[#090B10]/90 p-2.5 sm:p-3.5">
+        <div className="specular-surface space-y-7 rounded-2xl border border-white/[0.09] bg-card p-7 sm:p-9">
+          <div className="space-y-2">
+            <span className="inline-flex rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+              {progressiveLookup.badge}
+            </span>
+            <h2 id="progressive-lookup-heading" className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+              {progressiveLookup.title}
+            </h2>
+            <p className="max-w-[62ch] text-base leading-relaxed text-muted">{progressiveLookup.description}</p>
+          </div>
+
+          <div className="grid gap-5 xl:grid-cols-3">
+            {progressiveLookup.steps.map((hop) => (
+              <div key={hop.step} className="space-y-3 rounded-2xl border border-white/[0.09] bg-[#090B10]/85 p-6">
+                <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-xs text-subtle tabular-nums">
+                  <span className="text-sm font-bold text-ink">{hop.step}</span>
+                  <code className="max-w-full truncate rounded-lg border border-white/[0.10] bg-white/[0.04] px-2.5 py-1 text-ink/90">
+                    {hop.code}
+                  </code>
+                </div>
+                <h3 className="text-lg font-bold tracking-tight text-ink">{hop.title}</h3>
+                <p className="text-sm leading-relaxed text-muted">{hop.summary}</p>
+              </div>
+            ))}
+          </div>
+
+          <CopyCommandBar
+            command="node cli/install.js doctor"
+            copyLabel={t.common.copy}
+            copiedLabel={t.common.copied}
+            manualCopyHint={t.common.copyManualHint}
+          />
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export function SkillsPage() {
-  const { locale, t } = useLanguage()
+  const { t } = useLanguage()
   const reduceMotion = useReducedMotion()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -206,37 +277,24 @@ export function SkillsPage() {
   const hasFilters = query.trim().length > 0 || tier !== 'all' || activeDomain !== 'all'
   const resetFilters = () => setSearchParams(new URLSearchParams(), { replace: true })
 
-  const inlineMetrics =
-    locale === 'vi'
-      ? `${formatCount(KIT_STATS.skills)} kỹ năng lập chỉ mục · ${formatCount(KIT_STATS.coreSkills)} Core · ${formatCount(KIT_STATS.librarySkills)} Library · ${formatCount(KIT_STATS.domains.length)} miền chuyên môn`
-      : `${formatCount(KIT_STATS.skills)} Indexed · ${formatCount(KIT_STATS.coreSkills)} Core · ${formatCount(KIT_STATS.librarySkills)} Library · ${formatCount(KIT_STATS.domains.length)} Domains`
-
   return (
     <motion.div
       initial={reduceMotion ? false : { opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18, ease: 'easeOut' }}
-      className="mx-auto min-h-dvh max-w-[75rem] space-y-8 px-4 py-12 sm:px-6 lg:px-8 lg:py-16"
+      className="mx-auto min-h-dvh max-w-[90rem] px-4 pb-20 sm:px-6 lg:px-8 lg:pb-24"
     >
       <SEO routeId="skills" />
+      <SkillsHeroHeader />
 
-      <header className="space-y-3.5 border-b border-hairline pb-8">
-        <p className="font-mono text-xs tracking-wider text-subtle uppercase">{copy.eyebrow}</p>
-        <h1 className="text-[clamp(1.85rem,3vw,2.75rem)] leading-[1.12] font-semibold tracking-[-0.032em] text-ink">
-          {copy.title}
-        </h1>
-        <p className="max-w-[58ch] text-base leading-relaxed text-muted">{copy.subtitle}</p>
-        <p className="pt-1 font-mono text-xs text-subtle tabular-nums">{inlineMetrics}</p>
-      </header>
-
-      <div className="grid gap-8 lg:grid-cols-[240px_1fr] lg:items-start">
+      <div className="mt-10 grid gap-8 lg:grid-cols-[290px_1fr] lg:items-start lg:gap-10">
         <DomainSidebar activeDomain={activeDomain} onSelectDomain={setActiveDomain} />
 
-        <div className="min-w-0 space-y-10">
+        <div className="min-w-0 space-y-12">
           <section aria-label={copy.featuredSectionTitle} className="space-y-6">
-            <div className="space-y-4">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div className="w-full sm:max-w-md">
+            <div className="space-y-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div className="w-full lg:max-w-lg">
                   <SearchField
                     id="skills-vault-search"
                     label={copy.searchLabel}
@@ -248,13 +306,13 @@ export function SkillsPage() {
                   />
                 </div>
                 {hasFilters && (
-                  <ActionButton variant="ghost" icon={<RotateCcw aria-hidden="true" className="size-4" />} onClick={resetFilters}>
+                  <ActionButton variant="secondary" icon={<RotateCcw aria-hidden="true" className="size-4" />} onClick={resetFilters}>
                     {copy.resetCta}
                   </ActionButton>
                 )}
               </div>
 
-              <div role="group" aria-label={copy.tierFilterAria} className="flex flex-wrap gap-2">
+              <div role="group" aria-label={copy.tierFilterAria} className="flex flex-wrap gap-2.5">
                 <FilterPill label={copy.tiers.all} count={ALL_SHOWCASE_SKILLS.length} active={tier === 'all'} onSelect={() => setTier('all')} />
                 <FilterPill label={copy.tiers.core} count={CORE_SKILLS_SHOWCASE.length} active={tier === 'core'} onSelect={() => setTier('core')} />
                 <FilterPill label={copy.tiers.library} count={FEATURED_LIBRARY_SKILLS.length} active={tier === 'library'} onSelect={() => setTier('library')} />
@@ -269,44 +327,13 @@ export function SkillsPage() {
                 onReset={resetFilters}
               />
             ) : (
-              <div className="grid gap-4 sm:grid-cols-2">
-                {filteredSkills.map((skill) => (
-                  <SkillCard key={skill.id} skill={skill} />
-                ))}
+              <div className="grid gap-6 md:grid-cols-2">
+                {filteredSkills.map((skill) => <SkillCard key={skill.id} skill={skill} />)}
               </div>
             )}
           </section>
 
-          <section aria-labelledby="progressive-lookup-heading" className="space-y-5 border-t border-hairline pt-8">
-            <div className="space-y-1.5">
-              <p className="font-mono text-xs tracking-wider text-subtle uppercase">{copy.progressiveLookup.badge}</p>
-              <h2 id="progressive-lookup-heading" className="text-xl font-semibold tracking-tight text-ink">
-                {copy.progressiveLookup.title}
-              </h2>
-              <p className="max-w-[60ch] text-sm leading-relaxed text-muted">{copy.progressiveLookup.description}</p>
-            </div>
-
-            <div className="grid divide-y divide-hairline rounded-xl border border-hairline bg-card md:grid-cols-3 md:divide-x md:divide-y-0">
-              {copy.progressiveLookup.steps.map((hop) => (
-                <div key={hop.step} className="space-y-2 p-5">
-                  <div className="flex items-center justify-between gap-2 font-mono text-xs text-subtle tabular-nums">
-                    <span>{hop.step}</span>
-                    <code className="truncate rounded bg-white/[0.04] px-1.5 py-0.5 text-ink">{hop.code}</code>
-                  </div>
-                  <h3 className="text-sm font-semibold text-ink">{hop.title}</h3>
-                  <p className="text-xs leading-relaxed text-muted">{hop.summary}</p>
-                </div>
-              ))}
-            </div>
-
-            <CopyCommandBar
-              command="node cli/install.js doctor"
-              copyLabel={t.common.copy}
-              copiedLabel={t.common.copied}
-              manualCopyHint={t.common.copyManualHint}
-              compact
-            />
-          </section>
+          <ProgressiveLookupStage />
         </div>
       </div>
     </motion.div>

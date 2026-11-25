@@ -16,7 +16,7 @@ import { useLanguage } from '../i18n/context'
 import type { CommandFilterKey } from '../i18n/types'
 
 /**
- * Scannable 36-command directory with URL-synced search and category filters.
+ * Expansive 1440px 36-command showcase with URL-synced search and category filters.
  */
 const FILTER_KEYS: readonly CommandFilterKey[] = ['all', ...COMMAND_CATEGORIES]
 
@@ -24,8 +24,58 @@ function isCommandFilterKey(value: string | null): value is CommandFilterKey {
   return value !== null && (FILTER_KEYS as readonly string[]).includes(value)
 }
 
+function CommandsHeroHeader() {
+  const { locale, t } = useLanguage()
+  const stats = [
+    {
+      value: formatCount(KIT_STATS.commands.length),
+      label: locale === 'vi' ? 'Lệnh nền tảng' : 'Slash Commands',
+    },
+    {
+      value: formatCount(KIT_STATS.commandFiles),
+      label: locale === 'vi' ? 'Tệp đặc tả' : 'Workflow Specs',
+    },
+    {
+      value: formatCount(TEAM_COMMANDS.length),
+      label: locale === 'vi' ? 'Biến thể :team' : ':team Variants',
+    },
+  ]
+
+  return (
+    <header className="border-b border-white/[0.09] pt-10 pb-12 sm:pt-14 sm:pb-16">
+      <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div>
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+            <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
+            <span>{t.commandsPage.eyebrow}</span>
+          </div>
+          <h1 className="hero-display-gradient text-[clamp(2.5rem,4.4vw,4rem)] leading-[1.06] font-bold tracking-[-0.036em] text-ink">
+            {t.commandsPage.title}
+          </h1>
+          <p className="mt-4 max-w-[58ch] text-lg leading-relaxed text-muted sm:text-xl">
+            {t.commandsPage.subtitle}
+          </p>
+        </div>
+
+        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-white/[0.10] bg-white/[0.025] px-6 py-5 sm:gap-8">
+          {stats.map((stat) => (
+            <div key={stat.label} className="space-y-1">
+              <dd className="text-3xl font-bold tracking-tight text-ink tabular-nums sm:text-4xl">
+                {stat.value}
+              </dd>
+              <dt className="font-mono text-xs tracking-wider text-muted uppercase">
+                {stat.label}
+              </dt>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </header>
+  )
+}
+
 export function CommandsPage() {
-  const { t, locale } = useLanguage()
+  const { t } = useLanguage()
   const reduceMotion = useReducedMotion()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -107,39 +157,21 @@ export function CommandsPage() {
   }
 
   const resultsSummary = `${formatCount(filteredCommands.length)} / ${formatCount(COMMANDS_CATALOG.length)} ${t.common.resultsCount}`
-  const inlineMetrics =
-    locale === 'vi'
-      ? `${formatCount(KIT_STATS.commands.length)} lệnh nền tảng · ${formatCount(KIT_STATS.commandFiles)} đặc tả (${formatCount(KIT_STATS.commandWorkflowFiles)} workflow + ${formatCount(KIT_STATS.commandRefFiles)} _ref) · ${formatCount(TEAM_COMMANDS.length)} lệnh :team · ${formatCount(KIT_STATS.i18nLocales)} ngôn ngữ`
-      : `${formatCount(KIT_STATS.commands.length)} Base Commands · ${formatCount(KIT_STATS.commandFiles)} Specs (${formatCount(KIT_STATS.commandWorkflowFiles)} workflows + ${formatCount(KIT_STATS.commandRefFiles)} _ref) · ${formatCount(TEAM_COMMANDS.length)} :team · ${formatCount(KIT_STATS.i18nLocales)} Locales`
 
   return (
     <motion.div
       initial={reduceMotion ? false : { opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18, ease: 'easeOut' }}
-      className="mx-auto min-h-dvh max-w-[75rem] space-y-8 px-4 py-12 sm:px-6 lg:px-8 lg:py-16"
+      className="mx-auto min-h-dvh max-w-[90rem] px-4 pb-20 sm:px-6 lg:px-8 lg:pb-24"
     >
       <SEO routeId="commands" />
+      <CommandsHeroHeader />
 
-      <header className="space-y-3.5 border-b border-hairline pb-8">
-        <p className="font-mono text-xs tracking-wider text-subtle uppercase">
-          {t.commandsPage.eyebrow}
-        </p>
-        <h1 className="text-[clamp(1.85rem,3vw,2.75rem)] leading-[1.12] font-semibold tracking-[-0.032em] text-ink">
-          {t.commandsPage.title}
-        </h1>
-        <p className="max-w-[58ch] text-base leading-relaxed text-muted">
-          {t.commandsPage.subtitle}
-        </p>
-        <p className="pt-1 font-mono text-xs text-subtle tabular-nums">
-          {inlineMetrics}
-        </p>
-      </header>
-
-      <section aria-label={t.commandsPage.title} className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div className="w-full sm:max-w-md">
+      <section aria-label={t.commandsPage.title}>
+        <div className="my-8 space-y-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="w-full lg:w-[460px]">
               <SearchField
                 id="commands-catalog-search"
                 label={t.commandsPage.searchLabel}
@@ -153,7 +185,7 @@ export function CommandsPage() {
 
             {hasActiveFilters && (
               <ActionButton
-                variant="ghost"
+                variant="secondary"
                 icon={<RotateCcw aria-hidden="true" className="size-4" />}
                 onClick={handleResetFilters}
               >
@@ -166,7 +198,7 @@ export function CommandsPage() {
             id="commands-category-filter-bar"
             role="group"
             aria-label={t.commandsPage.categoryFilterAria}
-            className="flex flex-wrap gap-2"
+            className="flex flex-wrap gap-2.5"
           >
             {FILTER_KEYS.map((categoryKey) => (
               <FilterPill
@@ -188,7 +220,7 @@ export function CommandsPage() {
             onReset={handleResetFilters}
           />
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:gap-7">
             {filteredCommands.map((item) => (
               <CommandRowCard
                 key={item.name}
