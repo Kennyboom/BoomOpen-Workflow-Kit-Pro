@@ -2,7 +2,7 @@
 
 > **Purpose**: Pragmatic 2-Tier Coding Standards, Zero-Omission Phase Ratchet, deterministic CLI verification & compiler gates, and naming conventions for BoomOpen Workflow Kit (`@boomopen/workflow-kit` v5.5.0)
 > **Parent**: [00-index.md](./00-index.md)
-> **Last Updated**: 2026-11-10
+> **Last Updated**: 2026-11-25
 > **Version**: 5.5.0
 
 ---
@@ -46,13 +46,15 @@ All CLI gates run via `node cli/install.js <cmd>` (or `boomopen <cmd>` after `np
 | Command | Module | What It Enforces |
 |---------|--------|------------------|
 | `boomopen check [dir] [--strict-phase] [--no-stubs] [--ignore <glob>]` | [`cli/checker.js`](../../cli/checker.js) | Audits `.js`, `.mjs`, `.cjs`, `.ts`, `.mts`, `.cts`, `.tsx`, `.jsx`, `.py`, `.go`, `.rs` files against Pragmatic 2-Tier limits (`400`/`500` lines, explicit `any`, production `console.log`) plus the Zero-Omission Phase Ratchet (`--strict-phase --no-stubs`), respecting `~/.boomopen/settings.json` and `./.boomopen.json`. |
-| `boomopen doctor [--platform <name>] [--source-only] [--rebuild-index]` | [`cli/doctor.js`](../../cli/doctor.js), [`cli/doctor-markdown.js`](../../cli/doctor-markdown.js) | Audits kit source (`5` platform bundles, `13` root/platform entrypoints authored `<= 250` lines with `MAX_ENTRY_LINES = 350` installed kit-block budget, `7` `rules/*.md` `<= 300` lines, `84` command files = `79` flat `commands/*.md` + `5` `commands/_ref/*.md` `<= 450` lines, `21` specialist `agents/*.md` `<= 450` lines, `72` team files across `18` teams = `54` role files + `18` `_team.md` `<= 450` lines, `16` `i18n/README.*.md` `<= 450` lines, `22` core `skills/*/SKILL.md` `<= 450` lines, `0` mojibake, `0` legacy refs), `matrix-skills/compact-index.json` (`1,462` skills), installed platform homes/manifests, `~/.boomopen/settings.json`, and Conductor CLI engines. |
+| `boomopen doctor [--platform <name>] [--source-only] [--rebuild-index]` | [`cli/doctor.js`](../../cli/doctor.js), [`cli/doctor-markdown.js`](../../cli/doctor-markdown.js) | Audits kit source (`5` platform bundles, `13` root/platform entrypoints authored `<= 250` lines with `MAX_ENTRY_LINES = 350` installed kit-block budget, `7` `rules/*.md` `<= 300` lines, `93` command files = `87` flat `commands/*.md` + `6` `commands/_ref/*.md` `<= 450` lines, `22` specialist `agents/*.md` `<= 450` lines, `72` team files across `18` teams = `54` role files + `18` `_team.md` `<= 450` lines, `16` `i18n/README.*.md` `<= 450` lines, `22` core `skills/*/SKILL.md` `<= 450` lines, `0` mojibake, `0` legacy refs), `matrix-skills/compact-index.json` (`1,462` skills), installed platform homes/manifests, `~/.boomopen/settings.json`, and Conductor CLI engines. |
 | `npm run lint` | [`.github/scripts/check-syntax.js`](../../.github/scripts/check-syntax.js) | Runs `node --check` on every `.js`, `.mjs`, and `.cjs` file across `cli/`, `platforms/`, `.github/scripts/`, and `web/build/`. |
 | `boomopen research <validate\|brief> <file.md>` | [`cli/research.js`](../../cli/research.js) | Enforces 6-Block `RESEARCH-*` and `BRAINSTORM-*` (`--mode brainstorm`) gates `RES-G1..G4` and compiles compact `HANDOFF_BRIEF` packets. |
 | `boomopen design <validate\|contract> <design.md>` | [`cli/design.js`](../../cli/design.js) | Enforces 6-Block `DESIGN-*` gates `DESIGN-G1..G4` (OKLCH + hex tokens, 5-State UI Matrix, WCAG 2.2 AA) and extracts executable `DESIGN_CONTRACT` (`@theme` CSS + TypeScript props). |
 | `boomopen plan <validate\|compile> <plan.md> [--sync-ledger]` | [`cli/plan.js`](../../cli/plan.js) | Enforces `PLAN-G1..G5` (DAG acyclicity, disjoint `OWNED_FILES <= 4` files/shard, `SHARED_CONTRACT`, verification commands, `<= 500` lines) and compiles `.boomopen/project-ledger.json`. |
-| `boomopen cook <state\|packets\|verify-wave\|preflight> <plan.md>` | [`cli/cook.js`](../../cli/cook.js) | Runs the 5-Stage Fast-Forward state machine, compiles 5-Field Wave Handoff Packets, and enforces `COOK-G1..G4` post-wave ownership and `--strict-phase --no-stubs` gates. |
-| `boomopen ledger <init\|from-plan\|validate\|status\|next\|verify\|audit>` | [`cli/ledger.js`](../../cli/ledger.js) | Manages `.boomopen/project-ledger.json` with SHA-256 Spec-Hash Drift Guard for multi-session `/autopilot` execution. |
+| `boomopen cook <state\|packets\|verify-wave\|preflight\|amend-plan> <plan.md>` | [`cli/cook.js`](../../cli/cook.js) | Runs the 5-Stage Fast-Forward state machine, compiles 5-Field Wave Handoff Packets, enforces `COOK-G1..G4` post-wave ownership and `--strict-phase --no-stubs` gates, and appends Wave 2.5 delta waves. |
+| `boomopen reconcile [dir] [--plan <plan.md>] [--strict]` | [`cli/reconcile.js`](../../cli/reconcile.js) | Enforces Wave 2.5 spec-to-code wiring gates `REC-G1..G4` (island shards, FE/BE route parity, `[SC-*]` sub-clauses, `.env.example` parity). |
+| `boomopen audit <init\|slice\|record\|approve\|verify-fix\|rollback\|status>` | [`cli/audit.js`](../../cli/audit.js) | Drives stateful multi-round whole-project audits (`.boomopen/audit-ledger.json`), monotonic test ratchets, and confirmation-gated Git checkpoint rollbacks. |
+| `boomopen ledger <init\|from-plan\|validate\|status\|next\|verify\|rollback\|audit>` | [`cli/ledger.js`](../../cli/ledger.js) | Manages `.boomopen/project-ledger.json` with SHA-256 Spec-Hash Drift Guard and Git checkpoint rollback for multi-session `/autopilot` execution. |
 | `boomopen conduct <probe\|dispatch\|council\|status>` | [`cli/conductor.js`](../../cli/conductor.js) | Enforces Cross-Engine `Author != Critic` dispatch, SHA-256 `READ_ONLY_FILES` integrity, and 6-Task Multi-Engine Council synthesis (`research\|brainstorm\|plan\|design\|review\|debug`). |
 
 ### Instruction Markdown Line Budgets (`DOC_LINE_LIMITS`)
@@ -63,8 +65,8 @@ Because agents load instruction Markdown into context windows, [`cli/doctor-mark
 |---------------|----------|:----------:|
 | Root & platform entrypoints (`GEMINI.md`, `CLAUDE.md`, `CODEX.md`, `COPILOT.md`, `CURSOR.md`, `AGENT.md`, installed blocks) | `MAX_ENTRY_LINES` | `<= 350` lines *(repo entrypoints kept compact at `<= 250` lines)* |
 | Core governance rules (`rules/*.md` — `7` files) | `DOC_LINE_LIMITS.rules` | `<= 300` lines |
-| Slash commands (`commands/*.md` + `commands/_ref/*.md` — `84` files) | `DOC_LINE_LIMITS.commands` | `<= 450` lines |
-| Specialist agents (`agents/*.md` — `21` files) | `DOC_LINE_LIMITS.agents` | `<= 450` lines |
+| Slash commands (`commands/*.md` + `commands/_ref/*.md` — `93` files) | `DOC_LINE_LIMITS.commands` | `<= 450` lines |
+| Specialist agents (`agents/*.md` — `22` files) | `DOC_LINE_LIMITS.agents` | `<= 450` lines |
 | Elastic Golden Diamond teams (`agents/teams/*-team/*.md` — `72` files) | `DOC_LINE_LIMITS['agents/teams']` | `<= 450` lines |
 | Translated guides (`i18n/README.*.md` — `16` files) | `DOC_LINE_LIMITS.i18n` | `<= 450` lines (`>= 130` lines min) |
 | Core skills (`skills/*/SKILL.md` — `22` files) | `DOC_LINE_LIMITS.skills` | `<= 450` lines |
@@ -77,7 +79,7 @@ Because agents load instruction Markdown into context windows, [`cli/doctor-mark
 
 | Element | Convention | Example |
 |---------|-----------|---------|
-| Specialist file name (`21`) | kebab-case `.md` | `backend-engineer.md`, `researcher.md`, `docs-manager.md` |
+| Specialist file name (`22`) | kebab-case `.md` | `backend-engineer.md`, `spec-reconciler.md`, `researcher.md` |
 | YAML `name` | kebab-case matching filename | `name: backend-engineer` |
 | Scoped parallel shard ID | `agent:<name>` + `<name>#<shard>` | `backend-engineer#contracts`, `backend-engineer#api-auth` |
 | YAML `profile` | `domain:category` | `"backend:execution"`, `"research:exploration"` |
@@ -104,7 +106,7 @@ Because agents load instruction Markdown into context windows, [`cli/doctor-mark
 
 | Element | Convention | Example |
 |---------|-----------|---------|
-| File name (`41` modules) | kebab-case `.js` | `install.js`, `checker-rules.js`, `doctor-markdown.js`, `settings-store.js` |
+| File name (`49` modules) | kebab-case `.js` | `install.js`, `reconcile.js`, `audit.js`, `checker-rules.js`, `settings-slim.js` |
 | Module system | `'use strict'` + CommonJS (`require`/`module.exports`) with `node:` prefix | `const fs = require('node:fs');` |
 | Functions | `camelCase` verb phrases | `inspectSourceFile()`, `buildCompactSkillIndex()`, `runDoctor()` |
 | Constants | `SCREAMING_SNAKE_CASE` | `SOFT_FILE_LINES = 400`, `HARD_FILE_LINES = 500`, `MAX_ENTRY_LINES = 350` |

@@ -1,0 +1,81 @@
+name: Bug Report
+description: Report a reproducible bug in the BoomOpen CLI, installer, platform bundles, skills vault, or workflows
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting an issue! For security vulnerabilities, please **do not** use this public form — report privately via [SECURITY.md](https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/blob/main/SECURITY.md).
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Bug Summary
+      description: Clear, concise description of what went wrong.
+      placeholder: Running `boomopen reconcile` on a Next.js App Router workspace fails when...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: AI Platform / Surface
+      options:
+        - Antigravity (Gemini)
+        - Claude Code
+        - OpenAI Codex
+        - Cursor
+        - GitHub Copilot
+        - CLI / Installer (`boomopen`)
+        - Web Settings UI (`settings --ui`)
+        - Website (`web/` / boomopen.com)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - Windows
+        - macOS
+        - Linux (Ubuntu / Debian / Arch / WSL2)
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Kit Commit / Version, Node.js Version & Active Preset
+      description: Output of `node -v` and `node cli/install.js settings status` (redact any personal paths).
+      placeholder: "v5.5.0 (main), Node v22.14.0, preset: frontier-guardrails"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Exact commands, slash workflow, or configuration needed to reproduce the bug.
+      placeholder: |
+        1. Run `node cli/install.js install claude --with-hooks`
+        2. Invoke `/plan:hard "..."`
+        3. Observe error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs. Actual Behavior
+      description: What did you expect to happen, and what happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: doctor
+    attributes:
+      label: "`boomopen doctor` / Error Output"
+      description: Paste relevant terminal output or logs (please scrub personal usernames or paths).
+      render: shell

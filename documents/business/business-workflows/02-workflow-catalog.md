@@ -2,20 +2,20 @@
 
 | Field | Value |
 |-------|-------|
-| **Purpose** | Complete catalog of all `16` canonical business workflows (`BW-001` – `BW-016`) and the `84`-file (`32`-command) routing inventory in `@boomopen/workflow-kit` `v5.5.0` |
+| **Purpose** | Complete catalog of all `16` canonical business workflows (`BW-001` – `BW-016`) and the `93`-file (`36`-command) routing inventory in `@boomopen/workflow-kit` `v5.5.0` |
 | **Parent** | [00-index.md](./00-index.md) |
-| **Last Updated** | 2026-11-10 |
+| **Last Updated** | 2026-11-25 |
 | **Version** | 5.5.0 (Smart-Hybrid Edition) |
 
 ---
 
 ## Slash Command & CLI Inventory (`v5.5.0`)
 
-- **`84` Flat Command Markdown Files ([`commands/`](../../../commands/))**: `79` flat workflow files (`commands/{cmd}.md` + `commands/{cmd}-{variant}.md`) + `5` shared protocol files in `commands/_ref/` (`convergent-analysis-loop.md`, `docs-folder-specs.md`, `docs-recon-protocol.md`, `golden-triangle-protocol.md`, `implementation-loop.md`).
-- **`32` Base Slash Commands**:
-  - **`16` Multi-Variant Families**: `/cook`, `/code`, `/plan`, `/design`, `/research`, `/brainstorm`, `/debug`, `/fix`, `/test`, `/review`, `/report` (all `:fast|:hard|:team`), `/docs` (`:core|:business|:audit`), `/deploy` (`:check|:preview|:production|:rollback`), `/autopilot` (`:init|:run|:audit`), `/conduct` (`:council|:pipeline`), `/ask` (`:fast|:hard`).
-  - **`16` Standalone Commands**: `/settings`, `/orchestrate`, `/save`, `/recap`, `/init`, `/next`, `/status`, `/preview`, `/rollback`, `/architect`, `/auto`, `/refactor`, `/performance`, `/security-audit`, `/deep-audit`, `/ui-ux-pro-max`.
-- **`12` Deterministic `boomopen` CLI Subcommands**: `install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `ledger`, `conduct`.
+- **`93` Flat Command Markdown Files ([`commands/`](../../../commands/))**: `87` flat workflow files (`commands/{cmd}.md` + `commands/{cmd}-{variant}.md`) + `6` shared protocol files in `commands/_ref/` (`convergent-analysis-loop.md`, `docs-folder-specs.md`, `docs-recon-protocol.md`, `golden-triangle-protocol.md`, `implementation-loop.md`, `reconcile-loop.md`).
+- **`36` Base Slash Commands**:
+  - **`18` Multi-Variant Families**: `/cook`, `/code`, `/plan`, `/design`, `/research`, `/brainstorm`, `/debug`, `/fix`, `/test`, `/review`, `/report` (all `:fast|:hard|:team`), `/docs` (`:core|:business|:audit`), `/deploy` (`:check|:preview|:production|:rollback`), `/autopilot` (`:init|:run|:audit`), `/conduct` (`:council|:pipeline`), `/ask` (`:fast|:hard`), `/audit` (`:auto|:fix|:run`), `/pr` (`:review`).
+  - **`18` Standalone Commands**: `/settings`, `/orchestrate`, `/save`, `/recap`, `/init`, `/next`, `/status`, `/preview`, `/rollback`, `/architect`, `/auto`, `/refactor`, `/performance`, `/security-audit`, `/deep-audit`, `/ui-ux-pro-max`, `/onboard`, `/release`.
+- **`14` Deterministic `boomopen` CLI Subcommands**: `install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`.
 
 ---
 
@@ -26,8 +26,8 @@
 | Attribute | Value |
 |-----------|-------|
 | **Actor** | Framework User (`A-01`) + `boomopen` CLI (`A-05`) |
-| **Trigger** | `node cli/install.js install <tool\|--all> [--with-hooks]` (or `boomopen install ...` after `npm link`) |
-| **Outcome** | Installs entrypoints, `84` command files, `21` agents, `18` teams (`72` files), `7` rules, `22` core skills, `1,440` library skills, `compact-index.json`, and `7` Python scripts into `cursor`, `copilot`, `antigravity`, `claude`, or `codex` with SHA-256 `~/.boomopen/manifests/<tool>.json` ledgers and `~/.boomopen/backups/` |
+| **Trigger** | `node cli/install.js install <tool\|--all> [--with-hooks] [--as-plugin]` (or `boomopen install ...` after `npm link`) |
+| **Outcome** | Installs entrypoints, `93` command files, `22` agents, `18` teams (`72` files), `7` rules, `22` core skills, deduplicated `~/.agents/skills_library/` (`1,440` library skills), `compact-index.json`, and `7` Python scripts into `cursor`, `copilot`, `antigravity`, `claude`, or `codex` with SHA-256 `~/.boomopen/manifests/<tool>.json` ledgers and `~/.boomopen/backups/` |
 | **Complexity / Frequency** | Low / Rare (initial setup or kit upgrade) |
 | **Detailed Flow** | [03-detailed-workflows.md](./03-detailed-workflows.md#bw-001--multi-platform-framework-installation) |
 
@@ -105,9 +105,9 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Actor** | Orchestrator (`A-02`) + Multi-Domain `role#shard` Swarm (`A-03`/`A-04`) + `boomopen cook` & `check` (`A-05`) |
+| **Actor** | Orchestrator (`A-02`) + Multi-Domain `role#shard` Swarm (`A-03`/`A-04`) + `boomopen cook`, `reconcile`, & `check` (`A-05`) |
 | **Trigger** | `/cook` (`:fast\|:hard\|:team`) or 17-language end-to-end feature build intent |
-| **Outcome** | `boomopen cook state` skips completed Discovery/Design/Plan stages -> executes **Wave 1** (Schema/DTO/UI Tokens lock) -> **Wave 2** (Parallel Feature Shards) -> **Wave 3** (Parallel QA/Audit), gated at each wave by `boomopen cook verify-wave` (`COOK-G1..G4`) and `boomopen check --strict-phase --no-stubs` |
+| **Outcome** | `boomopen cook state` skips completed Discovery/Design/Plan stages -> executes **Wave 1** (Schema/DTO/UI Tokens lock) -> **Wave 2** (Parallel Feature Shards) -> **Wave 2.5** (`boomopen reconcile` `REC-G1..G4`) -> **Wave 3** (Parallel QA/Audit), gated at each wave by `boomopen cook verify-wave` (`COOK-G1..G4`) and `boomopen check --strict-phase --no-stubs` |
 | **Complexity / Frequency** | High / Per-Feature |
 | **Detailed Flow** | [03-detailed-workflows.md](./03-detailed-workflows.md#bw-009--5-stage-fast-forward--3-wave-cook-execution) |
 
@@ -137,7 +137,7 @@
 |-----------|-------|
 | **Actor** | Orchestrator (`A-02`) + Swarm Shards (`A-03`/`A-04`) + `boomopen ledger` (`A-05`) |
 | **Trigger** | `/autopilot`, `/autopilot:init`, `/autopilot:run`, `/autopilot:audit` (or NL multi-phase project execution) |
-| **Outcome** | Compiles and advances `.boomopen/project-ledger.json` across sessions with SHA-256 Spec-Hash Drift Guard, `READ_ONLY_FILES` prior-phase test locks, monotonic cumulative test ratchet, and `boomopen ledger verify` / `audit` gates |
+| **Outcome** | Compiles and advances `.boomopen/project-ledger.json` across sessions with SHA-256 Spec-Hash Drift Guard, `READ_ONLY_FILES` prior-phase test locks, monotonic cumulative test ratchet, and `boomopen ledger verify` / `audit` / `rollback` gates |
 | **Complexity / Frequency** | High / Multi-Session Epics |
 | **Detailed Flow** | [03-detailed-workflows.md](./03-detailed-workflows.md#bw-012--multi-session-autonomous-project-autopilot) |
 
@@ -157,7 +157,7 @@
 |-----------|-------|
 | **Actor** | Framework User (`A-01`) + Orchestrator (`A-02`) + `boomopen settings` (`A-05`) |
 | **Trigger** | `/settings` in chat, `boomopen settings <subcmd>`, or `boomopen settings --ui` (`http://127.0.0.1:4567`) |
-| **Outcome** | Updates `~/.boomopen/settings.json` or `./.boomopen.json` (`4` presets, `20` enum keys + `2` line-limit keys) and re-renders `<!-- BOOMOPEN-SETTINGS-START/END -->` blocks across all installed platforms in `< 10ms` |
+| **Outcome** | Updates `~/.boomopen/settings.json` or `./.boomopen.json` (`5` core presets with `frontier-guardrails` default & `carbon-guardrails` alias, `20` enum keys + `2` line-limit keys) and re-renders `<!-- BOOMOPEN-SETTINGS-START/END -->` blocks across all installed platforms in `< 10ms` |
 | **Complexity / Frequency** | Low / On-Demand |
 | **Detailed Flow** | [03-detailed-workflows.md](./03-detailed-workflows.md#bw-014--3-surface-settings-control-center--aot-sync) |
 
@@ -177,7 +177,7 @@
 |-----------|-------|
 | **Actor** | Smart-Hybrid Orchestrator (`A-02`) + Warm Shards (`A-03`) + `boomopen` CLI (`A-05`) + Council (`A-07`) |
 | **Trigger** | Any sub-agent interruption, tool timeout, test/type error, contract drift, CLI gate failure, or Round-2 debug deadlock |
-| **Outcome** | Executes deterministic recovery across `E0` (warm `send_message` auto-revive), `E1` (`3x` retry), `E1b` (`<= 500` line cohesion / ledger sync), `E2` (targeted warm shard fix), `E3` (`autonomous_first` / `ask_question`), `E4` (rollback & contract delta broadcast), `E5` (CLI gate warm auto-repair), and `E6` (Cross-Engine escalation) with **zero silent halts** |
+| **Outcome** | Executes deterministic recovery across `E0` (warm `send_message` auto-revive), `E1` (`3x` retry), `E1b` (`<= 500` line cohesion / ledger sync), `E2` (targeted warm shard fix), `E3` (`autonomous_first` / `ask_question`), `E4` (rollback & contract delta broadcast), `E5` (`reconcile`/`audit`/CLI gate warm auto-repair), and `E6` (Cross-Engine escalation) with **zero silent halts** |
 | **Complexity / Frequency** | High / On-Demand (fault-triggered) |
 | **Detailed Flow** | [03-detailed-workflows.md](./03-detailed-workflows.md#bw-016--graduated-self-healing--error-recovery) |
 
@@ -194,6 +194,6 @@
 
 ## Evidence Sources
 
-- [../../../commands/](../../../commands/) — `79` flat command files + `5` `commands/_ref/*.md` protocols (`84` files total)
-- [../../../cli/install.js](../../../cli/install.js) — Dispatcher for all `12` `boomopen` CLI subcommands
+- [../../../commands/](../../../commands/) — `87` flat command files + `6` `commands/_ref/*.md` protocols (`93` files total)
+- [../../../cli/install.js](../../../cli/install.js) — Dispatcher for all `14` `boomopen` CLI subcommands
 - [../../../rules/CORE.md](../../../rules/CORE.md) · [../../../rules/PHASES.md](../../../rules/PHASES.md) · [../../../rules/ERRORS.md](../../../rules/ERRORS.md)

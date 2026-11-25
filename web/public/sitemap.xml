@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://boomopen.vercel.app/</loc>
+    <loc>https://boomopen.com/</loc>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://boomopen.vercel.app/commands</loc>
+    <loc>https://boomopen.com/commands</loc>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://boomopen.vercel.app/agents</loc>
+    <loc>https://boomopen.com/agents</loc>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://boomopen.vercel.app/skills</loc>
+    <loc>https://boomopen.com/skills</loc>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://boomopen.vercel.app/architecture</loc>
+    <loc>https://boomopen.com/architecture</loc>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://boomopen.vercel.app/install</loc>
+    <loc>https://boomopen.com/install</loc>
     <priority>0.95</priority>
   </url>
 </urlset>

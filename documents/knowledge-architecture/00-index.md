@@ -1,16 +1,16 @@
 # Knowledge Architecture
 
 > **Purpose**: Architecture summary, table of contents, and cross-references for **BoomOpen Workflow Kit v5.5.0** (`@boomopen/workflow-kit` `5.5.0` — Multi-Platform Unified & Smart-Hybrid Edition)
-> **Last Updated**: 2026-11-10
+> **Last Updated**: 2026-11-25
 > **Version**: `5.5.0`
 
 ---
 
 ## Quick Summary
 
-**BoomOpen Workflow Kit v5.5.0** (`@boomopen/workflow-kit`) is a **Smart-Hybrid multi-agent orchestration and deterministic CLI compiler framework** for AI coding assistants. It pairs zero-latency Markdown/YAML instruction protocols—executed directly by the host AI model—with **12 deterministic `< 50ms` Node.js CLI subcommands** (`cli/install.js` + `39` modular `cli/*.js` files) that validate artifacts, compile wave handoff packets, enforce file-ownership locks, verify multi-session project ledgers, and orchestrate cross-engine model councils.
+**BoomOpen Workflow Kit v5.5.0** (`@boomopen/workflow-kit`) is a **Smart-Hybrid multi-agent orchestration and deterministic CLI compiler framework** for AI coding assistants. It pairs zero-latency Markdown/YAML instruction protocols—executed directly by the host AI model—with **14 deterministic `< 50ms` Node.js CLI subcommands** (`cli/install.js` + `48` modular `cli/*.js` files) that validate artifacts, compile wave handoff packets, reconcile Wave 2.5 cross-shard wiring, enforce file-ownership locks, verify multi-session project and audit ledgers, and orchestrate cross-engine model councils.
 
-At runtime, platform entrypoints (`GEMINI.md`, `CLAUDE.md`, `CODEX.md`, `COPILOT.md`, `CURSOR.md`, `AGENT.md`) enforce a **Proactive Sub-agent First Gate**: known-target micro-edits (`<= 2` files, `1` domain, `0` exploration, no `/cmd`) run directly in **Mode A**, whereas unscoped exploration, `> 2` files, `>= 2` domains, **17-language natural-language workflow intents**, or explicit `/cmd` invocations activate **Mode B**. Mode B loads on-demand governance rules (`rules/*.md`), routes through **`84` flat command files** (`32` base slash commands: `79` `commands/*.md` + `5` `commands/_ref/*.md`), shards work across **`21` specialist agents** (`role#shard`, `<= 3–4 OWNED_FILES` per shard) and **`18` Elastic Golden Diamond teams** (`72` team files scaling from `1-1-1` up to `1 Tech Lead + 1..6 Parallel Shard Executors + 1..3 Parallel Critics`), and resolves domain expertise in `O(1)` across **`1,462` indexed skills** (`22` pre-loaded Core Skills in `skills/` + `1,440` on-demand Library Skills in `skills_library/` via `matrix-skills/compact-index.json`).
+At runtime, platform entrypoints (`GEMINI.md`, `CLAUDE.md`, `CODEX.md`, `COPILOT.md`, `CURSOR.md`, `AGENT.md`) enforce a **Proactive Sub-agent First Gate** (`frontier-guardrails` `< 2.5 KB` Slim Guardrails default): known-target edits (`<= 10` files under `frontier-guardrails`, `<= 2` files under `smart-hybrid`, `1` domain, `0` exploration, no `/cmd`) run directly in **Mode A**, whereas unscoped exploration, multi-domain work, **17-language natural-language workflow intents**, or explicit `/cmd` invocations activate **Mode B**. Mode B loads on-demand governance rules (`rules/*.md`), routes through **`93` flat command files** (`36` base slash commands: `87` `commands/*.md` + `6` `commands/_ref/*.md`), shards work across **`22` specialist agents** (including `spec-reconciler`, `role#shard`, `<= 3–4 OWNED_FILES` per shard) and **`18` Elastic Golden Diamond teams** (`72` team files scaling from `1-1-1` up to `1 Tech Lead + 1..6 Parallel Shard Executors + 1..3 Parallel Critics`), and resolves domain expertise in `O(1)` across **`1,462` indexed skills** (`22` pre-loaded Core Skills in `skills/` + `1,440` on-demand Library Skills in `skills_library/` via `matrix-skills/compact-index.json`).
 
 ```mermaid
 graph TB
@@ -20,17 +20,17 @@ graph TB
     end
 
     subgraph "Smart-Hybrid Gate & Orchestrator Core"
-        GATE["Proactive Sub-agent First Gate<br/>Mode A (<= 2 known files) vs Mode B (Elastic Swarm)"]
+        GATE["Proactive Sub-agent First Gate<br/>Mode A Direct vs Mode B Elastic Swarm"]
         CORE["On-Demand Rules Engine (v5.5)<br/>CORE · PHASES · AGENTS · TEAMS · SKILLS · ERRORS · REFERENCE"]
     end
 
     subgraph "Flat Command & Intent Layer"
-        ROUTER["32 Base Slash Commands + 17-Language NL Router"]
-        FLAT["84 Command Files<br/>79 Flat commands/*.md + 5 commands/_ref/*.md"]
+        ROUTER["36 Base Slash Commands + 17-Language NL Router"]
+        FLAT["93 Command Files<br/>87 Flat commands/*.md + 6 commands/_ref/*.md"]
     end
 
     subgraph "Elastic Swarm & Team Layer"
-        AGENTS["21 Specialist Agents<br/>Sharded role#shard (<= 3-4 OWNED_FILES)"]
+        AGENTS["22 Specialist Agents<br/>Sharded role#shard (<= 3-4 OWNED_FILES)"]
         TEAMS["18 Elastic Golden Diamond Teams (72 Files)<br/>1 Lead + 1..6 Shards + 1..3 Critics"]
     end
 
@@ -40,8 +40,8 @@ graph TB
         LIB_SK["1,440 Dormant Library Skills<br/>(skills_library/)"]
     end
 
-    subgraph "Deterministic CLI & Distribution (39+ Modules)"
-        CLI["boomopen CLI (12 Subcommands)<br/>install · uninstall · list · settings · doctor · check<br/>research · design · plan · cook · ledger · conduct"]
+    subgraph "Deterministic CLI & Distribution (49 Modules)"
+        CLI["boomopen CLI (14 Subcommands)<br/>install · uninstall · list · settings · doctor · check · cook<br/>reconcile · audit · research · design · plan · ledger · conduct"]
     end
 
     CFG --> EP
@@ -73,7 +73,7 @@ graph TB
 | # | File | Description |
 |---|------|-------------|
 | 1 | [01-system-overview.md](./01-system-overview.md) | Smart-Hybrid architecture style, high-level topology diagram, 6 layer boundaries, key decisions, and 10 Orchestration Laws (`v5.5.0`) |
-| 2 | [02-components.md](./02-components.md) | Per-component breakdown — Orchestrator, Rules, Flat Commands (`84` files), `21` Agents, `18` Elastic Golden Diamond Teams, `1,462`-Skill Vault, `12` CLI Subcommands, `5` Platform Bundles, Tests/CI, and Web App |
+| 2 | [02-components.md](./02-components.md) | Per-component breakdown — Orchestrator, Rules, Flat Commands (`93` files), `22` Agents, `18` Elastic Golden Diamond Teams, `1,462`-Skill Vault, `14` CLI Subcommands, `5` Platform Bundles, Tests/CI, and Web App |
 | 3 | [03-data-flow.md](./03-data-flow.md) | 5-Stage Fast-Forward & 3-Wave execution lifecycle, SHA-256 manifest install flow, 2-step `O(1)` HSOL skill resolution, Elastic Golden Diamond / Conductor flows, and `E0–E6` recovery |
 | 4 | [04-design-patterns.md](./04-design-patterns.md) | Catalog of `13` core architectural patterns in `v5.5.0` — Elastic Swarm Sharding, 3-Wave Contract-First Locks, Deterministic CLI Gatekeepers, Warm Session Reuse, and Cross-Engine Council |
 | 5 | [05-decisions.md](./05-decisions.md) | Architecture Decision Records (`ADR-001` through `ADR-007`) with `v5.5.0` context, alternatives considered, rationale, and trade-offs |
@@ -91,14 +91,14 @@ graph TB
 | Supported Platforms | `5` (`Antigravity (Gemini)`, `Claude Code`, `OpenAI Codex`, `Cursor`, `GitHub Copilot`) |
 | Audited Entry Files | `13` (`6` root entrypoints + `7` platform bundle entrypoints, each `<= 250` lines) |
 | Core Rule Files | `7` (`CORE`, `PHASES`, `AGENTS`, `TEAMS`, `SKILLS`, `ERRORS`, `REFERENCE`, each `<= 300` lines, loaded on demand in Mode B) |
-| Slash Command Suite | `32` base commands (`16` multi-variant families + `16` standalone) across `84` flat files (`79` `commands/*.md` + `5` `commands/_ref/*.md`, `<= 450` lines) |
+| Slash Command Suite | `36` base commands (`18` multi-variant families + `18` standalone) across `93` flat files (`87` `commands/*.md` + `6` `commands/_ref/*.md`, `<= 450` lines) |
 | Natural-Language Routing | `17` languages (`en`, `vi`, `zh-CN`, `zh-TW`, `ja`, `ko`, `es`, `fr`, `de`, `pt-BR`, `ru`, `hi`, `ar`, `id`, `th`, `tr`, `it`) |
-| Specialist Agents | `21` individual specialists in `agents/*.md` (`<= 450` lines each, `Model: "inherit"` default) |
+| Specialist Agents | `22` individual specialists in `agents/*.md` (`<= 450` lines each, incl. `spec-reconciler`, `Model: "inherit"` default) |
 | Specialist Teams | `18` Elastic Golden Diamond teams (`72` files = `54` role files + `18` `_team.md`, scaling `1` Lead + `1..6` Executor Shards + `1..3` Critics) |
 | Skills Vault (`HSOL v5.5`) | `1,462` indexed skills (`22` Core Skills in `skills/` + `1,440` Library Skills in `skills_library/`) across `19` YAML domains + `compact-index.json` |
-| Deterministic CLI | `12` `boomopen` subcommands across `cli/install.js` + `39` modular `cli/*.js` files (`Node.js >= 18.0.0`, `0` runtime npm dependencies) |
+| Deterministic CLI | `14` `boomopen` subcommands across `cli/install.js` + `48` modular `cli/*.js` files (`Node.js >= 18.0.0`, `0` runtime npm dependencies) |
 | Error & Guardrail Model | `7` self-healing error classes (`E0–E6`), `14` anti-patterns (`A1–A14`), `4` team checkpoints (`C8-TEAMS-01..04`) |
-| Automated Verification | `30` active `node:test` suites (`29` `cli/*.test.js` + `web/build/kit-stats.test.mjs`), `7` Python `scripts/*.py` helpers, cross-OS GitHub Actions CI (`ci.yml`, `release.yml`) |
+| Automated Verification | `34` active `node:test` suites (`33` `cli/*.test.js` + `web/build/kit-stats.test.mjs`), `7` Python `scripts/*.py` helpers, cross-OS GitHub Actions CI (`ci.yml`, `release.yml`) |
 
 ---
 
@@ -119,9 +119,9 @@ graph TB
 | Team Rules | [../../rules/TEAMS.md](../../rules/TEAMS.md) | `18` Elastic Golden Diamond teams, Topology A/B, and `C8-TEAMS-01..04` |
 | Skills Rules | [../../rules/SKILLS.md](../../rules/SKILLS.md) | Fast 2-step `O(1)` lookup, CLI gate auto-repair, and HSOL fitness formula |
 | Error Rules | [../../rules/ERRORS.md](../../rules/ERRORS.md) | `E0–E6` error classification, warm auto-revive, and `A1–A14` anti-patterns |
-| Reference Rules | [../../rules/REFERENCE.md](../../rules/REFERENCE.md) | 17-language routing table, cross-platform tool vocabulary, and `32` commands |
+| Reference Rules | [../../rules/REFERENCE.md](../../rules/REFERENCE.md) | 17-language routing table, cross-platform tool vocabulary, and `36` commands |
 | Compact Skill Index | [../../matrix-skills/compact-index.json](../../matrix-skills/compact-index.json) | Pre-compiled `O(1)` lookup dictionary for all `1,462` indexed skills |
-| CLI Entrypoint | [../../cli/install.js](../../cli/install.js) | Unified `boomopen` CLI dispatcher for all `12` subcommands |
+| CLI Entrypoint | [../../cli/install.js](../../cli/install.js) | Unified `boomopen` CLI dispatcher for all `14` subcommands |
 
 ---
 
@@ -143,13 +143,13 @@ graph TB
 
 | Source | Path | What It Provides |
 |--------|------|------------------|
-| `package.json` | [../../package.json](../../package.json) | Version `5.5.0`, `"bin": { "boomopen": "./cli/install.js" }`, `30` `node:test` suites, zero runtime dependencies |
-| `cli/install.js` | [../../cli/install.js](../../cli/install.js) | `12` CLI subcommands, SHA-256 `InstallLedger`, `{TOOL}` replacement, `< 10ms` AOT settings sync |
+| `package.json` | [../../package.json](../../package.json) | Version `5.5.0`, `"bin": { "boomopen": "./cli/install.js" }`, `34` `node:test` suites, zero runtime dependencies |
+| `cli/install.js` | [../../cli/install.js](../../cli/install.js) | `14` CLI subcommands, SHA-256 `InstallLedger`, `{TOOL}` replacement, `< 10ms` AOT settings sync |
 | `rules/CORE.md` | [../../rules/CORE.md](../../rules/CORE.md) | `v5.5` Proactive Sub-agent First Gate, 4-Tier Elastic Swarm, 17-language routing, Laws `L1–L10` |
 | `rules/PHASES.md` | [../../rules/PHASES.md](../../rules/PHASES.md) | 5-Stage Fast-Forward state machine, 3-Wave Contract-First topology, Autopilot & Conductor gates |
-| `rules/AGENTS.md` | [../../rules/AGENTS.md](../../rules/AGENTS.md) | Quality-First model policy, Cognitive Load Sharding Law, 5-Field Handoff Packets, `21` agents & `18` teams |
+| `rules/AGENTS.md` | [../../rules/AGENTS.md](../../rules/AGENTS.md) | Quality-First model policy, Cognitive Load Sharding Law, 5-Field Handoff Packets, `22` agents & `18` teams |
 | `rules/TEAMS.md` | [../../rules/TEAMS.md](../../rules/TEAMS.md) | Elastic Golden Diamond pillars, Topology A vs. Topology B, warm `send_message` debate, `C8-TEAMS-01..04` |
 | `rules/SKILLS.md` | [../../rules/SKILLS.md](../../rules/SKILLS.md) | Fast 2-step lookup (`<skills>` -> `compact-index.json`), `1,462` skills (`22` Core + `1,440` Library), HSOL formula |
 | `rules/ERRORS.md` | [../../rules/ERRORS.md](../../rules/ERRORS.md) | `E0–E6` deterministic recovery, warm auto-revive, Cross-Engine debug escalation, `A1–A14` anti-patterns |
-| `rules/REFERENCE.md` | [../../rules/REFERENCE.md](../../rules/REFERENCE.md) | Cross-platform tool mapping, `32` base slash commands (`84` files), deliverable & CLI quick reference |
-| `matrix-skills/_index.yaml` | [../../matrix-skills/_index.yaml](../../matrix-skills/_index.yaml) | `19` skill domains, `21` agent profile mappings, HSOL fitness weights and thresholds |
+| `rules/REFERENCE.md` | [../../rules/REFERENCE.md](../../rules/REFERENCE.md) | Cross-platform tool mapping, `36` base slash commands (`93` files), deliverable & CLI quick reference |
+| `matrix-skills/_index.yaml` | [../../matrix-skills/_index.yaml](../../matrix-skills/_index.yaml) | `19` skill domains, `22` agent profile mappings, HSOL fitness weights and thresholds |

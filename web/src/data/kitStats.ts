@@ -63,7 +63,7 @@ const DEFAULT_TEAM_ROLES = 54
 const DEFAULT_SKILLS = 1462
 const DEFAULT_CORE_SKILLS = 22
 const DEFAULT_LIBRARY_SKILLS = 1440
-const DEFAULT_WORKFLOW_FILES = 83
+const DEFAULT_WORKFLOW_FILES = 87
 const DEFAULT_REF_FILES = 6
 
 function normalizeKitStats(raw: RawKitStatsShape): KitStats {

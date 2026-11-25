@@ -1,7 +1,7 @@
 {
   "name": "BoomOpen Workflow Kit Pro",
   "short_name": "BoomOpen Pro",
-  "description": "Smart-Hybrid Multi-Agent AI Workforce OS across Antigravity, Claude Code, OpenAI Codex, Cursor, and GitHub Copilot: 32 commands, 21 specialist agents, 18 Golden Diamond teams, and 1,462 indexed skills.",
+  "description": "Smart-Hybrid Multi-Agent AI Workforce OS across Antigravity, Claude Code, OpenAI Codex, Cursor, and GitHub Copilot: 36 slash commands, 22 specialist agents, 18 Golden Diamond teams, 14 CLI gates, and 1,462 indexed skills.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0c0d0e",

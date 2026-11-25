@@ -1,8 +1,8 @@
 # BoomOpen Workflow Kit — Testing & Verification Standards
 
-> **Purpose**: Complete inventory of the `30` active `node:test` suites, `sandbox.test-helper.js` home isolation, Zero-Test-Gaming laws, tarball smoke tests, and Python verification runners for `@boomopen/workflow-kit` v5.5.0
+> **Purpose**: Complete inventory of the `34` active `node:test` suites, `sandbox.test-helper.js` home isolation, Zero-Test-Gaming laws, tarball smoke tests, and Python verification runners for `@boomopen/workflow-kit` v5.5.0
 > **Parent**: [00-index.md](./00-index.md)
-> **Last Updated**: 2026-11-10
+> **Last Updated**: 2026-11-25
 > **Version**: 5.5.0
 
 ---
@@ -13,8 +13,8 @@ BoomOpen Workflow Kit (`v5.5.0`) uses the **Node.js built-in test runner** (`nod
 
 | Command | Underlying Script | Scope & Purpose |
 |---------|-------------------|-----------------|
-| `npm test` | `node --test cli/*.test.js web/build/kit-stats.test.mjs` *(explicit list in `package.json`)* | Runs all **`30` active automated test suites** (`29` CommonJS suites in `cli/` + `1` ESM suite in `web/build/`). |
-| `npm run test:unit` | `node --test ...` (`15` fast in-process suites) | Fast unit subset covering `checker`, `codex-config`, `conductor`, `cook`, `design`, `doctor`, `hook-guard`, `hook-registration`, `instruction-files`, `ledger`, `plan`, `platform-content`, `research`, `settings`, and `user-files`. |
+| `npm test` | `node --test cli/*.test.js web/build/kit-stats.test.mjs` *(explicit list in `package.json`)* | Runs all **`34` active automated test suites** (`33` CommonJS suites in `cli/` + `1` ESM suite in `web/build/`). |
+| `npm run test:unit` | `node --test ...` (`19` fast in-process suites) | Fast unit subset covering `audit`, `checker`, `codex-config`, `conductor`, `cook`, `design`, `doctor`, `hook-guard`, `hook-registration`, `instruction-files`, `ledger`, `plan`, `platform-content`, `reconcile`, `research`, `security-v6`, `settings`, `user-files`, and `v55-compilers`. |
 | `npm run test:pack` | `node .github/scripts/pack-smoke.js` | Packs the npm tarball (lifecycle scripts disabled), extracts it in `os.tmpdir()`, verifies all `1,462` indexed `SKILL.md` files exist, and smoke-tests `install claude` -> `doctor` -> `uninstall claude` in a sandboxed `HOME`. |
 | `npm run lint` | `node .github/scripts/check-syntax.js` | Runs `node --check` on every `.js`, `.mjs`, and `.cjs` file across `cli/`, `platforms/`, `.github/scripts/`, and `web/build/`. |
 | `npm run check` | `node cli/install.js check` | Enforces Pragmatic 2-Tier Coding Standards (`400`/`500` lines, explicit `any`, production `console.log`); CI runs `check . --strict-phase --no-stubs`. |
@@ -22,16 +22,16 @@ BoomOpen Workflow Kit (`v5.5.0`) uses the **Node.js built-in test runner** (`nod
 
 ---
 
-## Inventory of the `30` Active `node:test` Suites
+## Inventory of the `34` Active `node:test` Suites
 
-Tests are co-located alongside source modules in `cli/*.test.js` (`29` suites, excluded from npm tarballs via `"!cli/*.test.js"` in `package.json`) plus [`web/build/kit-stats.test.mjs`](../../web/build/kit-stats.test.mjs):
+Tests are co-located alongside source modules in `cli/*.test.js` (`33` suites, excluded from npm tarballs via `"!cli/*.test.js"` in `package.json`) plus [`web/build/kit-stats.test.mjs`](../../web/build/kit-stats.test.mjs):
 
 | Category | Count | Suite Files | What They Verify |
 |----------|:-----:|-------------|------------------|
-| **1. Installer, Ownership, Safety & Packaging** | `8` | `install.test.js`, `install-cli.test.js`, `install-safety.test.js`, `install-repairs.test.js`, `install-regressions.test.js`, `user-files.test.js`, `codex-config.test.js`, `packaging.test.js` | Multi-platform install/uninstall across all `5` assistants, SHA-256 `~/.boomopen/manifests/<tool>.json` ownership, non-destructive user file preservation & backups, TOML-aware `~/.codex/config.toml` merge, legacy cleanup, and `package.json` `files` packaging rules. |
-| **2. Deterministic Compilers, Ledger & Conductor** | `6` | `research.test.js`, `design.test.js`, `plan.test.js`, `cook.test.js`, `ledger.test.js`, `conductor.test.js` | `RES-G1..G4` & `HANDOFF_BRIEF`, `DESIGN-G1..G4` & `DESIGN_CONTRACT`, `PLAN-G1..G5` DAG/ownership compiler, `cook` Fast-Forward state machine & `COOK-G1..G4` wave verification, `.boomopen/project-ledger.json` Spec-Hash Drift Guard, and Cross-Engine `conduct` / 6-Task Council synthesis. |
-| **3. Health Diagnostics, Code Checker & Hooks** | `4` | `doctor.test.js`, `checker.test.js`, `hook-guard.test.js`, `hook-registration.test.js` | `boomopen doctor` source/platform/index checks, `boomopen check` (`400`/`500` ceilings, TypeScript `any`, `console.log`, `--strict-phase --no-stubs`), `validate-tool-call.mjs` destructive-command blocking corpus, and `--with-hooks` registration in `~/.claude/settings.json`. |
-| **4. Settings Control Center & Web UI** | `3` | `settings.test.js`, `settings-e2e.test.js`, `settings-ui.test.js` | Preset switching (`smart-hybrid`, `solo-fast`, `deep-architect`, `adversarial-team`), global + `./.boomopen.json` precedence, `< 10ms` AOT marker sync across installed platforms, and the local HTTP Control Center (`127.0.0.1:4567` via `settings --ui`). |
+| **1. Installer, Ownership, Safety & Packaging** | `8` | `install.test.js`, `install-cli.test.js`, `install-safety.test.js`, `install-repairs.test.js`, `install-regressions.test.js`, `user-files.test.js`, `codex-config.test.js`, `packaging.test.js` | Multi-platform install/uninstall across all `5` assistants, shared `~/.agents/skills_library` deduplication, SHA-256 `~/.boomopen/manifests/<tool>.json` ownership, non-destructive user file preservation & backups, TOML-aware `~/.codex/config.toml` merge, and `package.json` `files` packaging rules. |
+| **2. Deterministic Compilers, Reconcile, Audit, Ledger & Conductor** | `9` | `research.test.js`, `design.test.js`, `plan.test.js`, `cook.test.js`, `reconcile.test.js`, `audit.test.js`, `ledger.test.js`, `conductor.test.js`, `v55-compilers.test.js` | `RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `cook` Fast-Forward & `COOK-G1..G4`, Wave 2.5 `reconcile` (`REC-G1..G4`), stateful multi-round `audit` + Git checkpoint `rollback`, `.boomopen/project-ledger.json` Spec-Hash Drift Guard + `rollback`, and Cross-Engine `conduct`. |
+| **3. Health Diagnostics, Code Checker, Security v6 & Hooks** | `5` | `doctor.test.js`, `checker.test.js`, `security-v6.test.js`, `hook-guard.test.js`, `hook-registration.test.js` | `boomopen doctor` source/platform/index checks, `boomopen check` (`400`/`500` ceilings, TypeScript `any`, `console.log`, `--strict-phase --no-stubs`), `security_scan.py` v6 corpus, `validate-tool-call.mjs` + `stop-quality-gate.mjs`, and `--with-hooks` registration across Antigravity, Claude Code, and Cursor. |
+| **4. Settings Control Center & Web UI** | `3` | `settings.test.js`, `settings-e2e.test.js`, `settings-ui.test.js` | Preset switching (`frontier-guardrails` default, `carbon-guardrails` alias, `smart-hybrid`, `solo-fast`, `deep-architect`, `adversarial-team`), lossless round-trip template cache, `< 10ms` AOT marker sync, and CSP-hardened HTTP Control Center (`127.0.0.1:4567`). |
 | **5. Kit Content, Skills Vault, Python & E2E** | `8` | `cli-e2e.test.js`, `docs-content.test.js`, `instruction-files.test.js`, `platform-content.test.js`, `content-integrity.test.js`, `vault-content.test.js`, `python-scripts.test.js`, `lighthouse-audit.test.js` | End-to-end subprocess CLI runs, `13` entrypoint parity & `DOC_LINE_LIMITS`, `16` `i18n/README.*.md` checks, zero mojibake/personal paths/leaked secrets, `1,462`-skill vault integrity, and Python helper CLI execution. |
 | **6. Website Stats Generator (ESM)** | `1` | `web/build/kit-stats.test.mjs` | Verifies YAML frontmatter parsing, flat command variant grouping, domain skill counts, and `kit-stats.json` synchronization for `web/`. |
 
@@ -102,7 +102,7 @@ Alongside the Node.js CLI test suites, `scripts/` ships `7` cross-platform Pytho
 
 | Area | Current State | Notes |
 |------|---------------|-------|
-| **Numeric coverage threshold** | Not gated | All `30` suites run on `9` OS/Node combinations in CI, but `--experimental-test-coverage` / `c8` percentage thresholds are not enforced. |
+| **Numeric coverage threshold** | Not gated | All `34` suites run on `9` OS/Node combinations in CI, but `--experimental-test-coverage` / `c8` percentage thresholds are not enforced. |
 | **`web/src/` React component unit tests** | Not present | Data generation is unit-tested in `web/build/kit-stats.test.mjs` and the app is gated by ESLint 9 + `tsc -b && vite build` in CI, without Vitest/RTL DOM component tests. |
 
 ---

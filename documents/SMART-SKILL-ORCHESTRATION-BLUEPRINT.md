@@ -2,7 +2,7 @@
 
 > **Product & Version**: `BoomOpen Workflow Kit v5.5.0` (`@boomopen/workflow-kit` `5.5.0` — Multi-Platform Unified & Smart-Hybrid Edition / `HSOL v5.5`)
 > **Author**: AI System Architecture Team
-> **Last Updated**: 2026-11-10
+> **Last Updated**: 2026-11-25
 > **Status**: Production-Verified Architecture (`1,462` Indexed Skills = `22` Core + `1,440` Library)
 > **Canonical Repository**: `https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro`
 
@@ -21,7 +21,7 @@ This blueprint defines the **Hybrid Skill Orchestration Layer (`HSOL v5.5`)** in
 3. **Conditional External Ecosystem Discovery (`npx skills find` / `npx skills add`)**:
    - Triggered only on `:hard` and `:team` workflow variants when best local fitness `< 0.8`, tracking community-installed skills with SHA-256 checksums, trust progression, and governance states in [`matrix-skills/_dynamic.yaml`](../matrix-skills/_dynamic.yaml).
 4. **Deterministic CLI Verification & Warm Auto-Repair**:
-   - Paired with `12` zero-dependency `boomopen` CLI subcommands ([`cli/install.js`](../cli/install.js)) that enforce artifact gates (`research`, `design`, `plan`, `cook`, `check --strict-phase --no-stubs`, `ledger`, `conduct`, `doctor`) and route diagnostics back to warm `role#shard` sub-agents.
+   - Paired with `14` zero-dependency `boomopen` CLI subcommands ([`cli/install.js`](../cli/install.js)) that enforce artifact gates (`research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `check --strict-phase --no-stubs`, `ledger`, `conduct`, `doctor`) and route diagnostics back to warm `role#shard` sub-agents.
 
 **Key Runtime Specifications**: [`rules/SKILLS.md`](../rules/SKILLS.md) · [`skills/skill-seeker/SKILL.md`](../skills/skill-seeker/SKILL.md) · [`matrix-skills/_index.yaml`](../matrix-skills/_index.yaml) · [`matrix-skills/_dynamic.yaml`](../matrix-skills/_dynamic.yaml) · [`HSOL-ASSESSMENT.md`](./HSOL-ASSESSMENT.md) · External catalog: https://skills.sh/
 
@@ -49,7 +49,7 @@ This blueprint defines the **Hybrid Skill Orchestration Layer (`HSOL v5.5`)** in
 |---------------------|--------------------|-----------------------------|------------------------------------|--------------------|
 | **`antigravity`** (Gemini) | `~/.gemini/GEMINI.md`, `~/.gemini/agents/AntigravityGlobal.agent.md` | `~/.gemini/config/skills/` | `~/.gemini/config/skills_library/` | `~/.gemini/config/skills/boomopen-workflow-kit/` |
 | **`claude`** (Claude Code) | `~/.claude/CLAUDE.md`, `~/.claude/AGENT.md` | `~/.claude/skills/` | `~/.claude/skills_library/` | `~/.claude/skills/boomopen-workflow-kit/` |
-| **`codex`** (OpenAI Codex) | `~/.codex/CODEX.md`, `~/.codex/AGENTS.md`, `~/.codex/AGENT.md` | `~/.codex/skills/` (+ `79` `boomopen-workflow-kit-*` cmd skills) | `~/.codex/skills_library/` | `~/.codex/skills/boomopen-workflow-kit/` |
+| **`codex`** (OpenAI Codex) | `~/.codex/CODEX.md`, `~/.codex/AGENTS.md`, `~/.codex/AGENT.md` | `~/.codex/skills/` (+ `87` `boomopen-workflow-kit-*` cmd skills) | `~/.codex/skills_library/` | `~/.codex/skills/boomopen-workflow-kit/` |
 | **`cursor`** (Cursor IDE) | `~/.cursor/CURSOR.md`, `~/.cursor/AGENT.md`, `~/.cursor/rules/boomopen-workflow-kit.mdc` | `~/.cursor/skills/` | `~/.cursor/skills_library/` | `~/.cursor/skills/boomopen-workflow-kit/` |
 | **`copilot`** (GitHub Copilot) | `~/.copilot/COPILOT.md`, `~/.copilot/AGENT.md`, `<VSCodeUser>/prompts/boomopen-workflow-kit.agent.md` | `~/.copilot/skills/` | `~/.copilot/skills_library/` | `~/.copilot/skills/boomopen-workflow-kit/` |
 
@@ -99,7 +99,7 @@ Architecture (v5.5.0):
 ├── 1,440 Dormant Library Skills in {LIBRARY_PATH}/ (0 idle context tokens)
 ├── 19 Domain YAML Registries ({FRAMEWORK_PATH}/matrix-skills/*.yaml, 1,476 entries)
 ├── Pre-Compiled O(1) Index (compact-index.json, 1,462 unique skills, < 5ms lookup)
-└── 21 Specialist Agent Inheritance Profiles in matrix-skills/_index.yaml
+└── 22 Specialist Agent Inheritance Profiles in matrix-skills/_index.yaml
 
 Strengths:
 ├── Sub-5ms O(1) resolution without crawling 19 YAML files
@@ -205,7 +205,7 @@ HSOL v5.5 SOLUTION:
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                    USER REQUEST / MULTILINGUAL INTENT                        │
-│              (17 Supported Languages + 32 Base Slash Commands)               │
+│              (17 Supported Languages + 36 Base Slash Commands)               │
 └─────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
@@ -827,9 +827,9 @@ security_model:
 | **Core & Library Vault** | `22` Core Skills (`skills/`) + `1,440` Library Skills (`skills_library/`) = **`1,462` unique skills** | `boomopen doctor --source-only` |
 | **Compact Skill Index** | [`matrix-skills/compact-index.json`](../matrix-skills/compact-index.json) + `19` domain `*.yaml` (`1,476` entries) + [`_index.yaml`](../matrix-skills/_index.yaml) + [`_dynamic.yaml`](../matrix-skills/_dynamic.yaml) | `cli/doctor-index.js` (`--rebuild-index`) |
 | **Runtime Skill Rules** | [`rules/SKILLS.md`](../rules/SKILLS.md) (`<= 300` lines) + [`skills/skill-seeker/SKILL.md`](../skills/skill-seeker/SKILL.md) | `cli/doctor-markdown.js` |
-| **Specialist Agents & Teams** | **`21` specialist agents** (`agents/*.md`) + **`18` Elastic Golden Diamond teams** (`agents/teams/*-team/` = `54` role files + `18` `_team.md` = `72` files) | `boomopen doctor` |
-| **Slash Commands** | **`32` base slash commands** across **`84` command files** (`79` flat `commands/*.md` + `5` `commands/_ref/*.md`) | `boomopen doctor` |
-| **Deterministic CLI (`12` cmds)** | [`cli/install.js`](../cli/install.js) + `39` modular `cli/*.js` files (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `ledger`, `conduct`) | `30` `node:test` suites (`npm test`) + GitHub Actions CI |
+| **Specialist Agents & Teams** | **`22` specialist agents** (`agents/*.md`, incl. `spec-reconciler`) + **`18` Elastic Golden Diamond teams** (`agents/teams/*-team/` = `54` role files + `18` `_team.md` = `72` files) | `boomopen doctor` |
+| **Slash Commands** | **`36` base slash commands** across **`93` command files** (`87` flat `commands/*.md` + `6` `commands/_ref/*.md`) | `boomopen doctor` |
+| **Deterministic CLI (`14` cmds)** | [`cli/install.js`](../cli/install.js) + `48` modular `cli/*.js` files (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`) | `34` `node:test` suites (`npm test`) + GitHub Actions CI |
 
 ### 8.2 Verified Production Metrics (`v5.5.0`)
 
@@ -840,7 +840,7 @@ verified_production_metrics:
   local_lookup_latency: "< 5ms"   # O(1) JSON lookup in matrix-skills/compact-index.json
   idle_library_token_overhead: 0  # Dormant skills_library/ never injected until matched
   per_shard_skill_injection: "1-3 SKILL.md files max"
-  automated_test_suites: 30       # 29 cli/*.test.js + web/build/kit-stats.test.mjs
+  automated_test_suites: 34       # 33 cli/*.test.js + web/build/kit-stats.test.mjs
   cross_os_ci_matrix: "Ubuntu, Windows, macOS x Node 18, 20, 22"
 ```
 
@@ -858,7 +858,7 @@ verified_production_metrics:
 │  6 ROOT ENTRYPOINTS (`<= 250` lines each)                                    │
 │  ════════════════════════════════════════                                    │
 │  `GEMINI.md`, `CLAUDE.md`, `CODEX.md`, `COPILOT.md`, `CURSOR.md`, `AGENT.md` │
-│  • Route 17 languages & 32 slash commands into Mode B without Turn-1 crawl   │
+│  • Route 17 languages & 36 slash commands into Mode B without Turn-1 crawl   │
 │  • Point Mode B skill resolution on demand to `rules/SKILLS.md`              │
 │                                                                              │
 │  ─────────────────────────────────────────────────────────────────────────   │
@@ -871,7 +871,7 @@ verified_production_metrics:
 │                                                                              │
 │  ─────────────────────────────────────────────────────────────────────────   │
 │                                                                              │
-│  21 SPECIALIST AGENTS (`agents/*.md`) & 18 ELASTIC TEAMS (`72` files)        │
+│  22 SPECIALIST AGENTS (`agents/*.md`) & 18 ELASTIC TEAMS (`72` files)        │
 │  ════════════════════════════════════════════════════════════════════        │
 │  • Every specialist profile in `matrix-skills/_index.yaml` maps domain       │
 │    inheritance (`backend`, `frontend`, `security`, `ai-ml`, `mcp`, etc.)     │
@@ -881,11 +881,12 @@ verified_production_metrics:
 │                                                                              │
 │  ─────────────────────────────────────────────────────────────────────────   │
 │                                                                              │
-│  12 `boomopen` CLI SUBCOMMANDS (`cli/install.js`)                            │
+│  14 `boomopen` CLI SUBCOMMANDS (`cli/install.js`)                            │
 │  ════════════════════════════════════════════════                            │
 │  • `install` / `uninstall` / `list` / `settings` (`--ui` port `4567`)        │
 │  • `doctor [--rebuild-index]` — compiles & audits `compact-index.json`       │
-│  • `research` / `design` / `plan` / `cook` / `check` / `ledger` / `conduct`  │
+│  • `research` / `design` / `plan` / `cook` / `reconcile` / `audit`           │
+│  • `check` / `ledger` / `conduct`                                            │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -900,10 +901,10 @@ BoomOpen-Workflow-Kit-Pro/
 ├── rules/
 │   └── {CORE,PHASES,AGENTS,TEAMS,SKILLS,ERRORS,REFERENCE}.md  # 7 rules (<=300L)
 ├── commands/
-│   ├── {cmd}.md & {cmd}-{variant}.md                # 79 flat command specs
-│   └── _ref/*.md                                    # 5 shared protocol refs (84 total)
+│   ├── {cmd}.md & {cmd}-{variant}.md                # 87 flat command specs
+│   └── _ref/*.md                                    # 6 shared protocol refs (93 total)
 ├── agents/
-│   ├── *.md                                         # 21 specialist agents (<=450L)
+│   ├── *.md                                         # 22 specialist agents (<=450L)
 │   └── teams/*-team/                                # 18 teams (54 roles + 18 _team.md = 72)
 ├── skills/
 │   ├── skill-seeker/SKILL.md                        # Core 2-Step O(1) resolver
@@ -913,13 +914,13 @@ BoomOpen-Workflow-Kit-Pro/
 │   └── ...                                          # 1,440 Library Skills total
 ├── matrix-skills/
 │   ├── compact-index.json                           # Pre-compiled O(1) index (1,462 skills)
-│   ├── _index.yaml                                  # 19 domains + 21 agent profiles + HSOL
+│   ├── _index.yaml                                  # 19 domains + 22 agent profiles + HSOL
 │   ├── _dynamic.yaml                                # Dynamic external skill manifest
 │   └── {domain}.yaml                                # 19 domain YAML registries
 ├── cli/
-│   ├── install.js                                   # `boomopen` CLI entry (12 subcommands)
+│   ├── install.js                                   # `boomopen` CLI entry (14 subcommands)
 │   ├── doctor.js & doctor-index.js                  # Health audit & compact-index builder
-│   └── *.js / *.test.js                             # 39 CLI modules + 29 CLI test suites
+│   └── *.js / *.test.js                             # 48 CLI modules + 33 CLI test suites
 ├── scripts/                                         # 7 Python verification/session helpers
 └── documents/
     ├── HSOL-ASSESSMENT.md

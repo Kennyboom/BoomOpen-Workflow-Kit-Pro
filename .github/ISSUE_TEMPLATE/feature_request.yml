@@ -1,0 +1,42 @@
+name: Feature Request
+description: Propose a new workflow command, CLI gate, platform integration, or skill enhancement
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Engineering Friction
+      description: What workflow bottleneck, platform gap, or verification blind spot does this address?
+      placeholder: When running multi-wave backend + mobile migrations, ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Target Subsystem
+      options:
+        - Slash Commands & Workflows (`commands/`)
+        - Specialist Agents & Golden Diamond Teams (`agents/`)
+        - Deterministic CLI & Compilers (`cli/`)
+        - Skills Vault & Matrix Discovery (`skills/`, `skills_library/`, `matrix-skills/`)
+        - Multi-IDE Platform Bundles & Hooks (`platforms/`)
+        - Settings & Presets (`frontier-guardrails`, `smart-hybrid`, `--ui`)
+        - Documentation / i18n / Web Showcase (`documents/`, `i18n/`, `web/`)
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: Describe the desired behavior, CLI flags, or workflow contract across the 5 supported IDEs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered & Trade-offs
+      description: Any workarounds, context-budget impact, or compatibility considerations (remember `cli/` must keep zero runtime npm dependencies).

@@ -5,14 +5,14 @@
 | **Purpose** | Summary index of all `v5.5.0` business workflows, actors, cross-references, and governance metrics for `@boomopen/workflow-kit` |
 | **Parent** | [../../../README.md](../../../README.md) |
 | **Sibling Packs** | [../business-prd/00-index.md](../business-prd/00-index.md) · [../business-features/00-index.md](../business-features/00-index.md) · [../business-glossary/00-index.md](../business-glossary/00-index.md) |
-| **Last Updated** | 2026-11-10 |
+| **Last Updated** | 2026-11-25 |
 | **Version** | 5.5.0 (Smart-Hybrid Edition) |
 
 ---
 
 ## Quick Summary
 
-BoomOpen Workflow Kit (`@boomopen/workflow-kit` **v5.5.0** — Multi-Platform Unified & Smart-Hybrid Edition) operates through **16 canonical business workflows (`BW-001` – `BW-016`)** coordinated across **8 distinct actor groups**. Workflows span multi-platform installation (`BW-001`–`BW-002`), Turn-1 Proactive Sub-Agent First & 17-language natural-language routing (`BW-003`), 4-Tier Dynamic Elastic Swarm sharding & warm `role#shard` session reuse (`BW-004`), 2-step `O(1)` HSOL v5.5 skill resolution across `1,462` skills (`BW-005`), deterministic CLI-validated research/brainstorming (`BW-006`), UI/UX design contracts (`BW-007`), DAG planning & 1-click Approved-Plan execution (`BW-008`), 5-Stage Fast-Forward & 3-Wave `/cook` execution (`BW-009`), elastic multi-hypothesis SPIE v3.0 debugging & `/fix` (`BW-010`), `18`-team Elastic Golden Diamond adversarial collaboration (`BW-011`), multi-session `/autopilot` ledger execution (`BW-012`), Cross-Engine Conductor & 6-Task Multi-Engine Council synthesis (`BW-013`), 3-Surface `/settings` management (`BW-014`), sequential `/docs` generation (`BW-015`), and graduated `E0–E6` self-healing recovery (`BW-016`).
+BoomOpen Workflow Kit (`@boomopen/workflow-kit` **v5.5.0** — Multi-Platform Unified & Smart-Hybrid Edition · `https://boomopen.com`) operates through **16 canonical business workflows (`BW-001` – `BW-016`)** coordinated across **8 distinct actor groups**. Workflows span multi-platform installation (`BW-001`–`BW-002`), Turn-1 Proactive Sub-Agent First & 17-language natural-language routing (`BW-003`), 4-Tier Dynamic Elastic Swarm sharding & warm `role#shard` session reuse (`BW-004`), 2-step `O(1)` HSOL v5.5 skill resolution across `1,462` skills (`BW-005`), deterministic CLI-validated research/brainstorming (`BW-006`), UI/UX design contracts (`BW-007`), DAG planning & 1-click Approved-Plan execution (`BW-008`), 5-Stage Fast-Forward, Wave 2.5 Spec Reconciliation (`boomopen reconcile`), & 3-Wave `/cook` execution (`BW-009`), elastic multi-hypothesis SPIE v3.0 debugging & `/fix` (`BW-010`), `18`-team Elastic Golden Diamond adversarial collaboration (`BW-011`), multi-session `/autopilot` ledger execution (`BW-012`), Cross-Engine Conductor & 6-Task Multi-Engine Council synthesis (`BW-013`), 3-Surface `/settings` management (`BW-014`), sequential `/docs` generation (`BW-015`), and graduated `E0–E6` self-healing recovery (`BW-016`).
 
 ---
 
@@ -20,9 +20,9 @@ BoomOpen Workflow Kit (`@boomopen/workflow-kit` **v5.5.0** — Multi-Platform Un
 
 | File | Title | Description |
 |------|-------|-------------|
-| [01-actor-map.md](./01-actor-map.md) | Actor Map | All `8` actor groups (`5` AI platforms, `21` specialist agents, `18` Elastic Golden Diamond teams = `72` files, `12` `boomopen` CLI subcommands, HSOL v5.5, External Multi-Engine Council actors, Users, Maintainers) |
-| [02-workflow-catalog.md](./02-workflow-catalog.md) | Workflow Catalog | Complete classification metadata for all `16` workflows (`BW-001` – `BW-016`), triggers across `84` flat command files (`32` base slash commands), CLI gates, complexity, and frequency |
-| [03-detailed-workflows.md](./03-detailed-workflows.md) | Detailed Workflows | Step-by-step operational flows, deterministic CLI gates (`RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`, `DBG-G1..G4`), and Mermaid diagrams |
+| [01-actor-map.md](./01-actor-map.md) | Actor Map | All `8` actor groups (`5` AI platforms, `22` specialist agents, `18` Elastic Golden Diamond teams = `72` files, `14` `boomopen` CLI subcommands, HSOL v5.5, External Multi-Engine Council actors, Users, Maintainers) |
+| [02-workflow-catalog.md](./02-workflow-catalog.md) | Workflow Catalog | Complete classification metadata for all `16` workflows (`BW-001` – `BW-016`), triggers across `93` flat command files (`36` base slash commands), CLI gates, complexity, and frequency |
+| [03-detailed-workflows.md](./03-detailed-workflows.md) | Detailed Workflows | Step-by-step operational flows, deterministic CLI gates (`RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`, `REC-G1..G4`, `DBG-G1..G4`), and Mermaid diagrams |
 | [04-decision-rules-and-exceptions.md](./04-decision-rules-and-exceptions.md) | Decision Rules & Exceptions | Mode A vs Mode B gate, Cognitive Load Sharding Law (`<= 3–4 OWNED_FILES`), Quality-First Model Policy (`Model: "inherit"`), `E0–E6` recovery rules, and exception catalog |
 | [05-sla-and-handoffs.md](./05-sla-and-handoffs.md) | SLA & Handoffs | System/AI latency targets, 5-Field Handoff Packet schema, Scoped Warm Session Reuse (`role#shard -> conversationId`), Brain Artifact routing, and SLO summary |
 
@@ -35,13 +35,13 @@ BoomOpen Workflow Kit (`@boomopen/workflow-kit` **v5.5.0** — Multi-Platform Un
 | Canonical Business Workflows | `16` (`BW-001` – `BW-016`) |
 | Actor Groups | `8` (`A-01` – `A-08`) |
 | Unified AI Platforms | `5` (Antigravity / Gemini, Claude Code, OpenAI Codex, Cursor, GitHub Copilot) |
-| Deterministic `boomopen` CLI Subcommands | `12` (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `ledger`, `conduct`) |
-| Slash Command Inventory | `32` base commands (`16` multi-variant families + `16` standalone) across **`84` flat files** (`79` `commands/*.md` + `5` `commands/_ref/*.md`) |
+| Deterministic `boomopen` CLI Subcommands | `14` (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`) |
+| Slash Command Inventory | `36` base commands (`18` multi-variant families + `18` standalone) across **`93` flat files** (`87` `commands/*.md` + `6` `commands/_ref/*.md`) |
 | Natural-Language Intent Languages | `17` (`en`, `vi`, `zh-CN`, `zh-TW`, `ja`, `ko`, `es`, `fr`, `de`, `pt-BR`, `ru`, `hi`, `ar`, `id`, `th`, `tr`, `it`) |
-| Specialist Agents | `21` (`agents/*.md`, including `researcher`; default `Model: "inherit"`, `flash_lite` forbidden) |
+| Specialist Agents | `22` (`agents/*.md`, including `researcher` & `spec-reconciler`; default `Model: "inherit"`, `flash_lite` forbidden) |
 | Elastic Golden Diamond Teams | `18` (`agents/teams/*-team/` = `54` role files + `18` `_team.md` = **`72` team files**, scaling `1` Lead + `1..6` `role#shard` Executors + `1..3` Critics) |
 | Cognitive Load Sharding Ceiling | `<= 3–4` heavy `OWNED_FILES` (or `1` deep vector) per `role#shard`; `maxParallelSubagents = 8` default (`12` max) |
-| Skills Vault (`HSOL v5.5`) | **`1,462` indexed skills** (`22` Core in `skills/` + `1,440` Library in `skills_library/` via `matrix-skills/compact-index.json` & `skill-seeker`) |
+| Skills Vault (`HSOL v5.5`) | **`1,462` indexed skills** (`22` Core in `skills/` + `1,440` Library in `skills_library/`, shared via `~/.agents/skills_library/`, `matrix-skills/compact-index.json` & `skill-seeker`) |
 | Error Recovery Tiers | `8` classes (`E0`, `E1`, `E1b`, `E2`, `E3`, `E4`, `E5`, `E6`) with `0` silent halts |
 | Max Team Debate Rounds | `3` warm `send_message` rounds before binding Tech Lead arbitration (or Round-2 Cross-Engine escalation) |
 
@@ -53,9 +53,9 @@ BoomOpen Workflow Kit (`@boomopen/workflow-kit` **v5.5.0** — Multi-Platform Un
 |-------|-------------------|------------------------|
 | **A-01: Framework User** | `BW-001`, `BW-002`, `BW-014` | Triggers `BW-003`..`BW-015`; clicks `"Proceed"` (`BW-008`, `BW-010`); resolves blocking `E3`/`E4` (`BW-016`) |
 | **A-02: Smart-Hybrid Orchestrator** | `BW-003`, `BW-004`, `BW-008`, `BW-009`, `BW-012`, `BW-015`, `BW-016` | Coordinates `BW-005`..`BW-014`; maintains `role#shard -> conversationId` registry |
-| **A-03: Specialist Sub-Agents (`21`)** | `BW-006`, `BW-007`, `BW-008`, `BW-009`, `BW-010`, `BW-015` | Execute sharded waves under 5-Field Handoff Packet locks (`BW-004`) |
+| **A-03: Specialist Sub-Agents (`22`)** | `BW-006`, `BW-007`, `BW-008`, `BW-009`, `BW-010`, `BW-015` | Execute sharded waves under 5-Field Handoff Packet locks (`BW-004`) |
 | **A-04: Elastic Golden Diamond Teams (`18`)** | `BW-011` | Adversarial execution/critique for `:team` variants of `BW-006`..`BW-010` and `BW-012` |
-| **A-05: Deterministic `boomopen` CLI (`12` cmds)** | `BW-001`, `BW-002`, `BW-012`, `BW-013`, `BW-014` | Enforces `RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`, `doctor`, and `check --strict-phase --no-stubs` |
+| **A-05: Deterministic `boomopen` CLI (`14` cmds)** | `BW-001`, `BW-002`, `BW-012`, `BW-013`, `BW-014` | Enforces `RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`, `REC-G1..G4`, `audit`, `doctor`, and `check --strict-phase --no-stubs` |
 | **A-06: HSOL v5.5 & Skills Vault (`1,462`)** | `BW-005` | Supplies domain `SKILL.md` blueprints and Python audit scripts to `BW-006`..`BW-015` |
 | **A-07: Multi-Engine Council Actors** | `BW-013` | Independent cross-family critique (`Author != Critic`) and Round-2 debug escalation (`BW-010`, `BW-016`) |
 | **A-08: Maintainer & Contributors** | — | Govern repository releases (`.github/workflows/release.yml`), CI matrix (`.github/workflows/ci.yml`), and kit evolution |

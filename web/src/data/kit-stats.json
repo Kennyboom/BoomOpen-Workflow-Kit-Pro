@@ -240,6 +240,11 @@
       "description": "Smart Navigator — Auto-detect project, ledger, and Brain Artifact state to recommend the exact next BoomOpen v5.5 workflow"
     },
     {
+      "name": "onboard",
+      "variants": [],
+      "description": "Fast Codebase Onboarding — 60-second brownfield architecture mapping, entrypoints, data flows, risk hotspots & detected build/lint/test gates (zero /init collision, zero repo clutter)"
+    },
+    {
       "name": "orchestrate",
       "variants": [],
       "description": "Coordinate multiple agents for complex tasks using Elastic Parallel Sharding, Contract-First Parallel Fan-Out, Direct Plan Dispatch, and Warm Sub-agent Reuse."
@@ -259,6 +264,13 @@
       "description": "Plan Router — Smart 3-Tier Adaptive Planning, Cross-Engine Planner & Antigravity 2.0 Native Artifact Router"
     },
     {
+      "name": "pr",
+      "variants": [
+        "review"
+      ],
+      "description": "Pull Request Gate & Creator — Pre-PR strict quality gate (boomopen check, reconcile & diff tests), branch/commit hygiene check, and structured gh pr create"
+    },
+    {
       "name": "preview",
       "variants": [],
       "description": "Preview server start, stop, and status check. Local development server management."
@@ -272,6 +284,11 @@
       "name": "refactor",
       "variants": [],
       "description": "Code Surgeon v3 — SOLID audit, code smell detection, Fowler's catalog techniques, health scoring, performance-safe refactoring with before/after metrics."
+    },
+    {
+      "name": "release",
+      "variants": [],
+      "description": "Semantic Release Preparation — Conventional commit audit since last tag, CHANGELOG.md synthesis, version/stats/doc parity gates (doctor, check, test, test:pack) & gh release create checklist"
     },
     {
       "name": "report",
@@ -340,7 +357,7 @@
       "description": "UI/UX Pro Max — Empirical design intelligence (50+ styles, 97 palettes, 57 font pairings) + 2026 OKLCH @theme tokens, 6-Block DESIGN_CONTRACT & 4-Gate CLI validation"
     }
   ],
-  "commandWorkflowFiles": 83,
+  "commandWorkflowFiles": 87,
   "commandRefFiles": 6,
-  "commandFiles": 89
+  "commandFiles": 93
 }

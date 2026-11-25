@@ -2,7 +2,7 @@
 
 > **Purpose**: Repository directory organization, flat command naming, scoped `role#shard` conventions, 3-surface deliverable routing, YAML frontmatter schemas, and modular CLI/web code structure for `@boomopen/workflow-kit` v5.5.0
 > **Parent**: [00-index.md](./00-index.md)
-> **Last Updated**: 2026-11-10
+> **Last Updated**: 2026-11-25
 > **Version**: 5.5.0
 
 ---
@@ -13,16 +13,16 @@
 
 ```
 BoomOpen-Workflow-Kit-Pro/
-├── .github/                 # CI/Release workflows, RELEASING.md, syntax/pack/guard scripts
-├── agents/                  # 21 specialist agent definitions (<= 450 lines each)
+├── .github/                 # CI/Release workflows, ISSUE_TEMPLATE, PR template, dependabot, scripts
+├── agents/                  # 22 specialist agent definitions (<= 450 lines each)
 │   └── teams/               # 18 Elastic Golden Diamond teams (*-team/: _team.md + 3 roles = 72 files)
-├── cli/                     # Binary entrypoint (install.js), 40 modular JS files & 29 *.test.js suites
-├── commands/                # 100% flat layout: 79 *.md workflows + _ref/ (5 shared protocols) = 84 files
+├── cli/                     # Binary entrypoint (install.js), 48 modular JS files & 33 *.test.js suites
+├── commands/                # 100% flat layout: 87 *.md workflows + _ref/ (6 shared protocols) = 93 files
 │   ├── cook.md              # Router command
 │   ├── cook-fast.md         # Flat variant file ({cmd}-{variant}.md)
 │   ├── cook-hard.md
 │   ├── cook-team.md
-│   └── _ref/                # Shared execution/review protocols (5 files)
+│   └── _ref/                # Shared execution/reconcile/review protocols (6 files)
 ├── documents/               # Committed project knowledge base & business pack
 │   ├── business/            # Structured business documentation (business-*/)
 │   ├── knowledge-overview/
@@ -52,7 +52,7 @@ BoomOpen-Workflow-Kit-Pro/
 
 | Pattern | Where | Rule |
 |---------|-------|------|
-| **100% flat command files** | `commands/*.md` + `commands/_ref/*.md` | Base routers/standalone commands use `commands/{cmd}.md`; variants always use flat hyphenated `commands/{cmd}-{variant}.md` (`79` flat files + `5` `_ref` protocols = `84` files across `32` base slash commands). Subdirectories per command are prohibited (`cli/docs-content.test.js` enforces `_ref` as the sole subdirectory). |
+| **100% flat command files** | `commands/*.md` + `commands/_ref/*.md` | Base routers/standalone commands use `commands/{cmd}.md`; variants always use flat hyphenated `commands/{cmd}-{variant}.md` (`87` flat files + `6` `_ref` protocols = `93` files across `36` base slash commands). Subdirectories per command are prohibited (`cli/docs-content.test.js` enforces `_ref` as the sole subdirectory). |
 | **Elastic Golden Diamond team folders** | `agents/teams/*-team/` | Each of the `18` team directories contains exactly `4` Markdown files (`72` total): `_team.md` (team topology & wave protocol) plus `techlead.md`, `executor.md`, and `reviewer.md`. |
 | **Scoped parallel shard keys (`role#shard`)** | Mode B / `:team` / `PLAN-*` / `cook` | Parallel sub-agents of the same specialist role use `<role>#<shard>` identifiers (e.g., `database-architect#schema`, `backend-engineer#contracts`, `frontend-engineer#screen-1`). Each shard owns disjoint `OWNED_FILES` (`<= 3–4` files/shard) and maps `role#shard -> conversationId` for Warm Sub-agent Session Reuse. |
 | **`UPPER_CASE` `.md` files** | Repo root, `platforms/*`, `rules/` | Reserved for global platform entrypoints (`GEMINI.md`, `CLAUDE.md`, `CODEX.md`, `COPILOT.md`, `CURSOR.md`, `AGENT.md`) and the `7` core rules (`CORE.md`, `PHASES.md`, `AGENTS.md`, `TEAMS.md`, `SKILLS.md`, `ERRORS.md`, `REFERENCE.md`). |
@@ -85,7 +85,7 @@ All files inside `documents/knowledge-*/` and `documents/business/business-*/` u
 
 ## YAML Frontmatter Conventions (`v5.5.0`)
 
-### 1. Specialist Agent Frontmatter (`agents/*.md` — `21` files)
+### 1. Specialist Agent Frontmatter (`agents/*.md` — `22` files)
 
 ```yaml
 ---
@@ -100,10 +100,10 @@ category: execution
 
 - `name`: kebab-case matching filename without `.md`.
 - `profile`: `<domain>:<category>` mapping to `matrix-skills/`.
-- `handoffs`: canonical names from the `21` specialist agents.
+- `handoffs`: canonical names from the `22` specialist agents.
 - `version`: `"5.5"` | `category`: `meta`, `execution`, `validation`, `research`, or `support`.
 
-### 2. Command Frontmatter (`commands/*.md` — `79` files)
+### 2. Command Frontmatter (`commands/*.md` — `87` files)
 
 ```yaml
 ---
@@ -131,7 +131,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 ```
 
-- **Modular Single-Responsibility Layout**: [`cli/install.js`](../../cli/install.js) (`"bin": { "boomopen": "./cli/install.js" }`) dispatches to `40` focused CommonJS modules (`checker.js`, `checker-rules.js`, `doctor.js`, `doctor-markdown.js`, `doctor-platforms.js`, `settings.js`, `research.js`, `design.js`, `plan.js`, `cook.js`, `ledger.js`, `conductor.js`, `copy-engine.js`, `manifest.js`, etc.).
+- **Modular Single-Responsibility Layout**: [`cli/install.js`](../../cli/install.js) (`"bin": { "boomopen": "./cli/install.js" }`) dispatches across `48` focused CommonJS modules (`cli-router.js`, `checker.js`, `doctor.js`, `settings.js`, `settings-slim.js`, `research.js`, `design.js`, `plan.js`, `cook.js`, `reconcile.js`, `audit.js`, `ledger.js`, `git-checkpoints.js`, `conductor.js`, `platform-transforms.js`, `copy-engine.js`, `manifest.js`, etc.).
 - **Strict Built-In Only Runtime**: Every Node built-in uses the `node:` protocol (`node:fs`, `node:path`, `node:crypto`, `node:http`, `node:child_process`); zero production npm packages are installed.
 - **Explicit Exports for Direct Unit Testing**: Every CLI module exports pure helpers and runners via `module.exports` so `cli/*.test.js` can test logic directly in-process alongside subprocess E2E runs.
 - **Non-Destructive Install Ownership**: Entry files use marked blocks (`<!-- boomopen-workflow-kit-START -->` ... `<!-- boomopen-workflow-kit-END -->` and `<!-- BOOMOPEN-SETTINGS-START -->` ... `<!-- BOOMOPEN-SETTINGS-END -->`), backed by SHA-256 per-file ownership ledgers in `~/.boomopen/manifests/<tool>.json` and automatic user backups in `~/.boomopen/backups/`.

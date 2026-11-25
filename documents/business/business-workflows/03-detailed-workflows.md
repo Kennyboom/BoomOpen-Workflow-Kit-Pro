@@ -4,25 +4,25 @@
 |-------|-------|
 | **Purpose** | Step-by-step operational flows, deterministic CLI gates, branching rules, and Mermaid diagrams for all `16` workflows (`BW-001` – `BW-016`) in `@boomopen/workflow-kit` `v5.5.0` |
 | **Parent** | [00-index.md](./00-index.md) |
-| **Last Updated** | 2026-11-10 |
+| **Last Updated** | 2026-11-25 |
 | **Version** | 5.5.0 (Smart-Hybrid Edition) |
 
 ---
 
 ## BW-001 — Multi-Platform Framework Installation
 
-1. User clones `https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git` and runs `node cli/install.js install <tool|--all> [--with-hooks]`.
+1. User clones `https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git` and runs `node cli/install.js install <tool|--all> [--with-hooks] [--as-plugin]`.
 2. Installer verifies Node.js `>= 18.0.0` and resolves target platform layout (`cursor`, `copilot`, `antigravity`, `claude`, `codex`).
 3. Existing non-kit user files slated for touch are backed up under `~/.boomopen/backups/`; legacy stale paths (e.g., old `~/.gemini/CLAUDE.md`) are cleaned safely.
-4. Copies `CORE_DIRS` (`agents`, `rules`, `documents`, `commands`, `matrix-skills`, `cli`, `scripts`), `ROOT_FILES` (`README.md`, `SKILL.md`, `package.json`), `22` core skills (`skills/`), and `1,440` library skills (`skills_library/`), applying platform path replacements (`VERBATIM_DIRS = {'documents', 'skills_library'}` copied verbatim).
-5. Injects or updates marked entrypoint blocks (`<!-- boomopen-workflow-kit-START/END -->` and `<!-- BOOMOPEN-SETTINGS-START/END -->`), merges `~/.codex/config.toml` + `~/.codex/agents/boomopen/*.toml` on Codex, optionally registers `validate-tool-call.mjs` in `~/.claude/settings.json` (`--with-hooks`), and writes SHA-256 ownership ledger `~/.boomopen/manifests/<tool>.json`.
+4. Copies `CORE_DIRS` (`agents`, `rules`, `documents`, `commands`, `matrix-skills`, `cli`, `scripts`), `ROOT_FILES` (`README.md`, `SKILL.md`, `package.json`), `22` core skills (`skills/`), and populates the deduplicated `~/.agents/skills_library/` (`1,440` library skills), applying platform path replacements (`VERBATIM_DIRS = {'documents', 'skills_library'}` copied verbatim).
+5. Injects or updates marked entrypoint blocks (`<!-- boomopen-workflow-kit-START/END -->` and `<!-- BOOMOPEN-SETTINGS-START/END -->`), merges `~/.codex/config.toml` + `~/.codex/agents/boomopen/*.toml` (`22` TOMLs) on Codex, optionally registers `validate-tool-call.mjs` & `stop-quality-gate.mjs` in `~/.claude/settings.json` (`--with-hooks`) or `plugin.json` on Antigravity (`--as-plugin`), and writes SHA-256 ownership ledger `~/.boomopen/manifests/<tool>.json`.
 
 ```mermaid
 flowchart TD
     A["User runs boomopen install <tool|--all>"] --> B{"Node.js >= 18 & valid tool?"}
     B -->|No| Z1["Print diagnostic & exit 1/2"]
     B -->|Yes| C["Backup touched user files to ~/.boomopen/backups/"]
-    C --> D["Copy framework, 22 core skills & 1,440 library skills"]
+    C --> D["Copy framework, 22 core skills & shared 1,440 library skills"]
     D --> E["Sync marked entrypoint & BOOMOPEN-SETTINGS blocks"]
     E --> F["Write SHA-256 ledger ~/.boomopen/manifests/<tool>.json"]
     F --> Z0["Report healthy install & exit 0"]
@@ -42,7 +42,7 @@ flowchart TD
 
 1. Primary session receives user input in any of the **17 supported languages** (`en`, `vi`, `zh-CN`, `zh-TW`, `ja`, `ko`, `es`, `fr`, `de`, `pt-BR`, `ru`, `hi`, `ar`, `id`, `th`, `tr`, `it`).
 2. **Gate 1 — Explicit `/cmd` or 17-Language Workflow Intent?**:
-   - Matches any of the `32` base slash commands (`84` flat files in `commands/*.md` + `commands/_ref/*.md`) or natural-language workflow intent (`plan`, `design`, `research`, `brainstorm`, `review`, `debug`, `fix`, `test`, `cook`, `code`, `autopilot`, `conduct`, `docs`, `report`, `deploy`, `settings`) -> **Mode B**: read mapped flat `commands/{cmd}-{variant}.md` AND launch Turn-1 `TypeName: "self", Model: "inherit"` shards in the **same tool batch** (`0` pre-flight rule-read tax).
+   - Matches any of the `36` base slash commands (`93` flat files in `commands/*.md` + `commands/_ref/*.md`) or enabled natural-language workflow intent (`plan`, `design`, `research`, `brainstorm`, `review`, `debug`, `fix`, `test`, `cook`, `code`, `audit`, `pr`, `onboard`, `release`, `autopilot`, `conduct`, `docs`, `report`, `deploy`, `settings`) -> **Mode B**: read mapped flat `commands/{cmd}-{variant}.md` AND launch Turn-1 `TypeName: "self", Model: "inherit"` shards in the **same tool batch** (`0` pre-flight rule-read tax).
 3. **Gate 2 — Open-Ended Codebase Q&A (`> 2` files, `0` workflow intent)?**:
    - Spawns parallel read-only `scouter#1..k` sub-agents (`Model: "inherit"`) with `0` `.md` report clutter.
 4. **Gate 3 — Known-Target Micro-Direct (`<= 2` Turn-1 known files, `1` domain, `0` exploration)?**:
@@ -110,7 +110,7 @@ flowchart TD
 1. **Stage Check (`boomopen cook state`)**: Inspects Brain Artifacts (`<appDataDir>/brain/<conversation-id>/` or `./reports/{topic}/`) and skips already-validated Stage 1 (Discovery), Stage 2 (`DESIGN`), and Stage 3 (`PLAN`).
 2. **Stage 4 — 3-Wave Contract-First Implementation**:
    - **Wave 1 (Foundation Lock)**: Parallel `database-architect#schema` + `backend-engineer#contracts` + `frontend-engineer#tokens-primitives` -> gate with `boomopen cook verify-wave "<plan.md>" --wave 1 --git --run-verify`.
-   - **Wave 2 (Parallel Feature Shards)**: Emit packets via `boomopen cook packets "<plan.md>" --wave 2` (Wave 1 contracts, UI primitives, and existing `tests/**` locked in `READ_ONLY_FILES`); fan out `backend-engineer#1..k` + `frontend-engineer#screen-1..k` + `mobile-engineer#1..k` concurrently -> gate with `boomopen cook verify-wave "<plan.md>" --wave 2 --git --run-verify` (`COOK-G1..G4` + `boomopen check --strict-phase --no-stubs`).
+   - **Wave 2 (Parallel Feature Shards)**: Emit packets via `boomopen cook packets "<plan.md>" --wave 2` (Wave 1 contracts, UI primitives, and existing `tests/**` locked in `READ_ONLY_FILES`); fan out `backend-engineer#1..k` + `frontend-engineer#screen-1..k` + `mobile-engineer#1..k` concurrently -> gate with `boomopen cook verify-wave "<plan.md>" --wave 2 --git --run-verify` (`COOK-G1..G4` + `boomopen check --strict-phase --no-stubs`) and Wave 2.5 `boomopen reconcile "<plan.md>"` (`REC-G1..G4`, `spec-reconciler` / `cook amend-plan`).
 3. **Stage 5 — Parallel QA & Adversarial Audit (Wave 3)**: Concurrent `tester#1..k` + `reviewer#1..m` + Python audits (`ux_audit.py`, `accessibility_checker.py`, `api_validator.py`); any defect routes via warm `send_message` to the exact owning `role#shard`.
 
 ```mermaid
@@ -172,7 +172,7 @@ sequenceDiagram
 ## BW-012 — Multi-Session Autonomous Project Autopilot
 
 1. **`/autopilot:init`**: Compiles approved `PLAN-*.md` or multi-doc specs into `.boomopen/project-ledger.json` (`boomopen ledger init|from-plan|validate`) with SHA-256 spec hashes.
-2. **`/autopilot:run`**: Calls `boomopen ledger next` to load active Phase `K` (verifying zero spec-hash drift and locking prior `test_files` in `READ_ONLY_FILES`), executes 3-Wave sharded implementation, and enforces the 4-Layer Ratchet: `check --strict-phase --no-stubs`, monotonic cumulative passed tests, `boomopen ledger verify --phase <id> --passed-tests <N> --run-verify`, and `phase-K-verified` checkpoint.
+2. **`/autopilot:run`**: Calls `boomopen ledger next` to load active Phase `K` (verifying zero spec-hash drift and locking prior `test_files` in `READ_ONLY_FILES`), executes 3-Wave sharded implementation, and enforces the 4-Layer Ratchet: `check --strict-phase --no-stubs`, monotonic cumulative passed tests, `boomopen ledger verify --phase <id> --passed-tests <N> --run-verify`, and `phase-K-verified` Git checkpoint (with `boomopen ledger rollback` safety net).
 3. **`/autopilot:audit`**: Runs `boomopen ledger audit` across all phases for full spec-to-test traceability.
 
 ---
@@ -188,7 +188,7 @@ sequenceDiagram
 ## BW-014 — 3-Surface Settings Control Center & AOT Sync
 
 1. User invokes `/settings` (interactive `ask_question` UI), `boomopen settings <set|preset|mode|reset>`, or `boomopen settings --ui` (`http://127.0.0.1:4567`).
-2. Validates enum/integer schema (`4` presets, `20` enum keys + `softFileLines`/`hardFileLines`), persists `~/.boomopen/settings.json` (or `./.boomopen.json`), and re-injects `<!-- BOOMOPEN-SETTINGS-START/END -->` into every installed platform entrypoint in `< 10ms`.
+2. Validates enum/integer schema (`5` core presets with `frontier-guardrails` default & `carbon-guardrails` alias, `20` enum keys + `softFileLines`/`hardFileLines`), persists `~/.boomopen/settings.json` (or `./.boomopen.json`), and re-injects `<!-- BOOMOPEN-SETTINGS-START/END -->` (or `< 2.5 KB` Slim Guardrails) into every installed platform entrypoint in `< 10ms`.
 
 ---
 
@@ -208,7 +208,7 @@ sequenceDiagram
    - **`E2` (Build / Type / Test / `check` Error)** -> Send `File:Line` log to warm `role#shard` via `send_message` until `0` errors.
    - **`E3` (Ambiguous / Conflicting Requirement)** -> Apply `autonomous_first` if safe, else prompt user via `ask_question` with `(Recommended)` first.
    - **`E4` (Cross-Shard Contract Drift)** -> Rollback affected `OWNED_FILES`, amend `SHARED_CONTRACT`, broadcast delta to warm shards via `send_message`.
-   - **`E5` (CLI Gate Failure)** -> Route failed `RES`/`DESIGN`/`PLAN`/`COOK`/`ledger` gate IDs to owning warm shard and re-run validator until exit `0`.
+   - **`E5` (CLI Gate Failure)** -> Route failed `RES`/`DESIGN`/`PLAN`/`COOK`/`REC`/`audit`/`ledger` gate IDs to owning warm shard and re-run validator until exit `0`.
    - **`E6` (Round-2 Debug Deadlock)** -> Escalate via `boomopen conduct dispatch --role debugger --engine cross_family`.
 
 ---
@@ -216,5 +216,5 @@ sequenceDiagram
 ## Evidence Sources
 
 - [../../../rules/CORE.md](../../../rules/CORE.md) · [../../../rules/PHASES.md](../../../rules/PHASES.md) · [../../../rules/AGENTS.md](../../../rules/AGENTS.md) · [../../../rules/TEAMS.md](../../../rules/TEAMS.md) · [../../../rules/SKILLS.md](../../../rules/SKILLS.md) · [../../../rules/ERRORS.md](../../../rules/ERRORS.md)
-- [../../../cli/install.js](../../../cli/install.js) · [../../../cli/research.js](../../../cli/research.js) · [../../../cli/design.js](../../../cli/design.js) · [../../../cli/plan.js](../../../cli/plan.js) · [../../../cli/cook.js](../../../cli/cook.js) · [../../../cli/ledger.js](../../../cli/ledger.js) · [../../../cli/conductor.js](../../../cli/conductor.js) · [../../../cli/settings.js](../../../cli/settings.js)
+- [../../../cli/install.js](../../../cli/install.js) · [../../../cli/research.js](../../../cli/research.js) · [../../../cli/design.js](../../../cli/design.js) · [../../../cli/plan.js](../../../cli/plan.js) · [../../../cli/cook.js](../../../cli/cook.js) · [../../../cli/reconcile.js](../../../cli/reconcile.js) · [../../../cli/audit.js](../../../cli/audit.js) · [../../../cli/ledger.js](../../../cli/ledger.js) · [../../../cli/conductor.js](../../../cli/conductor.js) · [../../../cli/settings.js](../../../cli/settings.js)
 - [../../../commands/cook.md](../../../commands/cook.md) · [../../../commands/debug-hard.md](../../../commands/debug-hard.md) · [../../../commands/autopilot.md](../../../commands/autopilot.md) · [../../../commands/conduct.md](../../../commands/conduct.md)

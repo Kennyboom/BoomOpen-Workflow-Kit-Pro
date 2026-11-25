@@ -2,7 +2,7 @@
 
 > **Purpose**: Key Architecture Decision Records (`ADR-001` through `ADR-007`) for **BoomOpen Workflow Kit v5.5.0**, documenting context, decisions, rejected alternatives, rationale, and trade-offs
 > **Parent**: [00-index.md](./00-index.md)
-> **Last Updated**: 2026-11-10
+> **Last Updated**: 2026-11-25
 > **Version**: `5.5.0`
 
 ---
@@ -25,7 +25,7 @@
 
 | ADR | Decision (`v5.5.0`) | Status | Primary Impact |
 |-----|---------------------|--------|----------------|
-| **001** | Smart-Hybrid Markdown protocols + `12` deterministic `boomopen` CLI subcommands | Accepted | Human-readable workflows backed by `< 50ms` machine-verified gates and `30` `node:test` suites |
+| **001** | Smart-Hybrid Markdown protocols + `14` deterministic `boomopen` CLI subcommands | Accepted | Human-readable workflows backed by `< 50ms` machine-verified gates and `34` `node:test` suites |
 | **002** | Host AI model runtime + Proactive Sub-agent First Gate (`Mode A` vs. `Mode B`) | Accepted | Zero cloud infrastructure cost; instant micro-edits (`<= 2` files) + clean parent context on `> 2` files |
 | **003** | Zero runtime npm dependencies + source-only Git distribution (`npmPublish: false`) | Accepted | Zero supply-chain risk; cross-OS reliability on Windows, macOS, and Linux (`Node >= 18.0.0`) |
 | **004** | `5`-platform `{TOOL}` templates + SHA-256 `InstallLedger` + `< 10ms` AOT settings sync | Accepted | Single codebase for Antigravity, Claude Code, Codex, Cursor, and Copilot with non-destructive upgrades |
@@ -43,7 +43,7 @@ Encoding multi-agent workflows purely as prose Markdown makes authoring easy for
 
 ### Decision
 
-**Use structured Markdown and YAML (`84` flat command files, `7` on-demand rules, `21` agents, `18` teams) as the cognitive instruction plane, paired with `12` deterministic `< 50ms` Node.js CLI subcommands (`cli/install.js` + `39` modular `cli/*.js` modules) as the compiler and verification plane.**
+**Use structured Markdown and YAML (`93` flat command files, `7` on-demand rules, `22` agents, `18` teams) as the cognitive instruction plane, paired with `14` deterministic `< 50ms` Node.js CLI subcommands (`cli/install.js` + `48` modular `cli/*.js` modules) as the compiler and verification plane.**
 
 ### Alternatives Considered
 
@@ -55,15 +55,15 @@ Encoding multi-agent workflows purely as prose Markdown makes authoring easy for
 
 ### Rationale
 
-- LLMs natively follow Markdown/YAML workflows while deterministic Node.js compilers (`boomopen research`, `design`, `plan`, `cook`, `check`, `ledger`, `conduct`) verify structural contracts in `< 50ms`.
-- Every CLI compiler, parser, installer, and Markdown budget rule is continuously verified by **`30` active `node:test` suites** in `.github/workflows/ci.yml`.
+- LLMs natively follow Markdown/YAML workflows while deterministic Node.js compilers (`boomopen research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `check`, `ledger`, `conduct`) verify structural contracts in `< 50ms`.
+- Every CLI compiler, parser, installer, and Markdown budget rule is continuously verified by **`34` active `node:test` suites** in `.github/workflows/ci.yml`.
 
 ### Trade-offs
 
 | Benefit | Cost |
 |---------|------|
-| Machine-enforced gates (`RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`) | Requires Node.js `>= 18.0.0` on the developer machine |
-| `84` flat `commands/*.md` + `_ref/*.md` remain human-editable and Git-diffable | Prompts and CLI parsers (`cli/*.js`) must evolve in lockstep |
+| Machine-enforced gates (`RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`, `REC-G1..G4`) | Requires Node.js `>= 18.0.0` on the developer machine |
+| `93` flat `commands/*.md` + `_ref/*.md` remain human-editable and Git-diffable | Prompts and CLI parsers (`cli/*.js`) must evolve in lockstep |
 
 ---
 
@@ -148,7 +148,7 @@ Developers switch between **Antigravity (Gemini)**, **Claude Code**, **OpenAI Co
 
 | Alternative | Why Rejected |
 |-------------|--------------|
-| Five separate per-platform forks or duplicated folders | Guaranteed feature drift across `84` commands, `21` agents, and `1,462` skills |
+| Five separate per-platform forks or duplicated folders | Guaranteed feature drift across `93` commands, `22` agents, and `1,462` skills |
 | Blindly overwriting global `CLAUDE.md`, `GEMINI.md`, or `config.toml` | Destroys user-authored instructions and custom MCP/model settings |
 | Runtime JSON config file read on every prompt | Adds `read_file` latency to Turn 1; AOT-injecting `<!-- BOOMOPEN-SETTINGS-START/END -->` costs `0` runtime tool calls |
 
@@ -267,8 +267,8 @@ Long-horizon multi-phase projects (`/autopilot`) and complex debugging sessions 
 
 | Source | Path | What It Provides |
 |--------|------|------------------|
-| `package.json` | [../../package.json](../../package.json) | `5.5.0` metadata, `0` production deps, `30` `node:test` suites, `semantic-release` dev tooling |
-| `cli/install.js` | [../../cli/install.js](../../cli/install.js) | `12` CLI subcommands, `InstallLedger`, `{TOOL}` transforms, `< 10ms` AOT settings sync |
+| `package.json` | [../../package.json](../../package.json) | `5.5.0` metadata, `0` production deps, `34` `node:test` suites, `semantic-release` dev tooling |
+| `cli/install.js` | [../../cli/install.js](../../cli/install.js) | `14` CLI subcommands, `InstallLedger`, `{TOOL}` transforms, `< 10ms` AOT settings sync |
 | `cli/checker.js` | [../../cli/checker.js](../../cli/checker.js) | Pragmatic 2-Tier Coding Standards & `--strict-phase --no-stubs` enforcement |
 | `cli/ledger.js` | [../../cli/ledger.js](../../cli/ledger.js) | `.boomopen/project-ledger.json` SHA-256 spec-hash ratchet & cumulative test gate |
 | `cli/conductor.js` | [../../cli/conductor.js](../../cli/conductor.js) | `Author != Critic` cross-engine dispatch & 6-Task Multi-Engine Council |

@@ -2,7 +2,7 @@
 
 > **Purpose**: Catalog of the `13` core architectural and orchestration design patterns in **BoomOpen Workflow Kit v5.5.0**, with locations, rationale, and repository references
 > **Parent**: [00-index.md](./00-index.md)
-> **Last Updated**: 2026-11-10
+> **Last Updated**: 2026-11-25
 > **Version**: `5.5.0`
 
 ---
@@ -33,7 +33,7 @@
 graph TD
     subgraph "Routing & Entry Patterns"
         P1["1. Smart-Hybrid Gate<br/>(Mode A vs Mode B)"]
-        P2["2. Flat Command & 17-Lang Router<br/>(84 Flat Files)"]
+        P2["2. Flat Command & 17-Lang Router<br/>(93 Flat Files)"]
         P3["3. Strategy & 5-Stage Fast-Forward<br/>(boomopen cook state)"]
         P13["13. Manifest-Safe Multi-Platform<br/>+ < 10ms AOT Settings Sync"]
     end
@@ -83,12 +83,12 @@ graph TD
 | Attribute | Value |
 |-----------|-------|
 | **Pattern Type** | Behavioral — Multilingual Intent & Flat Slash Dispatcher |
-| **Where Applied** | `commands/*.md` (`79` flat files) + `commands/_ref/*.md` (`5` shared protocols) + `skills/intelligent-routing/SKILL.md` |
+| **Where Applied** | `commands/*.md` (`87` flat files) + `commands/_ref/*.md` (`6` shared protocols) + `skills/intelligent-routing/SKILL.md` |
 | **Rationale** | Flat `commands/{cmd}.md` and `commands/{cmd}-{variant}.md` files register cleanly across all `5` AI IDEs without nested folder incompatibilities, while 17-language intent matching gives non-English and slash-free prompts identical workflow rigor |
 
 ### Mechanics
 
-- **`32` Base Commands (`84` Total Files)**: `16` multi-variant families (`/cook`, `/code`, `/plan`, `/design`, `/research`, `/brainstorm`, `/debug`, `/fix`, `/test`, `/review`, `/report`, `/docs`, `/deploy`, `/autopilot`, `/conduct`, `/ask`) + `16` standalone commands (`/settings`, `/orchestrate`, `/architect`, `/auto`, `/refactor`, `/security-audit`, `/deep-audit`, `/ui-ux-pro-max`, etc.).
+- **`36` Base Commands (`93` Total Files)**: `18` multi-variant families (`/cook`, `/code`, `/plan`, `/design`, `/research`, `/brainstorm`, `/debug`, `/fix`, `/test`, `/review`, `/audit`, `/report`, `/docs`, `/deploy`, `/autopilot`, `/conduct`, `/pr`, `/ask`) + `18` standalone commands (`/settings`, `/orchestrate`, `/onboard`, `/release`, `/architect`, `/auto`, `/refactor`, `/security-audit`, `/deep-audit`, `/ui-ux-pro-max`, etc.).
 - **17-Language Semantic Router**: Natural-language prompts across `en`, `vi`, `zh-CN`, `zh-TW`, `ja`, `ko`, `es`, `fr`, `de`, `pt-BR`, `ru`, `hi`, `ar`, `id`, `th`, `tr`, and `it` automatically load their canonical `commands/{cmd}-{variant}.md` workflow rather than degrading into unguided ad-hoc sub-agents.
 
 ---
@@ -155,16 +155,16 @@ graph TD
 | Attribute | Value |
 |-----------|-------|
 | **Pattern Type** | Quality & Verification — Compiler-in-the-Loop Gatekeeping |
-| **Where Applied** | `cli/research.js`, `cli/design.js`, `cli/plan.js`, `cli/cook.js`, `cli/checker.js`, `cli/ledger.js` |
-| **Rationale** | Replaces subjective AI self-grading with `< 50ms` deterministic exit-code validators that reject missing citations, invalid DAGs, overlapping `OWNED_FILES`, `TODO` stubs, explicit `any`, or test `.skip`/`.only` gaming |
+| **Where Applied** | `cli/research.js`, `cli/design.js`, `cli/plan.js`, `cli/cook.js`, `cli/reconcile.js`, `cli/audit.js`, `cli/checker.js`, `cli/ledger.js` |
+| **Rationale** | Replaces subjective AI self-grading with `< 50ms` deterministic exit-code validators that reject missing citations, invalid DAGs, overlapping `OWNED_FILES`, island shards, `TODO` stubs, explicit `any`, or test `.skip`/`.only` gaming |
 
 ### Gate Matrix
 
 - `boomopen research validate` (`RES-G1..G4`) -> `HANDOFF_BRIEF`
 - `boomopen design validate` (`DESIGN-G1..G4`) -> `DESIGN_CONTRACT`
 - `boomopen plan validate` (`PLAN-G1..G5`) -> `.boomopen/project-ledger.json`
-- `boomopen cook verify-wave` (`COOK-G1..G4`) + `boomopen check --strict-phase --no-stubs`
-- `boomopen ledger verify` -> SHA-256 Spec-Hash Drift Guard + monotonic passed-test ratchet
+- `boomopen cook verify-wave` (`COOK-G1..G4`) + `boomopen reconcile` (`REC-G1..G4`) + `boomopen check --strict-phase --no-stubs`
+- `boomopen ledger verify` & `boomopen audit` -> SHA-256 Spec-Hash Drift Guard + monotonic passed-test ratchet + Git checkpoint `rollback`
 
 ---
 
@@ -173,7 +173,7 @@ graph TD
 | Attribute | Value |
 |-----------|-------|
 | **Pattern Type** | Quality — Role-Drift Guardrail |
-| **Where Applied** | All `21` specialist files in `agents/*.md` and `72` team files in `agents/teams/*-team/` |
+| **Where Applied** | All `22` specialist files in `agents/*.md` and `72` team files in `agents/teams/*-team/` |
 | **Rationale** | Prevents LLM persona drift in long engineering sessions by binding the agent's Core Directive, Constraints (e.g., `NO APPLICATION CODE` on `designer`/`brainstormer`), and Output Format at file top |
 
 ---
@@ -194,7 +194,7 @@ graph TD
 |-----------|-------|
 | **Pattern Type** | Quality — Declarative Expertise Provisioning |
 | **Where Applied** | Agent YAML frontmatter (`profile: "{domain}:{category}"`), [../../matrix-skills/_index.yaml](../../matrix-skills/_index.yaml), `19` `matrix-skills/*.yaml` domain files |
-| **Rationale** | Maps each of the `21` specialist agents (`backend:execution`, `frontend:execution`, `security:validation`, `research:documentation`, etc.) to curated primary and inherited skill domains automatically |
+| **Rationale** | Maps each of the `22` specialist agents (`backend:execution`, `frontend:execution`, `quality:reconcile`, `security:validation`, `research:documentation`, etc.) to curated primary and inherited skill domains automatically |
 
 ---
 
@@ -269,6 +269,6 @@ graph TD
 | `rules/AGENTS.md` | [../../rules/AGENTS.md](../../rules/AGENTS.md) | Cognitive Load Sharding Law, Direct Plan Dispatch, Warm Reuse, 5-Field Packet |
 | `rules/TEAMS.md` | [../../rules/TEAMS.md](../../rules/TEAMS.md) | `18` Elastic Golden Diamond teams, Topology A/B, `C8-TEAMS-01..04` |
 | `rules/SKILLS.md` | [../../rules/SKILLS.md](../../rules/SKILLS.md) | 2-step `O(1)` lookup (`<skills>` -> `compact-index.json`), CLI gate auto-repair |
-| `rules/REFERENCE.md` | [../../rules/REFERENCE.md](../../rules/REFERENCE.md) | `32` base slash commands (`84` files) & 5-platform tool translation table |
-| `cli/install.js` | [../../cli/install.js](../../cli/install.js) | `12` CLI subcommands, SHA-256 `InstallLedger`, `< 10ms` AOT settings sync |
-| `matrix-skills/_index.yaml` | [../../matrix-skills/_index.yaml](../../matrix-skills/_index.yaml) | `19` skill domains and `21` specialist agent inheritance profiles |
+| `rules/REFERENCE.md` | [../../rules/REFERENCE.md](../../rules/REFERENCE.md) | `36` base slash commands (`93` files) & 5-platform tool translation table |
+| `cli/install.js` | [../../cli/install.js](../../cli/install.js) | `14` CLI subcommands, SHA-256 `InstallLedger`, `< 10ms` AOT settings sync |
+| `matrix-skills/_index.yaml` | [../../matrix-skills/_index.yaml](../../matrix-skills/_index.yaml) | `19` skill domains and `22` specialist agent inheritance profiles |

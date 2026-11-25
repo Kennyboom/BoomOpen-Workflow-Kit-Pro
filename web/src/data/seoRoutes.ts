@@ -32,14 +32,14 @@ export interface PageSeoEntry {
   readonly description: BilingualText
 }
 
-export const SITE_URL = 'https://boomopen.vercel.app'
+export const SITE_URL = 'https://boomopen.com'
 export const SITE_NAME = 'BoomOpen Workflow Kit Pro'
 export const REPO_URL = 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro'
 export const DEFAULT_OG_IMAGE = '/media/poster_en.png'
 
 const SKILLS_FMT = formatCount(KIT_STATS.skills)
 const LIB_SKILLS_FMT = formatCount(KIT_STATS.librarySkills)
-const CMD_COUNT = KIT_STATS.commands.length || 33
+const CMD_COUNT = KIT_STATS.commands.length || 36
 const DOMAIN_TOTAL = KIT_STATS.domains.length || 19
 
 export const SEO_ROUTES: readonly PageSeoEntry[] = [
@@ -165,24 +165,26 @@ export function formatDocumentTitle(entry: PageSeoEntry, locale: Locale = 'en'):
 /**
  * Generates the machine-readable `/llms.txt` specification for AI coding agents and search crawlers.
  */
-export function renderLlmsTxt(stats: KitStats = KIT_STATS): string {
+export function renderLlmsTxt(stats: KitStats = KIT_STATS, siteOrigin: string = SITE_URL): string {
   const skillsTotal = formatCount(stats.skills)
   const libTotal = formatCount(stats.librarySkills)
-  const cmdTotal = stats.commands.length || 33
+  const cmdTotal = stats.commands.length || 36
   const domainTotal = stats.domains.length || 19
 
   return [
     `# ${SITE_NAME} (v${stats.version})`,
     '',
-    `> Smart-Hybrid Multi-Agent Orchestration, Contract-First 3-Wave Swarm Sharding, Multi-Session Project Autopilot, and Deterministic CLI Compiler Suite across ${stats.platforms} AI coding platforms (Google Antigravity 2.0, Claude Code, OpenAI Codex, Cursor, GitHub Copilot).`,
+    `> Smart-Hybrid Multi-Agent Orchestration, Slim \`frontier-guardrails\` Default Preset, Contract-First 3-Wave Swarm Sharding, Wave 2.5 Spec-to-Code Reconciliation, Stateful Multi-Round Project Audit (/audit), Multi-Session Project Autopilot, and Deterministic CLI Compiler Suite across ${stats.platforms} AI coding platforms (Google Antigravity 2.0, Claude Code, OpenAI Codex, Cursor, GitHub Copilot).`,
     '',
     '## Canonical Inventory',
+    `- Production Website: ${siteOrigin}`,
     `- Version: v${stats.version}`,
     `- Platforms (${stats.platforms}): Antigravity 2.0, Claude Code, OpenAI Codex, Cursor, GitHub Copilot`,
-    `- Slash Commands: ${cmdTotal} base commands (${stats.commandFiles} files: ${stats.commandWorkflowFiles} workflows + ${stats.commandRefFiles} shared references)`,
+    `- Default Preset: \`frontier-guardrails\` (< 2.5 KB slim guardrails across all 5 IDEs; \`carbon-guardrails\` alias supported)`,
+    `- Slash Commands: ${cmdTotal} base commands (${stats.commandFiles} files: ${stats.commandWorkflowFiles} workflows + ${stats.commandRefFiles} shared references, including /onboard, /pr, /pr:review, /release, /audit, /autopilot, /conduct, /cook, /code)`,
     `- Specialist Agents: ${stats.agents} domain engineers & auditors`,
     `- Adversarial Teams: ${stats.teams} Golden Diamond / Triangle teams (${stats.teamFiles} files)`,
-    `- Skills Vault: ${skillsTotal} indexed skills (${stats.coreSkills} core + ${libTotal} library across ${domainTotal} domains)`,
+    `- Skills Vault: ${skillsTotal} indexed skills (${stats.coreSkills} core + ${libTotal} library across ${domainTotal} domains, shared via ~/.agents/skills_library)`,
     `- Multilingual Routing: ${stats.i18nLocales} supported languages`,
     '',
     '## Quick Install (From Git Clone)',
@@ -194,17 +196,17 @@ export function renderLlmsTxt(stats: KitStats = KIT_STATS): string {
     '```',
     '',
     '## Deterministic CLI Subcommands (14)',
-    '- `install` / `uninstall` / `list` / `doctor` / `settings`: SHA-256 manifest lifecycle & Control Center UI (`--ui`)',
-    '- `research` / `design` / `plan` / `cook` / `reconcile`: Static `< 50ms` artifact validators (`RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`, `REC-G1..G4`) & wave packet compilers',
-    '- `audit` / `ledger` / `conduct` / `check`: Multi-round whole-project audit (`.boomopen/audit-ledger.json`), `.boomopen/project-ledger.json` phase ratchet, Multi-Engine Council (`claude,codex,antigravity`), and Pragmatic 2-Tier static gate (`--strict-phase --no-stubs`)',
+    '- `install` / `uninstall` / `list` / `doctor` / `settings`: SHA-256 manifest lifecycle, `--as-plugin` bundle support & Control Center UI (`--ui`)',
+    '- `research` / `design` / `plan` / `cook` / `reconcile`: Static `< 50ms` artifact validators (`RES-G1..G4`, `DESIGN-G1..G4`, `PLAN-G1..G5`, `COOK-G1..G4`), wave packet compilers & Wave 2.5 spec-to-code reconciliation (`REC-G1..G4`)',
+    '- `audit` / `ledger` / `conduct` / `check`: Stateful multi-round human-gated project audit (`.boomopen/audit-ledger.json`, `audit rollback`), `.boomopen/project-ledger.json` phase ratchet (`ledger rollback`), Multi-Engine Council (`claude,codex,antigravity`), and Pragmatic 2-Tier static gate (`--strict-phase --no-stubs`)',
     '',
     '## Documentation & Interactive Catalogs',
-    `- [Overview & Launch Trailer](${SITE_URL}/): Bilingual EN/VI showcase, 3-Wave Swarm Visualizer, and 14-Gate CLI Playground`,
-    `- [Slash Commands Catalog](${SITE_URL}/commands): Searchable reference of all ${cmdTotal} workflow routers and variants`,
-    `- [Agents & Golden Diamond Teams](${SITE_URL}/agents): ${stats.agents} specialist agents and ${stats.teams} adversarial review teams`,
-    `- [Skills Vault Explorer](${SITE_URL}/skills): ${skillsTotal} indexed skills across ${domainTotal} engineering domains`,
-    `- [Architecture & CLI Gates](${SITE_URL}/architecture): Tier 0 vs Tier 1 sharding, SHARED_CONTRACT locks, and Autopilot ratchet`,
-    `- [Platform Installation Guide](${SITE_URL}/install): Safe per-IDE setup, doctor verification, and hook configuration`,
+    `- [Overview & Launch Trailer](${siteOrigin}/): Bilingual EN/VI showcase, 3-Wave + Wave 2.5 Swarm Visualizer, and 14-Command CLI Playground`,
+    `- [Slash Commands Catalog](${siteOrigin}/commands): Searchable reference of all ${cmdTotal} workflow routers and variants`,
+    `- [Agents & Golden Diamond Teams](${siteOrigin}/agents): ${stats.agents} specialist agents and ${stats.teams} adversarial review teams`,
+    `- [Skills Vault Explorer](${siteOrigin}/skills): ${skillsTotal} indexed skills across ${domainTotal} engineering domains`,
+    `- [Architecture & CLI Gates](${siteOrigin}/architecture): Tier 0 vs Tier 1 sharding, frontier-guardrails preset, SHARED_CONTRACT locks, and Autopilot ratchet`,
+    `- [Platform Installation Guide](${siteOrigin}/install): Safe per-IDE setup, doctor verification, and hook configuration`,
     `- [GitHub Repository](${REPO_URL}): Source code, rules, agents, skills, and release notes`,
     '',
   ].join('\n')

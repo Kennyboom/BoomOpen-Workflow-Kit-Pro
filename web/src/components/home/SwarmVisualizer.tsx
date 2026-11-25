@@ -168,10 +168,17 @@ export function SwarmVisualizer() {
               </p>
             </div>
 
-            <div className="grid gap-3 lg:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {t.swarm.tier1.waves.map((item, idx) => {
                 const isActiveWave = selectedWaveIdx === idx;
-                const gateTag = idx === 0 ? 'PLAN-G1..G5 + DESIGN-G1..G4' : idx === 1 ? 'OWNED_FILES != READ_ONLY_FILES' : 'COOK-G1..G4 • 0s Reuse';
+                const gateTag =
+                  item.wave === 'Wave 1'
+                    ? 'PLAN-G1..G5 + DESIGN-G1..G4'
+                    : item.wave === 'Wave 2'
+                      ? 'OWNED_FILES != READ_ONLY_FILES'
+                      : item.wave === 'Wave 2.5'
+                        ? 'REC-G1..G4 • boomopen reconcile'
+                        : 'COOK-G1..G4 • 0s Reuse';
                 return (
                   <button
                     key={item.wave}

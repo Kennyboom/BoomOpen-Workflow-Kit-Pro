@@ -2,7 +2,7 @@
 
 > **Purpose**: End-to-end runtime lifecycles — 5-Stage Fast-Forward & 3-Wave execution, SHA-256 manifest CLI install, 2-step `O(1)` skill resolution, Elastic Golden Diamond / Conductor flows, and `E0–E6` recovery for **BoomOpen Workflow Kit v5.5.0**
 > **Parent**: [00-index.md](./00-index.md)
-> **Last Updated**: 2026-11-10
+> **Last Updated**: 2026-11-25
 > **Version**: `5.5.0`
 
 ---
@@ -70,7 +70,7 @@ sequenceDiagram
 | **Stage 1: Discovery** | `SCOUT-{task}.md`, `RESEARCH-{task}.md` / `BRAINSTORM-{task}.md` | `boomopen research <validate\|brief>` (`RES-G1..G4`) |
 | **Stage 2: UI/UX Design** | `DESIGN-{task}.md` (`<= 500` lines) + optional `DESIGN-PREVIEW-*.html` | `boomopen design <validate\|contract>` (`DESIGN-G1..G4` -> `@theme` CSS + TS Props) |
 | **Stage 3: Planning** | `PLAN-{task}.md` (`<= 500` lines, `RequestFeedback: true`) | `boomopen plan <validate\|compile>` (`PLAN-G1..G5` -> DAG & `<= 4` `OWNED_FILES`/shard) |
-| **Stage 4: 3-Wave Code** | 5-Field Wave Handoff Packets (`SHARED_CONTRACT`, `OWNED_FILES`, `READ_ONLY_FILES`) | `boomopen cook <packets\|verify-wave>` (`COOK-G1..G4`) + `boomopen check --strict-phase --no-stubs` |
+| **Stage 4: 3-Wave Code + Wave 2.5** | 5-Field Wave Handoff Packets + `RECONCILE_DELTA` | `boomopen cook <packets\|verify-wave\|amend-plan>` (`COOK-G1..G4`) + `boomopen reconcile` (`REC-G1..G4`) + `boomopen check --strict-phase --no-stubs` |
 | **Stage 5: Parallel QA** | `TEST-{task}.md` & `REVIEW-{task}.md` + warm `send_message` repairs | Full test suite + `boomopen check --strict-phase --no-stubs` (`0` stubs, `0` `.skip`/`.only`) |
 
 ---
@@ -91,7 +91,7 @@ flowchart TD
         ENTRY["Inject marked blocks into global entrypoints<br/><!-- boomopen-workflow-kit-START/END --> (preserves user text)"]
         FW["Copy CORE_DIRS + ROOT_FILES + hooks into frameworkPath<br/>Apply {TOOL} replacements (keep VERBATIM_DIRS untouched)"]
         SHARED["Sync shared folders (skills/, skills_library/, commands/, agents/)<br/>Record SHA-256 hashes in InstallLedger"]
-        SPECIAL["Platform Specials:<br/>• Codex: TOML-aware merge into ~/.codex/config.toml + 21 role TOMLs + 79 command skills<br/>• Claude (--with-hooks): register PreToolUse validate-tool-call.mjs"]
+        SPECIAL["Platform Specials:<br/>• Codex: TOML-aware merge into ~/.codex/config.toml + 22 role TOMLs + 87 command skills<br/>• Antigravity (--as-plugin) & Claude/Cursor (--with-hooks): validate-tool-call.mjs + stop-quality-gate.mjs<br/>• Shared ~/.agents/skills_library vault deduplication"]
         PRUNE["Prune stale unmodified kit files from prior manifest<br/>+ Save ~/.boomopen/manifests/<tool>.json"]
         AOT["< 10ms AOT Settings Sync<br/>Inject <!-- BOOMOPEN-SETTINGS-START/END --> across installed entrypoints"]
     end
@@ -194,7 +194,7 @@ sequenceDiagram
 
 ### 2. Multi-Session Autopilot (`boomopen ledger`) & Cross-Engine Conductor (`boomopen conduct`)
 
-- **Autopilot Ledger (`.boomopen/project-ledger.json`)**: `boomopen ledger from-plan <plan.md>` compiles multi-phase specs with SHA-256 spec hashes. Across sessions, `boomopen ledger next` loads the next unfinished phase (locking prior `test_files` in `READ_ONLY_FILES`), and `boomopen ledger verify --phase <id> --passed-tests <N> --run-verify` enforces monotonic cumulative test growth before advancing.
+- **Autopilot & Audit Ledgers (`.boomopen/project-ledger.json` & `.boomopen/audit-ledger.json`)**: `boomopen ledger from-plan <plan.md>` compiles multi-phase specs with SHA-256 spec hashes. Across sessions, `boomopen ledger next` loads the next unfinished phase (locking prior `test_files` in `READ_ONLY_FILES`), `boomopen ledger verify --phase <id> --passed-tests <N> --run-verify` enforces monotonic cumulative test growth before advancing, and `boomopen ledger rollback` / `boomopen audit rollback` restore confirmation-gated Git checkpoints (`refs/boomopen/checkpoints/<label>`).
 - **Cross-Engine Conductor (`boomopen conduct`)**:
   - **6-Task Parallel Council (`research|brainstorm|plan|design|review|debug`)**: `boomopen conduct council --task <type> --engines claude,codex,antigravity` runs multiple engines in parallel and reconciles `.boomopen/conductor/runs/<runId>-<engine>.md` into `<runId>-COUNCIL-SYNTHESIS.md`.
   - **Cross-Engine Pipeline (`boomopen conduct dispatch`)**: Enforces `Author != Critic` across model families and guards `READ_ONLY_FILES` via SHA-256 snapshots before and after external engine execution.

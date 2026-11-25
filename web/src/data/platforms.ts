@@ -20,8 +20,8 @@ export const PLATFORMS: readonly PlatformSpec[] = [
     verifyCommand: DOCTOR_VERIFY_COMMAND,
     uninstallCommand: 'node cli/install.js uninstall antigravity',
     summary: {
-      en: 'Native Turn-1 parallel invoke_subagent fan-out, warm send_message session reuse, Brain Artifact UI routing, and global workflow parity.',
-      vi: 'Fan-out subagent song song ngay Turn 1 qua invoke_subagent, tái sử dụng phiên ấm bằng send_message, định tuyến Brain Artifact và đồng bộ workflow toàn cục.',
+      en: 'Native Turn-1 invoke_subagent & Python run_workflow fan-out, --as-plugin bundle mode, warm send_message reuse, Brain Artifacts, 87 workflows (93 files), and shared ~/.agents/skills_library.',
+      vi: 'Fan-out song song qua invoke_subagent & Python run_workflow, gói --as-plugin, tái sử dụng phiên ấm send_message, Brain Artifacts, 87 workflow (93 tệp) và kho chung ~/.agents/skills_library.',
     },
   },
   {
@@ -34,8 +34,8 @@ export const PLATFORMS: readonly PlatformSpec[] = [
     verifyCommand: DOCTOR_VERIFY_COMMAND,
     uninstallCommand: 'node cli/install.js uninstall claude',
     summary: {
-      en: 'Dispatches parallel Task/Agent shards with disjoint OWNED_FILES write locks, SendMessage warm reuse, 89 command files (33 slash commands), and 22 specialist profiles.',
-      vi: 'Điều phối các shard Task/Agent song song với khóa ghi OWNED_FILES tách biệt, tái sử dụng phiên ấm qua SendMessage, đủ 89 tệp lệnh (33 lệnh slash) và 22 chuyên gia.',
+      en: 'Parallel Task/Agent shards, /plan:hard avoiding native /plan collision, Stop & PreCompact session hooks, 93 command files (36 slash commands), 22 agents, and shared ~/.agents/skills_library.',
+      vi: 'Phân mảnh Task/Agent song song, /plan:hard tránh đụng lệnh gốc, hook bảo vệ phiên Stop & PreCompact, 93 tệp lệnh (36 lệnh slash), 22 chuyên gia và kho chung ~/.agents/skills_library.',
     },
   },
   {
@@ -48,8 +48,8 @@ export const PLATFORMS: readonly PlatformSpec[] = [
     verifyCommand: DOCTOR_VERIFY_COMMAND,
     uninstallCommand: 'node cli/install.js uninstall codex',
     summary: {
-      en: 'Ships 22 native TOML role configs, spawn_agent + send_input multi-agent orchestration, and 83 generated $boomopen-* command skill bundles.',
-      vi: 'Trang bị 22 cấu hình TOML bản địa, điều phối đa tác tử qua spawn_agent + send_input và 83 gói kỹ năng lệnh $boomopen-* tự động biên dịch.',
+      en: 'Ships 22 native TOML role configs with strict read-only sandboxing for scouts/critics, spawn_agent + send_input orchestration, 87 $boomopen-* skills, and shared ~/.agents/skills_library.',
+      vi: 'Trang bị 22 cấu hình TOML bản địa với sandbox read-only cho scout/critic, điều phối spawn_agent + send_input, 87 gói kỹ năng $boomopen-* và kho chung ~/.agents/skills_library.',
     },
   },
   {
@@ -62,8 +62,8 @@ export const PLATFORMS: readonly PlatformSpec[] = [
     verifyCommand: DOCTOR_VERIFY_COMMAND,
     uninstallCommand: 'node cli/install.js uninstall cursor',
     summary: {
-      en: 'Integrates always-on .mdc workspace rules, parallel Task subagents, 83 global slash workflows (89 command files), and on-demand 1,462-skill resolution inside Cursor IDE.',
-      vi: 'Tích hợp quy tắc .mdc luôn bật, subagent Task chạy song song, 83 workflow slash toàn cục (89 tệp lệnh) và tra cứu kho 1,462 kỹ năng trực tiếp trong Cursor IDE.',
+      en: 'Integrates always-on .mdc workspace rules, parallel Task subagents, 87 global slash workflows (93 command files), and deduplicated 1,462-skill resolution via ~/.agents/skills_library.',
+      vi: 'Tích hợp quy tắc .mdc luôn bật, subagent Task chạy song song, 87 workflow slash toàn cục (93 tệp lệnh) và tra cứu 1.462 kỹ năng chống trùng lặp qua ~/.agents/skills_library.',
     },
   },
   {
@@ -76,8 +76,8 @@ export const PLATFORMS: readonly PlatformSpec[] = [
     verifyCommand: DOCTOR_VERIFY_COMMAND,
     uninstallCommand: 'node cli/install.js uninstall copilot',
     summary: {
-      en: 'Installs the VS Code Copilot custom agent profile, fresh-context #runSubagent handoff packets, deterministic CLI gates, and bilingual workflow routing.',
-      vi: 'Cài đặt hồ sơ custom agent cho VS Code Copilot, gói bàn giao #runSubagent ngữ cảnh sạch, cổng kiểm định CLI tất định và định tuyến đa ngôn ngữ.',
+      en: 'Installs the VS Code Copilot custom agent profile, fresh-context #runSubagent handoff packets, 93 command specs (87 workflows), deterministic CLI gates, and shared ~/.agents/skills_library.',
+      vi: 'Cài đặt hồ sơ custom agent cho VS Code Copilot, gói bàn giao #runSubagent ngữ cảnh sạch, 93 tệp lệnh (87 workflow), cổng CLI tất định và kho chung ~/.agents/skills_library.',
     },
   },
 ]

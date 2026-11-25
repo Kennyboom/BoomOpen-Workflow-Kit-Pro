@@ -18,7 +18,7 @@ import { useLanguage } from '../i18n/context'
 import type { CommandFilterKey } from '../i18n/types'
 
 /**
- * Interactive 33-command & 89-file catalog built around our mission of deterministic
+ * Interactive 36-command & 93-file catalog built around our mission of deterministic
  * contract-first workflows, adversarial review, and 1,462 indexed skills.
  */
 const FILTER_KEYS: readonly CommandFilterKey[] = ['all', ...COMMAND_CATEGORIES]

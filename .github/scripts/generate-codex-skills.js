@@ -26,17 +26,30 @@ const DEFAULT_BRAND_COLOR = '#6366F1';
 const FRONTMATTER_PATTERN = /^---\r?\n([\s\S]*?)\r?\n---/;
 const CONTROL_CHARS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g;
 
-/** Brand colour per base command (all 33 base commands in commands/*.md). */
+/** Brand colour per base command (all 36 base commands in commands/*.md). */
 const BRAND_COLORS = {
   architect: '#6366F1', ask: '#06B6D4', audit: '#DC2626', auto: '#6366F1', autopilot: '#8B5CF6',
   brainstorm: '#EC4899', code: '#3B82F6', conduct: '#7C3AED', cook: '#F59E0B',
   debug: '#EF4444', 'deep-audit': '#DC2626', deploy: '#8B5CF6', design: '#EC4899',
-  docs: '#14B8A6', fix: '#EF4444', init: '#0EA5E9', next: '#06B6D4',
-  orchestrate: '#8B5CF6', performance: '#F97316', plan: '#6366F1', preview: '#3B82F6',
-  recap: '#14B8A6', refactor: '#0EA5E9', report: '#10B981', research: '#0EA5E9',
+  docs: '#14B8A6', fix: '#EF4444', init: '#0EA5E9', next: '#06B6D4', onboard: '#0EA5E9',
+  orchestrate: '#8B5CF6', performance: '#F97316', plan: '#6366F1', pr: '#2563EB', preview: '#3B82F6',
+  recap: '#14B8A6', refactor: '#0EA5E9', release: '#7C3AED', report: '#10B981', research: '#0EA5E9',
   review: '#10B981', rollback: '#EF4444', save: '#14B8A6', 'security-audit': '#DC2626',
   settings: '#6366F1', status: '#10B981', test: '#10B981', 'ui-ux-pro-max': '#EC4899',
 };
+
+/**
+ * Operational base commands and hyphenated sub-command variants require explicit /command
+ * invocation so Codex's implicit skill prompt stays lean (~70% fewer auto-triggered skills).
+ */
+const EXPLICIT_ONLY_COMMANDS = new Set(['deploy', 'release', 'save', 'recap', 'settings']);
+const VARIANT_STEM_PATTERN = /-(?:hard|fast|team)$|^pr-review$|^(?:audit|autopilot|conduct|docs|deploy)-/;
+
+function allowsImplicitInvocation(stem, command) {
+  if (command.includes(':') || VARIANT_STEM_PATTERN.test(stem)) return false;
+  if (EXPLICIT_ONLY_COMMANDS.has(stem)) return false;
+  return true;
+}
 
 /** Reads a scalar `description:` from YAML frontmatter (plain or double-quoted). */
 function readDescription(text) {
@@ -102,14 +115,14 @@ function renderSkill(stem, command, description) {
   ].join('\n');
 }
 
-function renderOpenAiYaml(command, description, color) {
+function renderOpenAiYaml(command, description, color, allowImplicit) {
   return [
     'interface:',
     `  display_name: ${JSON.stringify(`/${command}`)}`,
     `  short_description: ${JSON.stringify(truncate(description.split(' — ').slice(0, 2).join(' — ')))}`,
     `  brand_color: ${JSON.stringify(color)}`,
     'policy:',
-    '  allow_implicit_invocation: true',
+    `  allow_implicit_invocation: ${allowImplicit}`,
     '',
   ].join('\n');
 }
@@ -126,8 +139,9 @@ function buildOutputs() {
     const description = truncate(readDescription(fs.readFileSync(path.join(COMMANDS_DIR, `${stem}.md`), 'utf8')) || `/${command} workflow.`);
     const base = command.split(':')[0];
     const dir = path.join(SKILLS_DIR, `${SKILL_PREFIX}${stem}`);
+    const allowImplicit = allowsImplicitInvocation(stem, command);
     outputs.set(path.join(dir, 'SKILL.md'), renderSkill(stem, command, description));
-    outputs.set(path.join(dir, 'agents', 'openai.yaml'), renderOpenAiYaml(command, description, BRAND_COLORS[base] || DEFAULT_BRAND_COLOR));
+    outputs.set(path.join(dir, 'agents', 'openai.yaml'), renderOpenAiYaml(command, description, BRAND_COLORS[base] || DEFAULT_BRAND_COLOR, allowImplicit));
   }
   return outputs;
 }

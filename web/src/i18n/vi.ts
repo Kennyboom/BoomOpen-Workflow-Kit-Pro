@@ -15,15 +15,15 @@ export const vi: Dictionary = {
     headline: 'Điều Phối Bầy Đàn Đa Tác Tử Theo Hợp Đồng Cho Các AI IDE Hiện Đại.',
     subheadline: 'Biến Antigravity, Claude Code, Codex, Cursor và Copilot thành một tổ chức kỹ thuật đồng bộ — 22 đặc vụ chuyên gia, 18 đội hình Kim Cương Vàng đối kháng, 14 cổng biên dịch CLI tiền định và 1.462 kỹ năng tra cứu O(1) không làm phình ngữ cảnh Turn 1.',
     primaryCta: 'Cài Đặt Trong 60 Giây',
-    secondaryCta: 'Khám Phá 33 Lệnh Slash',
+    secondaryCta: 'Khám Phá 36 Lệnh Slash',
     quickInstallLabel: 'Clone & Cài Đặt An Toàn Chỉ Với 1 Lệnh',
     quickInstallCaption: 'Quản lý bằng sổ cái băm SHA-256 — bảo toàn tuyệt đối mọi file và quy tắc cá nhân của bạn.',
     metrics: {
-      platforms: '5 Nền Tảng', commands: '33 Lệnh Slash', agentsTeams: '22 Agents + 18 Teams',
+      platforms: '5 Nền Tảng', commands: '36 Lệnh Slash', agentsTeams: '22 Agents + 18 Teams',
       skills: '1.462 Kỹ Năng', cliGates: '14 Cổng CLI', languages: '17 Ngôn Ngữ',
       details: {
         platforms: 'Antigravity • Claude • Codex • Cursor • Copilot',
-        commands: '89 file quy trình & giao thức _ref',
+        commands: '93 file quy trình & giao thức _ref',
         agentsTeams: '72 đặc tả vai trò Golden Diamond',
         skills: '22 Kỹ năng Lõi + 1.440 Thư viện nạp tức thì',
         cliGates: 'Bộ biên dịch & kiểm định tiền định',
@@ -63,7 +63,7 @@ export const vi: Dictionary = {
     eyebrow: 'CẤU TRÚC ĐIỀU PHỐI • TIER 0 VS TIER 1 & HỘI ĐỒNG ĐA MÔ HÌNH',
     title: 'Chỉnh Sửa Nhỏ Tức Thì. Phân Mảnh Song Song Chuẩn Hợp Đồng.',
     subtitle: 'Cổng phân loại độ phức tạp ngay Turn 1 giúp tác vụ nhỏ phản hồi tức khắc, đồng thời mở rộng bài toán đa tầng thành các làn sóng sub-agent khóa chặt hợp đồng.',
-    tabs: { tier0: 'TIER 0 • Thực Thi Trực Tiếp', tier1: 'TIER 1 • Phân Mảnh 3 Wave', council: 'Hội Đồng Đa Mô Hình' },
+    tabs: { tier0: 'TIER 0 • Thực Thi Trực Tiếp', tier1: 'TIER 1 • 3 Wave + Đối Soát 2.5', council: 'Hội Đồng Đa Mô Hình' },
     tier0: {
       badge: 'MODE A • TIER 0 TRỰC TIẾP',
       title: 'Thực Thi Đơn Lẻ Tức Thì Khi Đã Rõ 1–2 File Đích',
@@ -79,13 +79,14 @@ export const vi: Dictionary = {
     },
     tier1: {
       badge: 'MODE B • TIER 1 HỢP ĐỒNG ĐA PHÂN MẢNH',
-      title: 'Phân Mảnh Song Song 3 Làn Sóng (role#shard <= 4 OWNED_FILES)',
+      title: 'Phân Mảnh Song Song 3 Wave + Wave 2.5 (role#shard <= 4 OWNED_FILES)',
       trigger: 'Điều kiện: > 2 files • >= 2 domains • yêu cầu tự nhiên 17 ngôn ngữ • gọi lệnh /cmd',
       lockBadge: 'role#shard <= 4 OWNED_FILES',
-      description: 'Bản kế hoạch khóa cứng SHARED_CONTRACT + DESIGN_CONTRACT ngay từ đầu, sau đó giao thẳng tới các phân mảnh kỹ sư tách biệt quyền ghi file.',
+      description: 'Bản kế hoạch khóa cứng SHARED_CONTRACT + DESIGN_CONTRACT từ đầu, tỏa các phân mảnh kỹ sư tách biệt và đối soát khớp nối Wave 2.5 trước khi nghiệm thu E2E.',
       waves: [
         { wave: 'Wave 1', title: 'Khóa Hợp Đồng, Design Tokens & Dữ Liệu Gốc', shardSpec: 'frontend-engineer#{tokens-ui,i18n,data-*} (<= 4 OWNED_FILES/shard)', contractBadge: 'SHARED_CONTRACT + DESIGN_CONTRACT', summary: 'Cố định kiểu TypeScript, bảng màu chuẩn OKLCH và số liệu thực tế từ kho mã nguồn.' },
         { wave: 'Wave 2', title: 'Giao Việc Song Song Trực Tiếp Từ Bản Kế Hoạch', shardSpec: 'backend-engineer#api + frontend-engineer#{shell,catalogs} chạy đồng thời', contractBadge: 'Khóa OWNED_FILES Tách Biệt', summary: 'Các phân mảnh triển khai song song trên hợp đồng chung, loại bỏ hoàn toàn xung đột ghi đè.' },
+        { wave: 'Wave 2.5', title: 'Đối Soát Đặc Tả & Mã Nguồn (REC-G1..G4)', shardSpec: 'spec-reconciler + boomopen reconcile ./src --plan PLAN.md --strict', contractBadge: 'Spec-to-Code Reconcile • REC-G1..G4', summary: 'Bắt trọn module ốc đảo chưa nối route, lệch API frontend/backend, điều khoản [SC-*] sót và biến .env thiếu.' },
         { wave: 'Wave 3', title: 'Kiểm Định Cổng CLI & Tái Sử Dụng Phiên Nóng', shardSpec: 'tester + reviewer qua send_message(conversationId)', contractBadge: 'Vòng Lặp Nóng 0 Giây', summary: 'Tái sử dụng các sub-agent đang mở với 100% ngữ cảnh file để kiểm thử và duyệt chéo.' },
       ],
       warmReuseTitle: 'Danh Bạ Phiên Nóng Theo Phân Mảnh (send_message)',
@@ -133,14 +134,14 @@ export const vi: Dictionary = {
   },
   commandsPage: {
     eyebrow: 'DANH MỤC LỆNH SLASH & ĐỊNH TUYẾN Ý ĐỊNH 17 NGÔN NGỮ',
-    title: '33 Lệnh Slash. 89 Tệp Quy Trình & Giao Thức Chuẩn.',
+    title: '36 Lệnh Slash. 93 Tệp Quy Trình & Giao Thức Chuẩn.',
     subtitle: 'Kích hoạt quy trình tường minh bằng /cmd hoặc giao tiếp tự nhiên bằng tiếng Việt cùng 16 ngôn ngữ khác — hỗ trợ đầy đủ biến thể :fast, :hard và :team.',
     searchLabel: 'Tìm kiếm lệnh slash, biến thể hoặc câu lệnh ngôn ngữ tự nhiên',
-    searchPlaceholder: 'Lọc theo /cook, /autopilot, /conduct, :team, bảo mật, kế hoạch...',
+    searchPlaceholder: 'Lọc theo /onboard, /pr, /release, /cook, /autopilot, :team...',
     categoryFilterAria: 'Lọc lệnh theo nhóm quy trình kỹ thuật',
     categories: { all: 'Tất Cả', orchestration: 'Điều Phối', engineering: 'Kỹ Thuật', 'research-design': 'Nghiên Cứu & Thiết Kế', 'quality-security': 'Chất Lượng & Bảo Mật', 'session-ops': 'Phiên & Vận Hành' },
     variantsLabel: 'Biến Thể', teamVariantBadge: ':team Golden Diamond',
-    nlTriggersLabel: 'Ví Dụ Kích Hoạt Tự Nhiên', workflowFilesBadge: '83 file quy trình lệnh + 6 giao thức _ref',
+    nlTriggersLabel: 'Ví Dụ Kích Hoạt Tự Nhiên', workflowFilesBadge: '87 file quy trình lệnh + 6 giao thức _ref',
     emptyTitle: 'Không tìm thấy lệnh slash phù hợp',
     emptyBody: 'Hãy thử tìm /cook, /plan, /review, /conduct hoặc đặt lại bộ lọc danh mục hiện tại.',
     resetCta: 'Đặt Lại Bộ Lọc',
@@ -213,13 +214,13 @@ export const vi: Dictionary = {
       subtitle: 'Khối cấu hình biên dịch sẵn đồng bộ tức thì sang cả 5 IDE đã cài với độ trễ thời gian chạy 0ms.',
       webUiUrl: 'http://127.0.0.1:4567',
       surfaces: [
-        { title: '1. Lệnh /settings Trong Khung Chat', command: '/settings preset smart-hybrid', summary: 'Mở bảng chọn tương tác trực tiếp hoặc đổi nhanh cấu hình chỉ bằng một dòng lệnh.' },
+        { title: '1. Lệnh /settings Trong Khung Chat', command: '/settings preset frontier-guardrails', summary: 'Mở bảng chọn tương tác trực tiếp hoặc đổi nhanh cấu hình chỉ bằng một dòng lệnh.' },
         { title: '2. Giao Diện Web Cục Bộ', command: 'boomopen settings --ui', summary: 'Khởi chạy bảng điều khiển trực quan tại http://127.0.0.1:4567 ngay trên trình duyệt.' },
         { title: '3. Terminal CLI & Cấu Hình Từng Dự Án', command: 'boomopen settings set execution.mode mode_b --project', summary: 'Quản lý đồng bộ ~/.boomopen/settings.json toàn cục và ./.boomopen.json theo từng kho code.' },
       ],
       presets: [
-        { name: 'smart-hybrid', mode: 'auto (Mode A <= 2 files, Mode B > 2)', lineBudget: '400 / 500 dòng', summary: 'Chế độ cân bằng mặc định được khuyên dùng cho phát triển full-stack hàng ngày.' },
-        { name: 'carbon-guardrails', mode: 'mode_a (<= 10 files, tắt NL, <3KB GEMINI)', lineBudget: '400 / 500 dòng', summary: 'Antigravity Orchestrator Carbon tự lái tác vụ hàng ngày, BoomOpen gác cổng chuẩn 400/500 & E2E.' },
+        { name: 'frontier-guardrails', mode: 'mode_a (<= 10 files, tắt NL, < 2.5 KB gọn nhẹ)', lineBudget: '400 / 500 dòng', summary: 'Mặc định khuyên dùng (< 2.5 KB) trên cả 5 IDE; mô hình frontier tự lái tác vụ hàng ngày, BoomOpen gác cổng 400/500 & E2E (hỗ trợ bí danh carbon-guardrails).' },
+        { name: 'smart-hybrid', mode: 'auto (Mode A <= 2 files, Mode B > 2)', lineBudget: '400 / 500 dòng', summary: 'Cân bằng tự động giữa sửa nhanh trực tiếp và điều phối đa tác tử Mode B 17 ngôn ngữ.' },
         { name: 'solo-fast', mode: 'mode_a (Thực thi đơn lẻ trực tiếp)', lineBudget: '600 / 800 dòng', summary: 'Tối ưu cho bản vá khẩn cấp, viết script nhỏ và phản hồi tức thì.' },
         { name: 'deep-architect', mode: 'mode_b (Điều phối đa tác tử nghiêm ngặt)', lineBudget: '300 / 400 dòng', summary: 'Thiết kế kiến trúc mới, tái cấu trúc đa tầng và nghiên cứu sâu 5 lăng kính.' },
         { name: 'adversarial-team', mode: 'team (Đội hình Kim Cương Vàng :team)', lineBudget: '300 / 400 dòng', summary: 'Dành cho hệ thống trọng yếu đòi hỏi duyệt phản biện chéo bắt buộc trước khi phát hành.' },
@@ -258,12 +259,12 @@ export const vi: Dictionary = {
         { title: 'Chốt Chặn 4 Lớp Chống Stub Rỗng', summary: 'Quét sạch ghi chú khất việc, lệnh ném lỗi giả, mock rò rỉ vào bản chạy thật và bài test bỏ qua.' },
       ],
       overnightPlaybook: {
-        badge: 'CẨM NANG CHẠY XUYÊN ĐÊM • /goal + /autopilot + /audit',
+        badge: 'CẨM NANG CHẠY XUYÊN ĐÊM • /goal + /autopilot + /audit + HOOKS',
         title: 'Thực Thi Đa Pha Tự Trị (5 Cổng + Wave 2.5 + Vòng 1 /audit)',
-        subtitle: 'Kết hợp /autopilot với /goal khi chạy xuyên đêm các dự án đa pha từ docs/.',
+        subtitle: 'Kết hợp /autopilot với /goal (Antigravity 2.0) hoặc hook phiên Stop/PreCompact (Claude Code / Codex) khi chạy đa pha xuyên đêm từ docs/.',
         modes: [
-          { workflow: '/autopilot', scope: 'Đơn phiên (< 70% ngữ cảnh)', behavior: 'Theo dõi project-ledger.json với 5 cổng & đối soát Wave 2.5; dừng gọn khi chạm ~70% ngữ cảnh.' },
-          { workflow: '/goal + /autopilot + /audit', scope: 'Vòng lặp đa pha xuyên đêm', behavior: '/goal tự nối phiên qua ngưỡng ~70% tới khi 100% pha đạt 5 cổng & Wave 2.5, rồi chạy Vòng 1 /audit và dừng báo cáo để bạn duyệt.' },
+          { workflow: '/autopilot (+ Stop/PreCompact hooks)', scope: 'Claude Code / Codex / Đơn phiên', behavior: 'Theo dõi project-ledger.json với 5 cổng & đối soát Wave 2.5; hook Stop/PreCompact bảo toàn điểm lưu ledger khi nén ~70% ngữ cảnh.' },
+          { workflow: '/goal + /autopilot + /audit', scope: 'Antigravity 2.0 • Chạy xuyên đêm', behavior: '/goal (Antigravity 2.0) + hook Stop/PreCompact (Claude Code / Codex) tự nối phiên tới khi 100% pha đạt 5 cổng & Wave 2.5, rồi chạy Vòng 1 /audit và dừng chờ duyệt.' },
         ],
         promptLabel: 'Câu Lệnh Chạy Xuyên Đêm (Sao Chép Nhanh)',
         prompt: '/goal Hãy dùng /autopilot để đọc toàn bộ tài liệu dự án trong docs/, khởi tạo project-ledger.json và tự động triển khai tuần tự từng pha từ đầu đến cuối (bỏ qua bước dừng chờ duyệt PLAN ban đầu; mỗi pha bắt buộc vượt qua đủ 5 cổng kiểm định và đối soát khớp 100% đặc tả). Sau khi hoàn thành 100% các pha, chạy Vòng 1 của /audit rồi dừng lại kèm báo cáo để tôi kiểm tra.',
@@ -286,9 +287,9 @@ export const vi: Dictionary = {
     steps: {
       title: 'Quy Trình 3 Bước: Clone, Cài Đặt & Kiểm Định',
       items: [
-        { step: 'Bước 1', title: 'Clone Kho Mã Nguồn Chính Thức', command: 'git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git && cd BoomOpen-Workflow-Kit-Pro', summary: 'Tải trọn bộ 33 họ lệnh slash, 22 đặc vụ, 18 đội hình, 1.462 kỹ năng đã lập chỉ mục và bộ công cụ CLI.' },
+        { step: 'Bước 1', title: 'Clone Kho Mã Nguồn Chính Thức', command: 'git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git && cd BoomOpen-Workflow-Kit-Pro', summary: 'Tải trọn bộ 36 họ lệnh slash, 22 đặc vụ, 18 đội hình, 1.462 kỹ năng đã lập chỉ mục và bộ công cụ CLI.' },
         { step: 'Bước 2', title: 'Cài Đặt Cho Trợ Lý AI Của Bạn (Hoặc --all)', command: 'node cli/install.js install antigravity', summary: 'Ghi gói cài đặt có kiểm soát băm SHA-256 vào ~/.boomopen/manifests/<tool>.json và tự động sao lưu file cũ.' },
-        { step: 'Bước 3', title: 'Chạy Kiểm Định Sức Khỏe Chế Độ Chỉ Đọc', command: 'node cli/install.js doctor', summary: 'Đối chiếu toàn diện các entrypoint, 89 file lệnh, 72 file đội hình và chỉ mục compact-index.json.' },
+        { step: 'Bước 3', title: 'Chạy Kiểm Định Sức Khỏe Chế Độ Chỉ Đọc', command: 'node cli/install.js doctor', summary: 'Đối chiếu toàn diện các entrypoint, 93 file lệnh, 72 file đội hình và chỉ mục compact-index.json.' },
       ],
     },
     verification: {
@@ -297,7 +298,7 @@ export const vi: Dictionary = {
       command: 'node cli/install.js doctor',
       checks: [
         'Cả 5 tệp entrypoint nền tảng đều <= 300 dòng và đồng bộ cặp thẻ đánh dấu BOOMOPEN-SETTINGS.',
-        'Đầy đủ 22 đặc vụ chuyên gia, 18 thư mục đội hình (72 files) và 89 tệp đặc tả lệnh Markdown.',
+        'Đầy đủ 22 đặc vụ chuyên gia, 18 thư mục đội hình (72 files) và 93 tệp đặc tả lệnh Markdown.',
         'Chỉ mục matrix-skills/compact-index.json khớp chính xác 1.462 kỹ năng (22 Lõi + 1.440 Thư viện trên 19 miền).',
         'Tính toàn vẹn của quy tắc toàn cục, thư mục framework và sổ cái SHA-256 trên mọi IDE đã cài.',
       ],
@@ -312,8 +313,8 @@ export const vi: Dictionary = {
   },
   notFoundPage: {
     code: '404', eyebrow: 'KHÔNG TÌM THẤY ĐƯỜNG DẪN', title: 'Đường dẫn này nằm ngoài sổ cái điều hướng hiện tại.',
-    description: 'Địa chỉ bạn vừa truy cập không khớp với trang đang hoạt động. Quay về trang tổng quan hoặc tra cứu ngay 33 lệnh slash.',
-    backHomeCta: 'Về Trang Tổng Quan', exploreCommandsCta: 'Xem 33 Lệnh Slash',
+    description: 'Địa chỉ bạn vừa truy cập không khớp với trang đang hoạt động. Quay về trang tổng quan hoặc tra cứu ngay 36 lệnh slash.',
+    backHomeCta: 'Về Trang Tổng Quan', exploreCommandsCta: 'Xem 36 Lệnh Slash',
   },
   footer: {
     tagline: 'Hệ điều hành Nhân sự AI Đa tác tử mã nguồn mở cho Antigravity, Claude Code, OpenAI Codex, Cursor và GitHub Copilot.',
@@ -321,7 +322,7 @@ export const vi: Dictionary = {
     featuredBadge: 'Featured Open-Source Multi-Agent Workforce OS • Giấy Phép MIT • Không Thu Thập Dữ Liệu',
     columns: { product: 'Nền Tảng', resources: 'Tài Liệu Kỹ Thuật', governance: 'Mã Nguồn Mở & Tin Cậy' },
     links: {
-      overview: 'Tổng Quan', commands: '33 Lệnh Slash', agents: '22 Agents & 18 Teams', skills: 'Kho 1.462 Kỹ Năng',
+      overview: 'Tổng Quan', commands: '36 Lệnh Slash', agents: '22 Agents & 18 Teams', skills: 'Kho 1.462 Kỹ Năng',
       architecture: 'Kiến Trúc & /settings', install: 'Bắt Đầu Cài Đặt', github: 'Kho Mã Nguồn GitHub',
       releases: 'Ghi Chú Phát Hành v5.5.0', changelog: 'Nhật Ký Thay Đổi', license: 'Giấy Phép MIT', security: 'Chính Sách Bảo Mật', llmsTxt: 'Chỉ Mục AI (llms.txt)',
     },

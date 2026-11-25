@@ -2,7 +2,7 @@
 
 > **Purpose**: Conventional Commits specification, cross-OS GitHub Actions CI matrix, guarded Semantic Release workflow, local verification discipline, and source-only distribution policy for `@boomopen/workflow-kit` v5.5.0
 > **Parent**: [00-index.md](./00-index.md)
-> **Last Updated**: 2026-11-10
+> **Last Updated**: 2026-11-25
 > **Version**: 5.5.0
 
 ---
@@ -55,8 +55,8 @@ BREAKING CHANGE: plan compiler now rejects overlapping OWNED_FILES across parall
 
 | Scope | Used For |
 |-------|----------|
-| `cli` | `cli/install.js` and the `40` modular `cli/*.js` files |
-| `conduct` / `cook` / `plan` / `design` / `research` / `ledger` | Deterministic compiler and conductor subsystems |
+| `cli` | `cli/install.js` and the `48` modular `cli/*.js` files |
+| `conduct` / `cook` / `reconcile` / `audit` / `plan` / `design` / `research` / `ledger` | Deterministic compiler, reconciliation, audit, and conductor subsystems |
 | `platforms` | `platforms/{antigravity,claude,codex,copilot,cursor}/` bundles and entrypoints |
 | `agents` / `commands` / `rules` / `skills` | Instruction Markdown, teams, and skills vault updates |
 | `README` / `i18n` / `docs` | Root `README.md` (patch-releasing), `i18n/README.*.md`, and `documents/` |
@@ -69,7 +69,7 @@ BREAKING CHANGE: plan compiler now rejects overlapping OWNED_FILES across parall
 
 - **Release Branch**: `main` is the single release branch configured in `.releaserc.json` (`"branches": ["main"]`).
 - **Pull Request Verification**: Every push to `main` and every pull request automatically runs the 4-job GitHub Actions workflow in [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) (`concurrency` cancels superseded in-progress runs per ref, using least-privilege `contents: read` permissions).
-- **Repository Metadata**: No static PR template Markdown file is checked into `.github/`; contributors follow Conventional Commits and must pass all 4 CI jobs cleanly before merge.
+- **Repository Governance & Templates**: [`CONTRIBUTING.md`](../../CONTRIBUTING.md), [`CODE_OF_CONDUCT.md`](../../CODE_OF_CONDUCT.md), [`.github/PULL_REQUEST_TEMPLATE.md`](../../.github/PULL_REQUEST_TEMPLATE.md), [`.github/ISSUE_TEMPLATE/`](../../.github/ISSUE_TEMPLATE/), and [`.github/dependabot.yml`](../../.github/dependabot.yml) standardize contributor checklists, issue forms, and weekly dependency updates.
 
 ---
 
@@ -79,8 +79,8 @@ BREAKING CHANGE: plan compiler now rejects overlapping OWNED_FILES across parall
 
 | Job | Runner Matrix | Verification Steps Executed |
 |-----|---------------|-----------------------------|
-| **`cli`** | `ubuntu-latest`, `windows-latest`, `macos-latest` × Node `18`, `20`, `22` (`9` combinations) | 1. `npm test` (`30` `node:test` suites; zero `npm ci` needed because the CLI uses pure Node built-ins)<br>2. `npm run lint` ([`.github/scripts/check-syntax.js`](../../.github/scripts/check-syntax.js))<br>3. Sandboxed kit lifecycle health check (`install claude` -> `doctor` -> `uninstall claude` with `HOME`, `USERPROFILE`, `APPDATA`, `LOCALAPPDATA`, and `XDG_CONFIG_HOME` redirected to `$RUNNER_TEMP`)<br>4. `node cli/install.js check . --strict-phase --no-stubs` |
-| **`syntax`** | `ubuntu-latest` (Python `3.10` floor) | 1. Compiles every `.py` helper across `scripts/`, `skills/`, and `skills_library/` (`python -B` AST `compile()`, excluding `*/assets/template.py` placeholders)<br>2. Validates all `.sh` scripts via `bash -n`<br>3. Verifies `THIRD_PARTY_NOTICES.md` freshness via `node .github/scripts/third-party-notices.js --check` |
+| **`cli`** | `ubuntu-latest`, `windows-latest`, `macos-latest` × Node `18`, `20`, `22` (`9` combinations) | 1. `npm test` (`34` `node:test` suites; zero `npm ci` needed because the CLI uses pure Node built-ins)<br>2. `npm run lint` ([`.github/scripts/check-syntax.js`](../../.github/scripts/check-syntax.js))<br>3. Sandboxed kit lifecycle health check (`install claude` -> `doctor` -> `uninstall claude` with `HOME`, `USERPROFILE`, `APPDATA`, `LOCALAPPDATA`, and `XDG_CONFIG_HOME` redirected to `$RUNNER_TEMP`)<br>4. `node cli/install.js check . --strict-phase --no-stubs` |
+| **`syntax`** | `ubuntu-latest` (Python `3.10` floor) | 1. Compiles every `.py` helper across `scripts/`, `skills/`, and `skills_library/` (`python -B` AST `compile()`, excluding `*/assets/template.py` placeholders)<br>2. Validates all `.sh` scripts via `bash -n`<br>3. Runs zero-dependency static audits (`ux_audit.py`, `accessibility_checker.py`, `seo_checker.py`, `security_scan.py` v6)<br>4. Verifies `THIRD_PARTY_NOTICES.md` freshness via `node .github/scripts/third-party-notices.js --check` |
 | **`web`** | `ubuntu-latest`, `windows-latest`, `macos-latest` × Node `20`, `22` (`6` combinations; Vite 7 requires Node `^20.19.0 \|\| >=22.12.0`) | Runs `npm ci`, `npm run lint` (ESLint 9), and `npm run build` (`kit-stats.mjs` + `tsc -b && vite build`) inside `web/` |
 | **`package`** | `ubuntu-latest`, `windows-latest` × Node `22` | Runs `npm run test:pack` ([`.github/scripts/pack-smoke.js`](../../.github/scripts/pack-smoke.js)): packs the npm tarball without lifecycle scripts, extracts it in a temp folder, verifies all `1,462` indexed `SKILL.md` files shipped, and runs sandboxed `install claude` -> `doctor` -> `uninstall claude` |
 

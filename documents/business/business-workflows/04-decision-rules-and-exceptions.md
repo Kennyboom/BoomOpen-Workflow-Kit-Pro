@@ -4,7 +4,7 @@
 |-------|-------|
 | **Purpose** | Codify all `v5.5.0` business decision rules, Mode A/B routing gates, Cognitive Load Sharding laws, CLI compiler gates, `HSOL v5.5` skill thresholds, `:team` checkpoints, and `E0–E6` exception recovery |
 | **Parent** | [00-index.md](./00-index.md) |
-| **Last Updated** | 2026-11-10 |
+| **Last Updated** | 2026-11-25 |
 | **Version** | 5.5.0 (Smart-Hybrid Edition) |
 
 ---
@@ -29,7 +29,7 @@
 | **L6** | Language Compliance | User responses & artifacts match user input language (technical terms in English); source code & comments are always English | All workflows |
 | **L7** | Direct Plan-to-Executor Dispatch | Fast-forward past completed stages (`boomopen cook state`) and dispatch directly from validated `PLAN` to domain shards (`0` middleman hop) | `BW-008`, `BW-009` |
 | **L8** | Scoped Warm Session Reuse | Record `role#shard -> conversationId` and route all follow-ups, fixes, and debate rounds via `send_message` (`0s` cold-start) | `BW-004`, `BW-011`, `BW-016` |
-| **L9** | 4-Layer Deterministic Phase Ratchet | Every artifact/wave must pass its CLI gate (`research`, `design`, `plan`, `cook verify-wave`, `check --strict-phase --no-stubs`, `ledger verify`) | `BW-006`..`BW-013` |
+| **L9** | 4-Layer Deterministic Phase Ratchet | Every artifact/wave must pass its CLI gate (`research`, `design`, `plan`, `cook verify-wave`, `reconcile`, `check --strict-phase --no-stubs`, `ledger verify`) | `BW-006`..`BW-013` |
 | **L10** | Clean Git Working Tree | Route transient artifacts to `<appDataDir>/brain/<conversation-id>/` (or git-ignored `./reports/{topic}/`); write `./documents/` only on `/docs` | All artifact workflows |
 
 ---
@@ -65,6 +65,8 @@
 | **`DESIGN-G1..G4`** | `boomopen design validate <design.md>` | 6-Block spec (`<= 500` lines), OKLCH + hex color tokens, 5-State Component Matrix, WCAG 2.2 AA contrast & touch targets, valid `DESIGN_CONTRACT` |
 | **`PLAN-G1..G5`** | `boomopen plan validate <plan.md> [--sync-ledger]` | 6-Block completeness, acyclic wave DAG, 100% disjoint `OWNED_FILES` (`<= 4` files/shard), explicit `SHARED_CONTRACT` & `READ_ONLY_FILES`, runnable verify commands, `<= 500` lines |
 | **`COOK-G1..G4`** | `boomopen cook verify-wave <plan.md> --wave <W> --git --run-verify` | Zero edits outside wave `OWNED_FILES`, zero `READ_ONLY_FILES` regression test tampering, verification command exit `0`, `check --strict-phase --no-stubs` pass |
+| **`REC-G1..G4`** | `boomopen reconcile <plan.md> [--json]` | Wave 2.5 spec-to-code parity across RTM requirements, routes/contracts, and exported symbols (or explicit `cook amend-plan` delta) |
+| **`/audit` Gate** | `boomopen audit <run\|fix\|auto\|round2\|rollback> [dir]` | Multi-domain audit convergence across code hygiene, security, tests, and docs with Git checkpoint `rollback` safety |
 | **`DBG-G1..G4`** | `/debug:hard` / `/debug:team` `SPIE v3.0` synthesis | Deterministic reproduction (`G1`), 5-Whys `[file:line]` chain (`G2`), `H1..Hk` falsification matrix (`G3`), blast-radius + fail-first test spec (`G4`) |
 | **Zero-Omission Code Gate** | `boomopen check <dir> --strict-phase --no-stubs` | Soft `400` / Hard `500` lines, `0` explicit `any`, `0` prod `console.log`, `0` deferred `TODO`/`FIXME`/`PLACEHOLDER`, `0` hollow stubs, `0` `.skip`/`.only` or vacuous tests |
 | **Autopilot Ratchet** | `boomopen ledger verify --phase <id> --passed-tests <N> --run-verify` | SHA-256 spec-hash match, prior `test_files` untouched, cumulative passed tests strictly non-decreasing |
@@ -101,7 +103,7 @@
 | **`E2`** | Build, typecheck, test, or `check --strict-phase --no-stubs` failure | Route exact `File:Line` failure output to owning warm `role#shard` via `send_message`; iterate until `0` errors | Self-healing |
 | **`E3`** | Genuine requirement contradiction or missing secret/credential | Apply `autonomous_first` when safe; otherwise pause affected shard and prompt user via `ask_question` (`(Recommended)` first) | User-gated |
 | **`E4`** | Breaking `SHARED_CONTRACT` drift across sibling parallel shards | Halt propagation, rollback affected `OWNED_FILES`, update `SHARED_CONTRACT`, broadcast delta to warm shards via `send_message` | Coordinated rollback |
-| **`E5`** | CLI validator (`research`, `design`, `plan`, `cook`, `ledger`) exits `1` | Send failed gate IDs to owning warm specialist shard via `send_message`, repair, and re-run CLI validator until exit `0` | Self-healing |
+| **`E5`** | CLI validator (`research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`) exits `1` | Send failed gate IDs to owning warm specialist shard via `send_message`, repair, and re-run CLI validator until exit `0` | Self-healing |
 | **`E6`** | Same model family deadlocks after `2` debug/review rounds | Escalate via `boomopen conduct dispatch --role debugger --engine cross_family --author-engine <prev>` | Cross-engine |
 | **`EX-CLI-01`** | Node.js `< 18.0.0`, unknown platform, or invalid CLI flag | Print usage/diagnostic and exit `1` or `2` without mutating user files | Blocking |
 | **`EX-LEDGER-01`** | Spec file modified without updating `.boomopen/project-ledger.json` | SHA-256 Spec-Hash Drift Guard blocks `/autopilot:run` until re-validated via `boomopen ledger` | Integrity lock |

@@ -8,11 +8,15 @@ import {
   KIT_STATS_FILE,
   PUBLIC_DIR,
   REPO_ROOT,
+  SITE_ORIGIN,
   checkKitStats,
   collectCommands,
   collectDomains,
   collectKitStats,
   readFrontmatterDescription,
+  renderLlmsTxt,
+  renderRobotsTxt,
+  renderSitemapXml,
 } from './kit-stats.mjs'
 
 const WEB_DATA_DIR = path.join(REPO_ROOT, 'web', 'src', 'data')
@@ -101,8 +105,10 @@ test('committed kit-stats.json and public discovery files match repository groun
   assert.equal(committed.coreSkills, 22)
   assert.equal(committed.librarySkills, 1440)
   assert.equal(committed.skills, 1462)
-  assert.equal(committed.commands.length, 33)
-  assert.equal(committed.commandFiles, 89)
+  assert.equal(committed.commands.length, 36)
+  assert.equal(committed.commandWorkflowFiles, 87)
+  assert.equal(committed.commandRefFiles, 6)
+  assert.equal(committed.commandFiles, 93)
   assert.deepEqual(checkKitStats(REPO_ROOT, KIT_STATS_FILE), { inSync: true })
 
   for (const discoveryFile of ['robots.txt', 'sitemap.xml', 'llms.txt']) {
@@ -127,7 +133,7 @@ test('commands.ts, agents.ts, teams.ts, skills.ts & platforms.ts match 100% of d
   /** @type {import('../src/data/kitStats').KitStats} */
   const stats = JSON.parse(fs.readFileSync(KIT_STATS_FILE, 'utf8'))
 
-  // 1. All 33 base slash commands
+  // 1. All 36 base slash commands
   const commandsTs = fs.readFileSync(path.join(WEB_DATA_DIR, 'commands.ts'), 'utf8')
   assert.ok(commandsTs.includes('export const COMMANDS_CATALOG'), 'commands.ts must export COMMANDS_CATALOG')
   const seededCommands = [...commandsTs.matchAll(/defineSeed\(\s*'([^']+)'/g)].map((m) => m[1]).sort()
@@ -229,5 +235,65 @@ test('commands.ts, agents.ts, teams.ts, skills.ts & platforms.ts match 100% of d
   for (const pageFile of ['CommandsPage.tsx', 'AgentsTeamsPage.tsx', 'SkillsPage.tsx', 'InstallPage.tsx', 'HomePage.tsx']) {
     const src = fs.readFileSync(path.join(pagesDir, pageFile), 'utf8')
     assert.ok(src.includes('useSearchParams'), `${pageFile} must sync URL query parameters via useSearchParams`)
+  }
+})
+
+test('SITE_URL / SITE_ORIGIN is https://boomopen.com and llms.txt / sitemap.xml stay unified', () => {
+  assert.equal(SITE_ORIGIN, 'https://boomopen.com')
+
+  const seoRoutesTs = fs.readFileSync(path.join(WEB_DATA_DIR, 'seoRoutes.ts'), 'utf8')
+  assert.ok(
+    seoRoutesTs.includes("export const SITE_URL = 'https://boomopen.com'"),
+    'seoRoutes.ts SITE_URL must equal https://boomopen.com',
+  )
+  assert.ok(!seoRoutesTs.includes('vercel.app'), 'seoRoutes.ts must not reference vercel.app')
+
+  const indexHtml = fs.readFileSync(path.join(REPO_ROOT, 'web', 'index.html'), 'utf8')
+  assert.ok(indexHtml.includes('https://boomopen.com/'), 'index.html must use https://boomopen.com/')
+  assert.ok(
+    indexHtml.includes('https://boomopen.com/media/poster_en.png'),
+    'index.html fallback og:image must align with /media/poster_en.png',
+  )
+  assert.ok(!indexHtml.includes('vercel.app'), 'index.html must not reference vercel.app')
+
+  const sitePluginTs = fs.readFileSync(path.join(REPO_ROOT, 'web', 'build', 'site-plugin.ts'), 'utf8')
+  assert.ok(
+    sitePluginTs.includes("from './kit-stats.mjs'"),
+    'site-plugin.ts must reuse renderLlmsTxt / renderSitemapXml from kit-stats.mjs',
+  )
+
+  const stats = collectKitStats(REPO_ROOT)
+  const expectedLlms = renderLlmsTxt(stats, SITE_ORIGIN)
+  const expectedSitemap = renderSitemapXml(SITE_ORIGIN)
+  const expectedRobots = renderRobotsTxt(SITE_ORIGIN)
+
+  const publicLlms = fs.readFileSync(path.join(PUBLIC_DIR, 'llms.txt'), 'utf8').replace(/\r\n/g, '\n')
+  const publicSitemap = fs.readFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), 'utf8').replace(/\r\n/g, '\n')
+  const publicRobots = fs.readFileSync(path.join(PUBLIC_DIR, 'robots.txt'), 'utf8').replace(/\r\n/g, '\n')
+
+  assert.equal(publicLlms, expectedLlms)
+  assert.equal(publicSitemap, expectedSitemap)
+  assert.equal(publicRobots, expectedRobots)
+
+  for (const token of ['https://boomopen.com', '/onboard', '/pr', '/release', 'frontier-guardrails']) {
+    assert.ok(publicLlms.includes(token), `llms.txt must highlight ${token}`)
+  }
+
+  const distDir = path.join(REPO_ROOT, 'web', 'dist')
+  const distLlmsPath = path.join(distDir, 'llms.txt')
+  const distSitemapPath = path.join(distDir, 'sitemap.xml')
+  if (fs.existsSync(distLlmsPath)) {
+    assert.equal(
+      fs.readFileSync(distLlmsPath, 'utf8').replace(/\r\n/g, '\n'),
+      expectedLlms,
+      'dist/llms.txt must match kit-stats.mjs renderLlmsTxt byte-for-byte',
+    )
+  }
+  if (fs.existsSync(distSitemapPath)) {
+    assert.equal(
+      fs.readFileSync(distSitemapPath, 'utf8').replace(/\r\n/g, '\n'),
+      expectedSitemap,
+      'dist/sitemap.xml must match kit-stats.mjs renderSitemapXml byte-for-byte',
+    )
   }
 })

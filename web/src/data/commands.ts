@@ -77,7 +77,7 @@ const COMMAND_SEEDS: readonly CommandSeed[] = [
     '"Mở cài đặt bộ kit và chuyển preset sang strict-team"',
   ),
 
-  // Engineering (8)
+  // Engineering (10)
   defineSeed(
     'cook', 'engineering',
     'End-to-end feature builder when no plan exists yet: runs scouting, contract lock, parallel wave coding, and strict E2E verification.',
@@ -133,6 +133,20 @@ const COMMAND_SEEDS: readonly CommandSeed[] = [
     'Khởi chạy và kiểm tra môi trường xem trước cục bộ hoặc tạm thời kèm bước xác thực cổng dịch vụ và giao diện trực quan.',
     '"Start a clean preview build and verify all routes render"',
     '"Chạy bản preview và kiểm tra tất cả các trang hiển thị chuẩn"',
+  ),
+  defineSeed(
+    'pr', 'engineering',
+    'Pre-PR quality gate & gh pr create (check --strict-phase --no-stubs, reconcile REC-G1..G4, diff tests) plus /pr:review 3-angle adversarial hunk audit by reviewer, security-engineer, and tester.',
+    'Cổng tiền PR & gh pr create (check --strict-phase --no-stubs, reconcile REC-G1..G4, test theo diff) kèm /pr:review phản biện 3 góc độ bởi reviewer, security-engineer và tester.',
+    '"Run pre-PR quality gates and open a pull request, or /pr:review #142"',
+    '"Chạy cổng kiểm định tiền PR rồi tạo pull request, hoặc /pr:review #142"',
+  ),
+  defineSeed(
+    'release', 'engineering',
+    'Semantic release orchestrator: audits Conventional Commits since last tag, syncs version & CHANGELOG.md parity, runs doctor + check + test:pack gates, and stages human-confirmed gh release create.',
+    'Điều phối phát hành SemVer: kiểm toán Conventional Commits từ tag gần nhất, đồng bộ version & CHANGELOG.md, chạy cổng doctor + check + test:pack và dựng checklist gh release create.',
+    '"Prepare the next semantic release, synthesize CHANGELOG.md, and verify all release gates"',
+    '"Chuẩn bị bản release SemVer mới, tổng hợp CHANGELOG.md và chạy đủ các cổng kiểm định"',
   ),
 
   // Research & Design (6)
@@ -230,7 +244,14 @@ const COMMAND_SEEDS: readonly CommandSeed[] = [
     '"Thực hiện tổng kiểm tra chuyên sâu toàn bộ mã nguồn, tài liệu và bài test"',
   ),
 
-  // Session & Ops (6)
+  // Session & Ops (7)
+  defineSeed(
+    'onboard', 'session-ops',
+    '60-second read-only brownfield onboarding: fans out 3 parallel scouter shards under READ_ONLY_FILES locks to map stack, entrypoints, data flow, risk hotspots, and verified build/lint/test gates into ARCHITECTURE-MAP.md (zero /init collision).',
+    'Nhập môn codebase có sẵn trong 60 giây (chỉ đọc): tỏa 3 phân mảnh scouter song song khóa READ_ONLY_FILES để lập ARCHITECTURE-MAP.md gồm kiến trúc, entrypoint, luồng dữ liệu, điểm nóng rủi ro và cổng build/lint/test (không đụng /init).',
+    '"Onboard me to this repository and map its entrypoints, data flow, and quality gates"',
+    '"Giúp tôi nắm nhanh kiến trúc, entrypoint, luồng dữ liệu và lệnh test của repo này"',
+  ),
   defineSeed(
     'docs', 'session-ops',
     'Generates synchronized workspace documentation across core technical specs (:core), business domain guides (:business), and drift audits (:audit).',

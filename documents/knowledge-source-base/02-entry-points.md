@@ -2,7 +2,7 @@
 
 > **Purpose**: Maps all CLI, AI platform, build, CI/CD, and configuration entry points in `@boomopen/workflow-kit` `v5.5.0`
 > **Parent**: [00-index.md](./00-index.md)
-> **Last Updated**: 2026-11-10
+> **Last Updated**: 2026-11-25
 > **Edition**: `@boomopen/workflow-kit` `v5.5.0` (Multi-Platform Unified & Smart-Hybrid Edition)
 
 ---
@@ -35,7 +35,7 @@
 ```
 
 - **Shebang & Mode**: `#!/usr/bin/env node` (`'use strict'`, CommonJS)
-- **Modular Architecture**: `cli/install.js` (`~738` lines) delegates specialized responsibilities across **`40` modular `cli/*.js` files** (`41` production JavaScript modules total), keeping zero external runtime npm dependencies (`node:fs`, `node:path`, `node:os`, `node:readline`, `node:crypto`, `node:http`, `node:child_process`).
+- **Modular Architecture**: `cli/install.js` + `cli/cli-router.js` delegate specialized responsibilities across **`48` modular `cli/*.js` files** (`49` production JavaScript modules total), keeping zero external runtime npm dependencies (`node:fs`, `node:path`, `node:os`, `node:readline`, `node:crypto`, `node:http`, `node:child_process`).
 - **Minimum Runtime**: Node.js `>=18.0.0`
 - **Source-Only Invocation**: Because the kit is not published to the public npm registry (`npmPublish: false`), users clone `https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git` and run `node cli/install.js <command>` directly or run `npm link` inside the clone to expose the `boomopen` binary on `PATH`.
 
@@ -52,7 +52,7 @@ AI coding assistants initialize the Smart-Hybrid Orchestrator by reading compact
 
 ## CLI Boot and Execution Flows
 
-### 1. Invocation & `12` CLI Subcommands
+### 1. Invocation & `14` CLI Subcommands
 
 ```bash
 # Source clone invocation (recommended)
@@ -68,21 +68,23 @@ boomopen doctor
 boomopen check . --strict-phase --no-stubs
 ```
 
-`main()` in [`cli/install.js`](../../cli/install.js) parses `process.argv` via `parseArgs()` and dispatches across `12` subcommands (plus `help` / `--version`):
+`createCliRouter()` in [`cli/cli-router.js`](../../cli/cli-router.js) (invoked by [`cli/install.js`](../../cli/install.js)) parses `process.argv` via `parseArgs()` and dispatches across `14` subcommands (plus `help` / `--version`):
 
 | Subcommand | Alias | Handler Module | Purpose |
 |------------|-------|----------------|---------|
-| `install <tool\|--all> [--with-hooks]` | — | `install.js`, `install-steps.js`, `manifest.js` | Manifest-tracked installation for `cursor`, `copilot` (`antigravity`/`gemini`, `claude`/`claude-code`, `codex`) |
+| `install <tool\|--all> [--with-hooks] [--as-plugin]` | — | `install.js`, `install-steps.js`, `manifest.js` | Manifest-tracked installation for `cursor`, `copilot` (`antigravity`/`gemini`, `claude`/`claude-code`, `codex`) |
 | `uninstall <tool\|--all>` | — | `install.js`, `manifest.js` | Non-destructive removal preserving user-authored and user-edited files |
-| `list` | — | `install.js` | Displays install status, version, active entry files, and manifest-tracked file count per tool |
-| `settings [subcmd]` | `config` | `settings.js`, `settings-ui.js` | 3-Surface Control Center (`status`, `get`, `set`, `mode`, `preset`, `sync`, `reset`, `ui` / `--ui` on `http://127.0.0.1:4567`) |
+| `list` | — | `cli-router.js` | Displays install status, version, active entry files, and manifest-tracked file count per tool |
+| `settings [subcmd]` | `config` | `settings.js`, `settings-slim.js`, `settings-ui.js` | 3-Surface Control Center (`status`, `get`, `set`, `mode`, `preset`, `sync`, `reset`, `ui` / `--ui` on `http://127.0.0.1:4567`) |
 | `doctor [flags]` | — | `doctor.js` (`doctor-*.js`) | Audits kit source, 5 platform bundles, Markdown line/mojibake budgets, `compact-index.json`, settings, and Conductor engines |
 | `check [dir] [flags]` | — | `checker.js` (`checker-*.js`) | Enforces Pragmatic 2-Tier Coding Standards + `--strict-phase --no-stubs` Zero-Omission Phase Ratchet |
 | `research <validate\|brief>` | — | `research.js` | Enforces `RES-G1..G4` (`--mode research\|brainstorm`) and compiles downstream `HANDOFF_BRIEF` |
 | `design <validate\|contract>` | — | `design.js` | Enforces `DESIGN-G1..G4` (OKLCH, 5-State UI Matrix, WCAG 2.2 AA) and extracts `DESIGN_CONTRACT` |
 | `plan <validate\|compile>` | — | `plan.js` | Enforces `PLAN-G1..G5` (DAG acyclicity, `OWNED_FILES <= 4`/shard, `SHARED_CONTRACT`) and compiles ledger |
-| `cook <state\|packets\|verify-wave\|preflight>` | — | `cook.js` | 5-Stage Fast-Forward detector, 5-Field Wave Handoff Packet emitter, and `COOK-G1..G4` wave verifier |
-| `ledger <init\|from-plan\|validate\|status\|next\|verify\|audit>` | — | `ledger.js` | Manages `.boomopen/project-ledger.json` with SHA-256 Spec-Hash Drift Guard for `/autopilot` |
+| `cook <state\|packets\|verify-wave\|preflight\|amend-plan>` | — | `cook.js` | 5-Stage Fast-Forward detector, 5-Field Wave Handoff Packet emitter, `COOK-G1..G4` wave verifier, and delta wave amender |
+| `reconcile [dir] [flags]` | — | `reconcile.js` | Wave 2.5 spec-to-code reconciliation (`REC-G1..G4`: island shards, route parity, `[SC-*]` traceability, `.env.example` parity) |
+| `audit <init\|slice\|record\|approve\|verify-fix\|rollback\|status>` | — | `audit.js`, `audit-scanners.js` | Stateful multi-round whole-project audit ledger (`.boomopen/audit-ledger.json`) & Git checkpoint rollback |
+| `ledger <init\|from-plan\|validate\|status\|next\|verify\|rollback\|audit>` | — | `ledger.js`, `git-checkpoints.js` | Manages `.boomopen/project-ledger.json` with SHA-256 Spec-Hash Drift Guard & Git checkpoint rollback |
 | `conduct <probe\|dispatch\|council\|status>` | `conductor` | `conductor.js`, `conductor-engines.js` | Cross-engine `Author != Critic` dispatch & 6-task Parallel Multi-Engine Council |
 
 ### 2. Core Configuration Constants (`cli/tool-config.js`)
@@ -107,9 +109,9 @@ TOOL_ALIASES   = { gemini: 'antigravity', 'claude-code': 'claude' };
 6. **Framework Bundle Copy (`installFramework`)**: Rebuilds `<skills>/boomopen-workflow-kit/` with `CORE_DIRS` (`commands/` also mirrored to `workflows/` for backward compatibility), `ROOT_FILES` (`README.md`, `SKILL.md`, `package.json`), `hooks/validate-tool-call.mjs`, and `install-files.json` (`VERBATIM_DIRS` skips placeholder substitution for `documents/` and `skills_library/`).
 7. **Shared Folder Copy (`copySharedFolders`)**: Copies `22` core skills (`skills/`), `1,440` library skills (`skills_library/`), commands/workflows, and agents while recording SHA-256 hashes in `InstallLedger` and backing up any pre-existing user files.
 8. **Platform-Specific Finalizers**:
-   - **Codex**: Merges a TOML-validated managed block into `~/.codex/config.toml` (`mergeCodexConfigFile`) and isolates `21` role configs in `~/.codex/agents/boomopen/*.toml`.
-   - **Antigravity**: Cleans byte-identical legacy workflow copies and retired skill folder names (`cleanupAntigravityLegacy`).
-   - **Claude Code (`--with-hooks`)**: Optionally registers `validate-tool-call.mjs` as a `PreToolUse` hook in `~/.claude/settings.json` (`registerHooks`).
+   - **Codex**: Merges a TOML-validated managed block into `~/.codex/config.toml` (`mergeCodexConfigFile`) and isolates `22` role configs in `~/.codex/agents/boomopen/*.toml`.
+   - **Antigravity**: Supports `--as-plugin` (`~/.gemini/config/plugins/boomopen-workflow-kit/plugin.json`), installs `run_workflow` Python scripts, and cleans legacy workflow/skill orphans.
+   - **Opt-In Hooks (`--with-hooks`)**: Registers `validate-tool-call.mjs` and `stop-quality-gate.mjs` in Antigravity (`~/.gemini/config/hooks.json`), Claude Code (`~/.claude/settings.json` with `Bash|PowerShell`, `PreCompact`, and `Stop`), and Cursor (`~/.cursor/hooks.json`).
 9. **Stale Pruning & AOT Settings Sync**: Prunes removed kit files via `ledger.pruneStale()`, saves `~/.boomopen/manifests/<tool>.json`, runs `syncSettingsToInstalledPlatforms()` (`< 10ms` AOT settings block sync), and verifies every written file on disk.
 
 ### 4. Non-Destructive Uninstall Flow (`uninstallTool`)
@@ -129,17 +131,17 @@ TOOL_ALIASES   = { gemini: 'antigravity', 'claude-code': 'claude' };
 ├── GEMINI.md                                      # Marked kit block + AOT settings block
 ├── agents/
 │   ├── AntigravityGlobal.agent.md                 # Global Antigravity agent spec
-│   └── *.md + teams/                              # 21 specialists + 18 teams
+│   └── *.md                                       # 22 compiled specialists
 └── config/
-    ├── global_workflows/                          # 84 flat workflow files (from commands/)
+    ├── global_workflows/                          # 87 flat workflow files (from commands/)
+    ├── plugins/boomopen-workflow-kit/             # Optional native plugin bundle (--as-plugin)
     ├── skills/
     │   ├── boomopen-workflow-kit/                 # Framework: CORE_DIRS + workflows/ + hooks/ + ROOT_FILES + install-files.json
     │   └── {22 core skills}/                      # Pre-loaded Core Skills (incl. skill-seeker)
-    └── skills_library/
-        └── {1,440 library skills}/                # On-demand niche vault (copied verbatim)
+    └── skills_library/                            # Linked to shared ~/.agents/skills_library (1,440 skills)
 
 ~/.antigravity/
-├── agents/                                        # User-accessible agents + teams
+├── agents/                                        # User-accessible agents
 └── workflows/                                     # User-accessible workflows
 ```
 
@@ -148,14 +150,13 @@ TOOL_ALIASES   = { gemini: 'antigravity', 'claude-code': 'claude' };
 ~/.claude/
 ├── CLAUDE.md                                      # Marked kit block + AOT settings block
 ├── AGENT.md                                       # Generic Orchestrator entrypoint
-├── settings.json                                  # Touched ONLY when `--with-hooks` registers PreToolUse guard
-├── commands/                                      # 84 flat command files + _ref/
-├── agents/                                        # 21 specialists + 18 teams
+├── settings.json                                  # Touched ONLY when `--with-hooks` registers PreToolUse & Stop hooks
+├── commands/                                      # 87 flat command files + nested <family>/<variant>.md colon aliases
+├── agents/                                        # 22 compiled specialists (disallowedTools / memory / worktree)
 ├── skills/
 │   ├── boomopen-workflow-kit/                     # Framework bundle
 │   └── {22 core skills}/                          # Pre-loaded Core Skills
-└── skills_library/
-    └── {1,440 library skills}/                    # On-demand niche vault
+└── skills_library/                                # Linked to shared ~/.agents/skills_library (1,440 skills)
 ```
 
 ### 3. OpenAI Codex
@@ -165,15 +166,14 @@ TOOL_ALIASES   = { gemini: 'antigravity', 'claude-code': 'claude' };
 ├── CODEX.md                                       # Codex Orchestrator entrypoint
 ├── AGENT.md                                       # Generic Orchestrator entrypoint
 ├── config.toml                                    # TOML-validated managed block (multi_agent + role pointers)
-├── commands/                                      # 84 flat command files + _ref/
+├── commands/                                      # 87 flat command files
 ├── agents/
-│   └── boomopen/*.toml                            # 21 kit-isolated role TOMLs (user's ~/.codex/agents/*.toml untouched)
+│   └── boomopen/*.toml                            # 22 kit-isolated role TOMLs (OS read-only sandboxing on critics/scouts)
 ├── skills/
 │   ├── boomopen-workflow-kit/                     # Framework bundle
 │   ├── {22 core skills}/                          # Pre-loaded Core Skills
-│   └── boomopen-workflow-kit-{cmd}/               # 79 generated native Codex command skills
-└── skills_library/
-    └── {1,440 library skills}/                    # On-demand niche vault
+│   └── boomopen-workflow-kit-{cmd}/               # 87 generated native Codex command skills
+└── skills_library/                                # Linked to shared ~/.agents/skills_library (1,440 skills)
 ```
 
 ### 4. Cursor
@@ -183,28 +183,26 @@ TOOL_ALIASES   = { gemini: 'antigravity', 'claude-code': 'claude' };
 ├── AGENT.md                                       # Generic Orchestrator entrypoint
 ├── rules/
 │   └── boomopen-workflow-kit.mdc                  # Native Cursor MDC rule (<= 250 lines, AOT settings synced)
-├── commands/                                      # 84 flat command files + _ref/
-├── agents/                                        # 21 specialists + 18 teams
+├── commands/                                      # 87 flat command files
+├── agents/                                        # 22 specialists
 ├── skills/
 │   ├── boomopen-workflow-kit/                     # Framework bundle
 │   └── {22 core skills}/                          # Pre-loaded Core Skills
-└── skills_library/
-    └── {1,440 library skills}/                    # On-demand niche vault
+└── skills_library/                                # Linked to shared ~/.agents/skills_library (1,440 skills)
 ```
 *(Note: Retired `CLAUDE.md` copies inside `~/.cursor/` are automatically cleaned via `legacyInstructionFiles` on install/uninstall.)*
 
 ### 5. GitHub Copilot
 ```text
 ~/.copilot/
-├── COPILOT.md                                     # Copilot Orchestrator entrypoint
+├── COPILOT.md & copilot-instructions.md           # Copilot Orchestrator entrypoints
 ├── AGENT.md                                       # Generic Orchestrator entrypoint
-├── commands/                                      # 84 flat command files + _ref/
-├── agents/                                        # 21 specialists + 18 teams
+├── commands/                                      # 87 flat command files
+├── agents/                                        # 22 compiled .agent.md specialists
 ├── skills/
 │   ├── boomopen-workflow-kit/                     # Framework bundle
 │   └── {22 core skills}/                          # Pre-loaded Core Skills
-└── skills_library/
-    └── {1,440 library skills}/                    # On-demand niche vault
+└── skills_library/                                # Linked to shared ~/.agents/skills_library (1,440 skills)
 
 <VSCodeUserPrompts>/
 └── boomopen-workflow-kit.agent.md                 # Copilot Agent Mode prompt file
@@ -218,15 +216,15 @@ Where `<VSCodeUserPrompts>` resolves via `cli/platform-paths.js`:
 
 ## Build, Verification, and CI/CD Entry Points
 
-### Root `package.json` Scripts (`28` Scripts)
+### Root `package.json` Scripts (`30` Scripts)
 
 | Category | Script(s) | Command | Purpose |
 |----------|-----------|---------|---------|
 | **Install** | `install:cursor`, `install:copilot`, `install:antigravity`, `install:claude`, `install:codex`, `install:all` | `node cli/install.js install <tool\|--all>` | Install kit into one or all 5 platforms |
 | **Uninstall** | `uninstall:cursor`, `uninstall:copilot`, `uninstall:antigravity`, `uninstall:claude`, `uninstall:codex`, `uninstall:all` | `node cli/install.js uninstall <tool\|--all>` | Manifest-safe uninstall for one or all 5 platforms |
 | **Status & Settings** | `list`, `settings`, `settings:ui` | `node cli/install.js list \| settings [--ui]` | Inspect installed tools, manage presets, or launch Web UI (`127.0.0.1:4567`) |
-| **Deterministic Gates** | `doctor`, `check`, `cook`, `research`, `design`, `plan`, `ledger`, `conduct` | `node cli/install.js <subcmd>` | Run kit health, 2-Tier code gate, artifact compilers, autopilot ledger, or multi-engine council |
-| **Testing & Linting** | `test`, `test:unit`, `lint`, `test:pack` | `node --test ...`, `node .github/scripts/check-syntax.js`, `node .github/scripts/pack-smoke.js` | Execute all `30` `node:test` suites, fast `15`-suite unit subset, JS syntax verification, and tarball smoke test |
+| **Deterministic Gates** | `doctor`, `check`, `cook`, `reconcile`, `audit`, `research`, `design`, `plan`, `ledger`, `conduct` | `node cli/install.js <subcmd>` | Run kit health, 2-Tier code gate, Wave 2.5 reconcile, audit, compilers, autopilot ledger, or council |
+| **Testing & Linting** | `test`, `test:unit`, `lint`, `test:pack` | `node --test ...`, `node .github/scripts/check-syntax.js`, `node .github/scripts/pack-smoke.js` | Execute all `34` `node:test` suites, fast `19`-suite unit subset, JS syntax verification, and tarball smoke test |
 | **Release** | `semantic-release` | `semantic-release` | Guarded release automation (`npmPublish: false`) |
 
 ### GitHub Actions CI/CD Entry Points (`.github/workflows/`)
@@ -243,7 +241,7 @@ Where `<VSCodeUserPrompts>` resolves via `cli/platform-paths.js`:
 
 | File | Loaded By | Purpose |
 |------|-----------|---------|
-| `~/.boomopen/settings.json` | `cli/settings-store.js` | Global user settings (`smart-hybrid` default preset) synced AOT into installed entrypoints |
+| `~/.boomopen/settings.json` | `cli/settings-store.js` | Global user settings (`frontier-guardrails` default preset, `carbon-guardrails` alias) synced AOT into installed entrypoints |
 | `./.boomopen.json` | `cli/settings-store.js`, `checker.js`, `cook.js` | Workspace-scoped settings override (gitignored in kit repo) |
 | `.boomopen/project-ledger.json` | `cli/ledger.js`, `/autopilot` | Multi-session phase gate & SHA-256 spec-hash ledger |
 | `~/.boomopen/manifests/<tool>.json` | `cli/manifest.js` | Per-file SHA-256 installation ownership ledger |
@@ -278,8 +276,8 @@ web/index.html                  # Vite HTML entry (<div id="root"> + /src/main.t
 
 | File | Verification Purpose |
 |------|----------------------|
-| [../../package.json](../../package.json) | Verified `"bin": { "boomopen": "./cli/install.js" }` and all `28` npm scripts |
-| [../../cli/install.js](../../cli/install.js) | Verified `12` subcommands, `installTool()`, `uninstallTool()`, `registerHooks()`, and `syncSettings()` |
+| [../../package.json](../../package.json) | Verified `"bin": { "boomopen": "./cli/install.js" }` and all `30` npm scripts |
+| [../../cli/install.js](../../cli/install.js) | Verified `14` subcommands, `installTool()`, `uninstallTool()`, `registerHooks()`, and `syncSettings()` |
 | [../../cli/tool-config.js](../../cli/tool-config.js) | Verified `CORE_DIRS`, `ROOT_FILES`, `VERBATIM_DIRS`, `TOOLS`, and per-platform `buildPlan()` |
 | [../../cli/platform-paths.js](../../cli/platform-paths.js) | Verified cross-OS VS Code user prompts path resolution |
 | [../../.github/workflows/ci.yml](../../.github/workflows/ci.yml) | Verified 4-job cross-OS CI matrix |

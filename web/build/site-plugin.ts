@@ -21,10 +21,10 @@ import {
   formatDocumentTitle,
   getRouteSeo,
   getRouteSeoByPath,
-  renderLlmsTxt,
   toCanonicalUrl,
   type PageSeoEntry,
 } from '../src/data/seoRoutes'
+import { renderLlmsTxt, renderRobotsTxt, renderSitemapXml } from './kit-stats.mjs'
 
 const SEO_PLACEHOLDER = '<!--app-seo-->'
 const SEO_START = '<!-- seo:start -->'
@@ -120,31 +120,11 @@ export function renderSeoHead(entry: PageSeoEntry): string {
 }
 
 export function renderSitemap(): string {
-  const entries = INDEXABLE_SEO_ROUTES.map((route) =>
-    [
-      '  <url>',
-      `    <loc>${escapeHtml(toCanonicalUrl(route.pathname ?? '/'))}</loc>`,
-      `    <priority>${(route.priority ?? 0.8).toFixed(2)}</priority>`,
-      '  </url>',
-    ].join('\n'),
-  )
-  return [
-    '<?xml version="1.0" encoding="UTF-8"?>',
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ...entries,
-    '</urlset>',
-    '',
-  ].join('\n')
+  return renderSitemapXml(SITE_URL)
 }
 
 export function renderRobots(): string {
-  return [
-    'User-agent: *',
-    'Allow: /',
-    '',
-    `Sitemap: ${SITE_URL}/${SITEMAP_FILE}`,
-    '',
-  ].join('\n')
+  return renderRobotsTxt(SITE_URL)
 }
 
 function injectOrReplaceSeoBlock(html: string, entry: PageSeoEntry): string | null {
@@ -335,7 +315,7 @@ export function sitePlugin(): Plugin {
         }
         if (reqPath === `/${LLMS_FILE}`) {
           res.setHeader('Content-Type', 'text/plain; charset=utf-8')
-          res.end(renderLlmsTxt())
+          res.end(renderLlmsTxt(KIT_STATS, SITE_URL))
           return
         }
         next()
@@ -349,7 +329,7 @@ export function sitePlugin(): Plugin {
       }
       fs.writeFileSync(path.join(outDir, SITEMAP_FILE), renderSitemap(), 'utf8')
       fs.writeFileSync(path.join(outDir, ROBOTS_FILE), renderRobots(), 'utf8')
-      fs.writeFileSync(path.join(outDir, LLMS_FILE), renderLlmsTxt(), 'utf8')
+      fs.writeFileSync(path.join(outDir, LLMS_FILE), renderLlmsTxt(KIT_STATS, SITE_URL), 'utf8')
       copyMediaAssetsToDist(path.resolve(root, '..', 'assets', 'media'), outDir)
     },
   }

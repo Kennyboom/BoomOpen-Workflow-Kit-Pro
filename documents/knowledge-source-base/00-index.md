@@ -2,19 +2,19 @@
 
 > **Purpose**: Comprehensive technical knowledge base for `@boomopen/workflow-kit` `v5.5.0` (Multi-Platform Unified & Smart-Hybrid Edition)
 > **Sub-files**: 4
-> **Last Updated**: 2026-11-10
+> **Last Updated**: 2026-11-25
 
 ---
 
 ## Quick Summary
 
-**BoomOpen Workflow Kit `v5.5.0` (Multi-Platform Unified & Smart-Hybrid Edition)** is an open-source multi-agent operating system for AI coding assistants across **Google Antigravity (Gemini)**, **Claude Code**, **OpenAI Codex**, **Cursor**, and **GitHub Copilot**. Installed directly from a repository clone (`https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro`, source-only distribution with `npmPublish: false`), the CLI suite (`cli/install.js` + `40` modular `cli/*.js` files) runs on Node.js `>=18.0.0` using strictly Node.js built-in modules with **zero production npm dependencies**.
+**BoomOpen Workflow Kit `v5.5.0` (Multi-Platform Unified & Smart-Hybrid Edition)** is an open-source multi-agent operating system for AI coding assistants across **Google Antigravity (Gemini)**, **Claude Code**, **OpenAI Codex**, **Cursor**, and **GitHub Copilot**. Installed directly from a repository clone (`https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro`, source-only distribution with `npmPublish: false`), the CLI suite (`cli/install.js` + `48` modular `cli/*.js` files) runs on Node.js `>=18.0.0` using strictly Node.js built-in modules with **zero production npm dependencies**.
 
-At runtime, the AI assistant reads a compact platform entrypoint (`GEMINI.md`, `CLAUDE.md`, `CODEX.md`, `COPILOT.md`, `CURSOR.md`, or `AGENT.md`, each `<= 250` lines with ahead-of-time injected settings) and applies a **Proactive Sub-agent First Gate**:
-- **Mode A (Tier 0 — Known-Target Micro-Direct)**: Executes `<= 2` already-known files in a single domain directly under Pragmatic 2-Tier Coding Standards with zero cold-start overhead.
-- **Mode B (Tier 1 — Multi-Agent Orchestration & Elastic Swarm)**: Routes explicit `/cmd` workflows and natural-language intents across **all `17` supported languages** into `84` flat command workflow files (`79` `commands/*.md` + `5` `commands/_ref/*.md` across `32` base slash commands), delegating to **`21` specialist agents** and **`18` Elastic Golden Diamond teams** (`54` role files + `18` `_team.md` specs = `72` team files) sharded via `role#shard` (`<= 3-4 OWNED_FILES` per shard).
+At runtime, the AI assistant reads a compact platform entrypoint (`GEMINI.md`, `CLAUDE.md`, `CODEX.md`, `COPILOT.md`, `CURSOR.md`, or `AGENT.md`, each `<= 250` lines with ahead-of-time injected settings; `frontier-guardrails` `< 2.5 KB` Slim Guardrails default) and applies a **Proactive Sub-agent First Gate**:
+- **Mode A (Tier 0 — Known-Target Micro-Direct)**: Executes known-target files (`<= 10` files under `frontier-guardrails`, `<= 2` files under `smart-hybrid`) in a single domain directly under Pragmatic 2-Tier Coding Standards with zero cold-start overhead.
+- **Mode B (Tier 1 — Multi-Agent Orchestration & Elastic Swarm)**: Routes explicit `/cmd` workflows and natural-language intents across **all `17` supported languages** into `93` flat command workflow files (`87` `commands/*.md` + `6` `commands/_ref/*.md` across `36` base slash commands), delegating to **`22` specialist agents** (including `spec-reconciler`) and **`18` Elastic Golden Diamond teams** (`54` role files + `18` `_team.md` specs = `72` team files) sharded via `role#shard` (`<= 3-4 OWNED_FILES` per shard).
 
-Capability injection is powered by the **Hybrid Skill Orchestration Layer (`HSOL v5.5`)**, which resolves **`1,462` indexed skills** (`22` pre-loaded Core Skills in `skills/` including `skill-seeker` + `1,440` dormant On-Demand Library Skills in `skills_library/`) in `O(1)` via `matrix-skills/compact-index.json` across `19` domain YAML registries. Deterministic CLI compilers (`boomopen research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check`, `doctor`, and `settings`) enforce machine-verified phase gates, file ownership locks, multi-session `/autopilot` ledgers, and cross-engine `/conduct` councils. The repository also contains an independent React 19 + Vite 7 + Tailwind CSS 4 marketing website in `web/`, `7` Python 3.10+ helper scripts in `scripts/`, `16` localized READMEs in `i18n/`, `30` automated `node:test` suites, and cross-OS GitHub Actions CI/CD workflows.
+Capability injection is powered by the **Hybrid Skill Orchestration Layer (`HSOL v5.5`)**, which resolves **`1,462` indexed skills** (`22` pre-loaded Core Skills in `skills/` including `skill-seeker` + `1,440` dormant On-Demand Library Skills in `skills_library/`) in `O(1)` via `matrix-skills/compact-index.json` across `19` domain YAML registries. Deterministic CLI compilers (`boomopen research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`, `check`, `doctor`, and `settings`) enforce machine-verified phase gates, Wave 2.5 spec-to-code wiring checks, file ownership locks, multi-session `/autopilot` ledgers, stateful `/audit` rounds, and cross-engine `/conduct` councils. The repository also contains an independent bilingual (`EN`/`VI`) React 19 + Vite 7 + Tailwind CSS 4 showcase website in `web/` (`https://boomopen.com`), `7` Python 3.10+ helper scripts in `scripts/`, `16` localized READMEs in `i18n/`, `34` automated `node:test` suites, and cross-OS GitHub Actions CI/CD workflows.
 
 ---
 
@@ -54,20 +54,20 @@ Capability injection is powered by the **Hybrid Skill Orchestration Layer (`HSOL
 | Module System | CommonJS (`cli/`), ESM (`web/` and `validate-tool-call.mjs` hook) |
 | Production Dependencies | `0` (pure Node.js built-ins) |
 | Dev Dependencies | `9` (`semantic-release` ecosystem for changelog and GitHub releases) |
-| CLI Binary Entry | `"bin": { "boomopen": "./cli/install.js" }` (`cli/install.js` + `40` modular `cli/*.js` files = `41` production modules) |
-| CLI Subcommands | `12` (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `cook`, `research`, `design`, `plan`, `ledger`, `conduct`) |
+| CLI Binary Entry | `"bin": { "boomopen": "./cli/install.js" }` (`cli/install.js` + `48` modular `cli/*.js` files = `49` production modules) |
+| CLI Subcommands | `14` (`install`, `uninstall`, `list`, `settings`, `doctor`, `check`, `cook`, `reconcile`, `audit`, `research`, `design`, `plan`, `ledger`, `conduct`) |
 | Supported Platforms | `5` — Antigravity (Gemini), Claude Code, OpenAI Codex, Cursor, GitHub Copilot |
-| Specialist Agents | `21` Markdown files (`agents/*.md`, `<= 450` lines each) |
-| Specialist Teams | `18` Elastic Golden Diamond teams (`54` role files + `18` `_team.md` specs = `72` team files; `93` files under `agents/`) |
-| Slash Commands | `32` base commands (`16` multi-variant families + `16` standalone) across `84` flat files (`79` `commands/*.md` + `5` `commands/_ref/*.md`) |
+| Specialist Agents | `22` Markdown files (`agents/*.md`, including `spec-reconciler`, `<= 450` lines each) |
+| Specialist Teams | `18` Elastic Golden Diamond teams (`54` role files + `18` `_team.md` specs = `72` team files; `94` files under `agents/`) |
+| Slash Commands | `36` base commands (`18` multi-variant families + `18` standalone) across `93` flat files (`87` `commands/*.md` + `6` `commands/_ref/*.md`) |
 | On-Demand Rules | `7` Markdown files (`CORE`, `PHASES`, `AGENTS`, `TEAMS`, `SKILLS`, `ERRORS`, `REFERENCE`, `<= 300` lines each) |
-| Skills Vault | `1,462` indexed skills (`22` Core Skills in `skills/` + `1,440` On-Demand Library Skills in `skills_library/`) |
+| Skills Vault | `1,462` indexed skills (`22` Core Skills in `skills/` + `1,440` On-Demand Library Skills in `skills_library/`, deduplicated via `~/.agents/skills_library`) |
 | Matrix Skill Registry | `19` domain YAMLs + `_index.yaml` + `_dynamic.yaml` + `compact-index.json` (`O(1)` lookup) |
 | Python Helpers | `7` scripts in `scripts/` (`auto_preview`, `checklist`, `kit_checks`, `kit_console`, `kit_process`, `session_manager`, `verify_all`) |
 | Localized READMEs | `16` translations in `i18n/README.<lang>.md` (`17` supported languages including English) |
-| Automated Test Suites | `30` `node:test` suites (`29` `cli/*.test.js` + `web/build/kit-stats.test.mjs`) |
+| Automated Test Suites | `34` `node:test` suites (`33` `cli/*.test.js` + `web/build/kit-stats.test.mjs`) |
 | CI/CD Workflows | `.github/workflows/ci.yml` (Ubuntu/Windows/macOS, Node 18/20/22) & `.github/workflows/release.yml` (manual guarded release) |
-| Web Stack | React 19 + Vite 7 + Tailwind CSS 4 (deployed independently to Vercel) |
+| Web Stack | Bilingual (`EN`/`VI`) React 19 + Vite 7 + Tailwind CSS 4 (`https://boomopen.com`) |
 
 ---
 
@@ -76,7 +76,7 @@ Capability injection is powered by the **Hybrid Skill Orchestration Layer (`HSOL
 1. **Start here** — Read this index for the `v5.5.0` architecture and inventory summary.
 2. **[01-directory-structure.md](./01-directory-structure.md)** — Understand the repository layout across all top-level folders.
 3. **[02-entry-points.md](./02-entry-points.md)** — Trace how `cli/install.js` boots, how SHA-256 manifests protect user files, and where each platform installs.
-4. **[03-key-modules.md](./03-key-modules.md)** — Inspect the `41` CLI production modules, `21` agents, `18` teams, `84` flat command files, `7` rules, and `1,462`-skill vault.
+4. **[03-key-modules.md](./03-key-modules.md)** — Inspect the `49` CLI production modules, `22` agents, `18` teams, `93` flat command files, `7` rules, and `1,462`-skill vault.
 5. **[04-configuration.md](./04-configuration.md)** — Review the 3-Surface Control Center (`~/.boomopen/settings.json` & `./.boomopen.json`), packaging, CI/CD, and platform configs.
 6. **[`../../rules/CORE.md`](../../rules/CORE.md)** — Read the Smart-Hybrid Orchestrator protocol and Laws `L1-L10`.
 7. **[`../../AGENT-TEMPLATE.md`](../../AGENT-TEMPLATE.md)** — Check the frontmatter and section contract for specialist agents.
@@ -102,7 +102,7 @@ Capability injection is powered by the **Hybrid Skill Orchestration Layer (`HSOL
 
 ## Architecture Notes and Verification Boundaries
 
-1. **Deterministic Structural & Contract Verification (`30` Test Suites)**: `npm test` runs `29` sandboxed `cli/*.test.js` suites plus `web/build/kit-stats.test.mjs`, validating installer manifests, user-file backups, Markdown line budgets, platform parity, AOT settings sync, Python helper syntax, and deterministic CLI compilers (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `check`, `doctor`). Live LLM prompt reasoning remains governed at runtime by the host AI IDE/CLI (`Antigravity`, `Claude Code`, `Codex`, `Cursor`, `Copilot`).
+1. **Deterministic Structural & Contract Verification (`34` Test Suites)**: `npm test` runs `33` sandboxed `cli/*.test.js` suites plus `web/build/kit-stats.test.mjs`, validating installer manifests, user-file backups, Markdown line budgets, platform parity, AOT settings sync, Python helper syntax, and deterministic CLI compilers (`research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`, `check`, `doctor`). Live LLM prompt reasoning remains governed at runtime by the host AI IDE/CLI (`Antigravity`, `Claude Code`, `Codex`, `Cursor`, `Copilot`).
 2. **Source-Only Distribution Guard**: `.releaserc.json` configures `@semantic-release/npm` with `"npmPublish": false` and runs `.github/scripts/release-guard.js` so releases update `CHANGELOG.md`, `package.json`, `package-lock.json`, and GitHub Releases without publishing to the public npm registry.
-3. **Installed Copy Protection**: Running `node ~/.<tool>/skills/boomopen-workflow-kit/cli/install.js` supports operational subcommands (`doctor`, `check`, `settings`, `research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `list`) while refusing `install` or `uninstall` to prevent self-overwriting an installed framework copy.
-4. **Independent Marketing Web Deployment**: `web/` maintains its own `package.json`, lockfile, and `vercel.json` SPA rewrites; `web/build/kit-stats.mjs` synchronizes live repository counts into `web/src/data/kit-stats.json` during `predev` and `prebuild`.
+3. **Installed Copy Protection**: Running `node ~/.<tool>/skills/boomopen-workflow-kit/cli/install.js` supports operational subcommands (`doctor`, `check`, `settings`, `research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`, `list`) while refusing `install` or `uninstall` to prevent self-overwriting an installed framework copy.
+4. **Independent Web Showcase (`https://boomopen.com`)**: `web/` maintains its own `package.json`, lockfile, and SPA rewrites; `web/build/kit-stats.mjs` synchronizes live repository counts into `web/src/data/kit-stats.json` during `predev` and `prebuild`.

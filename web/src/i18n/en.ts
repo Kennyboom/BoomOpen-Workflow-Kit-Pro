@@ -15,15 +15,15 @@ export const en: Dictionary = {
     headline: 'Contract-First Swarm Engineering for Modern AI IDEs.',
     subheadline: 'Turn Antigravity, Claude Code, Codex, Cursor, and Copilot into a coordinated engineering org — 22 specialist agents, 18 adversarial Golden Diamond teams, 14 deterministic CLI compilers, and 1,462 indexed skills with zero Turn-1 context bloat.',
     primaryCta: 'Install in 60 Seconds',
-    secondaryCta: 'Explore 33 Commands',
+    secondaryCta: 'Explore 36 Commands',
     quickInstallLabel: 'Safe 1-Click Clone & Platform Install',
     quickInstallCaption: 'SHA-256 manifest-tracked install — preserves every existing user file and rule block.',
     metrics: {
-      platforms: '5 Platforms', commands: '33 Commands', agentsTeams: '22 Agents + 18 Teams',
+      platforms: '5 Platforms', commands: '36 Commands', agentsTeams: '22 Agents + 18 Teams',
       skills: '1,462 Skills', cliGates: '14 CLI Gates', languages: '17 Languages',
       details: {
         platforms: 'Antigravity • Claude • Codex • Cursor • Copilot',
-        commands: '89 workflow & _ref protocol files',
+        commands: '93 workflow & _ref protocol files',
         agentsTeams: '72 Golden Diamond role specs',
         skills: '22 Core + 1,440 on-demand library',
         cliGates: 'Deterministic compilers & audits',
@@ -63,7 +63,7 @@ export const en: Dictionary = {
     eyebrow: 'EXECUTION TOPOLOGY • TIER 0 VS TIER 1 & MULTI-ENGINE COUNCIL',
     title: 'Zero-Overhead Micro-Edits. Deterministic Parallel Swarms.',
     subtitle: 'A Turn-1 complexity gate keeps small edits instant while scaling multi-domain builds into contract-locked sub-agent waves.',
-    tabs: { tier0: 'TIER 0 • Direct Micro-Edit', tier1: 'TIER 1 • 3-Wave Parallel Shards', council: 'Multi-Engine Council' },
+    tabs: { tier0: 'TIER 0 • Direct Micro-Edit', tier1: 'TIER 1 • 3-Wave + 2.5 Shards', council: 'Multi-Engine Council' },
     tier0: {
       badge: 'MODE A • TIER 0 DIRECT',
       title: 'Instant Solo Execution for Known 1–2 File Scopes',
@@ -79,13 +79,14 @@ export const en: Dictionary = {
     },
     tier1: {
       badge: 'MODE B • TIER 1 CONTRACT SWARM',
-      title: '3-Wave Contract-First Parallel Shards (role#shard <= 4 OWNED_FILES)',
+      title: '3-Wave + Wave 2.5 Contract-First Shards (role#shard <= 4 OWNED_FILES)',
       trigger: 'Trigger: > 2 files • >= 2 domains • 17-language NL workflow intent • explicit /cmd',
       lockBadge: 'role#shard <= 4 OWNED_FILES',
-      description: 'Plans lock SHARED_CONTRACT + DESIGN_CONTRACT upfront, then dispatch directly to disjoint engineer shards with zero write collisions.',
+      description: 'Plans lock SHARED_CONTRACT + DESIGN_CONTRACT upfront, fan out disjoint engineer shards, and reconcile spec-to-code wiring before E2E sign-off.',
       waves: [
         { wave: 'Wave 1', title: 'Contracts, Tokens & Ground-Truth Data', shardSpec: 'frontend-engineer#{tokens-ui,i18n,data-*} (<= 4 OWNED_FILES/shard)', contractBadge: 'SHARED_CONTRACT + DESIGN_CONTRACT', summary: 'Locks TypeScript interfaces, OKLCH design tokens, and build-time repository telemetry.' },
         { wave: 'Wave 2', title: 'Direct Plan-to-Executor Parallel Fan-Out', shardSpec: 'backend-engineer#api + frontend-engineer#{shell,catalogs} in parallel', contractBadge: 'Disjoint OWNED_FILES Locks', summary: 'Domain shards build against locked contracts simultaneously without a middleman hop.' },
+        { wave: 'Wave 2.5', title: 'Spec-to-Code Reconcile (REC-G1..G4)', shardSpec: 'spec-reconciler + boomopen reconcile ./src --plan PLAN.md --strict', contractBadge: 'Spec-to-Code Reconcile • REC-G1..G4', summary: 'Catches unwired island shards, frontend/backend route drift, missed [SC-*] clauses, and .env gaps.' },
         { wave: 'Wave 3', title: 'Deterministic CLI Gates & Warm Session Reuse', shardSpec: 'tester + reviewer via send_message(conversationId)', contractBadge: '0s Warm Reuse Loop', summary: 'Reuses warm sub-agents with 100% retained file context to verify tests and CLI checks.' },
       ],
       warmReuseTitle: 'Scoped Warm Sub-Agent Registry (send_message)',
@@ -133,14 +134,14 @@ export const en: Dictionary = {
   },
   commandsPage: {
     eyebrow: 'SLASH COMMANDS & 17-LANGUAGE INTENT ROUTER',
-    title: '33 Slash Commands. 89 Workflow & Protocol Specs.',
+    title: '36 Slash Commands. 93 Workflow & Protocol Specs.',
     subtitle: 'Trigger structured workflows explicitly via /cmd or speak naturally in any of 17 supported languages — complete with :fast, :hard, and :team variants.',
     searchLabel: 'Search slash commands, variants, or natural-language cues',
-    searchPlaceholder: 'Filter by /cook, /autopilot, /conduct, :team, security, plan...',
+    searchPlaceholder: 'Filter by /onboard, /pr, /release, /cook, /autopilot, :team...',
     categoryFilterAria: 'Filter commands by workflow category',
     categories: { all: 'All', orchestration: 'Orchestration', engineering: 'Engineering', 'research-design': 'Research & Design', 'quality-security': 'Quality & Security', 'session-ops': 'Session & Ops' },
     variantsLabel: 'Variants', teamVariantBadge: ':team Golden Diamond',
-    nlTriggersLabel: 'Natural-Language Trigger Examples', workflowFilesBadge: '83 command workflows + 6 _ref protocols',
+    nlTriggersLabel: 'Natural-Language Trigger Examples', workflowFilesBadge: '87 command workflows + 6 _ref protocols',
     emptyTitle: 'No slash commands matched your filter',
     emptyBody: 'Try searching for /cook, /plan, /review, /conduct, or clear active category filters.',
     resetCta: 'Reset Filters',
@@ -213,13 +214,13 @@ export const en: Dictionary = {
       subtitle: 'Ahead-of-time settings blocks sync across all 5 installed IDEs with 0ms runtime latency.',
       webUiUrl: 'http://127.0.0.1:4567',
       surfaces: [
-        { title: '1. In-Chat /settings', command: '/settings preset smart-hybrid', summary: 'Interactive native menu or instant one-liner preset switching inside chat.' },
+        { title: '1. In-Chat /settings', command: '/settings preset frontier-guardrails', summary: 'Interactive native menu or instant one-liner preset switching inside chat.' },
         { title: '2. Local Web Dashboard', command: 'boomopen settings --ui', summary: 'Launches the visual Control Center at http://127.0.0.1:4567 for live tuning.' },
         { title: '3. Terminal CLI & Workspace Override', command: 'boomopen settings set execution.mode mode_b --project', summary: 'Manages global ~/.boomopen/settings.json and per-repo ./.boomopen.json.' },
       ],
       presets: [
-        { name: 'smart-hybrid', mode: 'auto (Mode A <= 2 files, Mode B > 2)', lineBudget: '400 / 500 lines', summary: 'Default recommended balance for daily full-stack engineering.' },
-        { name: 'carbon-guardrails', mode: 'mode_a (<= 10 files, NL off, <3KB GEMINI)', lineBudget: '400 / 500 lines', summary: 'Antigravity Orchestrator Carbon drives daily tasks while BoomOpen enforces Pragmatic 400/500 & E2E guardrails.' },
+        { name: 'frontier-guardrails', mode: 'mode_a (<= 10 files, NL off, < 2.5 KB slim)', lineBudget: '400 / 500 lines', summary: 'Default recommended slim guardrails (< 2.5 KB) across all 5 IDEs; frontier model drives daily tasks (carbon-guardrails alias supported).' },
+        { name: 'smart-hybrid', mode: 'auto (Mode A <= 2 files, Mode B > 2)', lineBudget: '400 / 500 lines', summary: 'Balanced auto-routing between direct micro-edits and full 17-language Mode B swarms.' },
         { name: 'solo-fast', mode: 'mode_a (Direct solo execution)', lineBudget: '600 / 800 lines', summary: 'Rapid hotfixes, small scripts, and instant single-agent turnaround.' },
         { name: 'deep-architect', mode: 'mode_b (Strict multi-agent)', lineBudget: '300 / 400 lines', summary: 'Greenfield architecture, complex refactors, and 5-lens deep research.' },
         { name: 'adversarial-team', mode: 'team (Golden Diamond :team)', lineBudget: '300 / 400 lines', summary: 'Mission-critical production releases with mandatory critic sign-off.' },
@@ -258,12 +259,12 @@ export const en: Dictionary = {
         { title: '4-Layer Zero-Stub Ratchet', summary: 'Blocks deferred markers, hollow throws, leaked test mocks, and skipped assertions.' },
       ],
       overnightPlaybook: {
-        badge: 'OVERNIGHT PLAYBOOK • /goal + /autopilot + /audit',
+        badge: 'OVERNIGHT PLAYBOOK • /goal + /autopilot + /audit + HOOKS',
         title: 'Unattended Multi-Phase Execution (5 Gates + Wave 2.5 + Round 1 /audit)',
-        subtitle: 'Pair /autopilot with /goal when running large multi-phase docs/ specs overnight.',
+        subtitle: 'Pair /autopilot with /goal (Antigravity 2.0) or Stop/PreCompact hooks (Claude Code / Codex) when running multi-phase docs/ specs overnight.',
         modes: [
-          { workflow: '/autopilot', scope: 'Single session (< 70% context)', behavior: 'Tracks project-ledger.json with 5 gates & Wave 2.5 spec reconciliation; stops cleanly near ~70% context.' },
-          { workflow: '/goal + /autopilot + /audit', scope: 'Multi-phase overnight loop', behavior: '/goal persists across ~70% resets until 100% phases pass all 5 gates & Wave 2.5 reconcile, then runs Round 1 /audit and stops for your review.' },
+          { workflow: '/autopilot (+ Stop/PreCompact hooks)', scope: 'Claude Code / Codex / Single session', behavior: 'Tracks project-ledger.json with 5 gates & Wave 2.5 reconcile; Stop/PreCompact hooks preserve ledger checkpoints across ~70% context compactions.' },
+          { workflow: '/goal + /autopilot + /audit', scope: 'Antigravity 2.0 • Overnight loop', behavior: '/goal (Antigravity 2.0) + Stop/PreCompact hooks (Claude Code / Codex) persist until 100% phases pass all 5 gates & Wave 2.5 reconcile, then run Round 1 /audit and pause for review.' },
         ],
         promptLabel: 'Copy-Paste Overnight Prompt',
         prompt: '/goal Use /autopilot to read all project documentation in docs/, initialize project-ledger.json, and autonomously implement every phase sequentially from start to finish (skip the initial PLAN approval pause; every phase must pass all 5 verification gates and reconcile 100% against the specs). After 100% of phases are complete, run Round 1 of /audit and stop with a report for my review.',
@@ -286,9 +287,9 @@ export const en: Dictionary = {
     steps: {
       title: '3-Step Clone, Install & Verify',
       items: [
-        { step: 'Step 1', title: 'Clone the Official Repository', command: 'git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git && cd BoomOpen-Workflow-Kit-Pro', summary: 'Fetches all 33 command families, 22 agents, 18 teams, 1,462 indexed skills, and the CLI suite.' },
+        { step: 'Step 1', title: 'Clone the Official Repository', command: 'git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git && cd BoomOpen-Workflow-Kit-Pro', summary: 'Fetches all 36 command families, 22 agents, 18 teams, 1,462 indexed skills, and the CLI suite.' },
         { step: 'Step 2', title: 'Install for Your AI Assistant (or --all)', command: 'node cli/install.js install antigravity', summary: 'Writes SHA-256 tracked bundles into ~/.boomopen/manifests/<tool>.json while backing up user files.' },
-        { step: 'Step 3', title: 'Run Read-Only Health Verification', command: 'node cli/install.js doctor', summary: 'Audits entrypoints, 89 command files, 72 team files, and compact-index.json parity.' },
+        { step: 'Step 3', title: 'Run Read-Only Health Verification', command: 'node cli/install.js doctor', summary: 'Audits entrypoints, 93 command files, 72 team files, and compact-index.json parity.' },
       ],
     },
     verification: {
@@ -297,7 +298,7 @@ export const en: Dictionary = {
       command: 'node cli/install.js doctor',
       checks: [
         'All 5 platform entrypoints <= 300 lines with active BOOMOPEN-SETTINGS markers in sync.',
-        '22 specialist agents, 18 team folders (72 files), and 89 command markdown specs intact.',
+        '22 specialist agents, 18 team folders (72 files), and 93 command markdown specs intact.',
         'matrix-skills/compact-index.json verified at 1,462 skills (22 Core + 1,440 Library across 19 domains).',
         'Installed IDE global rules, framework directories, and SHA-256 manifest integrity.',
       ],
@@ -312,8 +313,8 @@ export const en: Dictionary = {
   },
   notFoundPage: {
     code: '404', eyebrow: 'ROUTE NOT FOUND', title: 'This route is outside the active ledger.',
-    description: 'The URL you requested does not match an active page. Jump back to the flagship overview or browse all 33 slash commands.',
-    backHomeCta: 'Return to Overview', exploreCommandsCta: 'Browse 33 Commands',
+    description: 'The URL you requested does not match an active page. Jump back to the flagship overview or browse all 36 slash commands.',
+    backHomeCta: 'Return to Overview', exploreCommandsCta: 'Browse 36 Commands',
   },
   footer: {
     tagline: 'Open-source Smart-Hybrid AI Workforce Operating System for Antigravity, Claude Code, OpenAI Codex, Cursor, and GitHub Copilot.',
@@ -321,7 +322,7 @@ export const en: Dictionary = {
     featuredBadge: 'Featured Open-Source Multi-Agent Workforce OS • MIT Licensed • Zero Telemetry',
     columns: { product: 'Platform', resources: 'Documentation', governance: 'Open Source & Trust' },
     links: {
-      overview: 'Overview', commands: '33 Slash Commands', agents: '22 Agents & 18 Teams', skills: '1,462 Skills Vault',
+      overview: 'Overview', commands: '36 Slash Commands', agents: '22 Agents & 18 Teams', skills: '1,462 Skills Vault',
       architecture: 'Architecture & /settings', install: 'Get Started', github: 'GitHub Repository',
       releases: 'v5.5.0 Release Notes', changelog: 'Changelog', license: 'MIT License', security: 'Security Policy', llmsTxt: 'AI Index (llms.txt)',
     },

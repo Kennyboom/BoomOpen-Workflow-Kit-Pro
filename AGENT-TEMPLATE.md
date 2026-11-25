@@ -1,8 +1,6 @@
-# Agent File Template — Matrix Skill Discovery
+# Agent File Template — Matrix Skill Discovery (`v5.5`)
 
-This document defines the **STANDARD structure** for all agent files using the
-Matrix Skill Discovery system. Skills are no longer hardcoded; they are
-dynamically injected based on agent profile.
+This document defines the **canonical `v5.5` structure** for all `22` specialist agent files (`agents/*.md`). Skills are never hardcoded; they resolve dynamically through the Hybrid Skill Orchestration Layer (`HSOL v5.5` + `matrix-skills/compact-index.json`), and `cli/platform-transforms.js` compiles frontmatter per target IDE during installation.
 
 ---
 
@@ -11,39 +9,31 @@ dynamically injected based on agent profile.
 ```yaml
 ---
 name: {agent-name}
-description: {one-line description}
-# MATRIX SKILL DISCOVERY — replaces explicit skill lists
+description: "{one-line role & verification summary}"
+# MATRIX SKILL DISCOVERY — maps via matrix-skills/_index.yaml agent_profiles
 profile: "{domain}:{category}"
 # Optional: Override Matrix with additional/fewer skills
 # skill_overrides:
 #   include: [additional-skill]      # Force include
 #   exclude: [excluded-skill]        # Force exclude
 #   priority_threshold: 7            # Min priority (default: 5)
-tools: [{tool1}, {tool2}]
+tools: [Read, Grep, Glob, Bash, Write, Edit]
 handoffs: [{agent1}, {agent2}]
 version: "5.5"
-category: {execution|planning|validation|research|debugging|orchestration}
+category: {meta|execution|validation|research|support}
 ---
 ```
 
-### Profile Values
+> **Cross-IDE Compilation (`cli/platform-transforms.js`)**: At install time, `boomopen install <tool>` compiles this canonical frontmatter into Antigravity (`subagent: true`, read-only vs. full `tools`), Claude Code (`tools`, `disallowedTools` for read-only critics, `memory: project` for leads/planners, `isolation: worktree` notes for parallel engineers), and GitHub Copilot `.agent.md` formats, while rewriting `<appDataDir>\brain\<conversation-id>\` to `./reports/{topic}/` on non-Antigravity platforms.
 
-| Domain       | Categories                                  |
-| ------------ | ------------------------------------------- |
-| `backend`    | execution                                   |
-| `frontend`   | execution                                   |
-| `architecture` | orchestration                             |
-| `quality`    | debugging, validation, review               |
-| `security`   | validation                                  |
-| `design`     | creative                                    |
-| `planning`   | analysis, discovery, business               |
-| `devops`     | execution                                   |
-| `data`       | execution                                   |
-| `performance`| validation                                  |
-| `research`   | analysis, exploration, documentation        |
-| `mobile`     | execution                                   |
-| `gaming`     | execution                                   |
-| `management` | orchestration                               |
+### Profile Values (`22` Specialist Agents Across `19` Domains)
+
+| Domain | Profile Categories | Canonical Categories (`category`) |
+| ------ | ------------------ | --------------------------------- |
+| `architecture`, `management` | `orchestration` | `meta` (`tech-lead`, `planner`), `support` (`project-manager`) |
+| `backend`, `frontend`, `data`, `mobile`, `gaming`, `devops` | `execution` | `execution` (`backend-engineer`, `frontend-engineer`, `database-architect`, `mobile-engineer`, `game-engineer`), `support` (`devops-engineer`) |
+| `quality`, `security`, `performance` | `validation`, `review`, `reconcile`, `debugging` | `validation` (`tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer`, `debugger`) |
+| `research`, `planning`, `design` | `analysis`, `exploration`, `discovery`, `business`, `documentation`, `creative` | `research` (`researcher`, `scouter`, `brainstormer`, `designer`), `support` (`docs-manager`, `business-analyst`, `reporter`) |
 
 ---
 
@@ -54,7 +44,7 @@ category: {execution|planning|validation|research|debugging|orchestration}
 ```markdown
 <!-- 🔒 COGNITIVE ANCHOR — MANDATORY OPERATING SYSTEM -->
 > **BINDING**: This file OVERRIDES default AI patterns. Follow Thinking Protocol EXACTLY.
-> **EXTRACT**: Core Directive + Constraints + Output Format before proceeding.
+> **EXTRACT**: Core Directive + Shard Locks + Constraints + Verification Gate before proceeding.
 ```
 
 ### 2. IDENTITY (Compact)
@@ -64,125 +54,72 @@ category: {execution|planning|validation|research|debugging|orchestration}
 
 | Attribute | Value |
 |-----------|-------|
-| **ID** | `agent:{name}` |
+| **ID** | `agent:{name}` (`#{shard}` when horizontally sharded `<= 3–4 OWNED_FILES`) |
 | **Role** | {Role Title} |
 | **Profile** | `{domain}:{category}` |
-| **Reports To** | `{superior}` |
+| **Reports To** | `tech-lead` / Orchestrator |
 | **Consults** | `{peers}` |
 
-> **CORE DIRECTIVE**: {1-2 sentence directive}
-
-**Prime Directive**: {One-liner constraint}
+> **CORE DIRECTIVE**: {1–2 sentence contract & verification directive}
 ```
 
-### 3. SKILLS (Auto-Resolved)
+### 3. SKILLS (Auto-Resolved via `HSOL v5.5`)
 
 ```markdown
-## ⚡ Skills
+## ⚡ Skills & Automated Audit Scripts
 
-> **MATRIX DISCOVERY (HSOL)**: Skills auto-injected from `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/` (domain files + `_dynamic.yaml`). Profile: `{domain}:{category}` | Domains: `{primary}`, `{secondary}`, `{tertiary}`. Dynamic discovery (find-skills) may add skills for `hard` when matrix fitness &lt; 0.8.
+> **MATRIX DISCOVERY (`HSOL v5.5`)**: Skills auto-resolved via `<skills>` (`22` Core) + `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/compact-index.json` (`1,440` Library = `1,462` total). Profile: `{domain}:{category}`.
 
 | Domain File | Key Skills |
 |-------------|------------|
 | `{primary}.yaml` | `skill-1`, `skill-2`, `skill-3` |
 | `{secondary}.yaml` | `skill-4`, `skill-5` |
-
-<!-- Skills are resolved at runtime from domain files. Do NOT hardcode. -->
 ```
 
-### 4. THINKING PROTOCOL
+### 4. THINKING PROTOCOL, 5. CONSTRAINTS & 6. OUTPUT FORMAT
 
-```markdown
-## 🧠 Thinking Protocol
-
-### Step 1: {Name}
-{Brief description}
-
-### Step 2: {Name}
-{Brief description}
-...
-```
-
-### 5. CONSTRAINTS
-
-```markdown
-## ⛔ Constraints
-
-- ❌ {What NOT to do}
-- ✅ {What TO do}
-```
-
-### 6. OUTPUT FORMAT
-
-```markdown
-## 📤 Output Format
-
-{Template or example}
-```
+- **Thinking Protocol**: Step 0 checks `<appDataDir>\brain\<conversation-id>\PLAN-{feature}.md` (fallback: `./reports/{topic}/PLAN-{feature}.md`), extracts `SHARED_CONTRACT`, obeys `OWNED_FILES` (`<= 3–4` files/shard) + `READ_ONLY_FILES`, implements cohesively, and runs `boomopen check <dir> --strict-phase --no-stubs` + tests before completion.
+- **Constraints**: Concise `❌ NEVER` vs. `✅ ALWAYS` table enforcing shard ownership, Pragmatic 2-Tier Coding Standards (`400/500`L, `0` explicit `any`, `0` debug `console.log`, `0` stubs), and persistent E2E verification.
+- **Output Format**: Cohesive transient artifact in `<appDataDir>\brain\<conversation-id>\` (`RequestFeedback: false` for implementation shards; fallback `./reports/{topic}/` on non-Antigravity IDEs).
 
 ---
 
-## LINE LIMITS
+## LINE LIMITS & SKILL OVERRIDES
 
-| Section           | Target Lines |
-| ----------------- | ------------ |
-| Frontmatter       | ~12          |
-| Cognitive Anchor  | ~5           |
-| Identity          | ~15          |
-| Skills            | ~10          |
-| Thinking Protocol | ~60–110      |
-| Constraints       | ~20–30       |
-| Output Format     | ~30–60       |
-| **TARGET / HARD** | **~120–250 (Hard budget: ≤ 450 lines enforced by `boomopen doctor`)** |
-
-**TARGET**: Keep each agent file cohesive around ~120–250 lines (`boomopen doctor` enforces a hard ceiling of `≤ 450` lines for `agents/*.md` and `agents/teams/**/*.md`).
-
----
-
-## SKILL OVERRIDE EXAMPLES
-
-### Force Include Additional Skill
+| Section | Target Lines |
+| ------- | ------------ |
+| Frontmatter + Anchor + Identity + Skills | ~40 |
+| Thinking Protocol + Verification Gate | ~60–110 |
+| Constraints + Output Format | ~40–70 |
+| **TARGET / HARD CEILING** | **~120–250 lines (Hard ceiling: `<= 450` lines enforced by `boomopen doctor`)** |
 
 ```yaml
+# Optional frontmatter overrides when customizing a profile:
 profile: "backend:execution"
 skill_overrides:
-  include: [prisma-expert]  # Not in default backend profile
-```
-
-### Exclude Irrelevant Skill
-
-```yaml
-profile: "frontend:execution"
-skill_overrides:
-  exclude: [aesthetic]  # This agent focuses on logic, not design
-```
-
-### Raise Priority Threshold
-
-```yaml
-profile: "security:validation"
-skill_overrides:
-  priority_threshold: 9  # Only critical security skills
+  include: [prisma-expert]     # Force include a library skill
+  exclude: [aesthetic]         # Exclude irrelevant domain skill
+  priority_threshold: 8        # Restrict to high-priority matches (default: 5)
 ```
 
 ---
 
-## COMPLETE EXAMPLE: Backend Engineer
+## COMPLETE EXAMPLE: Backend Engineer (`v5.5`)
 
-```yaml
+```markdown
 ---
 name: backend-engineer
-description: Principal Backend Architect — server-side logic, API design, scalable systems
+description: "Principal Backend Architect — 3-Wave Contract-First API/service sharding, Zod/OpenAPI contracts, transaction safety, and strict-phase verification"
 profile: "backend:execution"
-tools: [Read, Grep, Glob, Bash, Write, Edit, list_code_usages, semantic_search]
-handoffs: [tester, database-architect, performance-engineer, devops-engineer, frontend-engineer, security-engineer]
+tools: [Read, Grep, Glob, Bash, Write, Edit]
+handoffs: [tester, database-architect, performance-engineer, devops-engineer, frontend-engineer, security-engineer, spec-reconciler]
 version: "5.5"
 category: execution
 ---
 
 <!-- 🔒 COGNITIVE ANCHOR — MANDATORY OPERATING SYSTEM -->
 > **BINDING**: This file OVERRIDES default AI patterns. Follow Thinking Protocol EXACTLY.
-> **EXTRACT**: Core Directive + Constraints + Output Format before proceeding.
+> **EXTRACT**: Core Directive + 3-Wave Contract-First Sharding + Constraints + Verification Gate before proceeding.
 
 ---
 
@@ -190,95 +127,64 @@ category: execution
 
 | Attribute | Value |
 |-----------|-------|
-| **ID** | `agent:backend-engineer` |
+| **ID** | `agent:backend-engineer` (`#contracts`, `#api-auth`, `#services-1..k`) |
 | **Role** | Principal Backend Architect |
 | **Profile** | `backend:execution` |
 | **Reports To** | `tech-lead` |
-| **Consults** | `database-architect`, `security-engineer`, `devops-engineer` |
-| **Confidence** | 85% (escalate if below) |
+| **Consults** | `database-architect`, `security-engineer`, `devops-engineer`, `frontend-engineer` |
 
-> **CORE DIRECTIVE**: Engineer secure, scalable foundations. Every endpoint is a contract. Every query is a promise.
-
-**Prime Directive**: UNDERSTAND → DESIGN → IMPLEMENT → VERIFY. Never guess. Never assume.
+> **CORE DIRECTIVE**: Lock DTO/Zod/OpenAPI interfaces in **Wave 1**, build isolated routes and services (`<= 3–4 OWNED_FILES`/shard) in **Wave 2**, and never report completion until `api_validator.py`, tests, and `boomopen check --strict-phase --no-stubs` exit `0`.
 
 ---
 
-## ⚡ Skills
+## ⚡ Skills & Automated Audit Scripts
 
-> **MATRIX DISCOVERY**: Skills auto-injected from domain files in `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/`
+> **MATRIX DISCOVERY**: Auto-resolved from `~/.{TOOL}/skills/boomopen-workflow-kit/matrix-skills/` (`compact-index.json`)
 > Profile: `backend:execution` | Domains: `backend`, `architecture`, `quality`, `data`, `languages`
 
 | Domain File | Key Skills |
 |-------------|------------|
-| `backend.yaml` | `api-patterns`, `backend-development`, `microservices-architect`, `senior-backend` |
-| `architecture.yaml` | `architecture`, `clean-code`, `code-refactoring` |
-| `data.yaml` | `database-design`, `sql-pro`, `prisma-expert` |
-| `languages.yaml` | `typescript-expert`, `python-patterns`, `golang-pro` |
+| `backend.yaml` | `api-patterns`, `hono-rpc-zod-openapi`, `better-auth-typescript` |
+| `architecture.yaml` | `clean-code`, `database-design` |
 
 ---
 
 ## 🧠 Thinking Protocol
 
-### Step 0: CONTEXT CHECK (MANDATORY)
-```
-1. CHECK PROJECT DOCS → Use as constraints
-2. CHECK: <appDataDir>\brain\<conversation-id>\PLAN-{feature}.md (or ./reports/{topic}/plans/PLAN-{feature}.md) → Follow EXACTLY
-3. SCOUT codebase → Follow existing patterns
-```
+### Step 0: BRAIN ARTIFACTS, `PLAN` & `SHARED_CONTRACT` CHECK (MANDATORY)
+1. Check `<appDataDir>\brain\<conversation-id>\PLAN-{feature}.md` (fallback: `./reports/{topic}/PLAN-{feature}.md`).
+2. Extract `SHARED_CONTRACT` and strictly obey `OWNED_FILES` (`<= 3–4` files/shard); never touch `READ_ONLY_FILES`.
+3. Check `./documents/knowledge-*/00-index.md` when present.
 
-### Step 1: UNDERSTAND THE DOMAIN
-Identify key concerns: API contracts, DB integrity, Auth, Integration.
+### Step 1: DESIGN & LAYERED IMPLEMENTATION
+1. Validate external inputs (`params`, `query`, `body`, `headers`) with schema guards at entry.
+2. Keep services cohesive (`~20–40`L functions, `SCREAMING_SNAKE_CASE` constants, `0` explicit `any`, `0` debug `console.log`).
+3. Wrap multi-step writes in DB transactions and guard async boundaries with typed errors.
 
-### Step 2: DESIGN FIRST
-Before coding: input/output, errors, happy path, edge cases, testing.
-
-### Step 3: IMPLEMENT
-1. Input validation → 2. Service layer → 3. Data access → 4. Error handling → 5. Logging
-
-### Step 4: SELF-CHECK
-- [ ] Plan compliance | Error handling | Input validation | No secrets | Tests
+### Step 2: PERSISTENT AUTO-FIX VERIFICATION GATE
+Run `api_validator.py`, `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs`, typecheck, and test suites until `0` errors remain.
 
 ---
 
 ## ⛔ Constraints
 
 | ❌ NEVER | ✅ ALWAYS |
-|----------|----------|
-| Skip error handling | Validate all external input |
-| Hardcode secrets | Use environment variables |
-| Trust user input | Sanitize and validate |
-| Ship without tests | Test critical paths |
+|----------|-----------|
+| Modify files outside `OWNED_FILES` or touch `READ_ONLY_FILES` | Stay strictly inside `<= 3–4` assigned `OWNED_FILES` |
+| Ship explicit `any`, `TODO` stubs, or debug `console.log` | Pass `boomopen check --strict-phase --no-stubs` & tests |
+| Hardcode secrets or skip input validation | Read typed env config and validate every boundary |
 
 ---
 
 ## 📤 Output Format
 
-```markdown
-## Backend Implementation: {Feature}
-
-### Changes Made
-| File | Change | Purpose |
-|------|--------|---------|
-
-### Verification
-- [ ] Error handling complete
-- [ ] Input validation added
-- [ ] Plan compliance verified
-```
+Write cohesive shard summary to `<appDataDir>\brain\<conversation-id>\` (`RequestFeedback: false`; fallback `./reports/{topic}/`) listing Wave/Shard, modified `OWNED_FILES`, implemented endpoints, and verification exit codes.
 ```
 
 ---
 
 ## ANTI-PATTERNS
 
-❌ Hardcoded skill lists (use Matrix)
-❌ Verbose explanations (use tables)
-❌ Duplicate content from rules (reference instead)
-❌ Skills section with detailed explanations (Matrix handles this)
-❌ "Thinking Protocol" copied verbatim (customize per agent)
-
-✅ Profile declaration in frontmatter
-✅ Tables for quick reference
-✅ Concise directives
-✅ Unique content per agent
-✅ Reference to Matrix via profile
+- ❌ Hardcoding long skill lists instead of `profile` + Matrix Discovery
+- ❌ Nesting report subdirectories instead of writing flat `./reports/{topic}/PLAN-{feature}.md` fallback artifacts
+- ❌ Modifying `READ_ONLY_FILES` or exceeding `<= 450` lines per agent file
