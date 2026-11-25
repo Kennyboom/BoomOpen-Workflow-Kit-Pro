@@ -1,10 +1,10 @@
 # Project Scaffolding
 
-> Directory structure and core files for new projects.
+> Directory structure and core files for new projects. For stack-specific starters, see [templates/INDEX.md](templates/INDEX.md).
 
 ---
 
-## Next.js Full-Stack Structure (2026+ Next.js 16 Optimized)
+## Next.js Full-Stack Structure (2026+ Next.js 16 & Tailwind v4 Optimized)
 
 ```
 project-name/
@@ -12,7 +12,7 @@ project-name/
 │   ├── app/                        # Routes only (thin layer)
 │   │   ├── layout.tsx
 │   │   ├── page.tsx
-│   │   ├── globals.css
+│   │   ├── globals.css             # Tailwind v4 CSS-first (@import "tailwindcss"; @theme { ... })
 │   │   ├── (auth)/                 # Route group - auth pages
 │   │   │   ├── login/page.tsx
 │   │   │   └── register/page.tsx
@@ -42,8 +42,8 @@ project-name/
 │   │   └── hooks/                  # Global hooks
 │   │
 │   └── server/                     # Server-only code
-│       ├── db/                     # Database client (Prisma)
-│       ├── auth/                   # Auth config
+│       ├── db/                     # Database client (Drizzle / Prisma)
+│       ├── auth/                   # Better Auth config
 │       └── services/               # External API integrations
 │
 ├── prisma/
@@ -52,12 +52,29 @@ project-name/
 │   └── seed.ts
 │
 ├── public/
+├── proxy.ts
 ├── .env.example
 ├── .env.local
 ├── package.json
-├── tailwind.config.ts
 ├── tsconfig.json
 └── README.md
+```
+
+---
+
+## Tailwind v4 CSS-First Token Configuration (`src/app/globals.css`)
+
+Tailwind CSS v4 uses CSS-first configuration — **do NOT create a legacy `tailwind.config.ts` / `tailwind.config.js` file**:
+
+```css
+@import "tailwindcss";
+
+@theme {
+  --color-background: oklch(0.99 0.005 250);
+  --color-foreground: oklch(0.16 0.02 250);
+  --color-primary: oklch(0.55 0.21 255);
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+}
 ```
 
 ---
@@ -77,9 +94,9 @@ project-name/
 | File | Purpose |
 |------|---------|
 | `proxy.ts` | Next.js 16 Network boundary logic (auth, redirects) |
+| `src/app/globals.css` | Tailwind v4 `@import "tailwindcss"; @theme { ... }` design tokens |
 | `package.json` | Dependencies |
 | `tsconfig.json` | TypeScript + path aliases (`@/features/*`) |
-| `tailwind.config.ts` | Tailwind config |
 | `.env.example` | Environment template |
 | `README.md` | Project documentation |
 | `.gitignore` | Git ignore rules |

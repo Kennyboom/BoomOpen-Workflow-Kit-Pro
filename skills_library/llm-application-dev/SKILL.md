@@ -67,7 +67,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function chat(messages: Message[]): Promise<string> {
   const response = await openai.chat.completions.create({
-    model: 'gpt-4',
+    model: 'gpt-4.1',
     messages,
     temperature: 0.7,
     max_tokens: 500,
@@ -100,7 +100,7 @@ async function chat(prompt: string): Promise<string> {
 ```typescript
 async function* streamChat(prompt: string) {
   const stream = await openai.chat.completions.create({
-    model: 'gpt-4',
+    model: 'gpt-4.1',
     messages: [{ role: 'user', content: prompt }],
     stream: true,
   });

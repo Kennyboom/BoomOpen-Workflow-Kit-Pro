@@ -85,7 +85,7 @@ execution-mode: execute
    - Gate Wave 2: `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook verify-wave "<plan-path>" --wave 2 --git --run-verify` (route any fixes via warm `send_message` to `role#shard -> conversationId`).
 3. **Wave 2.5 — Spec-to-Code Reconciliation & Self-Completion (`commands/_ref/reconcile-loop.md`)**:
    - Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js reconcile <dir> --plan "<plan-path>" --strict --json` and spawn `spec-reconciler` (`agents/spec-reconciler.md`) to verify zero island shards (`REC-G1`), `/api/...` route parity (`REC-G2`), `[SC-*]` sub-clause coverage (`REC-G3`), `.env.example` parity (`REC-G4`), and reverse `30%–70%` spec coverage.
-   - Whenever `RECONCILE_DELTA` reports `gaps[]`, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook amend-plan "<plan-path>" --from-reconcile "<reconcile-path>"` and execute `Wave 2.5` delta shards (`integrator#wiring-1..k` / `{role}#delta-1..k`, up to `3` rounds) until `0` gaps remain.
+   - Whenever `RECONCILE_DELTA` reports `gaps[]`, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook amend-plan "<plan-path>" --from-reconcile "<reconcile-path>"` and execute `Wave 2.5` delta shards (`tech-lead#wiring-1` / `backend-engineer#wiring-1` / `frontend-engineer#wiring-1` / `{role}#delta-1..k`, up to `3` rounds) until `0` gaps remain.
 
 ---
 

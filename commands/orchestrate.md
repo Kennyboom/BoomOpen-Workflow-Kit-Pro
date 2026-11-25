@@ -31,6 +31,11 @@ $ARGUMENTS
 3. **Minimum 3 Specialist Agents & Cognitive Load Sharding Law (`≤ 3–4 OWNED_FILES` / shard)**:
    $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\left\lceil \frac{\text{Total Target Files}}{3.5} \right\rceil,\; \text{Distinct Domains},\; \text{Research Vectors}\right)\right)$$
 4. **Scoped Warm Session Reuse (`send_message`)**: Track every spawned shard in your **Active Sub-agent Session Registry (`role#shard -> conversationId`)** and reuse warm sessions via `send_message(Recipient: conversationId, Message: ...)` for follow-up waves and fix loops.
+5. **⚡ Antigravity 2.0 `run_workflow` Python Orchestration Templates**: When running on **Antigravity 2.0** and orchestrating high-fan-out multi-angle pipelines (`audit`, `review`, `research`), prefer invoking the shipped Python workflow scripts via Antigravity's native `run_workflow` tool:
+   - `run_workflow(ScriptPath="~/.gemini/config/skills/boomopen-workflow-kit/platforms/antigravity/workflows/audit_fanout.py", Description="4-lens parallel project audit fan-out", Args={"scope": "<target>"})`
+   - `run_workflow(ScriptPath="~/.gemini/config/skills/boomopen-workflow-kit/platforms/antigravity/workflows/review_fanout.py", Description="3-angle adversarial code/security/perf review", Args={"scope": "<target>"})`
+   - `run_workflow(ScriptPath="~/.gemini/config/skills/boomopen-workflow-kit/platforms/antigravity/workflows/research_fanout.py", Description="Wave 1 multi-angle scout + Wave 2 synthesis", Args={"topic": "<query>"})`
+   *(Resolve `~` to the user's home directory before passing `ScriptPath`; on Claude Code, Codex, Cursor, and Copilot, dispatch equivalent parallel `Task` / `spawn_agent` / `runSubagent` shards.)*
 
 ### Agent Selection Matrix
 
@@ -104,13 +109,13 @@ Every `invoke_subagent` or `send_message` call MUST include:
 
 ---
 
-## 👥 AVAILABLE CANONICAL AGENTS (21 Specialists — `Model: "inherit"`)
+## 👥 AVAILABLE CANONICAL AGENTS (22 Specialists — `Model: "inherit"`)
 
 | Category | Canonical Agents |
 |----------|------------------|
 | **Meta & Planning** | `tech-lead` (Architecture Audit & `:team` Arbitration), `planner` (`SHARED_CONTRACT` & 3-Wave `OWNED_FILES` Shards) |
 | **Execution** | `backend-engineer`, `frontend-engineer`, `database-architect`, `mobile-engineer`, `game-engineer` |
-| **Validation** | `tester`, `reviewer`, `security-engineer`, `performance-engineer`, `debugger` |
+| **Validation** | `tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer`, `debugger` |
 | **Discovery & Design** | `researcher`, `scouter`, `brainstormer`, `designer` |
 | **Support & Ops** | `docs-manager`, `devops-engineer`, `business-analyst`, `project-manager`, `reporter` |
 

@@ -2,13 +2,11 @@
 
 /**
  * Multi-Engine Conductor Primitives (`cli/conductor-engines.js`).
- *
- * Provides cross-platform CLI engine probing, non-interactive subprocess invocation
- * builders, Windows `.cmd`/`.bat` shell-safe execution, JSON/JSONL stdout unwrapping,
- * SHA-256 read-only file & directory snapshot/restore guards, and quota failover detection.
+ * Cross-platform CLI engine probing, sandboxed invocation builders, Windows `.cmd` execution &
+ * process-tree timeouts, JSON/JSONL unwrapping, and SHA-256 file/workspace snapshot guards.
  */
 
-const { spawn } = require('node:child_process');
+const { spawn, spawnSync } = require('node:child_process');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -26,6 +24,9 @@ const ROLE_AFFINITY_ORDER = {
   reviewer: ['codex', 'claude', 'antigravity', 'cursor', 'copilot'],
 };
 const QUOTA_ERROR_PATTERN = /\b(?:429|529)\b|rate[-_ ]?limit|quota exceeded|insufficient_quota|overloaded|too many requests|credit balance|usage limit/i;
+const WS_SKIP_DIRS = new Set(['.git', '.boomopen', 'node_modules', '.next', '.nuxt', '.turbo', '.cache', 'dist', 'build', 'coverage', 'skills_library', 'matrix-skills']);
+const MAX_WS_BUFFER_BYTES = 2 * 1024 * 1024;
+const hashBuffer = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
 
 function normalizeEngineName(raw) {
   if (!raw || typeof raw !== 'string') return null;
@@ -33,40 +34,43 @@ function normalizeEngineName(raw) {
   return SUPPORTED_ENGINES.includes(mapped) ? mapped : null;
 }
 
+function resolveEnvVar(env, upperName, mixedName) {
+  if (!env || typeof env !== 'object') return '';
+  if (Object.prototype.hasOwnProperty.call(env, upperName)) return String(env[upperName] ?? '');
+  return Object.prototype.hasOwnProperty.call(env, mixedName) ? String(env[mixedName] ?? '') : '';
+}
+
+function resolveWinExts(env) {
+  const parsed = resolveEnvVar(env, 'PATHEXT', 'Pathext').split(';').map((e) => e.trim().toLowerCase()).filter((e) => e.startsWith('.'));
+  return parsed.length > 0 ? parsed : ['.exe', '.cmd', '.bat'];
+}
+
 function findExecutableOnPath(binName, env = process.env, platform = process.platform) {
   if (!binName || typeof binName !== 'string') return null;
-  if ((binName.includes('/') || binName.includes('\\')) && fs.existsSync(binName)) {
-    try { if (fs.statSync(binName).isFile()) return binName; } catch { /* fall through */ }
+  const exts = platform === 'win32' ? (path.win32.extname(binName) !== '' ? [''] : resolveWinExts(env)) : [''];
+  if (binName.includes('/') || binName.includes('\\')) {
+    for (const ext of exts) {
+      try { if (fs.statSync(`${binName}${ext}`, { throwIfNoEntry: false })?.isFile()) return `${binName}${ext}`; } catch { /* ignore */ }
+    }
   }
-  const dirs = (env.PATH || env.Path || '').split(platform === 'win32' ? ';' : ':').filter(Boolean);
-  const exts = platform === 'win32' ? (path.extname(binName) !== '' ? [''] : ['.exe', '.cmd', '.bat']) : [''];
+  const dirs = resolveEnvVar(env, 'PATH', 'Path').split(platform === 'win32' ? ';' : ':').filter(Boolean);
   for (const dir of dirs) {
     for (const ext of exts) {
       const candidate = path.join(dir, `${binName}${ext}`);
-      try {
-        const stat = fs.statSync(candidate, { throwIfNoEntry: false });
-        if (stat && stat.isFile()) return candidate;
-      } catch { /* ignore unreadable PATH entries */ }
+      try { if (fs.statSync(candidate, { throwIfNoEntry: false })?.isFile()) return candidate; } catch { /* ignore */ }
     }
   }
   return null;
 }
 
-function quoteWinCmdArg(arg) {
-  const escaped = String(arg)
-    .replace(/(\\*)"/g, '$1$1""')
-    .replace(/(\\+)$/, '$1$1')
-    .replace(/%/g, '%%');
-  return `"${escaped}"`;
-}
+const quoteWinCmdArg = (arg) => `"${String(arg).replace(/(\\*)"/g, '$1$1""').replace(/(\\+)$/, '$1$1').replace(/%/g, '%%')}"`;
 
 function resolveSpawnTarget(command, args = [], env = process.env, platform = process.platform) {
   if (platform !== 'win32' || !command) return { command, args, shell: false, windowsVerbatimArguments: false };
   const resolved = findExecutableOnPath(command, env, platform) || command;
   if (/\.(?:cmd|bat)$/i.test(resolved)) {
     try {
-      const shimText = fs.readFileSync(resolved, 'utf8');
-      const m = /(?:%dp0%|%~dp0)[\\/]([^"\r\n]+?\.(?:[cm]?js))\b/i.exec(shimText);
+      const m = /(?:%dp0%|%~dp0)[\\/]?([^"\r\n]+?\.(?:[cm]?js))\b/i.exec(fs.readFileSync(resolved, 'utf8'));
       if (m) {
         const jsPath = path.resolve(path.dirname(resolved), m[1].replace(/[\\/]+/g, path.sep));
         if (fs.existsSync(jsPath) && fs.statSync(jsPath).isFile()) {
@@ -82,9 +86,7 @@ function resolveSpawnTarget(command, args = [], env = process.env, platform = pr
 
 function probeEngines(options = {}) {
   const mockProbes = options.mockProbes && typeof options.mockProbes === 'object' ? options.mockProbes : null;
-  const env = options.env || process.env;
-  const platform = options.platform || process.platform;
-  const probes = {};
+  const [env, platform, probes] = [options.env || process.env, options.platform || process.platform, {}];
   for (const engine of SUPPORTED_ENGINES) {
     const fallbackMode = engine === 'cursor' || engine === 'copilot' ? 'queue' : 'cli';
     if (mockProbes) {
@@ -93,11 +95,10 @@ function probeEngines(options = {}) {
       probes[engine] = { available: Boolean(mock.available), bin, resolvedPath: mock.resolvedPath || bin, family: ENGINE_FAMILY[engine], fallbackMode };
       continue;
     }
-    let resolvedBin = null;
-    let resolvedPath = null;
-    for (const candidate of ENGINE_BIN_CANDIDATES[engine]) {
-      const found = findExecutableOnPath(candidate, env, platform);
-      if (found) { resolvedBin = candidate; resolvedPath = found; break; }
+    let [resolvedBin, resolvedPath] = [null, null];
+    for (const cand of ENGINE_BIN_CANDIDATES[engine]) {
+      const found = findExecutableOnPath(cand, env, platform);
+      if (found) { resolvedBin = cand; resolvedPath = found; break; }
     }
     probes[engine] = { available: Boolean(resolvedBin), bin: resolvedBin, resolvedPath, family: ENGINE_FAMILY[engine], fallbackMode };
   }
@@ -109,30 +110,37 @@ function resolveCrossFamilyEngine(authorEngine, installedEngines = [], role = 'r
   const authorFamily = normAuthor ? ENGINE_FAMILY[normAuthor] : null;
   const affinity = ROLE_AFFINITY_ORDER[role] || SUPPORTED_ENGINES;
   const availableSet = new Set(installedEngines.map(normalizeEngineName).filter(Boolean));
-  for (const candidate of affinity) {
-    if (availableSet.has(candidate) && (!authorFamily || ENGINE_FAMILY[candidate] !== authorFamily)) return candidate;
-  }
-  for (const candidate of affinity) if (availableSet.has(candidate)) return candidate;
+  for (const cand of affinity) if (availableSet.has(cand) && (!authorFamily || ENGINE_FAMILY[cand] !== authorFamily)) return cand;
+  for (const cand of affinity) if (availableSet.has(cand)) return cand;
   return normAuthor || 'claude';
 }
 
 function buildEngineInvocation(engine, promptFilePath, options = {}) {
   const norm = normalizeEngineName(engine);
   if (!norm) throw new Error(`Unsupported engine "${engine}"`);
-  const readOnly = Boolean(options.readOnly);
-  const available = options.available !== undefined ? Boolean(options.available) : true;
+  const [readOnly, available] = [Boolean(options.readOnly), options.available !== undefined ? Boolean(options.available) : true];
   const bin = options.bin || ENGINE_BIN_CANDIDATES[norm][0];
   const instruction = `Read and strictly execute the task in "${promptFilePath}"`;
 
   if (norm === 'claude') {
-    const perm = readOnly ? ['--allowedTools', 'Read,Grep,Glob,WebSearch,WebFetch'] : ['--dangerously-skip-permissions'];
-    return { engine: norm, command: bin, args: ['-p', instruction, '--output-format', 'json', ...perm], mode: 'cli', readOnly };
+    const args = readOnly
+      ? ['-p', instruction, '--output-format', 'json', '--permission-mode', 'plan', '--disallowedTools', 'Write,Edit,Bash,PowerShell,NotebookEdit', '--allowedTools', 'Read,Grep,Glob,WebSearch,WebFetch', '--no-session-persistence']
+      : ['-p', instruction, '--output-format', 'json', '--dangerously-skip-permissions', '--no-session-persistence'];
+    return { engine: norm, command: bin, args, mode: 'cli', readOnly };
   }
   if (norm === 'codex') {
-    return { engine: norm, command: bin, args: ['exec', '--full-auto', '--json', '-s', readOnly ? 'read-only' : 'workspace-write', instruction], mode: 'cli', readOnly };
+    const args = readOnly
+      ? ['exec', '--ephemeral', '--json', '-s', 'read-only', '-c', 'approval_policy="never"', instruction]
+      : ['exec', '--ephemeral', '--full-auto', '--json', '-s', 'workspace-write', instruction];
+    return { engine: norm, command: bin, args, mode: 'cli', readOnly };
   }
   if (norm === 'antigravity') {
-    return { engine: norm, command: bin, args: ['-p', instruction, '--mode', 'auto', '--output-format', 'json'], mode: 'cli', readOnly };
+    const binBase = path.win32.basename(String(bin)).toLowerCase();
+    const isGemini = binBase === 'gemini' || /^gemini\.(?:cmd|exe|bat)$/.test(binBase);
+    const args = isGemini
+      ? ['-p', instruction, '--output-format', 'json', ...(readOnly ? ['--approval-mode', 'plan'] : ['-y'])]
+      : (readOnly ? ['-p', instruction, '--mode', 'plan', '--sandbox', '--output-format', 'json'] : ['-p', instruction, '--mode', 'auto', '--dangerously-skip-permissions', '--output-format', 'json']);
+    return { engine: norm, command: bin, args, mode: 'cli', readOnly };
   }
   if (!available) return { engine: norm, command: null, args: [], mode: 'queue', queueFile: options.queueFile || null, readOnly };
   return { engine: norm, command: bin, args: norm === 'cursor' ? ['-p', instruction] : ['-p', instruction, '-s'], mode: 'cli', readOnly };
@@ -160,8 +168,8 @@ function extractJsonMessageText(obj) {
   return null;
 }
 
-function unwrapEngineStdout(_engine, rawStdout) {
-  const raw = String(rawStdout || '');
+function unwrapEngineStdout(engine, rawStdout) {
+  const [norm, raw] = [normalizeEngineName(engine), String(rawStdout || '')];
   const trimmed = raw.trim();
   if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return raw;
   try {
@@ -169,47 +177,45 @@ function unwrapEngineStdout(_engine, rawStdout) {
     const single = extractJsonMessageText(parsed);
     if (single !== null) return single;
     if (Array.isArray(parsed)) {
-      const joined = parsed.map(extractJsonMessageText).filter(Boolean).join('\n\n');
-      if (joined) return joined;
+      const agentMsgs = parsed.filter((o) => o?.item?.type === 'agent_message').map(extractJsonMessageText).filter((t) => t && t.trim());
+      if (agentMsgs.length) return agentMsgs[agentMsgs.length - 1];
+      const texts = parsed.map(extractJsonMessageText).filter((t) => t && t.trim());
+      if (texts.length) return norm === 'codex' ? texts[texts.length - 1] : texts.join('\n\n');
     }
     return raw;
   } catch {
     const lines = trimmed.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
     if (!lines.every((l) => l.startsWith('{'))) return raw;
-    const chunks = [];
+    const [agentMsgs, chunks] = [[], []];
     for (const line of lines) {
       try {
-        const txt = extractJsonMessageText(JSON.parse(line));
-        if (txt) chunks.push(txt);
+        const obj = JSON.parse(line);
+        const txt = extractJsonMessageText(obj);
+        if (txt && txt.trim()) { chunks.push(txt); if (obj?.item?.type === 'agent_message') agentMsgs.push(txt); }
       } catch { return raw; }
     }
-    return chunks.join('\n\n');
+    return agentMsgs.length > 0 ? agentMsgs[agentMsgs.length - 1] : (norm === 'codex' ? (chunks[chunks.length - 1] || '') : chunks.join('\n\n'));
   }
 }
 
-function hashBuffer(buf) {
-  return crypto.createHash('sha256').update(buf).digest('hex');
-}
-
-function walkDirTree(rootDir, prefix = '', files = new Map(), dirs = new Set()) {
+function walkDirTree(rootDir, prefix = '', files = new Map(), dirs = new Set(), skipSet = null) {
+  if (!fs.existsSync(rootDir)) return { files, dirs };
   for (const entry of fs.readdirSync(rootDir, { withFileTypes: true })) {
+    if (skipSet && skipSet.has(entry.name)) continue;
     const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
     const abs = path.join(rootDir, entry.name);
-    if (entry.isDirectory()) {
-      dirs.add(rel);
-      walkDirTree(abs, rel, files, dirs);
-    } else if (entry.isFile()) {
-      const buffer = fs.readFileSync(abs);
-      files.set(rel, { absPath: abs, sha256: hashBuffer(buffer), buffer });
+    if (entry.isDirectory()) { dirs.add(rel); walkDirTree(abs, rel, files, dirs, skipSet); }
+    else if (entry.isFile()) {
+      const stat = fs.statSync(abs);
+      const buffer = stat.size <= MAX_WS_BUFFER_BYTES || !skipSet ? fs.readFileSync(abs) : null;
+      files.set(rel, { absPath: abs, sha256: buffer ? hashBuffer(buffer) : hashBuffer(fs.readFileSync(abs)), buffer });
     }
   }
   return { files, dirs };
 }
 
 function ensureFileTargetReady(absPath) {
-  if (fs.existsSync(absPath) && !fs.lstatSync(absPath).isFile()) {
-    fs.rmSync(absPath, { recursive: true, force: true });
-  }
+  if (fs.existsSync(absPath) && !fs.lstatSync(absPath).isFile()) fs.rmSync(absPath, { recursive: true, force: true });
   fs.mkdirSync(path.dirname(absPath), { recursive: true });
 }
 
@@ -226,9 +232,8 @@ function captureReadOnlySnapshot(cwd, relPaths = []) {
         continue;
       }
       if (stat.isDirectory()) {
-        const normRel = relPath.replace(/\\/g, '/').replace(/\/+$/, '');
         const { files, dirs } = walkDirTree(absPath);
-        snapshot.push({ kind: 'dir', relPath: normRel, absPath, existed: true, files, existingDirs: dirs });
+        snapshot.push({ kind: 'dir', relPath: relPath.replace(/\\/g, '/').replace(/\/+$/, ''), absPath, existed: true, files, existingDirs: dirs });
         continue;
       }
     }
@@ -237,93 +242,100 @@ function captureReadOnlySnapshot(cwd, relPaths = []) {
   return snapshot;
 }
 
+function restoreDirTreeSnapshot(absRoot, prefixLabel, savedFiles, savedDirs, pushViolation, skipSet = null) {
+  const current = walkDirTree(absRoot, '', new Map(), new Set(), skipSet);
+  const fmt = (rel) => (prefixLabel ? `${prefixLabel}/${rel}` : rel);
+  for (const [rel, cur] of current.files.entries()) if (!savedFiles.has(rel)) { fs.rmSync(cur.absPath, { force: true }); pushViolation(fmt(rel)); }
+  const existingDirs = savedDirs instanceof Set ? savedDirs : new Set(savedDirs || []);
+  for (const relDir of [...current.dirs].filter((d) => !existingDirs.has(d)).sort((a, b) => b.length - a.length)) {
+    fs.rmSync(path.join(absRoot, relDir), { recursive: true, force: true }); pushViolation(fmt(relDir));
+  }
+  for (const relDir of existingDirs) fs.mkdirSync(path.join(absRoot, relDir), { recursive: true });
+  for (const [rel, saved] of savedFiles.entries()) {
+    const cur = current.files.get(rel);
+    if (!cur || cur.sha256 !== saved.sha256 || !fs.existsSync(saved.absPath) || !fs.lstatSync(saved.absPath).isFile()) {
+      if (saved.buffer !== null) { ensureFileTargetReady(saved.absPath); fs.writeFileSync(saved.absPath, saved.buffer); }
+      pushViolation(fmt(rel));
+    }
+  }
+}
+
 function verifyAndRestoreReadOnlySnapshot(_cwd, snapshot = []) {
   const violations = [];
   const pushViolation = (v) => { if (!violations.includes(v)) violations.push(v); };
   for (const entry of snapshot) {
     if (entry.kind === 'dir') {
       if (!fs.existsSync(entry.absPath) || !fs.lstatSync(entry.absPath).isDirectory()) {
-        fs.rmSync(entry.absPath, { recursive: true, force: true });
-        fs.mkdirSync(entry.absPath, { recursive: true });
+        fs.rmSync(entry.absPath, { recursive: true, force: true }); fs.mkdirSync(entry.absPath, { recursive: true });
       }
-      const current = walkDirTree(entry.absPath);
-      for (const [rel, cur] of current.files.entries()) {
-        if (!entry.files.has(rel)) { fs.rmSync(cur.absPath, { force: true }); pushViolation(`${entry.relPath}/${rel}`); }
-      }
-      const existingDirs = entry.existingDirs instanceof Set ? entry.existingDirs : new Set(entry.existingDirs || []);
-      const rogueDirs = [...current.dirs].filter((d) => !existingDirs.has(d)).sort((a, b) => b.length - a.length);
-      for (const relDir of rogueDirs) {
-        fs.rmSync(path.join(entry.absPath, relDir), { recursive: true, force: true });
-        pushViolation(`${entry.relPath}/${relDir}`);
-      }
-      for (const relDir of existingDirs) fs.mkdirSync(path.join(entry.absPath, relDir), { recursive: true });
-      for (const [rel, saved] of entry.files.entries()) {
-        const cur = current.files.get(rel);
-        if (!cur || cur.sha256 !== saved.sha256 || !fs.existsSync(saved.absPath) || !fs.lstatSync(saved.absPath).isFile()) {
-          ensureFileTargetReady(saved.absPath);
-          fs.writeFileSync(saved.absPath, saved.buffer);
-          pushViolation(`${entry.relPath}/${rel}`);
-        }
-      }
-      continue;
-    }
-    if (entry.existed) {
-      const existsFile = fs.existsSync(entry.absPath) && fs.lstatSync(entry.absPath).isFile();
-      if (!existsFile || hashBuffer(fs.readFileSync(entry.absPath)) !== entry.sha256) {
-        ensureFileTargetReady(entry.absPath);
-        fs.writeFileSync(entry.absPath, entry.buffer);
-        pushViolation(entry.relPath);
+      restoreDirTreeSnapshot(entry.absPath, entry.relPath, entry.files, entry.existingDirs, pushViolation, null);
+    } else if (entry.existed) {
+      if (!fs.existsSync(entry.absPath) || !fs.lstatSync(entry.absPath).isFile() || hashBuffer(fs.readFileSync(entry.absPath)) !== entry.sha256) {
+        ensureFileTargetReady(entry.absPath); fs.writeFileSync(entry.absPath, entry.buffer); pushViolation(entry.relPath);
       }
     } else if (fs.existsSync(entry.absPath)) {
-      fs.rmSync(entry.absPath, { recursive: true, force: true });
-      pushViolation(entry.relPath);
+      fs.rmSync(entry.absPath, { recursive: true, force: true }); pushViolation(entry.relPath);
     }
   }
   return { restored: violations.length > 0, violations };
 }
 
-function isQuotaOrRateLimitError(text = '', exitCode = 0) {
-  return exitCode !== 0 && QUOTA_ERROR_PATTERN.test(String(text));
+function captureWorkspaceDigest(cwd) {
+  const absRoot = path.resolve(cwd || process.cwd());
+  const { files, dirs } = walkDirTree(absRoot, '', new Map(), new Set(), WS_SKIP_DIRS);
+  return { root: absRoot, files, dirs };
 }
+
+function verifyWorkspaceDigest(cwd, digest, options = {}) {
+  const absRoot = digest?.root || path.resolve(cwd || process.cwd());
+  if (!digest || !fs.existsSync(absRoot)) return { clean: true, restored: false, violations: [] };
+  const violations = [];
+  const pushViolation = (v) => { if (!violations.includes(v)) violations.push(v); };
+  if (options.restore !== false) restoreDirTreeSnapshot(absRoot, '', digest.files, digest.dirs, pushViolation, WS_SKIP_DIRS);
+  else {
+    const current = walkDirTree(absRoot, '', new Map(), new Set(), WS_SKIP_DIRS);
+    for (const rel of current.files.keys()) if (!digest.files.has(rel)) pushViolation(rel);
+    for (const [rel, saved] of digest.files.entries()) if (!current.files.get(rel) || current.files.get(rel).sha256 !== saved.sha256) pushViolation(rel);
+  }
+  return { clean: violations.length === 0, restored: options.restore !== false && violations.length > 0, violations };
+}
+
+const isQuotaOrRateLimitError = (text = '', exitCode = 0) => exitCode !== 0 && QUOTA_ERROR_PATTERN.test(String(text));
 
 async function executeEngineSubprocess(engine, invocation, options = {}) {
   const start = Date.now();
   if (invocation.mode === 'queue') {
-    if (invocation.queueFile && options.promptText) {
-      fs.mkdirSync(path.dirname(invocation.queueFile), { recursive: true });
-      fs.writeFileSync(invocation.queueFile, options.promptText, 'utf8');
-    }
+    if (invocation.queueFile && options.promptText) { fs.mkdirSync(path.dirname(invocation.queueFile), { recursive: true }); fs.writeFileSync(invocation.queueFile, options.promptText, 'utf8'); }
     const msg = `Queued handoff packet for ${engine}${invocation.queueFile ? ` at ${invocation.queueFile}` : ''}`;
     return { ok: true, queued: true, engine, exitCode: 0, stdout: msg, rawStdout: '', stderr: '', isQuotaError: false, durationMs: Date.now() - start };
   }
   if (typeof options.mockRunner === 'function') {
     const res = await options.mockRunner(engine, invocation, options);
-    const exitCode = res.exitCode ?? (res.ok === false ? 1 : 0);
-    const rawStdout = res.stdout || '';
+    const [exitCode, rawStdout] = [res.exitCode ?? (res.ok === false ? 1 : 0), res.stdout || ''];
     return {
-      ok: res.ok !== undefined ? Boolean(res.ok) : exitCode === 0,
-      queued: false, engine, exitCode, stdout: unwrapEngineStdout(engine, rawStdout), rawStdout, stderr: res.stderr || '',
-      isQuotaError: Boolean(res.isQuotaError ?? isQuotaOrRateLimitError(`${rawStdout}\n${res.stderr || ''}`, exitCode)),
-      durationMs: res.durationMs ?? Date.now() - start,
+      ok: res.ok !== undefined ? Boolean(res.ok) : exitCode === 0, queued: false, engine, exitCode,
+      stdout: unwrapEngineStdout(engine, rawStdout), rawStdout, stderr: res.stderr || '',
+      isQuotaError: Boolean(res.isQuotaError ?? isQuotaOrRateLimitError(`${rawStdout}\n${res.stderr || ''}`, exitCode)), durationMs: res.durationMs ?? Date.now() - start,
     };
   }
-  const timeoutMs = options.timeoutMs || 300_000;
+  const [timeoutMs, runPlatform] = [options.timeoutMs || 300_000, options.platform || process.platform];
   const env = { ...process.env, ...(options.env || {}), CI: 'true', GIT_TERMINAL_PROMPT: '0', CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1' };
-  const target = resolveSpawnTarget(invocation.command, invocation.args, env, options.platform || process.platform);
+  const target = resolveSpawnTarget(invocation.command, invocation.args, env, runPlatform);
   return new Promise((resolve) => {
     let child;
     try {
-      child = spawn(target.command, target.args, {
-        cwd: options.cwd || process.cwd(), stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true,
-        shell: target.shell, windowsVerbatimArguments: Boolean(target.windowsVerbatimArguments), env,
-      });
+      child = spawn(target.command, target.args, { cwd: options.cwd || process.cwd(), stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, shell: target.shell, windowsVerbatimArguments: Boolean(target.windowsVerbatimArguments), env });
     } catch (err) {
       const errText = err instanceof Error ? err.message : String(err);
       resolve({ ok: false, queued: false, engine, exitCode: 127, stdout: '', rawStdout: '', stderr: errText, isQuotaError: isQuotaOrRateLimitError(errText, 127), durationMs: Date.now() - start });
       return;
     }
     let [rawStdout, stderr, timedOut] = ['', '', false];
-    const timer = setTimeout(() => { timedOut = true; child.kill('SIGTERM'); }, timeoutMs);
+    const timer = setTimeout(() => {
+      timedOut = true;
+      if (runPlatform === 'win32' && child.pid) { try { spawnSync('taskkill', ['/T', '/F', '/PID', String(child.pid)], { stdio: 'ignore', windowsHide: true }); } catch { /* ignore */ } }
+      try { child.kill('SIGTERM'); } catch { /* ignore */ }
+    }, timeoutMs);
     child.stdout.on('data', (chunk) => (rawStdout += chunk.toString('utf8')));
     child.stderr.on('data', (chunk) => (stderr += chunk.toString('utf8')));
     child.on('error', (err) => {
@@ -346,5 +358,6 @@ async function executeEngineSubprocess(engine, invocation, options = {}) {
 module.exports = {
   SUPPORTED_ENGINES, ENGINE_ALIASES, ENGINE_FAMILY, ROLE_AFFINITY_ORDER, normalizeEngineName,
   findExecutableOnPath, resolveSpawnTarget, probeEngines, resolveCrossFamilyEngine, buildEngineInvocation,
-  unwrapEngineStdout, captureReadOnlySnapshot, verifyAndRestoreReadOnlySnapshot, isQuotaOrRateLimitError, executeEngineSubprocess,
+  unwrapEngineStdout, captureReadOnlySnapshot, verifyAndRestoreReadOnlySnapshot, captureWorkspaceDigest,
+  verifyWorkspaceDigest, isQuotaOrRateLimitError, executeEngineSubprocess,
 };

@@ -187,8 +187,27 @@ test('user edits to kit-tagged lines survive reinstall and uninstall; block edit
   assert.ok(again.notes.some((note) => /multi_agent is disabled/.test(note)));
 
   assert.equal(isManagedBlockEdited(installed), false);
-  assert.equal(isManagedBlockEdited(installed.replace('max_threads = 6', 'max_threads = 99')), true);
+  assert.equal(isManagedBlockEdited(installed.replace('max_threads = 8', 'max_threads = 99')), true);
   assert.match(installed, /do not edit inside this block/);
+});
+
+test('mergeCodexConfigText syncs max_threads from execution.maxParallelSubagents (default 8) and Codex TOMLs enforce read-only & high effort', () => {
+  const defaultMerged = mergeCodexConfigText('', TEMPLATE).text;
+  assert.match(defaultMerged, /^max_threads = 8$/m);
+  const customMerged = mergeCodexConfigText('', TEMPLATE, { settings: { execution: { maxParallelSubagents: 12 } } }).text;
+  assert.match(customMerged, /^max_threads = 12$/m);
+
+  const agentsDir = path.join(__dirname, '..', 'platforms', 'codex', 'agents');
+  const readOnlyRoles = ['reviewer', 'security-engineer', 'performance-engineer', 'debugger', 'spec-reconciler', 'scouter', 'business-analyst'];
+  for (const role of readOnlyRoles) {
+    const toml = fs.readFileSync(path.join(agentsDir, `${role}.toml`), 'utf8');
+    assert.match(toml, /^sandbox_mode = "read-only"$/m, `${role}.toml should be read-only`);
+  }
+  const upgradedRoles = ['scouter', 'business-analyst', 'docs-manager', 'project-manager', 'reporter'];
+  for (const role of upgradedRoles) {
+    const toml = fs.readFileSync(path.join(agentsDir, `${role}.toml`), 'utf8');
+    assert.match(toml, /^model_reasoning_effort = "high"$/m, `${role}.toml should use high reasoning effort`);
+  }
 });
 
 test('a BOM-prefixed config.toml keeps its BOM at the start and un-merges byte-for-byte', () => {

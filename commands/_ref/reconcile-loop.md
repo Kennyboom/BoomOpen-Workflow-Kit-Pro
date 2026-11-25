@@ -44,9 +44,9 @@ While `RECONCILE_DELTA` (or `boomopen reconcile --json`) reports **`gaps.length 
    node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook amend-plan "<plan-path>" --from-reconcile "<reconcile-md-or-json-path>"
    node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook packets "<plan-path>" --wave 2.5
    ```
-   - `amend-plan` groups target files into disjoint `<= 4 OWNED_FILES` shards (`integrator#wiring-1..k` for cross-module parent wiring / route / `.env.example` fixes, and `{role}#delta-1..k` for missing domain sub-clauses) and validates the amended plan via `validatePlan` with zero `PLAN-G3` / `COOK-G1` collisions.
+   - `amend-plan` groups target files into disjoint `<= 4 OWNED_FILES` shards (`tech-lead#wiring-1` / `backend-engineer#wiring-1` / `frontend-engineer#wiring-1` for cross-module parent wiring / route / `.env.example` fixes, and `{role}#delta-1..k` for missing domain sub-clauses) and validates the amended plan via `validatePlan` with zero `PLAN-G3` / `COOK-G1` collisions.
 2. **Execute Delta Shards in Parallel (Warm Reuse First)**:
-   - Reuse existing warm `{role#shard}` `conversationId`s via `send_message` when target files match an active domain shard, or spawn `integrator#wiring-1..k` (`TypeName: "self"`, `Model: "inherit"`) when wiring parent entrypoints (`app.ts`, router, `page.tsx`, `layout.tsx`) across shards.
+   - Reuse existing warm `{role#shard}` `conversationId`s via `send_message` when target files match an active domain shard, or spawn `tech-lead#wiring-1` / `backend-engineer#wiring-1` / `frontend-engineer#wiring-1` (`TypeName: "self"`, `Model: "inherit"`) when wiring parent entrypoints (`app.ts`, router, `page.tsx`, `layout.tsx`) across shards.
    - Each delta shard implements 100% real production code + behavioral tests (`[SC-xxx]` / `AC` tagged, `0` stubs/TODOs) within its `OWNED_FILES`.
 3. **Verify Delta Wave & Re-Run Deterministic Reconcile**:
    ```bash

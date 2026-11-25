@@ -413,3 +413,124 @@ test('api_validator skips frontend user.api.ts clients, accepts Response.json, a
   assert.equal(info.autopilot_ledger.project, 'demo-app');
   assert.equal(info.autopilot_ledger.phases_completed, 1);
 });
+
+const HAS_TYPE_COVERAGE = fs.existsSync(kitScript('skills_library/lint-and-validate/scripts/type_coverage.py'));
+
+test('type_coverage uses AST without double-counting Python defs, strips TS comments/strings, removes 30-file cap, and enforces Tier 1 zero-any', { skip: SKIP || (!HAS_TYPE_COVERAGE && 'skills_library not available') }, (t) => {
+  const pyDir = withTemp(t, 'boomopen-py-typecov-');
+  for (let i = 0; i < 35; i += 1) {
+    write(path.join(pyDir, `mod_${i}.py`), `def f_${i}(x: int) -> int:\n    return x + ${i}\n`);
+  }
+  write(path.join(pyDir, 'tests', 'test_untyped.py'), 'def test_raw(a, b):\n    return a + b\n');
+  const pyRun = runPython(t, kitScript('skills_library/lint-and-validate/scripts/type_coverage.py'), [pyDir, '--json']);
+  assert.equal(pyRun.status, 0, pyRun.out);
+  const pyReport = JSON.parse(pyRun.out);
+  const pyStats = pyReport.results.find((r) => r.type === 'python');
+  assert.equal(pyStats.files, 35, 'must scan all 35 .py files without 30-file cap and skip tests/');
+  assert.equal(pyStats.stats.typed_functions, 35, 'def f(x: int) -> int must count as 1 typed function, not 2');
+  assert.equal(pyStats.stats.untyped_functions, 0);
+
+  const tsCleanDir = withTemp(t, 'boomopen-ts-typecov-clean-');
+  write(
+    path.join(tsCleanDir, 'service.ts'),
+    [
+      '// Note: never use value: any or x as any here',
+      'const doc = "example: any or foo as any";',
+      'export function greet(name: string): string { return `${doc}: ${name}`; }',
+      '',
+    ].join('\n')
+  );
+  write(path.join(tsCleanDir, 'service.test.ts'), 'const mockVal: any = 123;\n');
+  const tsClean = runPython(t, kitScript('skills_library/lint-and-validate/scripts/type_coverage.py'), [tsCleanDir, '--json']);
+  assert.equal(tsClean.status, 0, tsClean.out);
+  assert.equal(JSON.parse(tsClean.out).results[0].stats.any_count, 0);
+
+  const tsBadDir = withTemp(t, 'boomopen-ts-typecov-bad-');
+  write(path.join(tsBadDir, 'bad.ts'), 'export function parse(input: any): string { return String(input); }\n');
+  const tsBad = runPython(t, kitScript('skills_library/lint-and-validate/scripts/type_coverage.py'), [tsBadDir, '--json']);
+  assert.equal(tsBad.status, 1, 'even 1 explicit any must fail under BoomOpen Tier 1');
+  assert.equal(JSON.parse(tsBad.out).passed, false);
+});
+
+test('accessibility_checker and ux_audit exclude test files/dirs and accessibility_checker has no 50-file cap', { skip: SKIP }, (t) => {
+  const project = withTemp(t, 'boomopen-py-ui-notests-');
+  for (let i = 0; i < 60; i += 1) {
+    write(path.join(project, 'src', `Item${i}.tsx`), `export const Item${i} = () => <button type="button">Item ${i}</button>;\n`);
+  }
+  write(path.join(project, 'src', 'Broken61.tsx'), 'export const Broken = () => <button onClick={fn}></button>;\n');
+  const cappedCheck = runPython(t, kitScript('skills/frontend-design/scripts/accessibility_checker.py'), [project, '--json']);
+  assert.equal(cappedCheck.status, 1, 'must scan past 50 files and catch Broken61.tsx');
+  assert.equal(JSON.parse(cappedCheck.out).files_checked, 61);
+
+  fs.unlinkSync(path.join(project, 'src', 'Broken61.tsx'));
+  write(path.join(project, 'src', 'Button.test.tsx'), 'export const T = () => <button onClick={fn}></button>;\n');
+  write(path.join(project, '__tests__', 'Fixture.tsx'), 'export const F = () => <div onClick={fn}><img src="/x.png" /></div>;\n');
+
+  const a11yClean = runPython(t, kitScript('skills/frontend-design/scripts/accessibility_checker.py'), [project, '--json']);
+  assert.equal(a11yClean.status, 0, a11yClean.out);
+  assert.equal(JSON.parse(a11yClean.out).files_checked, 60);
+
+  const uxClean = runPython(t, kitScript('skills/frontend-design/scripts/ux_audit.py'), [project, '--json']);
+  assert.equal(uxClean.status, 0, uxClean.out);
+  assert.equal(JSON.parse(uxClean.out).files_checked, 60);
+});
+
+test('test_runner detects .test.ts and .spec.ts files', { skip: SKIP }, (t) => {
+  const project = withTemp(t, 'boomopen-py-ts-tests-');
+  write(
+    path.join(project, 'math.test.ts'),
+    "import test from 'node:test';\nimport assert from 'node:assert/strict';\ntest('adds', () => { assert.equal(1 + 1, 2); });\n"
+  );
+  const { status, out } = runPython(t, kitScript('skills/testing-patterns/scripts/test_runner.py'), [project, '--json']);
+  const report = JSON.parse(out);
+  assert.equal(report.skipped, false, 'must detect .test.ts instead of skipping');
+  assert.equal(report.framework, 'node --test');
+  assert.equal(status, 0, out);
+});
+
+test('playwright_runner uses uv/npx hints and auto-detects Node playwright.config.ts when Python playwright is absent', { skip: SKIP }, (t) => {
+  const emptyDir = withTemp(t, 'boomopen-py-pw-empty-');
+  const noCfg = runPython(t, kitScript('skills/webapp-testing/scripts/playwright_runner.py'), ['http://127.0.0.1:9', '--project', emptyDir]);
+  if (noCfg.out.includes('Playwright not installed')) {
+    assert.equal(noCfg.status, 1);
+    assert.doesNotMatch(noCfg.out, /pip install/);
+    assert.match(noCfg.out, /uv run|npx playwright/);
+
+    const nodeProj = withTemp(t, 'boomopen-py-pw-node-');
+    write(path.join(nodeProj, 'playwright.config.ts'), 'export default {};\n');
+    const binDir = path.join(nodeProj, 'node_modules', '.bin');
+    fs.mkdirSync(binDir, { recursive: true });
+    write(path.join(binDir, 'fake_pw.py'), 'import sys\nprint("1 passed")\nsys.exit(0)\n');
+    const pyExe = spawnSync(PYTHON[0], [...PYTHON.slice(1), '-c', 'import sys; print(sys.executable)'], { encoding: 'utf8' }).stdout.trim();
+    write(path.join(binDir, 'playwright.cmd'), `@"${pyExe}" -B "${path.join(binDir, 'fake_pw.py')}" %*\r\n`);
+    fs.writeFileSync(path.join(binDir, 'playwright'), `#!/bin/sh\nexec "${pyExe}" -B "${path.join(binDir, 'fake_pw.py')}" "$@"\n`, { mode: 0o755 });
+
+    const autoSuite = runPython(t, kitScript('skills/webapp-testing/scripts/playwright_runner.py'), ['http://127.0.0.1:3000', '--project', nodeProj]);
+    assert.equal(autoSuite.status, 0, autoSuite.out);
+    assert.equal(JSON.parse(autoSuite.out).runner, 'node-playwright-test');
+  }
+});
+
+test('checklist and verify_all gracefully skip optional skills_library checks when skills_library/ is not bundled', { skip: SKIP }, (t) => {
+  const passScript = 'print("ok")\n';
+  const skipScript = 'print("[SKIP] nothing")\n';
+  const kit = buildFakeKit(t, {
+    'skills/security-auditor/scripts/security_scan.py': passScript,
+    'skills/api-patterns/scripts/api_validator.py': skipScript,
+    'skills/database-design/scripts/schema_validator.py': skipScript,
+    'skills/testing-patterns/scripts/test_runner.py': passScript,
+    'skills/frontend-design/scripts/ux_audit.py': skipScript,
+    'skills/frontend-design/scripts/accessibility_checker.py': skipScript,
+    'skills/seo-fundamentals/scripts/seo_checker.py': skipScript,
+    'skills/webapp-testing/scripts/playwright_runner.py': passScript,
+    'skills/mobile-design/scripts/mobile_audit.py': skipScript,
+  });
+  const project = withTemp(t, 'boomopen-py-unbundled-');
+  const cl = runPython(t, path.join(kit, 'scripts', 'checklist.py'), [project, '--url', 'http://127.0.0.1:3000']);
+  assert.equal(cl.status, 0, cl.out);
+  assert.doesNotMatch(cl.out, /MISSING/);
+
+  const va = runPython(t, path.join(kit, 'scripts', 'verify_all.py'), [project, '--url', 'http://127.0.0.1:3000']);
+  assert.equal(va.status, 0, va.out);
+  assert.doesNotMatch(va.out, /MISSING/);
+});

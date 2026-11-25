@@ -20,27 +20,29 @@ version: 5.5.0
 | [agent-coordination.md](agent-coordination.md) | **3-Wave Contract-First Execution Topology (`boomopen cook`)** | Coordinating multi-agent `/cook` & `/code` waves |
 | [scaffolding.md](scaffolding.md) | Directory structure & core foundational files | Scaffolding a new repository |
 | [feature-building.md](feature-building.md) | Incremental feature slicing, blast radius & recovery | Adding features to an existing codebase |
-| [templates/SKILL.md](templates/SKILL.md) | **13 Project Templates** | Bootstrapping from a starter template |
+| [templates/INDEX.md](templates/INDEX.md) | **15 Project Templates** | Bootstrapping from a starter template |
 
 ---
 
-## 📦 Project Templates (13)
+## 📦 Project Templates (15)
 
 Quick-start scaffolding for greenfield projects. **Read only the matching template:**
 
 | Template | Tech Stack | When to Use |
 |----------|------------|-------------|
-| [nextjs-fullstack](templates/nextjs-fullstack/TEMPLATE.md) | Next.js 15 + Drizzle/Prisma | Full-stack web app |
-| [nextjs-saas](templates/nextjs-saas/TEMPLATE.md) | Next.js 15 + Stripe + Better Auth | SaaS product |
-| [nextjs-static](templates/nextjs-static/TEMPLATE.md) | Next.js + Motion v12 | Editorial / marketing site |
+| [nextjs-fullstack](templates/nextjs-fullstack/TEMPLATE.md) | Next.js 16 + Drizzle/Prisma + Tailwind v4 | Full-stack web app |
+| [nextjs-saas](templates/nextjs-saas/TEMPLATE.md) | Next.js 16 + Stripe + Better Auth | SaaS product |
+| [nextjs-static](templates/nextjs-static/TEMPLATE.md) | Next.js 16 + Motion v12 | Editorial / marketing site |
 | [astro-static](templates/astro-static/TEMPLATE.md) | Astro + MDX | Content / docs / blog site |
 | [nuxt-app](templates/nuxt-app/TEMPLATE.md) | Nuxt + Pinia | Vue full-stack app |
-| [express-api](templates/express-api/TEMPLATE.md) | Hono / Express + Zod OpenAPI | Node/Edge API service |
-| [python-fastapi](templates/python-fastapi/TEMPLATE.md) | FastAPI + Pydantic v2 | Python API / AI service |
-| [react-native-app](templates/react-native-app/TEMPLATE.md) | Expo + React Native + Zustand | iOS / Android mobile app |
+| [express-api](templates/express-api/TEMPLATE.md) | Hono / Express + Zod v4 OpenAPI | Node/Edge API service |
+| [python-fastapi](templates/python-fastapi/TEMPLATE.md) | Python 3.12+ + `uv` + FastAPI + Pydantic v2 | Python API / AI service |
+| [mcp-server](templates/mcp-server/TEMPLATE.md) | `@modelcontextprotocol/sdk` + Hono / `FastMCP` + OAuth 2.1 | MCP Server & interactive MCP App |
+| [ai-agent-worker](templates/ai-agent-worker/TEMPLATE.md) | Cloudflare Agents SDK + Durable Objects / Agent SDKs | Stateful AI Agent Worker |
+| [react-native-app](templates/react-native-app/TEMPLATE.md) | Expo SDK 54+ + React Native + NativeWind + Zustand | iOS / Android mobile app |
 | [flutter-app](templates/flutter-app/TEMPLATE.md) | Flutter + Riverpod | Cross-platform mobile app |
-| [electron-desktop](templates/electron-desktop/TEMPLATE.md) | Tauri v2 / Electron + React | Desktop application |
-| [chrome-extension](templates/chrome-extension/TEMPLATE.md) | Chrome MV3 | Browser extension |
+| [electron-desktop](templates/electron-desktop/TEMPLATE.md) | Tauri v2 (primary) / Electron 35+ + React 19 | Desktop application |
+| [chrome-extension](templates/chrome-extension/TEMPLATE.md) | Chrome MV3 + React 19 | Browser extension |
 | [cli-tool](templates/cli-tool/TEMPLATE.md) | Node.js / TypeScript CLI | Developer CLI tool |
 | [monorepo-turborepo](templates/monorepo-turborepo/TEMPLATE.md) | Turborepo + pnpm workspaces | Multi-package monorepo |
 

@@ -3,4 +3,4 @@ interface:
   short_description: "⚡ Fast Research — 2-Wave Autonomous Documentation, SDK/API & Technical Lookup with 4-Source Triangulation & Deterministic CLI Validation"
   brand_color: "#0EA5E9"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

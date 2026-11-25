@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const http = require('node:http');
 const net = require('node:net');
@@ -39,7 +40,7 @@ async function withServer(fn) {
   try {
     const page = await request(port, { pathName: '/', headers: { Host: `127.0.0.1:${port}` } });
     const token = /const TOKEN = "([0-9a-f]+)"/.exec(page.body)[1];
-    await fn({ port, homeDir, cwd, claudeMd, token });
+    await fn({ port, homeDir, cwd, claudeMd, token, page });
   } finally {
     await new Promise((resolve) => server.close(resolve));
     fs.rmSync(root, { recursive: true, force: true });
@@ -54,8 +55,14 @@ const jsonPost = (port, pathName, payload, headers = {}) =>
     body: JSON.stringify(payload),
   });
 
-test('settings UI rejects cross-site, rebinding, wrong content type and tokenless requests (M14)', async () => {
-  await withServer(async ({ port, homeDir, cwd, claudeMd, token }) => {
+test('settings UI rejects cross-site, rebinding, wrong content type and tokenless requests, and locks CSP script-src (M14)', async () => {
+  await withServer(async ({ port, homeDir, cwd, claudeMd, token, page }) => {
+    const scriptBody = /<script>([\s\S]*?)<\/script>/.exec(page.body)[1];
+    const expectedHash = crypto.createHash('sha256').update(scriptBody, 'utf8').digest('base64');
+    const htmlCsp = String(page.headers['content-security-policy']);
+    assert.ok(htmlCsp.includes(`script-src 'sha256-${expectedHash}'`), `expected sha256 script-src, got: ${htmlCsp}`);
+    assert.doesNotMatch(htmlCsp, /script-src[^;]*unsafe-inline/);
+
     const before = fs.readFileSync(claudeMd, 'utf8');
     const settingsBody = { scope: 'global', settings: { verification: { level: 'manual' } } };
 
@@ -71,7 +78,6 @@ test('settings UI rejects cross-site, rebinding, wrong content type and tokenles
       body: JSON.stringify(settingsBody),
     });
     assert.equal(textPlain.status, 415);
-    // Non-browser clients (no Origin) need the token too.
     assert.equal((await jsonPost(port, '/api/settings', settingsBody)).status, 403);
     assert.equal((await request(port, { headers: { Host: `127.0.0.1:${port}` } })).status, 403);
     const rebinding = await request(port, { headers: { Host: `attacker.example:${port}` } });
@@ -92,9 +98,18 @@ test('settings UI rejects cross-site, rebinding, wrong content type and tokenles
 
     const ok = await jsonPost(port, '/api/settings', settingsBody, { Origin: `http://127.0.0.1:${port}`, 'X-BoomOpen-Token': token });
     assert.equal(ok.status, 200);
-    assert.match(String(ok.headers['content-security-policy']), /default-src 'none'/);
+    assert.match(String(ok.headers['content-security-policy']), /default-src 'none'; script-src 'none'/);
     assert.equal(JSON.parse(ok.body).settings.preset, 'custom');
     assert.match(fs.readFileSync(claudeMd, 'utf8'), /verification.level = manual/);
+
+    const frontierRes = await jsonPost(
+      port,
+      '/api/preset',
+      { scope: 'global', preset: 'frontier-guardrails' },
+      { Origin: `http://127.0.0.1:${port}`, 'X-BoomOpen-Token': token }
+    );
+    assert.equal(frontierRes.status, 200);
+    assert.equal(JSON.parse(frontierRes.body).settings.preset, 'frontier-guardrails');
 
     const invertedLimits = await jsonPost(
       port,
@@ -113,11 +128,10 @@ test('settings UI global view never returns (or later saves) workspace overrides
     const headers = { Origin: `http://127.0.0.1:${port}`, 'X-BoomOpen-Token': token };
 
     const saved = JSON.parse((await jsonPost(port, '/api/settings', { scope: 'global', settings: { research: { depth: 'standard' } } }, headers)).body);
-    assert.equal(saved.settings.execution.mode, 'auto', 'global view shows global values only');
-    // The dashboard re-sends what it was given; that must not copy the workspace mode into global.
+    assert.equal(saved.settings.execution.mode, 'mode_a', 'global view shows global values only');
     await jsonPost(port, '/api/settings', { scope: 'global', settings: saved.settings }, headers);
     const globalRaw = JSON.parse(fs.readFileSync(path.join(homeDir, '.boomopen', 'settings.json'), 'utf8'));
-    assert.equal(globalRaw.execution.mode, 'auto');
+    assert.equal(globalRaw.execution.mode, 'mode_a');
 
     const projectView = JSON.parse((await request(port, { pathName: '/api/settings?scope=project', headers: { Host: `127.0.0.1:${port}`, 'X-BoomOpen-Token': token } })).body);
     assert.equal(projectView.settings.execution.mode, 'team', 'project view shows effective values');
@@ -137,7 +151,6 @@ test('settings UI caps request bodies and drops the connection instead of buffer
     }).catch((err) => ({ status: 0, error: err }));
     assert.ok(declared.status === 413 || declared.status === 0);
 
-    // Chunked stream with no Content-Length: the server must answer 413 and close the socket.
     const outcome = await new Promise((resolve) => {
       const socket = net.connect(port, '127.0.0.1');
       let response = '';
@@ -165,9 +178,18 @@ test('settings UI caps request bodies and drops the connection instead of buffer
   });
 });
 
-test('settings UI exposes line-limit numeric inputs, EN/VI I18N dictionary, and WCAG attributes', async () => {
+test('settings UI exposes frontier-guardrails default, editorial tokens, zero inline handlers, EN/VI I18N, and WCAG attributes', async () => {
   const { CATEGORY_SCHEMA, I18N, renderDashboardHtml } = require('./settings-ui-html.js');
   const html = renderDashboardHtml('deadbeef');
+  assert.equal(I18N.en.presets[0].id, 'frontier-guardrails');
+  assert.match(I18N.en.presets[0].title, /Recommended Default/);
+  assert.equal(I18N.vi.presets[0].id, 'frontier-guardrails');
+  assert.ok(I18N.en.presets.some((p) => p.id === 'carbon-guardrails'));
+  assert.match(html, /Plus Jakarta Sans/);
+  assert.match(html, /JetBrains Mono/);
+  assert.doesNotMatch(html, /'Inter'|#00f0ff|#8b5cf6|--cyan|--purple/i);
+  assert.doesNotMatch(html, /\b(?:onclick|onchange|onkeydown)\s*=/i);
+  assert.match(html, /addEventListener/);
   assert.match(html, /aria-label="Settings Scope"/);
   assert.match(html, /aria-label="Toggle UI Language"/);
   assert.match(html, /role="status" aria-live="polite"/);

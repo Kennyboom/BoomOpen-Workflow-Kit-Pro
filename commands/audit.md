@@ -25,6 +25,7 @@ execution-mode: router
    - `audit record [--round <k>] --input <findings.json> --json` — SHA-256 fingerprint deduplication, `wont_fix`/`deferred` suppression, `P3` nitpick freeze (`R3+`), oscillation circuit-breaker (`reopen_count >= 2`), and convergence gate.
    - `audit approve [--round <k>] [--select <all|P0,P1,P2|AUD-001,...>] [--exclude <ids>] [--defer <ids>] --json` — Applies user decisions, short-circuits to `CONVERGED` when `0` mutations remain, or compiles collision-free `<= 4 OWNED_FILES` fix packets.
    - `audit verify-fix [--round <k>] [--passed-tests <N>] [--locked-tests <a,b>] --run-verify --json` — Enforces `strictPhase` code inspection + monotonic test ratchet + regression test lock before chaining into Round `k+1`.
+   - `audit rollback [--round <k>] --yes [--json]` — Restores the automatic pre-fix git checkpoint and resets `.boomopen/audit-ledger.json` Round `k` state cleanly when a fix wave must be unwound.
    - `audit status [--json]` — Prints the round-over-round burn-down scorecard and refreshes `.boomopen/AUDIT-PROGRESS.md`.
 
 ---

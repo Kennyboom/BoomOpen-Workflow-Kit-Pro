@@ -22,8 +22,8 @@ execution-mode: router
      - **Round `k` Audit Report (`AUDIT-{project}-r{k}.md`)**: `RequestFeedback: true` when open `P0..P2`/`SPEC_GAP` findings await human approval (`RequestFeedback: false` once `CONVERGED`)
      - **Progress / RTM Summary (`REPORT-autopilot-{project}.md`)**: `ArtifactMetadata: { Summary: "...", UserFacing: true, RequestFeedback: false }`
 3. **Deterministic CLI Suite (`node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ...`)**:
-   - **Ledger Lifecycle**: `ledger init [--name <name>] [--docs <a.md,b.md>]` | `ledger from-plan <plan.md>` | `ledger validate [--strict-shards]` | `ledger status` | `ledger next` | `ledger verify --phase <id> [--passed-tests <N>]` | `ledger audit`
-   - **Multi-Round Post-Completion Audit**: `audit init [--docs <a.md,b.md>] [--auto-fix]` | `audit slice [--round <k>]` | `audit record --input <findings.json>` | `audit approve [--select ...]` | `audit verify-fix --run-verify` | `audit status`
+   - **Ledger Lifecycle**: `ledger init [--name <name>] [--docs <a.md,b.md>]` | `ledger from-plan <plan.md>` | `ledger validate [--strict-shards]` | `ledger status` | `ledger next` | `ledger verify --phase <id> [--passed-tests <N>] --run-verify --reconcile --strict-locks` | `ledger rollback [--phase <id>] --yes` | `ledger audit`
+   - **Multi-Round Post-Completion Audit**: `audit init [--docs <a.md,b.md>] [--auto-fix]` | `audit slice [--round <k>]` | `audit record --input <findings.json>` | `audit approve [--select ...]` | `audit verify-fix --run-verify` | `audit rollback [--round <k>] --yes` | `audit status`
    - **Plan, Wave & Code Gates**: `plan validate <plan.md> --sync-ledger` | `plan compile <plan.md>` | `cook state --artifact-dir "<appDataDir>/brain/<conversation-id>"` | `cook packets "<plan.md>" --wave <n>` | `cook verify-wave "<plan.md>" --wave <n> --git --run-verify` | `check <dir> --strict-phase --no-stubs`
 
 ---
@@ -79,7 +79,7 @@ Whenever the user asks in natural language to ingest multiple specification docu
 | Route | Workflow File | Core Responsibility & Deterministic Guarantees |
 |-------|---------------|------------------------------------------------|
 | **`/autopilot:init`** | `commands/autopilot-init.md` | **Phase 0 — Sharded Multi-Doc Ingestion & Zero-Omission Ledger Lock**: Fast-bootstrap via `ledger from-plan` / `plan compile` OR parallel `scouter#doc-1..N` + `reviewer#spec-auditor` Reverse Coverage Audit + `ledger init` + `ledger validate --strict-shards` + cohesive Brain `PLAN-{project}.md` / `REPORT-autopilot-{project}.md`. |
-| **`/autopilot:run`** | `commands/autopilot-run.md` | **Phase K..N — Scoped Context Slice & 4-Layer Quality Ratchet**: `ledger next` (~2,000-token slice) + Direct Ledger/Plan-to-Executor Dispatch (`cook packets` + 0-turn `invoke_subagent` `<= 3–4 OWNED_FILES`/shard) + `cook verify-wave "<plan.md>" --wave <n> --git --run-verify` + `check --strict-phase --no-stubs` + `ledger verify --phase <id>`. |
+| **`/autopilot:run`** | `commands/autopilot-run.md` | **Phase K..N — Scoped Context Slice & 5-Layer Quality Ratchet**: `ledger next` (~2,000-token slice) + pre-phase git checkpoint + Direct Ledger/Plan-to-Executor Dispatch (`cook packets` + 0-turn `invoke_subagent` `<= 3–4 OWNED_FILES`/shard) + `G1 check --strict-phase --no-stubs` -> `G2 tests` -> `G3 reconcile` -> `G4 review` -> **`G5 ledger verify --reconcile --strict-locks` LAST** (+ `ledger rollback --yes` recovery). |
 | **`/autopilot:audit`** | `commands/autopilot-audit.md` | **Multi-Round Human-Gated Post-Completion Audit**: Runs `ledger validate` + `ledger audit` (when project ledger exists) + `audit init` → Round 1 Read-Only Report (`AUDIT-{project}-r1.md`) → **Human Approval Gate (`ask_question`)** → Collision-Free `RED -> GREEN` Fixes → Round 2..N Re-Audit until `CONVERGED` (zero code mutation before user review unless `--auto-fix` is passed!). |
 
 ---

@@ -8,7 +8,7 @@ date_added: '2026-02-27'
 
 # Azure.AI.OpenAI (.NET)
 
-Client library for Azure OpenAI Service providing access to OpenAI models including GPT-4, GPT-4o, embeddings, DALL-E, and Whisper.
+Client library for Azure OpenAI Service providing access to OpenAI models including GPT-4, GPT-5.4, embeddings, DALL-E, and Whisper.
 
 ## Installation
 
@@ -26,7 +26,7 @@ dotnet add package OpenAI
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<resource-name>.openai.azure.com
 AZURE_OPENAI_API_KEY=<api-key>                    # For key-based auth
-AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o-mini          # Your deployment name
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4.1-mini          # Your deployment name
 ```
 
 ## Client Hierarchy
@@ -79,7 +79,7 @@ BearerTokenPolicy tokenPolicy = new(
     "https://cognitiveservices.azure.com/.default");
 
 ChatClient client = new(
-    model: "gpt-4o-mini",
+    model: "gpt-4.1-mini",
     authenticationPolicy: tokenPolicy,
     options: new OpenAIClientOptions()
     {
@@ -99,7 +99,7 @@ AzureOpenAIClient azureClient = new(
     new Uri(endpoint),
     new DefaultAzureCredential());
 
-ChatClient chatClient = azureClient.GetChatClient("gpt-4o-mini");
+ChatClient chatClient = azureClient.GetChatClient("gpt-4.1-mini");
 
 ChatCompletion completion = chatClient.CompleteChat(
 [
@@ -259,7 +259,7 @@ foreach (ChatCitation citation in context?.Citations ?? [])
 ```csharp
 using OpenAI.Embeddings;
 
-EmbeddingClient embeddingClient = azureClient.GetEmbeddingClient("text-embedding-ada-002");
+EmbeddingClient embeddingClient = azureClient.GetEmbeddingClient("text-embedding-3-small");
 
 OpenAIEmbedding embedding = await embeddingClient.GenerateEmbeddingAsync("Hello, world!");
 ReadOnlyMemory<float> vector = embedding.ToFloats();

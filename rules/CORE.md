@@ -1,6 +1,6 @@
-# ⚡ CORE RULES — SMART-HYBRID ORCHESTRATOR & ELASTIC SWARM PROTOCOL
+# ⚡ CORE RULES — FRONTIER-GUARDRAILS & ELASTIC SWARM PROTOCOL
 
-> **VERSION**: 5.5 — Antigravity 2.0 Smart-Hybrid Edition | **LOAD**: On-demand when **Mode B** or `/cmd` is triggered | **PURPOSE**: Single source of truth for 17-Language Natural-Language Workflow Routing, Research/Design/Plan Validators (`boomopen research|design|plan`), 5-Stage Fast-Forward & 3-Wave Cook/Code Engine (`boomopen cook`), Multi-Session Autopilot Ledger, Cross-Engine Conductor (`boomopen conduct`), 4-Tier Dynamic Elastic Swarm & Pragmatic 2-Tier Coding Standards
+> **VERSION**: 5.5 — Frontier-Guardrails & Smart-Hybrid Edition | **LOAD**: On-demand when **Mode B** or `/cmd` is triggered | **PURPOSE**: Single source of truth for Built-In Presets (`frontier-guardrails` default, `carbon-guardrails` alias, `smart-hybrid`, `solo-fast`, `deep-architect`, `adversarial-team`), `36` Base Commands (`93` files = `87` workflows + `6` `_ref/`), 17-Language Routing, 5-Stage Cook/Code + Wave 2.5 Reconcile, 5-Layer Phase Quality Ratchet (`G5 ledger verify` last + `rollback`), Cross-Engine Conductor (`boomopen conduct`), & Pragmatic 2-Tier Coding Standards
 
 ---
 
@@ -61,8 +61,9 @@ $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\le
 │       - Cross-Engine Conductor & Multi-Engine Council ("cho cả 3 công cụ cùng │
 │         nghiên cứu/phân tích rồi tổng hợp", "multi-engine council")           │
 │         → Load `commands/conduct.md` → `conduct-{council|pipeline}.md`        │
-│       - Docs / Report / Deploy ("viết tài liệu", "báo cáo", "deploy check")   │
-│         → Load `commands/docs-core.md`, `report-hard.md`, or `deploy-check.md`│
+│       - Docs / Report / Deploy / Onboard / PR / Release                      │
+│         → Load `commands/{docs-core|report-hard|deploy-check|onboard|pr|     │
+│           pr-review|release}.md`                                             │
 │  • ⛔ NEVER bypass `commands/{cmd}-{variant}.md` with ad-hoc sub-agents when  │
 │    a workflow intent matches! Read the mapped command file AND spawn Phase 1  │
 │    shards (`TypeName: "self"`, `Model: "inherit"`) in the same Turn-1 batch.  │
@@ -106,9 +107,10 @@ REPORTS   = ./reports/{topic}/ (non-Antigravity fallback, /docs, or explicit rep
   - `boomopen research <validate|brief> <file.md>` — Evidence-gated `RESEARCH` / `BRAINSTORM` validator (citations, audit log, options) & compact downstream brief extractor.
   - `boomopen design <validate|contract> <design.md>` — 4-Gate `DESIGN` validator (`DESIGN-G1..G4`) & `DESIGN_CONTRACT` extractor.
   - `boomopen plan <validate|compile> <plan.md> [--sync-ledger]` — 5-Gate `PLAN` validator (`PLAN-G1..G5`) & ledger compiler.
-  - `boomopen cook <state|packets|verify-wave|preflight>` — 5-Stage Fast-Forward detector, 5-Field Handoff Packet emitter, & 3-Wave lock/anti-stub gate.
+  - `boomopen cook <state|packets|verify-wave|preflight|amend-plan>` & `boomopen reconcile <dir> --strict` — 5-Stage Fast-Forward detector, 5-Field Packet emitter, 3-Wave lock gate, & Wave 2.5 spec/route/wiring reconciler.
   - `boomopen check <dir> --strict-phase --no-stubs` — Pragmatic 2-Tier quality, line-limit, & anti-stub/anti-skip verifier.
-  - `boomopen ledger <init|from-plan|validate|status|next|verify|audit>` & `boomopen conduct <probe|dispatch|council|status>`.
+  - `boomopen ledger <init|from-plan|validate|status|next|verify|rollback|audit>`, `boomopen audit <init|slice|record|approve|verify-fix|rollback|status>`, & `boomopen conduct <probe|dispatch|council|status>`.
+  - **Antigravity `run_workflow` Templates**: `~/.gemini/config/skills/boomopen-workflow-kit/platforms/antigravity/workflows/{audit_fanout,review_fanout,research_fanout}.py` for parallel programmatic multi-agent orchestration.
 
 ---
 
@@ -124,9 +126,10 @@ REPORTS   = ./reports/{topic}/ (non-Antigravity fallback, /docs, or explicit rep
 | `/review` \| `/debug` \| `/fix` \| `/test` (`:fast`, `:hard`, `:team`) | `commands/{review\|debug\|fix\|test}-{hard\|team}.md` (`check --strict-phase --no-stubs`) |
 | `/cook`, NL End-to-End Feature Build (*"xây dựng tính năng"*, *"build feature"*, *"开发新功能"*) | `commands/cook.md` → `cook-hard.md` \| `cook-team.md` (`boomopen cook <state\|packets\|verify-wave>`) |
 | `/code`, **Approved-Plan Continuation** (*"ok, em làm đi"*, *"proceed"*, *"开始执行"*, *"実行して"*, *"진행해"*) | `commands/code.md` → `code-hard.md` \| `code-team.md` (`boomopen cook <packets\|verify-wave>`) |
-| `/autopilot` (`:init`, `:run`, `:audit`), NL Multi-Session Project Autopilot | `commands/autopilot.md` → `autopilot-{init\|run\|audit}.md` (`boomopen ledger`) |
+| `/autopilot` (`:init`, `:run`, `:audit`), NL Multi-Session Project Autopilot | `commands/autopilot.md` → `autopilot-{init\|run\|audit}.md` (`boomopen ledger`, `ledger rollback`) |
 | `/conduct` (`:council`, `:pipeline`), NL Cross-Engine Conductor & Multi-Engine Council | `commands/conduct.md` → `conduct-{council\|pipeline}.md` (`boomopen conduct`) |
-| `/docs`, `/report`, `/deploy`, `/ask`, `/orchestrate`, `/save`, `/recap`, `/settings` | `commands/{cmd}.md` → `commands/{cmd}-{variant}.md` |
+| `/onboard`, `/pr` (`:review`), `/release` | `commands/onboard.md`, `commands/pr.md` \| `pr-review.md`, `commands/release.md` |
+| `/docs`, `/report`, `/deploy`, `/ask`, `/orchestrate`, `/save`, `/recap`, `/settings` | `commands/{cmd}.md` → `commands/{cmd}-{variant}.md` (`36` base commands / `93` files) |
 
 ---
 
@@ -142,7 +145,7 @@ REPORTS   = ./reports/{topic}/ (non-Antigravity fallback, /docs, or explicit rep
 ## 🌐 LANGUAGE, 📜 ORCHESTRATION LAWS & 📁 DELIVERABLES
 
 - **Language**: Response & Artifacts → **Same as user's input language (technical terms in English)** | Code & comments → **Always English**.
-- **Laws L1–L10**: **(L1–L2)** Zero-Latency Entry & 100% Requirement/Ledger Integrity; **(L3–L4)** 4-Tier Elastic Swarm (`≤ 3–4` files/shard) & Quality-First `Model: "inherit"`; **(L5–L6)** 3-Wave Contract-First (`SHARED_CONTRACT` + disjoint `OWNED_FILES`) & Language Compliance; **(L7–L8)** Direct Plan Dispatch (`boomopen cook state|packets`) & Scoped Warm Reuse (`role#shard -> conversationId`); **(L9–L10)** 4-Layer Phase Ratchet (`boomopen research|design|plan validate` + `boomopen cook verify-wave` + `check --strict-phase --no-stubs` + `ledger verify` + `conduct`) & Clean Git Tree.
+- **Laws L1–L10**: **(L1–L2)** Zero-Latency Entry & 100% Requirement/Ledger Integrity; **(L3–L4)** 4-Tier Elastic Swarm (`≤ 3–4` files/shard) & Quality-First `Model: "inherit"`; **(L5–L6)** 3-Wave Contract-First (`SHARED_CONTRACT` + disjoint `OWNED_FILES`) & Language Compliance; **(L7–L8)** Direct Plan Dispatch (`boomopen cook state|packets`) & Scoped Warm Reuse (`role#shard -> conversationId`); **(L9–L10)** **5-Layer Phase Quality Ratchet** (`G1 check --strict-phase --no-stubs` -> `G2 test/build` -> `G3 Wave 2.5 reconcile` -> `G4 adversarial review` -> **`G5 ledger verify --reconcile --strict-locks` RUNS LAST**, plus `ledger/audit rollback` checkpoints) & Clean Git Tree.
 
 | Agent Group | Antigravity 2.0 Brain Artifact Default | Workspace Path (Only on `/docs` or Explicit Export) |
 |-------------|----------------------------------------|-----------------------------------------------------|

@@ -60,7 +60,7 @@ Whenever a task spans DB migrations, shared API/DTO contracts, or `> 3` UI files
   ```bash
   node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js reconcile <dir> --plan "<plan-path>" --strict --json
   ```
-- Spawn `spec-reconciler` (`agents/spec-reconciler.md`) to run the reverse `30%–70%` middle-slice spec audit. Whenever `gaps[]` exist, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook amend-plan "<plan-path>" --from-reconcile "<reconcile-path>"` and execute `Wave 2.5` delta/wiring shards (`integrator#wiring-1..k` / `{role}#delta-1..k`, up to `3` rounds) until `reconcile --strict` reports **`0` gaps**.
+- Spawn `spec-reconciler` (`agents/spec-reconciler.md`) to run the reverse `30%–70%` middle-slice spec audit. Whenever `gaps[]` exist, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook amend-plan "<plan-path>" --from-reconcile "<reconcile-path>"` and execute `Wave 2.5` delta/wiring shards (`tech-lead#wiring-1` / `backend-engineer#wiring-1` / `frontend-engineer#wiring-1` / `{role}#delta-1..k`, up to `3` rounds) until `reconcile --strict` reports **`0` gaps**.
 
 ### WAVE 3 — PARALLEL CROSS-STACK VERIFICATION & ADVERSARIAL REVIEW (`1..3` Critics + Testers)
 - Spawn `tester#1..k` (`agents/tester.md`) AND `reviewer` (`agents/reviewer.md`, plus `security-engineer` when auth/data/API is touched, or Cross-Engine `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct dispatch --role reviewer --engine cross_family --prompt "..."` when configured) **concurrently in one wave**.

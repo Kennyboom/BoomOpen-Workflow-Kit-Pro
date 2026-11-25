@@ -3,4 +3,4 @@ interface:
   short_description: "🔺 Team Fix — 3-Stage Elastic Golden Diamond Resolution (Bidirectional DEBUG Fast-Forward, Fail-First TDD, Sharded Fix Wave & Adversarial QA)"
   brand_color: "#EF4444"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

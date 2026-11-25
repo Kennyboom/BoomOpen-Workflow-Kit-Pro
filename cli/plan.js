@@ -9,10 +9,18 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { EXIT_OK, EXIT_FAIL, EXIT_USAGE, parseSubcommandArgs } = require('./cli-args.js');
 const { KIT_VERSION } = require('./doctor-version.js');
+const { createGitCheckpoint } = require('./git-checkpoints.js');
 const { hashFileSha256, resolvePaths, saveLedgerFile, writeProgressFile, detectPhaseCycle } = require('./ledger.js');
 const { countLines, stripBom, readCleanText, stripOutsideBacktickParens, parseFenceOpen, isFenceClose } = require('./markdown-fences.js');
 
 const [DEFAULT_MAX_FILES_PER_SHARD, SOFT_PLAN_LINES, HARD_PLAN_LINES] = [4, 400, 500];
+const CANONICAL_AGENT_ROLES = new Set([
+  'orchestrator', 'project-manager', 'planner', 'tech-lead', 'business-analyst', 'scouter',
+  'designer', 'database-architect', 'backend-engineer', 'frontend-engineer', 'mobile-developer',
+  'game-developer', 'security-engineer', 'performance-engineer', 'tester', 'reviewer',
+  'spec-reconciler', 'debugger', 'devops-engineer', 'seo-specialist', 'docs-manager', 'reporter',
+  'self', 'research', 'browser',
+]);
 const VAGUE_VERIFY_RE = /^(?:manual(?:\s+check|\s+test|\s+verification)?|verify\s+manually|check\s+manually|kiểm\s+tra\s+thủ\s+công|none|n\/a|tbd|later|-|—)$/iu;
 const NONE_TOKEN_RE = /^(?:none(?:\s*\(.*\))?|n\/a|không(?:\s+có)?|all\s+files\s+outside\b.*|mọi\s+(?:tệp|file)\s+ngoài\b.*|—|-)$/iu;
 const PHASE_KEYWORD_RE = /^(#{2,3})\s+(?:[^\p{L}\p{N}\n]*\s*)?(?:\d+[.)]\s*)?(?:[^\p{L}\p{N}\n]*\s*)?(Phase|Wave|Stage|Giai\s+đoạn|Đợt|阶段|波次|フェーズ|ウェーブ|단계|웨이브|Fase|Ola|Étape|Vague)\s+([A-Za-z0-9_.-]+)\s*(?:[:—–-]\s*([^\n(]*))?(.*)$/iu;
@@ -20,9 +28,7 @@ const TASK_HEADING_RE = /^(#{3,4})\s+(?:[^\p{L}\p{N}[\n]*\s*)?(?:\[[ xX]\]\s*)?(
 const TASK_BULLET_RE = /^\s*[-*]\s+(?:\[[ xX]\]\s+)?\*\*(?:Task|Nhiệm\s+vụ|Công\s+việc|任务|タスク|작업|Tarea|Tâche|Aufgabe)\s+([A-Za-z0-9._-]+)(?:\s*\(([^)]+)\)|\s*\[([^\]]+)\])?\*\*\s*(?:[:—–-]\s*(.*))?$/iu;
 const SUB_CLAUSE_LINE_RE = /^\s*[-*]\s+(?:\[([ xX])\]\s+)?(?:`?\[(SC-[A-Za-z0-9_.-]+)\]`?|`(SC-[A-Za-z0-9_.-]+)`|(SC-[A-Za-z0-9_.-]+))\s*[:—–-]?\s*(.*)$/i;
 
-function normalizeRelPath(p) {
-  return String(p || '').trim().replace(/^['"`]+|['"`]+$/g, '').replace(/\\/g, '/').replace(/^\.\//, '').replace(/\/+$/, '');
-}
+const normalizeRelPath = (p) => String(p || '').trim().replace(/^['"`]+|['"`]+$/g, '').replace(/\\/g, '/').replace(/^\.\//, '').replace(/\/+$/, '');
 
 function parsePathList(raw) {
   if (!raw || typeof raw !== 'string') return [];
@@ -45,13 +51,8 @@ function normalizePhaseId(raw) {
   return numMatch ? `${canonicalPhasePrefix(numMatch[1])}-${numMatch[2]}` : clean.toUpperCase().replace(/\s+/g, '-');
 }
 
-function parseDepList(raw) {
-  return (!raw || typeof raw !== 'string') ? [] : raw.replace(/`/g, '').split(/[,|]+/).map((s) => s.trim()).filter((s) => s && !NONE_TOKEN_RE.test(s)).map(normalizePhaseId);
-}
-
-function extractAcIds(text) {
-  return [...new Set([...String(text || '').matchAll(/\bAC-?0*(\d+)\b/gi)].map((m) => `AC${m[1]}`))];
-}
+const parseDepList = (raw) => (!raw || typeof raw !== 'string') ? [] : raw.replace(/`/g, '').split(/[,|]+/).map((s) => s.trim()).filter((s) => s && !NONE_TOKEN_RE.test(s)).map(normalizePhaseId);
+const extractAcIds = (text) => [...new Set([...String(text || '').matchAll(/\bAC-?0*(\d+)\b/gi)].map((m) => `AC${m[1]}`))];
 
 function extractAgentId(raw) {
   const text = String(raw || '').trim();
@@ -228,10 +229,7 @@ function roConflictsWithOwned(owned, ro) {
   return Boolean(o && r) && (o === r || r.startsWith(`${o}/`));
 }
 
-function taskDependsOn(tA, tB) {
-  const deps = tA.dependsOn || [];
-  return deps.includes(String(tB.reqId || '').toUpperCase()) || (Boolean(tB.taskId) && deps.includes(String(tB.taskId).toUpperCase()));
-}
+const taskDependsOn = (tA, tB) => (tA.dependsOn || []).includes(String(tB.reqId || '').toUpperCase()) || (Boolean(tB.taskId) && (tA.dependsOn || []).includes(String(tB.taskId).toUpperCase()));
 
 function detectTaskCycle(tasks = []) {
   const alias = new Map();
@@ -273,6 +271,10 @@ function validatePlan(parsedOrMarkdown, options = {}) {
         else seenExplicitReqIds.set(t.explicitReqId, t.title);
       }
       if (!t.agent) gates['PLAN-G1'].push(`[PLAN-G1] Task ${t.reqId} ("${t.title}") is missing "- **Agent**: <role#shard>".`);
+      else {
+        const rolePrefix = String(t.agent).split('#')[0].trim().toLowerCase();
+        if (!CANONICAL_AGENT_ROLES.has(rolePrefix)) gates['PLAN-G4'].push(`[PLAN-G4] Task ${t.reqId} uses non-canonical agent role "${rolePrefix}" in "${t.agent}".`);
+      }
       if (!options.allowEmptyOwnedFiles && t.ownedFiles.length === 0) gates['PLAN-G1'].push(`[PLAN-G1] Task ${t.reqId} ("${t.title}") must specify >= 1 file in "- **OWNED_FILES**:".`);
       if (!t.verifyCmd || VAGUE_VERIFY_RE.test(t.verifyCmd)) gates['PLAN-G1'].push(`[PLAN-G1] Task ${t.reqId} ("${t.title}") is missing a concrete "- **Verify**:" command.`);
     }
@@ -340,12 +342,16 @@ function compilePlanToLedger(planFilePath, options = {}) {
       verification_cmd: t.verifyCmd, evidence: null,
     };
   });
-  const phases = plan.phases.map((p) => ({ phase_id: p.phase_id, title: p.title, status: 'pending', depends_on: p.dependsOn || [], parallelizable: Boolean(p.parallelizable), doc_slices: [`${relPlanPath}#L${p.startLine}-L${p.endLine}`] }));
+  const firstPhaseId = plan.phases[0]?.phase_id || 'PHASE-1';
+  const cp = createGitCheckpoint(cwd, firstPhaseId);
+  const cpSha = cp.available ? cp.headSha : null;
+  const phases = plan.phases.map((p, i) => ({ phase_id: p.phase_id, title: p.title, status: 'pending', depends_on: p.dependsOn || [], parallelizable: Boolean(p.parallelizable), doc_slices: [`${relPlanPath}#L${p.startLine}-L${p.endLine}`], checkpoint_sha: i === 0 ? cpSha : null }));
   const projectName = options.name || plan.title || path.basename(cwd);
   const ledger = {
     version: KIT_VERSION, schema_version: KIT_VERSION, project: projectName, project_name: projectName, updated_at: new Date().toISOString(),
     spec_documents: [{ path: relPlanPath, sha256: hashFileSha256(absPlanPath), lines: countLines(rawMarkdown) }],
-    active_cursor: { current_phase_id: phases[0]?.phase_id || 'PHASE-1', baseline_passed_tests: 0 }, phases, features,
+    active_cursor: { current_phase_id: firstPhaseId, baseline_passed_tests: 0, checkpoint_sha: cpSha },
+    checkpoints: cpSha ? { [firstPhaseId]: cpSha } : {}, phases, features,
   };
   saveLedgerFile(paths.ledgerPath, ledger); writeProgressFile(paths.progressPath, ledger);
   return { ledger, paths, validation };
@@ -390,4 +396,4 @@ function runPlanCli(argv = [], options = {}) {
   }
 }
 
-module.exports = { SOFT_PLAN_LINES, HARD_PLAN_LINES, parsePlanMarkdown, validatePlan, compilePlanToLedger, runPlanCli };
+module.exports = { SOFT_PLAN_LINES, HARD_PLAN_LINES, CANONICAL_AGENT_ROLES, parsePlanMarkdown, validatePlan, compilePlanToLedger, runPlanCli };

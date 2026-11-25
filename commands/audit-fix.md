@@ -32,9 +32,10 @@ node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js audit approve [--roun
 
 ---
 
-## 🛠️ STEP 2: DISPATCH COLLISION-FREE `RED -> GREEN` FIX SHARDS (`<= 3–4 OWNED_FILES`)
+## 🛠️ STEP 2: AUTOMATIC GIT CHECKPOINT & COLLISION-FREE `RED -> GREEN` FIX SHARDS (`<= 3–4 OWNED_FILES`)
 
-When `state === "FIXING"`, iterate over `fix_packets` returned by `audit approve --json` (grouped by `wave`, with `<= 4 OWNED_FILES` per shard and `0` intra-wave file overlap). Dispatch all shards in the active sub-wave **concurrently in 1 turn** via `invoke_subagent(TypeName: "self", Model: "inherit")` (or warm `send_message` to existing specialist `conversationId`s):
+1. **Automatic Pre-Fix Git Checkpoint**: Before any Round `k` fix shard edits source or test files, ensure a clean git checkpoint is recorded for Round `k` so all approved mutations can be atomically unwound if needed via `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js audit rollback [--round <k>] --yes`.
+2. **Parallel Collision-Free Shard Dispatch**: When `state === "FIXING"`, iterate over `fix_packets` returned by `audit approve --json` (grouped by `wave`, with `<= 4 OWNED_FILES` per shard and `0` intra-wave file overlap). Dispatch all shards in the active sub-wave **concurrently in 1 turn** via `invoke_subagent(TypeName: "self", Model: "inherit")` (or warm `send_message` to existing specialist `conversationId`s):
 
 Each shard's **5-Field Handoff Packet** MUST enforce:
 1. **`1. MISSION & ACCEPTANCE CRITERIA`**: Resolve assigned `finding_ids` (`AUD-xxx`) completely with zero hollow stubs, zero swallowed catches, and zero collateral refactors outside scope.
@@ -56,7 +57,12 @@ node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <project_dir> -
 node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js audit verify-fix --round <k> --passed-tests <TOTAL_PASSED_TESTS> --locked-tests "<comma_separated_new_test_files>" --run-verify --json
 ```
 
-- **Iterative Self-Healing**: If `check --strict-phase --no-stubs` or `audit verify-fix` reports any violation (e.g. leftover stub comment, >500-line file, explicit `any`, failing `verification_cmd`, or `passedTests < current_passed_tests`), immediately fix the offending `OWNED_FILES` and re-run `audit verify-fix` until exit code `0`!
+- **Iterative Self-Healing & Deterministic Rollback Recovery**:
+  - If `check --strict-phase --no-stubs` or `audit verify-fix` reports any violation (e.g. leftover stub comment, >500-line file, explicit `any`, failing `verification_cmd`, or `passedTests < current_passed_tests`), immediately fix the offending `OWNED_FILES` and re-run `audit verify-fix` until exit code `0`!
+  - If a fix wave causes a cascading regression or must be aborted cleanly, restore the pre-fix git checkpoint and reset Round `k` ledger state deterministically via:
+    ```bash
+    node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js audit rollback [--round <k>] --yes
+    ```
 - Upon exit code `0`, `audit verify-fix` automatically:
   - Appends new regression test files to `locked_regression_tests`
   - Marks all `"approved"` items `"fixed_pending_reaudit"`

@@ -92,7 +92,7 @@ Spawn `planner` (`agents/planner.md`, `TypeName: "self"`, `Model: "inherit"`) to
      ```
 3. **Wave 2.5 — Spec-to-Code Reconciliation & Self-Completion (`commands/_ref/reconcile-loop.md`)**:
    - Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js reconcile <dir> --plan "<plan-path>" --strict --json` and spawn `spec-reconciler` (`agents/spec-reconciler.md`) to audit `REC-G1..G4` (island modules, `/api/...` route parity, `[SC-*]` sub-clauses, `.env.example`) + middle `30%–70%` spec slices.
-   - If `gaps[]` exist, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook amend-plan "<plan-path>" --from-reconcile "<reconcile-path>"` and execute `Wave 2.5` delta/wiring shards (`integrator#wiring-1..k` / `{role}#delta-1..k`, up to `3` rounds) until `reconcile --strict` exits `0`.
+   - If `gaps[]` exist, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook amend-plan "<plan-path>" --from-reconcile "<reconcile-path>"` and execute `Wave 2.5` delta/wiring shards (`tech-lead#wiring-1` / `backend-engineer#wiring-1` / `frontend-engineer#wiring-1` / `{role}#delta-1..k`, up to `3` rounds) until `reconcile --strict` exits `0`.
 
 ---
 

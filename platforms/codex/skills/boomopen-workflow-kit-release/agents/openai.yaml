@@ -1,0 +1,6 @@
+interface:
+  display_name: "/release"
+  short_description: "📦 Semantic Release Preparation — Conventional commit audit since last tag, CHANGELOG.md synthesis, version/stats/doc parity gates (doctor, check, test, test:pack) & gh release create checklist"
+  brand_color: "#7C3AED"
+policy:
+  allow_implicit_invocation: false

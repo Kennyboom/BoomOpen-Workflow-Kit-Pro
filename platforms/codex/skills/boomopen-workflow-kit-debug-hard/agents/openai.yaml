@@ -3,4 +3,4 @@ interface:
   short_description: "⚡⚡⚡ Deep Debug — Turn-1 Elastic Parallel Hypothesis Sharding (debugger#h1..k), SPIE v3.0 5-Whys Proof & 1-Click Proceed to /fix"
   brand_color: "#EF4444"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

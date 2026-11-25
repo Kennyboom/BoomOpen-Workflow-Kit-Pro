@@ -66,7 +66,7 @@ $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\le
    - Route any `[CRITIQUE]` or gate failure via warm `send_message` **only** to the flagged `{role#shard}` `conversationId` (max 3 rounds; `tech-lead` arbitrates Round-3 disputes).
 3. **Wave 2.5 — Spec-to-Code Reconciliation & Self-Completion (`commands/_ref/reconcile-loop.md`)**:
    - Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js reconcile <dir> --plan "<plan-path>" --strict --json` and spawn `spec-reconciler` (`agents/spec-reconciler.md`) to audit `REC-G1..G4` (island shards, `/api/...` route parity, `[SC-*]` sub-clauses, `.env.example`) and reverse `30%–70%` spec slices.
-   - Whenever `RECONCILE_DELTA` reports `gaps[]`, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook amend-plan "<plan-path>" --from-reconcile "<reconcile-path>"` and dispatch `Wave 2.5` delta/wiring shards (`integrator#wiring-1..k` / `{role}#delta-1..k`, up to `3` rounds) until `reconcile --strict` exits `0`.
+   - Whenever `RECONCILE_DELTA` reports `gaps[]`, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook amend-plan "<plan-path>" --from-reconcile "<reconcile-path>"` and dispatch `Wave 2.5` delta/wiring shards (`tech-lead#wiring-1` / `backend-engineer#wiring-1` / `frontend-engineer#wiring-1` / `{role}#delta-1..k`, up to `3` rounds) until `reconcile --strict` exits `0`.
 
 **Consensus**: `✅ CONSENSUS (Implementation): tech-lead ✓ | {executor#1..N} ✓ | {reviewer#1..M} ✓`
 

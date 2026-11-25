@@ -85,7 +85,7 @@ Format as JSON array.
 ```
 
 ### Model Selection (2025)
-- **Fast reviews (<200 lines)**: GPT-4o-mini or Claude 4.5 Haiku
+- **Fast reviews (<200 lines)**: GPT-4.1-mini or Claude 4.5 Haiku
 - **Deep reasoning**: Claude 4.5 Sonnet or GPT-5 (200K+ tokens)
 - **Code generation**: GitHub Copilot or Qodo
 - **Multi-language**: Qodo or CodeAnt AI (30+ languages)
@@ -101,7 +101,7 @@ interface ReviewRoutingStrategy {
     }
 
     if (metrics.securitySensitive || metrics.affectsAuth) {
-      return new AIEngine("claude-3.7-sonnet", {
+      return new AIEngine("claude-sonnet-4-6", {
         temperature: 0.1,
         maxTokens: 4000,
         systemPrompt: SECURITY_FOCUSED_PROMPT
@@ -112,7 +112,7 @@ interface ReviewRoutingStrategy {
       return new QodoEngine({ mode: "test-generation", coverageTarget: 80 });
     }
 
-    return new AIEngine("gpt-4o", { temperature: 0.3, maxTokens: 2000 });
+    return new AIEngine("gpt-4.1", { temperature: 0.3, maxTokens: 2000 });
   }
 }
 ```
@@ -316,7 +316,7 @@ jobs:
         run: |
           python scripts/ai_review.py \
             --pr-number ${{ github.event.number }} \
-            --model gpt-4o \
+            --model gpt-4.1 \
             --static-analysis-results codeql.sarif,semgrep.sarif
 
       - name: Post Comments
@@ -393,7 +393,7 @@ Return JSON array:
 """
 
         response = self.anthropic_client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-4-6",
             max_tokens=8000, temperature=0.2,
             messages=[{"role": "user", "content": prompt}]
         )

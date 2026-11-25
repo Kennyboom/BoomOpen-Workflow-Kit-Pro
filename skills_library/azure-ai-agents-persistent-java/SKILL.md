@@ -24,7 +24,7 @@ Low-level SDK for creating and managing persistent AI agents with threads, messa
 
 ```bash
 PROJECT_ENDPOINT=https://<resource>.services.ai.azure.com/api/projects/<project>
-MODEL_DEPLOYMENT_NAME=gpt-4o-mini
+MODEL_DEPLOYMENT_NAME=gpt-4.1-mini
 ```
 
 ## Authentication

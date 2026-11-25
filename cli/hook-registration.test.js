@@ -10,15 +10,20 @@ const os = require('node:os');
 const path = require('node:path');
 
 const {
+  CLAUDE_SHELL_MATCHER,
   registerClaudeHook,
   unregisterClaudeHook,
   registerAntigravityHook,
   unregisterAntigravityHook,
   isAntigravityHookRegistered,
+  registerCursorHook,
+  unregisterCursorHook,
+  isCursorHookRegistered,
 } = require('./hook-registration.js');
 
 const HOOK_SCRIPT = '/x/.claude/skills/boomopen-workflow-kit/hooks/validate-tool-call.mjs';
 const AGY_HOOK_SCRIPT = '/x/.gemini/config/skills/boomopen-workflow-kit/hooks/validate-tool-call.mjs';
+const CURSOR_HOOK_SCRIPT = '/x/.cursor/skills/boomopen-workflow-kit/hooks/validate-tool-call.mjs';
 const BOM = '﻿';
 
 function withTempDir(t) {
@@ -29,7 +34,11 @@ function withTempDir(t) {
 
 function roundTrip(settingsPath) {
   registerClaudeHook(settingsPath, HOOK_SCRIPT);
-  assert.match(fs.readFileSync(settingsPath, 'utf8'), /validate-tool-call\.mjs/);
+  const text = fs.readFileSync(settingsPath, 'utf8');
+  assert.equal(CLAUDE_SHELL_MATCHER, 'Bash|PowerShell');
+  assert.match(text, /Bash\|PowerShell/);
+  assert.match(text, /validate-tool-call\.mjs/);
+  assert.match(text, /stop-quality-gate\.mjs/);
   assert.equal(unregisterClaudeHook(settingsPath), 'removed');
 }
 
@@ -94,6 +103,11 @@ test('Antigravity hooks.json registration uses quote-free relative command for s
     'node ./skills/boomopen-workflow-kit/hooks/validate-tool-call.mjs',
     'uses quote-free relative path from hooks.json folder so Windows cmd /c never breaks on spaced usernames'
   );
+  assert.equal(
+    written['boomopen-guard'].Stop[0].command,
+    'node ./skills/boomopen-workflow-kit/hooks/stop-quality-gate.mjs',
+    'registers flat Stop handler for stop-quality-gate.mjs'
+  );
   assert.equal(unregisterAntigravityHook(freshHooks), 'removed');
   assert.equal(fs.existsSync(freshHooks), false, 'fresh hooks.json created only for the hook is deleted');
 
@@ -107,4 +121,25 @@ test('Antigravity hooks.json registration uses quote-free relative command for s
   assert.equal(unregisterAntigravityHook(existingHooks), 'removed');
   assert.equal(fs.readFileSync(existingHooks, 'utf8'), siblingOriginal, 'restores BOM + CRLF hooks.json byte-for-byte');
   assert.equal(unregisterAntigravityHook(existingHooks), 'missing');
+});
+
+test('Cursor ~/.cursor/hooks.json registration adds beforeShellExecution and restores user files cleanly', (t) => {
+  const dir = withTempDir(t);
+  const freshCursor = path.join(dir, '.cursor', 'hooks.json');
+  assert.equal(isCursorHookRegistered(freshCursor), false);
+  assert.equal(registerCursorHook(freshCursor, CURSOR_HOOK_SCRIPT), 'added');
+  assert.equal(registerCursorHook(freshCursor, CURSOR_HOOK_SCRIPT), 'unchanged');
+  assert.equal(isCursorHookRegistered(freshCursor), true);
+  const parsed = JSON.parse(fs.readFileSync(freshCursor, 'utf8'));
+  assert.equal(parsed.version, 1);
+  assert.match(parsed.hooks.beforeShellExecution[0].command, /validate-tool-call\.mjs"$/);
+  assert.equal(unregisterCursorHook(freshCursor), 'removed');
+  assert.equal(fs.existsSync(freshCursor), false);
+
+  const existingCursor = path.join(dir, 'existing-cursor-hooks.json');
+  const original = `${BOM}{\r\n  "version": 1,\r\n  "hooks": {\r\n    "afterFileEdit": [{ "command": "prettier --write" }]\r\n  }\r\n}\r\n`;
+  fs.writeFileSync(existingCursor, original, 'utf8');
+  assert.equal(registerCursorHook(existingCursor, CURSOR_HOOK_SCRIPT), 'added');
+  assert.equal(unregisterCursorHook(existingCursor), 'removed');
+  assert.equal(fs.readFileSync(existingCursor, 'utf8'), original);
 });

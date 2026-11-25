@@ -461,7 +461,7 @@ jobs:
 - Chave SO no servidor (VPS) — nunca no front
 - Criar chaves por projeto/ambiente (nunca uma chave unica para tudo)
 - Usar Organization API keys (nao pessoais) quando possivel
-- Proxy com: rate limit por IP/usuario, limites por modelo (gpt-4 mais caro), logs de consumo, kill switch
+- Proxy com: rate limit por IP/usuario, limites por modelo (gpt-4.1 mais caro), logs de consumo, kill switch
 - Configurar usage limits no dashboard da OpenAI
 - Monitorar usage API: `GET /v1/usage` ou dashboard
 

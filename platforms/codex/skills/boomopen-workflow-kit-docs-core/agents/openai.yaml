@@ -3,4 +3,4 @@ interface:
   short_description: "🏗️ Core Docs — Generate 5 `./documents/knowledge-*/` folders via collision-free parallel sharding (`<= 3–4 OWNED_FILES`/shard) and source-grounded evidence"
   brand_color: "#14B8A6"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

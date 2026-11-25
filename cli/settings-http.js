@@ -7,6 +7,8 @@
  * - POST bodies must be `application/json` (forces a CORS preflight, which is never granted);
  * - every /api/* request (and any request carrying Origin) must echo the per-launch token that
  *   GET / embeds in the page;
+ * - CSP locks script-src to `'none'` on JSON responses and to a per-page `'sha256-...'` digest on
+ *   HTML responses (zero `'unsafe-inline'` in script-src);
  * - bodies are capped and the socket is dropped once the cap is exceeded.
  */
 
@@ -131,10 +133,20 @@ function readJsonBody(req, limit = MAX_BODY_BYTES) {
   });
 }
 
+function buildCsp(scriptDirective) {
+  return `default-src 'none'; script-src ${scriptDirective}; style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'`;
+}
+
+function htmlScriptDirective(html) {
+  const match = /<script>([\s\S]*?)<\/script>/.exec(html);
+  if (!match) return "'none'";
+  const digest = crypto.createHash('sha256').update(match[1], 'utf8').digest('base64');
+  return `'sha256-${digest}'`;
+}
+
 const BASE_HEADERS = {
   'Cache-Control': 'no-store',
-  'Content-Security-Policy':
-    "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'",
+  'Content-Security-Policy': buildCsp("'none'"),
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
   'Referrer-Policy': 'no-referrer',
@@ -157,7 +169,11 @@ function sendJson(res, statusCode, payload, extraHeaders = {}) {
 }
 
 function sendHtml(res, html) {
-  res.writeHead(200, { ...BASE_HEADERS, 'Content-Type': 'text/html; charset=utf-8' });
+  res.writeHead(200, {
+    ...BASE_HEADERS,
+    'Content-Security-Policy': buildCsp(htmlScriptDirective(html)),
+    'Content-Type': 'text/html; charset=utf-8',
+  });
   res.end(html);
 }
 

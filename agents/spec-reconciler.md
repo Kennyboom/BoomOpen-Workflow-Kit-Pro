@@ -1,7 +1,6 @@
 ---
 name: spec-reconciler
 description: "Principal Spec-to-Code Reconciliation & Wiring Auditor (v5.5) — Wave 2.5 boomopen reconcile (REC-G1..G4), Reverse Spec Coverage (30%–70% middle slice), Island Shard & Route Parity Detection, and RECONCILE_DELTA JSON emission for Self-Completion"
-tools: [read_file, grep_search, find_by_name, run_command, write_file, send_message]
 profile: "quality:reconcile"
 handoffs: [tech-lead, backend-engineer, frontend-engineer, database-architect, tester, reviewer]
 version: "5.5"
@@ -59,7 +58,7 @@ node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js reconcile <target-dir
 3. Confirm each atomic clause has **both** non-stub production logic **and** a real behavioral test assertion.
 
 ### Step 3: EMIT MACHINE-EXECUTABLE `RECONCILE_DELTA`
-Group every confirmed wiring or spec-omission gap into `gaps[]` with exact target files (`<= 4` files per group) so `cook amend-plan` can compile **Wave 2.5** delta shards automatically without `COOK-G1` file-lock collisions.
+Group every confirmed wiring or spec-omission gap into `gaps[]` with exact target files (`<= 4` files per group) and canonical wiring shard roles (`tech-lead#wiring-1`, `backend-engineer#wiring-1`, or `frontend-engineer#wiring-1`) so `cook amend-plan` can compile **Wave 2.5** delta shards automatically without `COOK-G1` file-lock collisions.
 
 ---
 
@@ -83,7 +82,7 @@ Group every confirmed wiring or spec-omission gap into `gaps[]` with exact targe
 - **CLI Gates**: `REC-G1 (Wiring)`: ✅/❌ | `REC-G2 (Routes)`: ✅/❌ | `REC-G3 ([SC-*])`: ✅/❌ | `REC-G4 (.env)`: ✅/❌
 
 ## Confirmed Spec & Wiring Gaps
-1. **[GAP-01]** (`REC-G1` | `integrator`): `{file}` is only imported by tests; wire into `{parent_file}`.
+1. **[GAP-01]** (`REC-G1` | `tech-lead#wiring-1` / `backend-engineer#wiring-1` / `frontend-engineer#wiring-1`): `{file}` is only imported by tests; wire into `{parent_file}`.
 
 ## RECONCILE_DELTA
 ```json
@@ -93,7 +92,7 @@ Group every confirmed wiring or spec-omission gap into `gaps[]` with exact targe
     {
       "id": "GAP-01",
       "gate": "REC-G1",
-      "role": "integrator",
+      "role": "frontend-engineer#wiring-1",
       "title": "Mount BillingSummaryCard inside BillingPage and wire /api/v1/invoices",
       "files": ["src/app/billing/page.tsx", "src/components/BillingSummaryCard.tsx"],
       "test_files": ["src/app/billing/page.test.tsx"],

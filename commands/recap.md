@@ -15,8 +15,8 @@ execution-mode: execute
 
 Restore complete project, phase, and workflow context in seconds without re-crawling the codebase from scratch.
 
-1. **0-Turn Sub-agent Scouting Gate (`> 2` Files Cold-Start Fallback)**: When saved ledger/session artifacts exist, read them directly (`run_command`, `read_file`). If no saved state exists and cold-start recovery requires inspecting **`> 2` source or specification files**, do **NOT** read files sequentially in the primary agent — spawn parallel `scouter#1..k` on Turn 1 via `invoke_subagent(TypeName: "self", Model: "inherit")` using Antigravity 2.0 tools ONLY (`read_file`, `write_file`, `edit_file`, `run_command`, `invoke_subagent`, `send_message`, `ask_question`, `search_web`).
-2. **Cohesive Single-File Brain Artifact (`<= 500` lines, Zero `./reports/` Defaults)**: Never scan or create legacy `./reports/` folders or `> 150` line split directories. When writing or refreshing a recovered session briefing (`<appDataDir>\brain\<conversation-id>\SESSION-{date}.md`), keep it as **1 single cohesive file (`<= 500` lines)** with explicit `ArtifactMetadata`:
+1. **0-Turn Sub-agent Scouting Gate (`> 2` Files Cold-Start Fallback)**: When saved ledger/session artifacts exist, read them directly using your platform's native shell and file-read tools (`run_command`/`Bash`/shell, `read_file`/`Read`). If no saved state exists and cold-start recovery requires inspecting **`> 2` source or specification files**, do **NOT** read files sequentially in the primary agent — spawn parallel `scouter#1..k` on Turn 1 using your platform's native subagent primitive (`invoke_subagent(TypeName: "self", Model: "inherit")` on Antigravity, `Task` on Claude Code, `spawn_agent` on Codex, `runSubagent` on Copilot, or native subagent/TIER 2 on Cursor).
+2. **Cohesive Single-File Session Artifact (`<= 500` lines, Cross-Platform Routing)**: Never split session snapshots into `> 150` line directories. When writing or refreshing a recovered session briefing, write **1 single cohesive file (`<= 500` lines)** to `<appDataDir>\brain\<conversation-id>\SESSION-{date}.md` on Antigravity (or `./reports/session/SESSION-{date}.md` on Claude Code, Codex, Cursor, and Copilot, omitting `ArtifactMetadata` on non-Antigravity file writes):
    ```json
    {
      "ArtifactMetadata": {
@@ -45,7 +45,7 @@ node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger next
 
 1. **Priority 0 — Deterministic Project Ledger (`.boomopen/project-ledger.json` — When Present)**:
    - Inspect `ledger status` & `ledger next` output, `.boomopen/ROADMAP-PROGRESS.md`, and `.boomopen/contracts/SHARED_CONTRACT.md`.
-2. **Priority 1 — Antigravity 2.0 Brain Artifacts (`<appDataDir>\brain\<conversation-id>\`)**:
+2. **Priority 1 — Session & Workflow Artifacts (`<appDataDir>\brain\<conversation-id>\` on Antigravity; `./reports/` on Claude Code, Codex, Cursor, Copilot)**:
    - Latest `SESSION-{date}.md` (or `SESSION-HANDOVER.md`), `REPORT-status.md`, and `cook state` artifacts (`PLAN-*.md`, `DESIGN-*.md`, `SCOUT-*.md`, `RESEARCH-*.md`, `DEBUG-*.md`).
 3. **Priority 2 — Workspace Memory (`.brain/` — When Present)**:
    - `.brain/session.json` (dynamic task state), `.brain/brain.json` (static stack & architecture), `.brain/handover.md`.

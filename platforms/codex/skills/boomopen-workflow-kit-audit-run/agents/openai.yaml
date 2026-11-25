@@ -3,4 +3,4 @@ interface:
   short_description: "🔎 Audit Run — Execute Round k Read-Only Whole-Project Progressive Audit (Vertical Flows, Spec RTM & 2-Layer Security) and Pause for Human Approval"
   brand_color: "#DC2626"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

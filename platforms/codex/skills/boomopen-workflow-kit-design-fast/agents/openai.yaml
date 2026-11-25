@@ -3,4 +3,4 @@ interface:
   short_description: "⚡ Quick Design — Rapid 6-Block UI/component specification with OKLCH tokens, 5-State Matrix, DESIGN_CONTRACT & 4-Gate CLI validation"
   brand_color: "#EC4899"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

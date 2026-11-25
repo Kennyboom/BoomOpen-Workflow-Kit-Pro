@@ -24,7 +24,7 @@ category: planning
 | **Consults**     | `scouter`, `researcher`, `brainstormer`, `tech-lead`                                       |
 | **Quality Gate** | Deterministic `boomopen plan validate` (`PLAN-G1..G5`) + `RequestFeedback: true` Proceed UI |
 
-> **CORE DIRECTIVE**: A great plan is an executable multi-agent program, not a prose essay. Lock compilable `SHARED_CONTRACT` code blocks upfront so `backend-engineer#shard`, `frontend-engineer#shard`, `database-architect#shard`, and `tester#shard` can execute **in parallel within the same DAG Wave** with zero file-lock collisions (`<= 3–4 OWNED_FILES` per shard).
+> **CORE DIRECTIVE**: A great plan is an executable multi-agent program, not a prose essay. Lock compilable `SHARED_CONTRACT` code blocks, DB schemas, and design tokens upfront in **Wave 1** (`database-architect#schema`, `backend-engineer#contracts`, `designer#tokens`) so **Wave 2** feature shards (`backend-engineer#api`, `frontend-engineer#ui`) and **Wave 3** verification shards (`tester#unit`, `reviewer#code`, `security-engineer#sec`) execute **in parallel within each DAG Wave** with zero file-lock collisions (`<= 3–4 OWNED_FILES` per shard).
 
 **Prime Directive**: CAPTURE VERBATIM REQUEST → CONSUME SCOUT/RESEARCH/COUNCIL → LOCK COMPILABLE `SHARED_CONTRACT` → PARTITION PARALLEL DAG WAVES (`<= 3–4 OWNED_FILES/shard`) → VALIDATE VIA CLI (`boomopen plan validate`).
 
@@ -53,12 +53,12 @@ category: planning
    - Check `<appDataDir>\brain\<conversation-id>\` (and `./reports/{topic}/`) for existing `SCOUT-{task}.md`, `RESEARCH-{task}.md`, `BRAINSTORM-{task}.md`, `DESIGN-{task}.md`, or `COUNCIL-{task}.md`.
    - Extract real file paths, existing schemas, and architectural constraints before decomposing tasks.
 
-### Step 1: WHY CONTRACT-FIRST PARALLEL DAG WAVES BEAT SEQUENTIAL PHASING
-- ❌ **Legacy Sequential Anti-Pattern (FORBIDDEN)**: `Phase 1: Database -> Phase 2: Backend -> Phase 3: Frontend -> Phase 4: Tests` forces Frontend to sit idle waiting for Backend, and Tester to sit idle waiting for both.
-- ✅ **v5.5 Contract-First Parallel DAG Waves (MANDATORY)**:
-  1. **Lock `SHARED_CONTRACT` Upfront in Fenced Code Blocks**: Write literal, copy-pasteable TypeScript interfaces/DTOs, Zod schemas, SQL DDL / Prisma models, API route signatures, and error envelopes inside `## 🤝 Shared Interface Contracts (SHARED_CONTRACT)`.
-  2. **Schedule Parallel Shards in the Same Wave (`Wave 1`)**: Because the contract is already locked in `PLAN-{task}.md` (or created in a tiny prerequisite shared-types shard), `database-architect#schema`, `backend-engineer#api`, `frontend-engineer#ui`, and `tester#unit` can all code against `SHARED_CONTRACT` **concurrently in Wave 1** with 100% disjoint `OWNED_FILES`!
-  3. **Reserve Wave 2+ Only for True Data/File Dependencies**: Place cross-shard E2E integration tests (`tester#e2e`) or shared entrypoint barrel wiring in `Wave 2 (Depends On: Wave 1)`.
+### Step 1: WHY 3-WAVE CONTRACT-FIRST PARALLEL DAG WAVES BEAT SEQUENTIAL PHASING
+- ❌ **Legacy Sequential Anti-Pattern (FORBIDDEN)**: `Phase 1: Database -> Phase 2: Backend -> Phase 3: Frontend -> Phase 4: Tests` forces Frontend to sit idle waiting for Backend, while mixing foundation contracts and feature consumers inside Wave 1 causes `OWNED_FILES` drift.
+- ✅ **v5.5 3-Wave Contract-First Parallel DAG Topology (MANDATORY — Matches `rules/PHASES.md` & `commands/cook-hard.md`)**:
+  1. **Wave 1 — Contracts + Schema + Design Tokens (`Parallelizable: Yes`, `Depends On: None`)**: Materialize `SHARED_CONTRACT` DTOs/Zod schemas, additive SQL/ORM migrations, and `@theme inline` `DESIGN_CONTRACT` tokens on disk via disjoint shards (`database-architect#schema`, `backend-engineer#contracts`, `designer#tokens` / `frontend-engineer#tokens-primitives`).
+  2. **Wave 2 — Parallel Feature API + UI Screens (`Parallelizable: Yes`, `Depends On: Wave 1`)**: Schedule `backend-engineer#api` and `frontend-engineer#ui` **concurrently in Wave 2** with 100% disjoint `OWNED_FILES` (`<= 3–4` files/shard) and Wave 1 schemas/contracts/tokens locked in `READ_ONLY_FILES` (followed by Wave 2.5 `boomopen reconcile`).
+  3. **Wave 3 — Parallel Testing + Adversarial Review (`Parallelizable: Yes`, `Depends On: Wave 2`)**: Schedule `tester#unit` (or `tester#e2e`), `reviewer#code`, and `security-engineer#sec` concurrently to verify 100% `AC1..N` traceability and contract/security compliance.
 
 ### Step 2: 4-TIER ELASTIC SWARM SIZING & COGNITIVE LOAD SHARDING LAW
 
@@ -93,7 +93,7 @@ Verify all **5 Deterministic CLI Gates (`PLAN-G1..G5`)** pass with `0` errors:
 | ❌ NEVER | ✅ ALWAYS |
 |----------|-----------|
 | Split `PLAN-{task}.md` at 150 lines into a folder | Keep `PLAN-{task}.md` as **1 cohesive file up to 500 lines** with `RequestFeedback: true` |
-| Chain `DB -> Backend -> Frontend` sequentially by default | Lock fenced `SHARED_CONTRACT` code blocks and schedule disjoint domains in parallel within `Wave 1` |
+| Chain `DB -> Backend -> Frontend` sequentially by default | Lock **Wave 1** (`database-architect#schema`, `backend-engineer#contracts`, `designer#tokens`), **Wave 2** parallel `backend-engineer#api` + `frontend-engineer#ui`, and **Wave 3** `tester#unit` + `reviewer#code` + `security-engineer#sec` |
 | Assign `> 4` files to a single `role#shard` or overlap `OWNED_FILES` | Enforce `<= 3–4` disjoint `OWNED_FILES` per shard and list `READ_ONLY_FILES` + `Test Files` |
 | Write vague prose `Verify: test that it works` | Provide an executable command + `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs` |
 | Release an unvalidated plan | Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js plan validate <plan-path>` before stopping |
@@ -171,28 +171,38 @@ export interface FeatureResponseDTO {
 
 ---
 
-## Wave 1: {Parallel Foundation & Feature Shards} (`Parallelizable: Yes` | `Depends On: None`)
+## Wave 1: Foundation Contracts, Schema & Design Tokens (`Parallelizable: Yes` | `Depends On: None`)
 
-### Task 1.1 (REQ-101): {Atomic Task Title}
+### Task 1.1 (REQ-101): Lock Shared Contracts, Schema & Design Tokens
+- **Agent**: `database-architect#schema`, `backend-engineer#contracts`, `designer#tokens` (`Model: "inherit"`, `<= 3–4 OWNED_FILES` per shard)
+- **Acceptance**: `AC1`
+- **OWNED_FILES**: `src/db/schema.ts`, `src/types/contracts.ts`, `src/styles/tokens.css`
+- **READ_ONLY_FILES**: `package.json`, `tsconfig.json`
+- **Test Files**: `tests/contracts/schema.test.ts`
+- **Verify**: `npm test -- tests/contracts/schema.test.ts && node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check src/types --strict-phase --no-stubs`
+
+## Wave 2: Parallel Feature API & UI Screens (`Parallelizable: Yes` | `Depends On: Wave 1`)
+
+### Task 2.1 (REQ-102): Feature API Implementation
 - **Agent**: `backend-engineer#api` (`Model: "inherit"`, `<= 3–4 OWNED_FILES`)
 - **Acceptance**: `AC1`
 - **OWNED_FILES**: `src/api/feature.controller.ts`, `src/api/feature.service.ts`
-- **READ_ONLY_FILES**: `src/types/shared.ts`
+- **READ_ONLY_FILES**: `src/db/schema.ts`, `src/types/contracts.ts`
 - **Test Files**: `tests/api/feature.test.ts`
 - **Verify**: `npm test -- tests/api/feature.test.ts && node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check src/api --strict-phase --no-stubs`
 
-### Task 1.2 (REQ-102): {Atomic Task Title}
+### Task 2.2 (REQ-103): Feature UI Screen Implementation
 - **Agent**: `frontend-engineer#ui` (`Model: "inherit"`, `<= 3–4 OWNED_FILES`)
 - **Acceptance**: `AC2`
 - **OWNED_FILES**: `src/components/FeatureView.tsx`, `src/hooks/useFeature.ts`
-- **READ_ONLY_FILES**: `src/types/shared.ts`
+- **READ_ONLY_FILES**: `src/types/contracts.ts`, `src/styles/tokens.css`
 - **Test Files**: `tests/components/FeatureView.test.tsx`
 - **Verify**: `npm test -- tests/components/FeatureView.test.tsx && node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check src/components --strict-phase --no-stubs`
 
-## Wave 2: {Cross-Shard Integration & E2E Verification} (`Parallelizable: No` | `Depends On: Wave 1`)
+## Wave 3: Parallel Testing & Adversarial Review (`Parallelizable: Yes` | `Depends On: Wave 2`)
 
-### Task 2.1 (REQ-103): {End-to-End Integration & Regression Verification}
-- **Agent**: `tester#e2e` (`Model: "inherit"`, `<= 3–4 OWNED_FILES`)
+### Task 3.1 (REQ-104): End-to-End QA, Code Review & Security Audit
+- **Agent**: `tester#unit`, `reviewer#code`, `security-engineer#sec` (`Model: "inherit"`, `<= 3–4 OWNED_FILES`)
 - **Acceptance**: `AC1`, `AC2`
 - **OWNED_FILES**: `tests/e2e/feature.e2e.test.ts`
 - **READ_ONLY_FILES**: `src/api/feature.controller.ts`, `src/components/FeatureView.tsx`

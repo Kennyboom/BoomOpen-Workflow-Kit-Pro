@@ -27,7 +27,7 @@ npm install @microsoft/agents-copilotstudio-client
 PORT=3978
 AZURE_RESOURCE_NAME=<azure-openai-resource>
 AZURE_API_KEY=<azure-openai-key>
-AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4.1-mini
 
 TENANT_ID=<tenant-id>
 CLIENT_ID=<client-id>
@@ -80,7 +80,7 @@ agent.onMessage("poem", async (context: TurnContext) => {
   await context.streamingResponse.queueInformativeUpdate("starting a poem...");
 
   const { fullStream } = streamText({
-    model: azure(process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o-mini"),
+    model: azure(process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4.1-mini"),
     system: "You are a creative assistant.",
     prompt: "Write a poem about Apollo.",
   });

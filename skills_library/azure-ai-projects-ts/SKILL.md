@@ -25,7 +25,7 @@ npm install @azure/monitor-opentelemetry @opentelemetry/api
 
 ```bash
 AZURE_AI_PROJECT_ENDPOINT=https://<resource>.services.ai.azure.com/api/projects/<project>
-MODEL_DEPLOYMENT_NAME=gpt-4o
+MODEL_DEPLOYMENT_NAME=gpt-4.1
 ```
 
 ## Authentication
@@ -59,7 +59,7 @@ const openAIClient = await client.getOpenAIClient();
 
 // Use for responses
 const response = await openAIClient.responses.create({
-  model: "gpt-4o",
+  model: "gpt-4.1",
   input: "What is the capital of France?"
 });
 
@@ -76,7 +76,7 @@ const conversation = await openAIClient.conversations.create({
 ```typescript
 const agent = await client.agents.createVersion("my-agent", {
   kind: "prompt",
-  model: "gpt-4o",
+  model: "gpt-4.1",
   instructions: "You are a helpful assistant."
 });
 ```
@@ -87,7 +87,7 @@ const agent = await client.agents.createVersion("my-agent", {
 // Code Interpreter
 const agent = await client.agents.createVersion("code-agent", {
   kind: "prompt",
-  model: "gpt-4o",
+  model: "gpt-4.1",
   instructions: "You can execute code.",
   tools: [{ type: "code_interpreter", container: { type: "auto" } }]
 });
@@ -95,14 +95,14 @@ const agent = await client.agents.createVersion("code-agent", {
 // File Search
 const agent = await client.agents.createVersion("search-agent", {
   kind: "prompt",
-  model: "gpt-4o",
+  model: "gpt-4.1",
   tools: [{ type: "file_search", vector_store_ids: [vectorStoreId] }]
 });
 
 // Web Search
 const agent = await client.agents.createVersion("web-agent", {
   kind: "prompt",
-  model: "gpt-4o",
+  model: "gpt-4.1",
   tools: [{
     type: "web_search_preview",
     user_location: { type: "approximate", country: "US", city: "Seattle" }
@@ -112,7 +112,7 @@ const agent = await client.agents.createVersion("web-agent", {
 // Azure AI Search
 const agent = await client.agents.createVersion("aisearch-agent", {
   kind: "prompt",
-  model: "gpt-4o",
+  model: "gpt-4.1",
   tools: [{
     type: "azure_ai_search",
     azure_ai_search: {
@@ -128,7 +128,7 @@ const agent = await client.agents.createVersion("aisearch-agent", {
 // Function Tool
 const agent = await client.agents.createVersion("func-agent", {
   kind: "prompt",
-  model: "gpt-4o",
+  model: "gpt-4.1",
   tools: [{
     type: "function",
     function: {
@@ -147,7 +147,7 @@ const agent = await client.agents.createVersion("func-agent", {
 // MCP Tool
 const agent = await client.agents.createVersion("mcp-agent", {
   kind: "prompt",
-  model: "gpt-4o",
+  model: "gpt-4.1",
   tools: [{
     type: "mcp",
     server_label: "my-mcp",
@@ -212,7 +212,7 @@ for await (const d of client.deployments.list({ modelPublisher: "OpenAI" })) {
 }
 
 // Get specific deployment
-const deployment = await client.deployments.get("gpt-4o");
+const deployment = await client.deployments.get("gpt-4.1");
 ```
 
 ## Datasets

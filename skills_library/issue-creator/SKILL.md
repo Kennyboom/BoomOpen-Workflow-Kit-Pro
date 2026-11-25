@@ -64,7 +64,7 @@ Transform messy input (error logs, voice notes, screenshots) into clean, actiona
 - Medium: Feature impaired, workaround exists
 - Low: Minor inconvenience, cosmetic
 
-**Image/GIF handling**: Reference attachments inline. Format: `![Description](attachment-name.png)`
+**Image/GIF handling**: Reference uploaded attachments inline using standard Markdown image syntax (e.g., `` `![Description](https://github.com/user-attachments/assets/<asset-id>)` `` or placeholder filename `` `attachment-name.png` ``).
 
 ## Examples
 

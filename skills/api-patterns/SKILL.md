@@ -34,19 +34,19 @@ version: 5.5.0
 In multi-agent `/plan`, `/cook`, and `/code` workflows, `backend-engineer#contracts` materializes shared Zod/OpenAPI schemas and RFC 9457 error shapes in **Wave 1** (`src/contracts/*.contract.ts`) so **Wave 2** `backend-engineer#api-1..k` and `frontend-engineer#screen-1..k` execute **in parallel** with `src/contracts/*` locked in `READ_ONLY_FILES`:
 
 ```ts
-// src/contracts/orders.contract.ts (Wave 1 — Locked in SHARED_CONTRACT)
+// src/contracts/orders.contract.ts (Wave 1 — Locked in SHARED_CONTRACT, Zod v4)
 import { z } from 'zod';
 
-export const CreateOrderInputSchema = z.object({
-  items: z.array(z.object({ sku: z.string().min(1), quantity: z.number().int().positive() })).min(1),
-  idempotencyKey: z.string().uuid(),
+export const CreateOrderInputSchema = z.strictObject({
+  items: z.array(z.strictObject({ sku: z.string().min(1), quantity: z.number().int().positive() })).min(1),
+  idempotencyKey: z.uuid(),
 });
 
 export const OrderResponseSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   status: z.enum(['pending', 'paid', 'failed']),
   totalCents: z.number().int().nonnegative(),
-  createdAt: z.string().datetime(),
+  createdAt: z.iso.datetime(),
 });
 
 export const ApiProblemSchema = z.object({

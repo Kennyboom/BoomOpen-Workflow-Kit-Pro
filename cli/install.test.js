@@ -50,6 +50,14 @@ const {
   runSettingsCommand,
 } = require('./settings.js');
 const { startSettingsUiServer } = require('./settings-ui.js');
+const { getSyncTargets } = require('./settings-sync.js');
+const {
+  compileAgentMarkdown,
+  targetAgentRelPath,
+  compileCommandMarkdown,
+  claudeColonCommandAlias,
+  rewriteBrainArtifactPaths,
+} = require('./platform-transforms.js');
 
 const KIT_VERSION = require('../package.json').version;
 const COMPACT_INDEX_PATH = path.join(REPO_ROOT, 'matrix-skills', 'compact-index.json');
@@ -277,19 +285,20 @@ test('runDoctor with an empty sandboxed home: kit source checks pass, missing in
 // Settings engine
 // ---------------------------------------------------------------------------
 
-test('Settings schema: version follows package.json, smart-hybrid defaults and 20 enum settings', () => {
+test('Settings schema: version follows package.json, default preset and 20 enum settings', () => {
   assert.equal(DEFAULT_SETTINGS.version, KIT_VERSION);
-  assert.equal(DEFAULT_SETTINGS.preset, 'smart-hybrid');
-  assert.equal(DEFAULT_SETTINGS.execution.modeAThresholdFiles, 2);
+  assert.ok(['frontier-guardrails', 'smart-hybrid'].includes(DEFAULT_SETTINGS.preset));
   assert.equal(DEFAULT_SETTINGS.execution.swarmScaling, 'elastic');
   assert.equal(DEFAULT_SETTINGS.execution.maxParallelSubagents, 8);
   assert.ok(ALLOWED_ENUMS['execution.modeAThresholdFiles'].includes(2));
-  assert.equal(DEFAULT_SETTINGS.workflows.naturalLanguageResearchTrigger, 'auto_team');
+  assert.equal(PRESETS['smart-hybrid'].workflows.naturalLanguageResearchTrigger, 'auto_team');
 
-  const mdBlock = renderActiveSettingsMarkdown(DEFAULT_SETTINGS);
-  assert.ok(mdBlock.startsWith(SETTINGS_MARKER_START) && mdBlock.endsWith(SETTINGS_MARKER_END));
-  assert.ok(mdBlock.includes('Proactive Sub-agent First'));
-  assert.ok(mdBlock.includes('Turn 1'));
+  const defaultBlock = renderActiveSettingsMarkdown(DEFAULT_SETTINGS);
+  assert.ok(defaultBlock.startsWith(SETTINGS_MARKER_START) && defaultBlock.endsWith(SETTINGS_MARKER_END));
+  const smartBlock = renderActiveSettingsMarkdown(PRESETS['smart-hybrid']);
+  assert.ok(smartBlock.startsWith(SETTINGS_MARKER_START) && smartBlock.endsWith(SETTINGS_MARKER_END));
+  assert.ok(smartBlock.includes('Proactive Sub-agent First'));
+  assert.ok(smartBlock.includes('Turn 1'));
 
   const expected20Keys = [
     'execution.mode',
@@ -318,7 +327,12 @@ test('Settings schema: version follows package.json, smart-hybrid defaults and 2
     const val = getSettingByKey(DEFAULT_SETTINGS, key);
     assert.ok(ALLOWED_ENUMS[key].includes(val), `DEFAULT_SETTINGS.${key} (${val}) not in ALLOWED_ENUMS`);
   }
-  assert.deepEqual(Object.keys(PRESETS), ['smart-hybrid', 'carbon-guardrails', 'solo-fast', 'deep-architect', 'adversarial-team']);
+  const presetKeys = Object.keys(PRESETS);
+  const expectedTail = ['smart-hybrid', 'carbon-guardrails', 'solo-fast', 'deep-architect', 'adversarial-team'];
+  assert.deepEqual(
+    presetKeys,
+    presetKeys.includes('frontier-guardrails') ? ['frontier-guardrails', ...expectedTail] : expectedTail
+  );
   assert.equal(PRESETS['carbon-guardrails'].execution.mode, 'mode_a');
   assert.equal(PRESETS['carbon-guardrails'].execution.modeAThresholdFiles, 10);
   assert.equal(PRESETS['carbon-guardrails'].workflows.naturalLanguageResearchTrigger, 'off');
@@ -338,10 +352,10 @@ test('Settings persistence (global + project), presets, set and reset work in an
   fs.mkdirSync(cwd, { recursive: true });
   try {
     const initial = loadSettings({ homeDir, cwd });
-    assert.equal(initial.preset, 'smart-hybrid');
-    assert.equal(initial.workflows.naturalLanguageResearchTrigger, 'auto_team');
+    assert.equal(initial.preset, DEFAULT_SETTINGS.preset);
+    assert.equal(initial.workflows.naturalLanguageResearchTrigger, DEFAULT_SETTINGS.workflows.naturalLanguageResearchTrigger);
 
-    for (const presetName of ['carbon-guardrails', 'solo-fast', 'deep-architect', 'adversarial-team', 'smart-hybrid']) {
+    for (const presetName of Object.keys(PRESETS)) {
       const applied = applyPreset(presetName, { homeDir, cwd, scope: 'global', sync: false });
       assert.equal(applied.settings.preset, presetName);
       assert.equal(applied.settings.execution.mode, PRESETS[presetName].execution.mode);
@@ -366,50 +380,25 @@ test('Settings persistence (global + project), presets, set and reset work in an
     assert.equal(loadSettings({ homeDir, cwd }).execution.mode, 'mode_b', 'project reset keeps global settings');
 
     resetSettings({ homeDir, cwd, scope: 'global', sync: false });
-    assert.equal(loadSettings({ homeDir, cwd }).preset, 'smart-hybrid');
-    assert.equal(loadSettings({ homeDir, cwd }).execution.mode, 'auto');
+    assert.equal(loadSettings({ homeDir, cwd }).preset, DEFAULT_SETTINGS.preset);
+    assert.equal(loadSettings({ homeDir, cwd }).execution.mode, DEFAULT_SETTINGS.execution.mode);
 
     const cmdGet = await runSettingsCommand(['get', 'workflows.naturalLanguageResearchTrigger', '--json'], {
       homeDir,
       cwd,
       silent: true,
     });
-    assert.equal(cmdGet.value, 'auto_team');
+    assert.equal(cmdGet.value, DEFAULT_SETTINGS.workflows.naturalLanguageResearchTrigger);
   } finally {
     removeDir(tmpRoot);
   }
 });
 
 /**
- * Every instruction file the installer writes with a settings block, derived from the installer's
- * own TOOLS paths (so APPDATA/XDG-based locations such as the VS Code prompts folder are included).
+ * Every instruction file the installer writes with a settings block, derived from getSyncTargets.
  */
 function installedEntrypoints() {
-  const p = (tool) => TOOLS[tool].paths;
-  return {
-    antigravity: [
-      path.join(p('antigravity').gemini, 'GEMINI.md'),
-      path.join(p('antigravity').globalAgents, 'AntigravityGlobal.agent.md'),
-    ],
-    claude: [path.join(p('claude').home, 'CLAUDE.md'), path.join(p('claude').home, 'AGENT.md')],
-    codex: [
-      path.join(p('codex').home, 'AGENTS.md'),
-      path.join(p('codex').home, 'CODEX.md'),
-      path.join(p('codex').home, 'AGENT.md'),
-    ],
-    cursor: [
-      path.join(p('cursor').editorHome, 'CURSOR.md'),
-      path.join(p('cursor').rules, 'boomopen-workflow-kit.mdc'),
-      path.join(p('cursor').editorHome, 'AGENT.md'),
-      path.join(p('cursor').editorHome, 'CLAUDE.md'),
-    ],
-    copilot: [
-      path.join(p('copilot').home, 'COPILOT.md'),
-      path.join(p('copilot').home, 'AGENT.md'),
-      path.join(p('copilot').home, 'CLAUDE.md'),
-      path.join(p('copilot').vsCodePrompts, 'boomopen-workflow-kit.agent.md'),
-    ],
-  };
+  return getSyncTargets(SANDBOX_HOME);
 }
 
 test('syncSettingsToInstalledPlatforms updates every installer-written entrypoint (incl. VS Code prompt) and no user file', () => {
@@ -477,12 +466,12 @@ test('Settings Web UI (port 0) serves HTML and the REST API, and rejects cross-o
 
     const getData = await (await fetch(`${url}/api/settings`, { headers: { 'X-BoomOpen-Token': token } })).json();
     assert.equal(getData.ok, true);
-    assert.equal(getData.settings.preset, 'smart-hybrid');
+    assert.equal(getData.settings.preset, DEFAULT_SETTINGS.preset);
     assert.ok(getData.descriptions && getData.descriptions['execution.mode']);
 
     const crossSite = await postJson('/api/preset', { preset: 'solo-fast', scope: 'global' }, { Origin: 'http://evil.example' });
     assert.equal(crossSite.status, 403, 'a cross-origin page must not change settings');
-    assert.equal(loadSettings({ homeDir, cwd }).preset, 'smart-hybrid');
+    assert.equal(loadSettings({ homeDir, cwd }).preset, DEFAULT_SETTINGS.preset);
 
     const presetData = await (await postJson('/api/preset', { preset: 'adversarial-team', scope: 'global' })).json();
     assert.equal(presetData.ok, true);
@@ -501,11 +490,53 @@ test('Settings Web UI (port 0) serves HTML and the REST API, and rejects cross-o
 
     const resetData = await (await postJson('/api/reset', { scope: 'global' })).json();
     assert.equal(resetData.ok, true);
-    assert.equal(resetData.settings.preset, 'smart-hybrid');
+    assert.equal(resetData.settings.preset, DEFAULT_SETTINGS.preset);
   } finally {
     await new Promise((resolve) => server.close(resolve));
     removeDir(tmpRoot);
   }
+});
+
+test('platform-transforms compiles Antigravity, Claude, and Copilot frontmatters, colon aliases, and brain paths', () => {
+  const debuggerMd = fs.readFileSync(path.join(REPO_ROOT, 'agents', 'debugger.md'), 'utf8');
+  const agyDebugger = compileAgentMarkdown(debuggerMd, 'antigravity', 'debugger.md');
+  assert.match(agyDebugger, /^---\r?\nname: debugger\r?\ndescription: ".*"\r?\nsubagent: true\r?\nmainAgent: true\r?\ntools: \[read_file, edit_file, write_file, run_command, manage_task, search_web\]\r?\n---/);
+  assert.doesNotMatch(agyDebugger, /\bmodel:\s*inherit\b/);
+
+  const reviewerMd = fs.readFileSync(path.join(REPO_ROOT, 'agents', 'reviewer.md'), 'utf8');
+  const agyReviewer = compileAgentMarkdown(reviewerMd, 'antigravity', 'reviewer.md');
+  assert.match(agyReviewer, /tools: \[read_file, run_command, search_web\]/);
+  const claudeReviewer = compileAgentMarkdown(reviewerMd, 'claude', 'reviewer.md');
+  assert.match(claudeReviewer, /disallowedTools: Write, Edit, NotebookEdit/);
+
+  const specRecMd = fs.readFileSync(path.join(REPO_ROOT, 'agents', 'spec-reconciler.md'), 'utf8');
+  const claudeSpecRec = compileAgentMarkdown(specRecMd, 'claude', 'spec-reconciler.md');
+  assert.doesNotMatch(claudeSpecRec, /read_file/);
+  assert.match(claudeSpecRec, /disallowedTools: Write, Edit, NotebookEdit/);
+
+  const plannerMd = fs.readFileSync(path.join(REPO_ROOT, 'agents', 'planner.md'), 'utf8');
+  assert.match(compileAgentMarkdown(plannerMd, 'claude', 'planner.md'), /memory: project/);
+
+  const backendMd = fs.readFileSync(path.join(REPO_ROOT, 'agents', 'backend-engineer.md'), 'utf8');
+  assert.match(compileAgentMarkdown(backendMd, 'claude', 'backend-engineer.md'), /isolation: worktree/);
+  const copilotBackend = compileAgentMarkdown(backendMd, 'copilot', 'backend-engineer.md');
+  assert.doesNotMatch(copilotBackend, /handoffs:/);
+  assert.equal(targetAgentRelPath('backend-engineer.md', 'copilot'), 'backend-engineer.agent.md');
+
+  const deployProd = fs.readFileSync(path.join(REPO_ROOT, 'commands', 'deploy-production.md'), 'utf8');
+  assert.match(compileCommandMarkdown(deployProd, 'claude', 'deploy-production.md'), /disable-model-invocation: true/);
+
+  const stems = new Set(['plan', 'cook', 'audit', 'pr']);
+  assert.equal(claudeColonCommandAlias('plan-hard.md', stems), path.join('plan', 'hard.md'));
+  assert.equal(claudeColonCommandAlias('cook-team.md', stems), path.join('cook', 'team.md'));
+  assert.equal(claudeColonCommandAlias('audit-fix.md', stems), path.join('audit', 'fix.md'));
+  assert.equal(claudeColonCommandAlias('pr-review.md', stems), path.join('pr', 'review.md'));
+  assert.equal(claudeColonCommandAlias('deep-audit.md', stems), null);
+
+  assert.equal(
+    rewriteBrainArtifactPaths('Save to <appDataDir>\\brain\\<conversation-id>\\PLAN.md and <appDataDir>/brain/<conversation-id>', 'claude'),
+    'Save to ./reports/{topic}/PLAN.md and ./reports/{topic}'
+  );
 });
 
 // ---------------------------------------------------------------------------

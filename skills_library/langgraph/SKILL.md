@@ -70,7 +70,7 @@ def calculator(expression: str) -> str:
 tools = [search, calculator]
 
 # 3. Create LLM with tools
-llm = ChatOpenAI(model="gpt-4o").bind_tools(tools)
+llm = ChatOpenAI(model="gpt-4.1").bind_tools(tools)
 
 # 4. Define Nodes
 def agent(state: AgentState) -> dict:

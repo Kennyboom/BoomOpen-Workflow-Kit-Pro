@@ -2,7 +2,8 @@
 
 /**
  * Static HTML for the local settings Web UI. The per-launch session token is embedded so the page
- * can authenticate its own API calls; dynamic values rendered via innerHTML pass through esc().
+ * can authenticate its own API calls; dynamic values rendered via innerHTML pass through esc(),
+ * and all interactive controls bind via addEventListener (zero inline event handlers).
  */
 
 const { SETTING_DESCRIPTIONS } = require('./settings-schema.js');
@@ -78,8 +79,9 @@ const I18N = {
     previewTitle: '⚡ Live AOT Injected Entrypoint Block Preview',
     previewBadge: '0ms Turn-1 Overhead',
     presets: [
-      { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Default v5.5)', desc: 'Mode A <= 2 known files; Proactive Sub-agent First on Turn 1 for > 2 files, unscoped exploration, or /cmd; 17-language NL workflow routing.' },
-      { id: 'carbon-guardrails', title: '🛡️ Carbon-Guardrails (<3KB Antigravity Slim)', desc: 'Carbon drives, BoomOpen guards: <3KB GEMINI.md (-87% prompt tax), Mode A (≤10 files), NL trigger off, strict Pragmatic 400/500 & E2E gates + opt-in /cmd.' },
+      { id: 'frontier-guardrails', title: '🛡️ Frontier-Guardrails (Recommended Default)', desc: 'Frontier model drives, BoomOpen guards: <2.5KB slim entrypoints across all 5 IDEs, Mode A (≤10 files), NL trigger off, Pragmatic 400/500 & E2E gates + opt-in /cmd.' },
+      { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Proactive Swarm)', desc: 'Mode A <= 2 known files; Proactive Sub-agent First on Turn 1 for > 2 files, unscoped exploration, or /cmd; 17-language NL workflow routing.' },
+      { id: 'carbon-guardrails', title: '🧭 Carbon-Guardrails (Antigravity Alias)', desc: 'Backward-compatible Antigravity alias for Frontier-Guardrails: <2.5KB slim guardrails, Mode A (≤10 files), NL trigger off, strict Pragmatic 400/500 & E2E gates.' },
       { id: 'solo-fast', title: '🚀 Solo-Fast (Direct Mode A)', desc: 'Force Mode A Direct Execution (≤10 files), conservative swarm (max 3), :fast variant, Relaxed 600/800 lines.' },
       { id: 'deep-architect', title: '🧠 Deep-Architect (Strict Mode B)', desc: 'Force Mode B Multi-Agent Orchestrator (max 12), :hard variant, Strict 300/400 lines, council/cross_family routing.' },
       { id: 'adversarial-team', title: '🔺 Adversarial-Team (Golden Triangle)', desc: 'Force Golden Triangle :team, hyper_swarm (max 12), Strict 300/400 lines, council/cross_family review.' },
@@ -109,8 +111,9 @@ const I18N = {
     previewTitle: '⚡ Xem trước Khối Cấu hình AOT Nạp sẵn',
     previewBadge: '0ms Độ trễ Turn-1',
     presets: [
-      { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Mặc định v5.5)', desc: 'Mode A <= 2 file đã biết; Tự động gọi Sub-agent ngay Turn 1 khi > 2 file, khám phá codebase, hoặc /cmd; Định tuyến tự nhiên 17 ngôn ngữ.' },
-      { id: 'carbon-guardrails', title: '🛡️ Carbon-Guardrails (Carbon Cầm Lái, BoomOpen Gác Cổng)', desc: 'Bản siêu gọn <3KB cho Antigravity (-87% token mỗi lượt): Carbon tự lái Mode A (≤10 file), tắt bắt câu tự nhiên, giữ chặt chuẩn 400/500 dòng, E2E & lệnh /cmd chủ động.' },
+      { id: 'frontier-guardrails', title: '🛡️ Frontier-Guardrails (Mặc định Khuyến nghị)', desc: 'Model gốc cầm lái, BoomOpen gác cổng: bản siêu gọn <2.5KB trên cả 5 IDE, Mode A (≤10 file), tắt bắt câu tự nhiên, chuẩn 400/500 dòng, E2E & /cmd chủ động.' },
+      { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Đàn Sub-Agent Chủ động)', desc: 'Mode A <= 2 file đã biết; Tự động gọi Sub-agent ngay Turn 1 khi > 2 file, khám phá codebase, hoặc /cmd; Định tuyến tự nhiên 17 ngôn ngữ.' },
+      { id: 'carbon-guardrails', title: '🧭 Carbon-Guardrails (Bí danh Antigravity)', desc: 'Bí danh tương thích ngược cho Antigravity: bản siêu gọn <2.5KB, Carbon tự lái Mode A (≤10 file), tắt bắt câu tự nhiên, giữ chặt chuẩn 400/500 dòng & E2E.' },
       { id: 'solo-fast', title: '🚀 Solo-Fast (Trực tiếp Mode A)', desc: 'Ưu tiên Mode A trực tiếp (≤10 file), conservative (tối đa 3 sub-agent), biến thể :fast, giới hạn 600/800 dòng.' },
       { id: 'deep-architect', title: '🧠 Deep-Architect (Mode B Nghiêm ngặt)', desc: 'Bắt buộc Mode B đa tác tử (tối đa 12), biến thể :hard, chuẩn 300/400 dòng, định tuyến council/cross_family.' },
       { id: 'adversarial-team', title: '🔺 Adversarial-Team (Tam Giác Vàng)', desc: 'Kích hoạt Golden Triangle :team, hyper_swarm (tối đa 12), chuẩn 300/400 dòng, phản biện council/cross_family.' },
@@ -191,34 +194,36 @@ function renderDashboardHtml(sessionToken = '') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>⚡ BoomOpen v5.5 — Unified Settings & Control Center</title>
   <style>
-    :root { --bg: #07090e; --card: rgba(15, 23, 42, 0.76); --border: rgba(148, 163, 184, 0.18); --cyan: #00f0ff; --purple: #8b5cf6; --emerald: #10b981; --text: #f8fafc; --muted: #94a3b8; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-    body { background: radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.12), transparent 35%), radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.12), transparent 35%), var(--bg); color: var(--text); min-height: 100vh; padding: 24px; }
+    :root { --bg: #0b0f17; --surface: #111827; --card: rgba(17, 24, 39, 0.88); --border: rgba(148, 163, 184, 0.2); --emerald: #10b981; --emerald-strong: #059669; --amber: #f59e0b; --text: #f8fafc; --muted: #94a3b8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    body { background: radial-gradient(circle at 12% 10%, rgba(16, 185, 129, 0.1), transparent 38%), radial-gradient(circle at 88% 15%, rgba(245, 158, 11, 0.08), transparent 36%), var(--bg); color: var(--text); min-height: 100vh; padding: 24px; }
     .container { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
-    .glass { background: var(--card); backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 22px; }
+    .glass { background: var(--card); backdrop-filter: blur(14px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 22px; }
     .header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; }
-    .title { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.4px; background: linear-gradient(90deg, var(--cyan), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .title { font-size: 1.22rem; font-weight: 800; letter-spacing: 0.3px; color: var(--text); }
+    .platforms-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
     .controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .pill { font-size: 0.78rem; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--border); background: rgba(15, 23, 42, 0.9); color: var(--muted); }
+    .pill { font-size: 0.78rem; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); }
     .pill.ok { border-color: rgba(16, 185, 129, 0.5); color: var(--emerald); }
-    button, select, input[type="number"] { background: rgba(15, 23, 42, 0.95); color: var(--text); border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; transition: 0.15s; }
-    input[type="number"] { width: 110px; cursor: text; text-align: right; }
-    button:hover, select:hover, input[type="number"]:hover, input[type="number"]:focus { border-color: var(--cyan); outline: none; }
-    .btn-primary { background: linear-gradient(135deg, #0284c7, #7c3aed); border: none; font-weight: 600; }
-    .btn-primary:hover { filter: brightness(1.12); }
+    button, select, input[type="number"] { background: var(--surface); color: var(--text); border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; transition: border-color 0.15s ease, background-color 0.15s ease; }
+    input[type="number"] { width: 110px; cursor: text; text-align: right; font-family: 'JetBrains Mono', monospace; }
+    button:hover, select:hover, input[type="number"]:hover, input[type="number"]:focus { border-color: var(--emerald); outline: none; }
+    .btn-primary { background: var(--emerald-strong); border-color: var(--emerald); color: #ecfdf5; font-weight: 600; }
+    .btn-primary:hover { background: var(--emerald); color: #052e16; }
     .presets { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-    .preset-card { cursor: pointer; border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: rgba(15, 23, 42, 0.6); transition: 0.18s; }
-    .preset-card.active, .preset-card:hover, .preset-card:focus-visible { border-color: var(--cyan); box-shadow: 0 0 18px rgba(0, 240, 255, 0.15); outline: none; }
-    .preset-card h4 { font-size: 0.95rem; margin-bottom: 6px; color: var(--cyan); }
-    .preset-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+    .preset-card { cursor: pointer; border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: rgba(15, 23, 42, 0.65); transition: border-color 0.18s ease, box-shadow 0.18s ease; }
+    .preset-card.active, .preset-card:hover, .preset-card:focus-visible { border-color: var(--emerald); box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.35); outline: none; }
+    .preset-card h4 { font-size: 0.94rem; margin-bottom: 6px; color: var(--amber); }
+    .preset-card.active h4 { color: var(--emerald); }
+    .preset-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.42; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: 16px; }
     .cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
     .field { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; gap: 12px; border-bottom: 1px solid rgba(148, 163, 184, 0.08); }
     .field:last-child { border-bottom: none; }
     .field label { font-size: 0.86rem; color: #e2e8f0; flex: 1; cursor: pointer; }
-    .field code { display: block; font-size: 0.73rem; color: #38bdf8; margin-top: 2px; }
+    .field code { display: block; font-size: 0.73rem; font-family: 'JetBrains Mono', monospace; color: var(--amber); margin-top: 2px; }
     .field .hint { display: block; font-size: 0.74rem; color: var(--muted); margin-top: 2px; line-height: 1.35; }
-    pre { background: #05070b; border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #38bdf8; overflow-x: auto; line-height: 1.5; }
+    pre { background: #070a10; border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #d1fae5; overflow-x: auto; line-height: 1.5; }
     #toast { font-size: 0.82rem; color: var(--emerald); font-weight: 600; }
   </style>
 </head>
@@ -227,7 +232,7 @@ function renderDashboardHtml(sessionToken = '') {
     <div class="glass header">
       <div>
         <div class="title" id="headerTitle">⚡ BOOMOPEN v5.5 — UNIFIED SETTINGS & CONTROL CENTER</div>
-        <div id="platforms" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"></div>
+        <div id="platforms" class="platforms-row"></div>
       </div>
       <div class="controls">
         <span id="toast" role="status" aria-live="polite"></span>
@@ -266,13 +271,9 @@ function renderDashboardHtml(sessionToken = '') {
       if (!r.ok || !d.ok) throw new Error(d.error || ('HTTP ' + r.status));
       return d;
     }
-
     function syncPresetHighlight() {
-      document.querySelectorAll('.preset-card').forEach((el) => {
-        el.classList.toggle('active', el.dataset.preset === state.settings.preset);
-      });
+      document.querySelectorAll('.preset-card').forEach((el) => el.classList.toggle('active', el.dataset.preset === state.settings.preset));
     }
-
     function renderUI(data) {
       if (data) {
         state.settings = data.settings;
@@ -295,7 +296,7 @@ function renderDashboardHtml(sessionToken = '') {
       const synced = (data && data.syncReport && data.syncReport.platforms) || {};
       document.getElementById('platforms').innerHTML = Object.entries(state.installStatus).map(([k, ok]) => \`<span class="pill \${ok ? 'ok' : ''}">\${ok ? '✅' : '⬚'} \${esc(k)}\${synced[k] ? ' · synced' : ''}</span>\`).join('');
       document.getElementById('presetCards').innerHTML = dict.presets.map(p => \`
-        <div class="preset-card \${state.settings.preset === p.id ? 'active' : ''}" data-preset="\${esc(p.id)}" role="button" tabindex="0" onclick="applyPresetClick('\${esc(p.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();applyPresetClick('\${esc(p.id)}');}">
+        <div class="preset-card \${state.settings.preset === p.id ? 'active' : ''}" data-preset="\${esc(p.id)}" role="button" tabindex="0">
           <h4>\${esc(p.title)}</h4><p>\${esc(p.desc)}</p>
         </div>\`).join('');
       document.getElementById('categoriesGrid').innerHTML = SCHEMA.map((cat, idx) => {
@@ -309,12 +310,12 @@ function renderDashboardHtml(sessionToken = '') {
             const hint = (dict.hints && dict.hints[f.key]) || '';
             if (f.type === 'number') {
               return \`<div class="field"><label for="\${id}">\${esc(label)}<code>\${esc(f.key)}</code>\${hint ? \`<span class="hint">\${esc(hint)}</span>\` : ''}</label>
-                <input id="\${id}" type="number" min="\${f.min || 1}" max="\${f.max || 100000}" data-key="\${esc(f.key)}" value="\${esc(cur)}" onchange="onFieldChange(this.dataset.key, this.value)" /></div>\`;
+                <input id="\${id}" type="number" min="\${f.min || 1}" max="\${f.max || 100000}" data-key="\${esc(f.key)}" value="\${esc(cur)}" /></div>\`;
             }
             const baseOpts = state.allowedEnums[f.key] || f.options || [];
             const opts = baseOpts.map(String).includes(cur) || !cur ? baseOpts : [cur, ...baseOpts];
             return \`<div class="field"><label for="\${id}">\${esc(label)}<code>\${esc(f.key)}</code>\${hint ? \`<span class="hint">\${esc(hint)}</span>\` : ''}</label>
-              <select id="\${id}" data-key="\${esc(f.key)}" onchange="onFieldChange(this.dataset.key, this.value)">
+              <select id="\${id}" data-key="\${esc(f.key)}">
                 \${opts.map(o => \`<option value="\${esc(o)}" \${String(o) === cur ? 'selected' : ''}>\${esc(o)}</option>\`).join('')}
               </select></div>\`;
           }).join('')}
@@ -331,10 +332,9 @@ function renderDashboardHtml(sessionToken = '') {
       const seq = ++reqSeq;
       try { const d = await action(); if (seq !== reqSeq) return; renderUI(d); toast(describeResult(d, verb)); } catch (err) { if (seq === reqSeq) toast('❌ ' + err.message); }
     }
-    async function fetchState() {
-      await run(() => api('/api/settings?scope=' + encodeURIComponent(state.scope)), 'Loaded');
-    }
-    window.onFieldChange = (k, v) => {
+    const fetchState = () => run(() => api('/api/settings?scope=' + encodeURIComponent(state.scope)), 'Loaded');
+    function handleFieldChange(k, v) {
+      if (!k) return;
       setVal(state.settings, k, /^\\d+$/.test(v) ? Number(v) : v);
       const limits = k === 'codingStandards.preset' ? state.codingPresets[v] : null;
       if (limits) {
@@ -349,12 +349,17 @@ function renderDashboardHtml(sessionToken = '') {
       state.dirty = true;
       syncPresetHighlight();
       toast((I18N[state.lang] || I18N.en).unsavedNotice);
-    };
-    window.applyPresetClick = (preset) => run(() => api('/api/preset', { preset, scope: state.scope }), 'Applied ' + preset);
-    document.getElementById('langBtn').onclick = () => { state.lang = state.lang === 'en' ? 'vi' : 'en'; renderUI(); if (state.dirty) toast((I18N[state.lang] || I18N.en).unsavedNotice); };
-    document.getElementById('scopeSelect').onchange = (e) => { state.scope = e.target.value; fetchState(); };
-    document.getElementById('saveBtn').onclick = () => run(() => api('/api/settings', { settings: state.settings, scope: state.scope }), 'Saved');
-    document.getElementById('resetBtn').onclick = () => run(() => api('/api/reset', { scope: state.scope }), 'Reset to defaults');
+    }
+    const applyPresetById = (preset) => preset && run(() => api('/api/preset', { preset, scope: state.scope }), 'Applied ' + preset);
+    document.getElementById('presetCards').addEventListener('click', (e) => applyPresetById(e.target.closest('.preset-card')?.dataset.preset));
+    document.getElementById('presetCards').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); applyPresetById(e.target.closest('.preset-card')?.dataset.preset); }
+    });
+    document.getElementById('categoriesGrid').addEventListener('change', (e) => handleFieldChange(e.target.dataset?.key, e.target.value));
+    document.getElementById('langBtn').addEventListener('click', () => { state.lang = state.lang === 'en' ? 'vi' : 'en'; renderUI(); if (state.dirty) toast((I18N[state.lang] || I18N.en).unsavedNotice); });
+    document.getElementById('scopeSelect').addEventListener('change', (e) => { state.scope = e.target.value; fetchState(); });
+    document.getElementById('saveBtn').addEventListener('click', () => run(() => api('/api/settings', { settings: state.settings, scope: state.scope }), 'Saved'));
+    document.getElementById('resetBtn').addEventListener('click', () => run(() => api('/api/reset', { scope: state.scope }), 'Reset to defaults'));
     fetchState();
   </script>
 </body>

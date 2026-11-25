@@ -71,7 +71,7 @@ async function generateContent(userInput, context) {
 
   // 3. Call API
   const response = await anthropic.messages.create({
-    model: 'claude-3-haiku-20240307',
+    model: 'claude-haiku-4-5',
     max_tokens: 1000,
     system: systemPrompt,
     messages: [{
@@ -89,10 +89,10 @@ async function generateContent(userInput, context) {
 ### Model Selection
 | Model | Cost | Speed | Quality | Use Case |
 |-------|------|-------|---------|----------|
-| GPT-4o | $$$ | Fast | Best | Complex tasks |
-| GPT-4o-mini | $ | Fastest | Good | Most tasks |
-| Claude 3.5 Sonnet | $$ | Fast | Excellent | Balanced |
-| Claude 3 Haiku | $ | Fastest | Good | High volume |
+| GPT-5.4 | $$$ | Fast | Best | Complex tasks |
+| GPT-4.1-mini | $ | Fastest | Good | Most tasks |
+| Claude Sonnet 4.6 | $$ | Fast | Excellent | Balanced |
+| Claude Haiku 4.5 | $ | Fastest | Good | High volume |
 ```
 
 ### Prompt Engineering for Products
@@ -179,7 +179,7 @@ async function callWithCostTracking(userId, prompt) {
     inputTokens: response.usage.input_tokens,
     outputTokens: response.usage.output_tokens,
     cost: calculateCost(response.usage),
-    model: 'claude-3-haiku',
+    model: 'claude-haiku-4-5',
   });
 
   return response;
@@ -187,9 +187,9 @@ async function callWithCostTracking(userId, prompt) {
 
 function calculateCost(usage) {
   const rates = {
-    'claude-3-haiku': { input: 0.25, output: 1.25 }, // per 1M tokens
+    'claude-haiku-4-5': { input: 0.25, output: 1.25 }, // per 1M tokens
   };
-  const rate = rates['claude-3-haiku'];
+  const rate = rates['claude-haiku-4-5'];
   return (usage.input_tokens * rate.input +
           usage.output_tokens * rate.output) / 1_000_000;
 }

@@ -3,4 +3,4 @@ interface:
   short_description: "🔺 Team Code — Elastic Golden Diamond code execution with Turn-1 Fast-Forward, 3-Wave Contract-First Sharding & Parallel Adversarial QA"
   brand_color: "#3B82F6"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

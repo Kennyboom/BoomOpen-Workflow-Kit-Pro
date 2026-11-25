@@ -9,167 +9,41 @@
  *   copied to ~/.boomopen/backups/<tool>/<timestamp>/.
  * - Reinstall/upgrade: files the previous install wrote that the new kit no longer ships are
  *   deleted only while unmodified.
- * - Uninstall: only files whose hash still matches are deleted; backups of files the user had
- *   before the first install are moved back; only folders the kit created are pruned (when empty).
- *
- * - Symlinked destinations (dotfiles managers) keep their link: a backup is restored by writing its
- *   bytes through the link, never by renaming over it, and a link is never deleted.
- * - legacyMoves records skill folders the one-time pre-v5 migration moved aside, so uninstall puts
- *   them back.
+ * - Uninstall (see cli/manifest-uninstall.js): only files whose hash still matches are deleted;
+ *   backups of files the user had before the first install are moved back; only folders the kit
+ *   created are pruned (when empty).
  *
  * Manifest location: ~/.boomopen/manifests/<tool>.json (paths stored relative to the home folder).
  */
 
-const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 
+const {
+    sha256,
+    byDepthDesc,
+    stateDir,
+    manifestPath,
+    backupRoot,
+    toRel,
+    toAbs,
+    readBufferSafe,
+    isPlainObject,
+    isSymlink,
+    hasSymlinkAncestor,
+    loadManifest,
+    moveFile,
+    moveDir,
+    restoreBackup,
+    undoKitFile,
+    removeDirIfEmpty,
+    pruneEmptyTree,
+    pruneStateDirs,
+    uninstallFromManifest,
+} = require('./manifest-uninstall.js');
+
 const MANIFEST_FORMAT = 1;
-const STATE_DIR_NAME = '.boomopen';
-
-const sha256 = (data) => crypto.createHash('sha256').update(data).digest('hex');
 const timestamp = () => new Date().toISOString().replace(/[:.]/g, '-');
-
-function stateDir(homeDir) {
-    return path.join(homeDir, STATE_DIR_NAME);
-}
-
-function manifestPath(homeDir, toolKey) {
-    return path.join(stateDir(homeDir), 'manifests', `${toolKey}.json`);
-}
-
-function backupRoot(homeDir, toolKey) {
-    return path.join(stateDir(homeDir), 'backups', toolKey);
-}
-
-/** Manifest key: home-relative with '/' separators, or absolute when outside the home drive. */
-function toRel(homeDir, absPath) {
-    const rel = path.relative(homeDir, absPath);
-    return (path.isAbsolute(rel) ? path.resolve(absPath) : rel).split(path.sep).join('/');
-}
-
-function toAbs(homeDir, relPath) {
-    const native = relPath.split('/').join(path.sep);
-    return path.isAbsolute(native) ? native : path.join(homeDir, native);
-}
-
-function readBufferSafe(filePath) {
-    try {
-        return fs.readFileSync(filePath);
-    } catch (error) {
-        if (error && error.code === 'ENOENT') return null;
-        throw error;
-    }
-}
-
-function isPlainObject(value) {
-    return value !== null && typeof value === 'object' && !Array.isArray(value);
-}
-
-/** True when filePath itself is a symbolic link (a missing path is not). */
-function isSymlink(filePath) {
-    try {
-        return fs.lstatSync(filePath).isSymbolicLink();
-    } catch (error) {
-        if (error && (error.code === 'ENOENT' || error.code === 'ENOTDIR')) return false;
-        throw error;
-    }
-}
-
-/**
- * @returns {{ files: Record<string,string>, dirs: string[], backups: Record<string,string>,
- *   legacyMoves: Record<string,string>, kitVersion?: string }|null}
- * @throws {Error} when the manifest exists but is unreadable (callers must not guess ownership)
- */
-function loadManifest(homeDir, toolKey) {
-    const raw = readBufferSafe(manifestPath(homeDir, toolKey));
-    if (raw === null) return null;
-    let data;
-    try {
-        data = JSON.parse(raw.toString('utf8'));
-    } catch (error) {
-        if (error instanceof SyntaxError) {
-            throw new Error(`install manifest ${manifestPath(homeDir, toolKey)} is corrupt: ${error.message}`);
-        }
-        throw error;
-    }
-    return {
-        kitVersion: typeof data.kitVersion === 'string' ? data.kitVersion : undefined,
-        files: isPlainObject(data.files) ? data.files : {},
-        dirs: Array.isArray(data.dirs) ? data.dirs.filter((d) => typeof d === 'string') : [],
-        backups: isPlainObject(data.backups) ? data.backups : {},
-        legacyMoves: isPlainObject(data.legacyMoves) ? data.legacyMoves : {},
-    };
-}
-
-function moveFile(from, to) {
-    fs.mkdirSync(path.dirname(to), { recursive: true });
-    try {
-        fs.renameSync(from, to);
-    } catch (error) {
-        if (!error || error.code !== 'EXDEV') throw error;
-        fs.copyFileSync(from, to);
-        fs.unlinkSync(from);
-    }
-}
-
-/** Move a folder (rename, or copy + delete across devices). */
-function moveDir(from, to) {
-    fs.mkdirSync(path.dirname(to), { recursive: true });
-    try {
-        fs.renameSync(from, to);
-    } catch (error) {
-        if (!error || error.code !== 'EXDEV') throw error;
-        fs.cpSync(from, to, { recursive: true });
-        fs.rmSync(from, { recursive: true, force: true });
-    }
-}
-
-/**
- * Put a backup back at targetPath. A symlinked target keeps its link: the bytes are written
- * through it (renaming would replace the link with a plain file).
- */
-function restoreBackup(backupPath, targetPath) {
-    if (isSymlink(targetPath)) {
-        fs.writeFileSync(targetPath, fs.readFileSync(backupPath));
-        fs.unlinkSync(backupPath);
-        return;
-    }
-    moveFile(backupPath, targetPath);
-}
-
-/**
- * Undo one kit file: restore the user's backup over it, or delete it when there is none.
- * A symlink is never deleted; without a backup it is left as it is.
- * @returns {{ removed: boolean, restored: boolean }}
- */
-function undoKitFile(absPath, backupPath) {
-    const hasBackup = Boolean(backupPath) && fs.existsSync(backupPath);
-    if (isSymlink(absPath)) {
-        if (hasBackup) restoreBackup(backupPath, absPath);
-        return { removed: false, restored: hasBackup };
-    }
-    let removed = false;
-    if (fs.existsSync(absPath)) {
-        fs.unlinkSync(absPath);
-        removed = true;
-    }
-    if (hasBackup) moveFile(backupPath, absPath);
-    return { removed, restored: hasBackup };
-}
-
-function removeDirIfEmpty(dirPath) {
-    try {
-        if (fs.readdirSync(dirPath).length > 0) return false;
-        fs.rmdirSync(dirPath);
-        return true;
-    } catch (error) {
-        if (error && ['ENOENT', 'ENOTDIR', 'ENOTEMPTY', 'EPERM', 'EBUSY'].includes(error.code)) return false;
-        throw error;
-    }
-}
-
-const byDepthDesc = (a, b) => b.split('/').length - a.split('/').length;
 
 /** Records everything one install writes into shared folders. */
 class InstallLedger {
@@ -299,6 +173,37 @@ class InstallLedger {
         return current === null ? 'created' : 'updated';
     }
 
+    /** Clean unmodified previous-manifest files under dirPath before replacing dirPath with a shared junction. */
+    prunePreviousUnder(dirPath) {
+        if (!this.previous || isSymlink(dirPath)) return;
+        const prefix = `${this.rel(dirPath)}/`;
+        for (const [rel, hash] of Object.entries(this.previous.files)) {
+            if (!rel.startsWith(prefix)) continue;
+            const absPath = this.abs(rel);
+            if (hasSymlinkAncestor(this.homeDir, absPath)) continue;
+            const current = readBufferSafe(absPath);
+            if (current !== null && sha256(current) === hash) {
+                const outcome = undoKitFile(absPath, this.backups[rel]);
+                if (outcome.restored) delete this.backups[rel];
+                delete this.previous.files[rel];
+            }
+        }
+    }
+
+    /** Drop manifest tracking at or beneath dirPath once dirPath is a shared-vault symlink/junction. */
+    forgetSubtree(dirPath) {
+        const exact = this.rel(dirPath);
+        const prefix = `${exact}/`;
+        if (this.previous) {
+            for (const rel of Object.keys(this.previous.files)) {
+                if (rel === exact || rel.startsWith(prefix)) delete this.previous.files[rel];
+            }
+        }
+        for (const rel of [...this.dirs]) {
+            if (rel === exact || rel.startsWith(prefix)) this.dirs.delete(rel);
+        }
+    }
+
     /** Remove files the previous install wrote that this install no longer ships. */
     pruneStale() {
         const result = { removed: [], kept: [] };
@@ -306,6 +211,7 @@ class InstallLedger {
         for (const [rel, hash] of Object.entries(this.previous.files)) {
             if (this.files[rel]) continue;
             const absPath = this.abs(rel);
+            if (hasSymlinkAncestor(this.homeDir, absPath)) continue;
             const current = readBufferSafe(absPath);
             if (current === null) continue;
             if (sha256(current) !== hash) {
@@ -317,7 +223,12 @@ class InstallLedger {
             if (outcome.restored) delete this.backups[rel];
         }
         for (const rel of [...this.dirs].sort(byDepthDesc)) {
-            if (removeDirIfEmpty(this.abs(rel))) this.dirs.delete(rel);
+            const absDir = this.abs(rel);
+            if (isSymlink(absDir) || hasSymlinkAncestor(this.homeDir, absDir)) {
+                this.dirs.delete(rel);
+                continue;
+            }
+            if (removeDirIfEmpty(absDir)) this.dirs.delete(rel);
         }
         return result;
     }
@@ -339,57 +250,6 @@ class InstallLedger {
         removeDirIfEmpty(this.sessionBackupDir);
         return target;
     }
-}
-
-/** Move skill folders the legacy migration set aside back into place (never over a newer folder). */
-function restoreLegacyMoves(homeDir, legacyMoves, result) {
-    for (const [rel, backupDir] of Object.entries(legacyMoves)) {
-        const absPath = toAbs(homeDir, rel);
-        if (typeof backupDir !== 'string' || !fs.existsSync(backupDir)) continue;
-        if (fs.existsSync(absPath)) {
-            result.kept.push(backupDir);
-            continue;
-        }
-        moveDir(backupDir, absPath);
-        result.restored.push(absPath);
-    }
-}
-
-/** Delete ~/.boomopen/manifests, ~/.boomopen/backups and ~/.boomopen itself once they are empty. */
-function pruneStateDirs(homeDir) {
-    removeDirIfEmpty(path.join(stateDir(homeDir), 'manifests'));
-    removeDirIfEmpty(path.join(stateDir(homeDir), 'backups'));
-    removeDirIfEmpty(stateDir(homeDir));
-}
-
-/**
- * Remove what the manifest says the kit installed.
- * @returns {{ removed: string[], kept: string[], restored: string[] }|null} null when no manifest exists
- */
-function uninstallFromManifest(homeDir, toolKey) {
-    const manifest = loadManifest(homeDir, toolKey);
-    if (!manifest) return null;
-    const result = { removed: [], kept: [], restored: [] };
-
-    for (const [rel, hash] of Object.entries(manifest.files)) {
-        const absPath = toAbs(homeDir, rel);
-        const current = readBufferSafe(absPath);
-        if (current !== null && sha256(current) !== hash) {
-            result.kept.push(absPath);
-            continue;
-        }
-        const outcome = undoKitFile(absPath, manifest.backups[rel]);
-        if (outcome.removed) result.removed.push(absPath);
-        if (outcome.restored) result.restored.push(absPath);
-    }
-    restoreLegacyMoves(homeDir, manifest.legacyMoves, result);
-    for (const rel of [...manifest.dirs].sort(byDepthDesc)) {
-        if (removeDirIfEmpty(toAbs(homeDir, rel))) result.removed.push(toAbs(homeDir, rel));
-    }
-    fs.unlinkSync(manifestPath(homeDir, toolKey));
-    pruneEmptyTree(backupRoot(homeDir, toolKey));
-    pruneStateDirs(homeDir);
-    return result;
 }
 
 /**
@@ -430,19 +290,6 @@ function recordKitRewrite(homeDir, absPath, previousData, nextData) {
         updated.push(name.slice(0, -'.json'.length));
     }
     return updated;
-}
-
-/** Delete empty folders below (and including) root, deepest first. */
-function pruneEmptyTree(root) {
-    let entries;
-    try {
-        entries = fs.readdirSync(root, { withFileTypes: true });
-    } catch (error) {
-        if (error && error.code === 'ENOENT') return;
-        throw error;
-    }
-    for (const entry of entries) if (entry.isDirectory()) pruneEmptyTree(path.join(root, entry.name));
-    removeDirIfEmpty(root);
 }
 
 module.exports = {

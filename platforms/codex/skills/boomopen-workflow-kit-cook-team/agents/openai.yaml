@@ -3,4 +3,4 @@ interface:
   short_description: "🔺 Team Feature — Elastic Golden Diamond feature lifecycle with Turn-1 Fast-Forward, 3-Wave Contract-First Execution & Parallel Adversarial QA"
   brand_color: "#F59E0B"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

@@ -5,10 +5,9 @@
  *
  * Supports two orchestration paradigms across Claude Code, Codex, Antigravity (Gemini), Cursor, and Copilot:
  *   1. Pipeline Dispatch (`boomopen conduct dispatch`): Specialist role routing, Author != Critic
- *      cross-family enforcement, 3-Tier automatic quota failover, and SHA-256 READ_ONLY_FILES guard.
- *   2. Parallel Council Consensus (`boomopen conduct council`): Spawns N engines in parallel on the
- *      same task (research, brainstorm, plan, design, review, debug) and synthesizes their outputs into a
- *      unified Consensus, Unique Blind-Spot Insights, and Final Actionable Conclusion report.
+ *      cross-family enforcement, read-only role inference, `--dry-run`, and SHA-256 READ_ONLY_FILES guard.
+ *   2. Parallel Council Consensus (`boomopen conduct council`): Spawns N engines in parallel with full
+ *      workspace mutation protection and synthesizes Consensus, Blind-Spots, and Actionable Verdict.
  */
 
 const fs = require('node:fs');
@@ -17,10 +16,18 @@ const path = require('node:path');
 const { EXIT_OK, EXIT_FAIL, EXIT_USAGE, parseSubcommandArgs, splitCommaOption } = require('./cli-args.js');
 const {
   SUPPORTED_ENGINES, ENGINE_FAMILY, ROLE_AFFINITY_ORDER, normalizeEngineName,
-  probeEngines, resolveCrossFamilyEngine, buildEngineInvocation,
-  captureReadOnlySnapshot, verifyAndRestoreReadOnlySnapshot, executeEngineSubprocess,
+  probeEngines, resolveCrossFamilyEngine, buildEngineInvocation, captureReadOnlySnapshot,
+  verifyAndRestoreReadOnlySnapshot, captureWorkspaceDigest, verifyWorkspaceDigest, executeEngineSubprocess,
 } = require('./conductor-engines.js');
 const { loadSettings } = require('./settings.js');
+
+const READ_ONLY_ROLES = new Set([
+  'reviewer', 'security-engineer', 'performance-engineer', 'spec-reconciler', 'scouter', 'researcher', 'auditor',
+]);
+const ROLE_AFFINITY_ALIASES = {
+  scouter: 'researcher', 'security-engineer': 'reviewer', 'performance-engineer': 'reviewer',
+  'spec-reconciler': 'reviewer', auditor: 'reviewer',
+};
 
 const COUNCIL_LENSES = {
   claude: 'Deep Architecture, System Invariants, Edge Cases & Security Critique',
@@ -45,8 +52,16 @@ function parseEngineList(raw, installedEngines = []) {
   return String(raw || 'claude,codex,antigravity').split(',').map((s) => normalizeEngineName(s)).filter(Boolean);
 }
 
+function inferDispatchReadOnly(role, ownedFiles = [], explicitReadOnly = undefined) {
+  if (explicitReadOnly !== undefined) return Boolean(explicitReadOnly);
+  const baseRole = String(role || 'coder').split('#')[0].trim().toLowerCase();
+  return READ_ONLY_ROLES.has(baseRole) && (!Array.isArray(ownedFiles) || ownedFiles.length === 0);
+}
+
 function resolveEngineForRole(role = 'coder', settings = {}, probes = {}, options = {}) {
-  const normRole = ROLE_AFFINITY_ORDER[role] ? role : 'coder';
+  const baseRole = String(role || 'coder').split('#')[0].trim().toLowerCase();
+  const mappedRole = ROLE_AFFINITY_ALIASES[baseRole] || baseRole;
+  const normRole = ROLE_AFFINITY_ORDER[mappedRole] ? mappedRole : 'coder';
   const installed = SUPPORTED_ENGINES.filter((e) => probes[e]?.available);
   const pool = installed.length > 0 ? installed : SUPPORTED_ENGINES;
   const configured = options.engine || settings?.engines?.[normRole] || 'current';
@@ -90,6 +105,9 @@ function renderHandoffEnvelope({ role, engine, prompt, sharedContract, ownedFile
 async function dispatchToEngine(options = {}) {
   const cwd = options.cwd || process.cwd();
   const role = options.role || 'coder';
+  const ownedFiles = Array.isArray(options.ownedFiles) ? options.ownedFiles : [];
+  const readOnlyFiles = Array.isArray(options.readOnlyFiles) ? options.readOnlyFiles : [];
+  const readOnly = inferDispatchReadOnly(role, ownedFiles, options.readOnly);
   const settings = options.settings || loadSettings({ cwd, homeDir: options.homeDir, silent: true });
   const probes = options.probes || probeEngines({ mockProbes: options.mockProbes });
   const resolved = resolveEngineForRole(role, settings, probes, { engine: options.engine, authorEngine: options.authorEngine, engines: options.engines });
@@ -97,34 +115,33 @@ async function dispatchToEngine(options = {}) {
   const runId = options.runId || `run-${Date.now()}`;
   const runsDir = path.join(cwd, '.boomopen', 'conductor', 'runs');
   const queueDir = path.join(cwd, '.boomopen', 'conductor', 'queue');
-  fs.mkdirSync(runsDir, { recursive: true });
-
   const candidates = [resolved.primaryEngine, ...(options.allowFailover !== false ? resolved.fallbackEngines : [])];
-  const snapshot = captureReadOnlySnapshot(cwd, options.readOnlyFiles || []);
+
+  if (options.dryRun) {
+    const selected = candidates.find((c, i) => probes[c]?.available || c === 'cursor' || c === 'copilot' || i === candidates.length - 1) || resolved.primaryEngine;
+    const probe = probes[selected] || { available: true, bin: selected };
+    const promptPath = path.join(runsDir, `${runId}-${selected}-prompt.md`);
+    const invocation = buildEngineInvocation(selected, promptPath, { readOnly, available: probe.available, bin: probe.bin, queueFile: path.join(queueDir, `${runId}-${selected}.md`) });
+    return { ok: true, dryRun: true, runId, role, readOnly, configuredPolicy: resolved.configuredPolicy, engineUsed: selected, family: ENGINE_FAMILY[selected] || 'unknown', invocation, candidates, ownedFiles, readOnlyFiles, promptPath };
+  }
+
+  fs.mkdirSync(runsDir, { recursive: true });
+  const snapshot = captureReadOnlySnapshot(cwd, readOnlyFiles);
   const failoverHistory = [];
-  let finalRes = null;
-  let engineUsed = resolved.primaryEngine;
-  let promptPath = '';
+  let [finalRes, engineUsed, promptPath] = [null, resolved.primaryEngine, ''];
 
   for (let idx = 0; idx < candidates.length; idx++) {
     const candidate = candidates[idx];
     const probe = probes[candidate] || { available: true, bin: candidate };
-    const isQueueCapable = candidate === 'cursor' || candidate === 'copilot';
-    if (!probe.available && !isQueueCapable && !options.mockRunner && idx < candidates.length - 1) {
+    if (!probe.available && candidate !== 'cursor' && candidate !== 'copilot' && !options.mockRunner && idx < candidates.length - 1) {
       failoverHistory.push({ engine: candidate, exitCode: 127, isQuotaError: false, skippedUnavailable: true });
       continue;
     }
     engineUsed = candidate;
     promptPath = path.join(runsDir, `${runId}-${candidate}-prompt.md`);
-    const promptText = renderHandoffEnvelope({
-      role, engine: candidate, prompt: options.prompt, sharedContract: options.sharedContract,
-      ownedFiles: options.ownedFiles, readOnlyFiles: options.readOnlyFiles, readOnly: Boolean(options.readOnly),
-    });
+    const promptText = renderHandoffEnvelope({ role, engine: candidate, prompt: options.prompt, sharedContract: options.sharedContract, ownedFiles, readOnlyFiles, readOnly });
     fs.writeFileSync(promptPath, promptText, 'utf8');
-
-    const invocation = buildEngineInvocation(candidate, promptPath, {
-      readOnly: Boolean(options.readOnly), available: probe.available, bin: probe.bin, queueFile: path.join(queueDir, `${runId}-${candidate}.md`),
-    });
+    const invocation = buildEngineInvocation(candidate, promptPath, { readOnly, available: probe.available, bin: probe.bin, queueFile: path.join(queueDir, `${runId}-${candidate}.md`) });
     finalRes = await executeEngineSubprocess(candidate, invocation, { cwd, promptText, mockRunner: options.mockRunner, timeoutMs: options.timeoutMs });
     if (finalRes.ok || (!finalRes.isQuotaError && finalRes.exitCode !== 127 && finalRes.exitCode !== 9009)) break;
     failoverHistory.push({ engine: candidate, exitCode: finalRes.exitCode, isQuotaError: finalRes.isQuotaError });
@@ -138,7 +155,7 @@ async function dispatchToEngine(options = {}) {
     fs.writeFileSync(outputPath, finalRes.stdout || finalRes.stderr || '', 'utf8');
   }
   const payload = {
-    ok: Boolean(finalRes && finalRes.ok), runId, role, configuredPolicy: resolved.configuredPolicy,
+    ok: Boolean(finalRes && finalRes.ok), runId, role, readOnly, configuredPolicy: resolved.configuredPolicy,
     engineUsed, family: ENGINE_FAMILY[engineUsed] || 'unknown', queued: Boolean(finalRes && finalRes.queued),
     failoverHistory, restoredReadOnlyFiles: guard.violations, promptPath, resultPath, outputPath,
     exitCode: finalRes ? finalRes.exitCode : 1, stdout: finalRes ? finalRes.stdout : '',
@@ -154,16 +171,14 @@ function extractKeyPoints(text = '') {
   return bullets.length > 0 ? bullets.slice(0, 8) : lines.filter((l) => !l.startsWith('#') && l.length >= 10).slice(0, 5);
 }
 
-function normalizeFingerprint(point) {
-  return point.toLowerCase().replace(/[`*_~[\]().,:;!?/\\-]/g, ' ').replace(/\s+/g, ' ').trim();
-}
+const normalizeFingerprint = (point) => point.toLowerCase().replace(/[`*_~[\]().,:;!?/\\-]/g, ' ').replace(/\s+/g, ' ').trim();
 
 function synthesizeCouncilPoints(engineOutputs) {
-  const pointMap = new Map();
-  const pointsByEngine = {};
+  const [pointMap, pointsByEngine, consensus, uniqueByEngine] = [new Map(), {}, [], {}];
   for (const item of engineOutputs) {
     const pts = extractKeyPoints(item.stdout);
     pointsByEngine[item.engine] = pts;
+    uniqueByEngine[item.engine] = [];
     for (const pt of pts) {
       const fp = normalizeFingerprint(pt);
       if (!fp) continue;
@@ -172,10 +187,6 @@ function synthesizeCouncilPoints(engineOutputs) {
       pointMap.set(fp, existing);
     }
   }
-  const consensus = [];
-  const uniqueByEngine = {};
-  for (const item of engineOutputs) uniqueByEngine[item.engine] = [];
-
   for (const entry of pointMap.values()) {
     const owners = [...entry.engines];
     if (owners.length >= 2) consensus.push({ text: entry.text, engines: owners });
@@ -186,54 +197,33 @@ function synthesizeCouncilPoints(engineOutputs) {
 
 function renderCouncilSynthesisMarkdown({ runId, task, prompt, results, synthesis }) {
   const lines = [
-    `# 🏛️ MULTI-ENGINE COUNCIL SYNTHESIS REPORT (${task.toUpperCase()})`,
-    '',
+    `# 🏛️ MULTI-ENGINE COUNCIL SYNTHESIS REPORT (${task.toUpperCase()})`, '',
     `- **Run ID**: \`${runId}\` | **Task Type**: \`${task}\``,
     `- **Participating Engines**: ${results.map((r) => `\`${r.engine}\` (${r.family})`).join(', ')}`,
-    `- **Mission Prompt**: ${prompt}`,
-    '',
+    `- **Mission Prompt**: ${prompt}`, '',
     '| Engine | Model Family | Perspective Lens | Status | Duration | Output File |',
     '|--------|--------------|------------------|--------|----------|-------------|',
-  ];
-  for (const r of results) {
-    const status = r.ok ? (r.queued ? '📥 Queued' : '✅ Completed') : `❌ Exit ${r.exitCode}`;
-    lines.push(`| \`${r.engine}\` | \`${r.family}\` | ${r.lens} | ${status} | ${r.durationMs}ms | \`${path.basename(r.outputFile)}\` |`);
-  }
-  lines.push(
-    '',
-    '## 1. 🤝 Multi-Engine Consensus (High-Confidence Convergence)',
-    '### 🟢 Unanimous / Multi-Engine Consensus (Điểm đồng thuận giữa các nền tảng)'
-  );
-  if (synthesis.consensus.length > 0) {
-    for (const c of synthesis.consensus) lines.push(`- **[${c.engines.join(' + ')}]**: ${c.text}`);
-  } else {
-    lines.push('- Each engine explored orthogonal facets of the problem; review the complementary insights below.');
-  }
-  lines.push(
-    '',
-    '## 2. 💡 Unique Blind-Spot Insights & Complementary Perspectives',
-    '### 🟡 Unique Blind-Spot Insights by Engine (Góc nhìn độc bản từng nền tảng phát hiện)'
-  );
-  for (const r of results) {
-    const uniq = synthesis.uniqueByEngine[r.engine] || [];
-    lines.push(`- **\`${r.engine.toUpperCase()}\` (${r.family} · ${r.lens})**: ${uniq.length > 0 ? uniq.join(' | ') : 'Aligned with shared consensus.'}`);
-  }
-  for (const r of results) {
-    lines.push('', `#### Perspective — \`${r.engine.toUpperCase()}\` (${r.family})`, r.stdout.trim() || '*(No output returned)*');
-  }
-  lines.push(
-    '',
-    '## 3. 🔴 Contradictions & Evidence Arbitration (Divergent Trade-Offs)',
+    ...results.map((r) => `| \`${r.engine}\` | \`${r.family}\` | ${r.lens} | ${r.ok ? (r.queued ? '📥 Queued' : '✅ Completed') : `❌ Exit ${r.exitCode}`} | ${r.durationMs}ms | \`${path.basename(r.outputFile)}\` |`),
+    '', '## 1. 🤝 Multi-Engine Consensus (High-Confidence Convergence)',
+    '### 🟢 Unanimous / Multi-Engine Consensus (Điểm đồng thuận giữa các nền tảng)',
+    ...(synthesis.consensus.length > 0 ? synthesis.consensus.map((c) => `- **[${c.engines.join(' + ')}]**: ${c.text}`) : ['- Each engine explored orthogonal facets of the problem; review the complementary insights below.']),
+    '', '## 2. 💡 Unique Blind-Spot Insights & Complementary Perspectives',
+    '### 🟡 Unique Blind-Spot Insights by Engine (Góc nhìn độc bản từng nền tảng phát hiện)',
+    ...results.map((r) => {
+      const uniq = synthesis.uniqueByEngine[r.engine] || [];
+      return `- **\`${r.engine.toUpperCase()}\` (${r.family} · ${r.lens})**: ${uniq.length > 0 ? uniq.join(' | ') : 'Aligned with shared consensus.'}`;
+    }),
+    ...results.flatMap((r) => ['', `#### Perspective — \`${r.engine.toUpperCase()}\` (${r.family})`, r.stdout.trim() || '*(No output returned)*']),
+    '', '## 3. 🔴 Contradictions & Evidence Arbitration (Divergent Trade-Offs)',
     synthesis.consensus.length > 0
       ? '- Cross-family outputs converged on core invariants without conflicting architectural blockers; divergent items above are additive blind-spot checks.'
       : '- Engines emphasized distinct trade-offs across their perspective lenses; arbitrate using concrete codebase benchmarks and contract tests.',
-    '',
-    '## 4. 🏆 Final Actionable Conclusion & Verification Checklist',
+    '', '## 4. 🏆 Final Actionable Conclusion & Verification Checklist',
     '### 🏆 Final Synthesized Verdict & Actionable Conclusion (Kết luận Tổng hợp)',
     `- [ ] **Consensus Anchor**: Adopt all ${synthesis.consensus.length} cross-verified recommendations shared across multiple model families.`,
     `- [ ] **Blind-Spot Integration**: Incorporate the unique edge-case and architectural checks surfaced individually by ${results.map((r) => `\`${r.engine}\``).join(', ')}.`,
-    ''
-  );
+    '',
+  ];
   return lines.join('\n');
 }
 
@@ -248,9 +238,18 @@ async function runMultiEngineCouncil(options = {}) {
   const runId = options.runId || `council-${Date.now()}`;
   const runsDir = path.join(cwd, '.boomopen', 'conductor', 'runs');
   const queueDir = path.join(cwd, '.boomopen', 'conductor', 'queue');
-  fs.mkdirSync(runsDir, { recursive: true });
 
+  if (options.dryRun) {
+    const invocations = engines.map((engine) => {
+      const probe = probes[engine] || { available: true, bin: engine };
+      return buildEngineInvocation(engine, path.join(runsDir, `${runId}-${engine}-prompt.md`), { readOnly: true, available: probe.available, bin: probe.bin, queueFile: path.join(queueDir, `${runId}-${engine}.md`) });
+    });
+    return { ok: true, dryRun: true, runId, task, readOnly: true, engines, invocations };
+  }
+
+  fs.mkdirSync(runsDir, { recursive: true });
   const snapshot = captureReadOnlySnapshot(cwd, options.readOnlyFiles || []);
+  const wsDigest = captureWorkspaceDigest(cwd);
   const results = await Promise.all(
     engines.map(async (engine) => {
       const lens = COUNCIL_LENSES[engine] || 'General Analysis';
@@ -264,9 +263,7 @@ async function runMultiEngineCouncil(options = {}) {
       });
       fs.writeFileSync(promptPath, promptText, 'utf8');
       const probe = probes[engine] || { available: true, bin: engine };
-      const invocation = buildEngineInvocation(engine, promptPath, {
-        readOnly: true, available: probe.available, bin: probe.bin, queueFile: path.join(queueDir, `${runId}-${engine}.md`),
-      });
+      const invocation = buildEngineInvocation(engine, promptPath, { readOnly: true, available: probe.available, bin: probe.bin, queueFile: path.join(queueDir, `${runId}-${engine}.md`) });
       const res = await executeEngineSubprocess(engine, invocation, { cwd, promptText, mockRunner: options.mockRunner, timeoutMs: options.timeoutMs });
       fs.writeFileSync(outputFile, res.stdout || res.stderr || '', 'utf8');
       return { ...res, engine, family: ENGINE_FAMILY[engine] || 'unknown', lens, promptPath, outputFile };
@@ -274,6 +271,8 @@ async function runMultiEngineCouncil(options = {}) {
   );
 
   const guard = verifyAndRestoreReadOnlySnapshot(cwd, snapshot);
+  const wsGuard = verifyWorkspaceDigest(cwd, wsDigest, { restore: true });
+  const restoredReadOnlyFiles = [...new Set([...guard.violations, ...wsGuard.violations])];
   const synthesis = synthesizeCouncilPoints(results);
   const markdown = renderCouncilSynthesisMarkdown({ runId, task, prompt, results, synthesis });
   const defaultSynthesisPath = path.join(runsDir, `${runId}-COUNCIL-SYNTHESIS.md`);
@@ -288,7 +287,8 @@ async function runMultiEngineCouncil(options = {}) {
 
   const jsonPath = path.join(runsDir, `${runId}-council.json`);
   const summary = {
-    ok: results.some((r) => r.ok), runId, task, engines, restoredReadOnlyFiles: guard.violations,
+    ok: results.some((r) => r.ok), runId, task, engines, restoredReadOnlyFiles,
+    workspaceMutations: wsGuard.violations, workspaceClean: wsGuard.clean,
     consensus: synthesis.consensus, uniqueByEngine: synthesis.uniqueByEngine, synthesisPath, aliasSynthesisPath, jsonPath,
     results: results.map((r) => ({ engine: r.engine, family: r.family, ok: r.ok, queued: r.queued, exitCode: r.exitCode, outputFile: r.outputFile, durationMs: r.durationMs })),
   };
@@ -298,57 +298,43 @@ async function runMultiEngineCouncil(options = {}) {
 
 const CONDUCTOR_HELP = `Usage: boomopen conduct <probe|dispatch|council|status|help> [options]
   probe [--json]                                   Detect installed CLI engines (claude, codex, agy/gemini, cursor, copilot)
-  dispatch --role <role> --prompt <text> [opts]    Dispatch a role task with 5-Field Handoff & 3-Tier Failover
-  council --task <type> --prompt <text> [opts]     Run N engines in parallel and synthesize Consensus & Blind-Spots
+  dispatch --role <role> --prompt <text> [opts]    Dispatch a role task (--read-only-mode, --read-only [files], --dry-run)
+  council --task <type> --prompt <text> [opts]     Run N engines in parallel and synthesize Consensus & Blind-Spots (--dry-run)
   status [--json]                                  List recent cross-engine runs and queued handoffs`;
 
 const CONDUCT_ARG_SPEC = {
-  defaults: { role: null, task: null, engine: null, authorEngine: null, engines: null, prompt: '', owned: '', readOnly: '', output: null, json: false, help: false },
-  booleanFlags: { '-h': 'help', '--help': 'help', '--json': 'json' },
+  defaults: { role: null, task: null, engine: null, authorEngine: null, engines: null, prompt: '', owned: '', readOnly: '', readOnlyMode: false, dryRun: false, output: null, json: false, help: false },
+  booleanFlags: { '-h': 'help', '--help': 'help', '--json': 'json', '--dry-run': 'dryRun', '--read-only-mode': 'readOnlyMode' },
   valueFlags: {
     '--role': 'role', '--task': 'task', '--engine': 'engine', '--author-engine': 'authorEngine',
     '--engines': 'engines', '--prompt': 'prompt', '--output': 'output', '--out': 'output',
     '--owned': 'owned', '--owned-files': 'owned', '--read-only': 'readOnly', '--read-only-files': 'readOnly',
   },
+  optionalValueFlags: { '--read-only': 'readOnlyMode' },
   allowDashValueFlags: ['--prompt'],
 };
 
 async function runConductorCli(argv = [], options = {}) {
   const { flags, positional, error } = parseSubcommandArgs(argv, CONDUCT_ARG_SPEC);
-  if (error) {
-    if (!options.silent) console.error(`❌ boomopen conduct: ${error}\n\n${CONDUCTOR_HELP}`);
-    return EXIT_USAGE;
-  }
+  if (error) { if (!options.silent) console.error(`❌ boomopen conduct: ${error}\n\n${CONDUCTOR_HELP}`); return EXIT_USAGE; }
   const sub = (positional[0] || 'probe').toLowerCase();
-  if (flags.help || sub === 'help') {
-    if (!options.silent) console.log(CONDUCTOR_HELP);
-    return EXIT_OK;
-  }
-  const cwd = options.cwd || process.cwd();
-  const ownedFiles = splitCommaOption(flags.owned);
-  const readOnlyFiles = splitCommaOption(flags.readOnly);
+  if (flags.help || sub === 'help') { if (!options.silent) console.log(CONDUCTOR_HELP); return EXIT_OK; }
+  const [cwd, ownedFiles, readOnlyFiles] = [options.cwd || process.cwd(), splitCommaOption(flags.owned), splitCommaOption(flags.readOnly)];
   if (sub === 'probe') {
     const probes = probeEngines({ mockProbes: options.mockProbes });
     if (!options.silent) console.log(flags.json ? JSON.stringify(probes, null, 2) : Object.entries(probes).map(([k, v]) => `${v.available ? '✅' : '⬚'} ${k.padEnd(12)} (${v.family}) bin=${v.bin || 'none'}`).join('\n'));
     return EXIT_OK;
   }
   if (sub === 'dispatch') {
-    if (!flags.prompt) {
-      if (!options.silent) console.error('❌ boomopen conduct dispatch requires --prompt "<task>".');
-      return EXIT_USAGE;
-    }
-    const res = await dispatchToEngine({ cwd, homeDir: options.homeDir, role: flags.role || 'coder', engine: flags.engine, authorEngine: flags.authorEngine, prompt: flags.prompt, output: flags.output, ownedFiles, readOnlyFiles, mockProbes: options.mockProbes, mockRunner: options.mockRunner });
-    if (!options.silent) console.log(flags.json ? JSON.stringify(res, null, 2) : `✅ Dispatched [${res.role}] to ${res.engineUsed} (${res.family}) -> ${res.resultPath}`);
+    if (!flags.prompt) { if (!options.silent) console.error('❌ boomopen conduct dispatch requires --prompt "<task>".'); return EXIT_USAGE; }
+    const res = await dispatchToEngine({ cwd, homeDir: options.homeDir, role: flags.role || 'coder', engine: flags.engine, authorEngine: flags.authorEngine, prompt: flags.prompt, output: flags.output, ownedFiles, readOnlyFiles, readOnly: flags.readOnlyMode ? true : undefined, dryRun: Boolean(flags.dryRun), mockProbes: options.mockProbes, mockRunner: options.mockRunner });
+    if (!options.silent) console.log(flags.json || flags.dryRun ? JSON.stringify(res, null, 2) : `✅ Dispatched [${res.role}] to ${res.engineUsed} (${res.family}) -> ${res.resultPath}`);
     return res.ok ? EXIT_OK : EXIT_FAIL;
   }
   if (sub === 'council') {
-    if (!flags.prompt) {
-      if (!options.silent) console.error('❌ boomopen conduct council requires --prompt "<task>".');
-      return EXIT_USAGE;
-    }
-    const task = flags.task || flags.role || 'research';
-    const res = await runMultiEngineCouncil({ cwd, homeDir: options.homeDir, task, engines: flags.engines, prompt: flags.prompt, output: flags.output, readOnlyFiles, mockProbes: options.mockProbes, mockRunner: options.mockRunner });
-    if (!options.silent) console.log(flags.json ? JSON.stringify(res, null, 2) : `🏛️ Council synthesis (${res.engines.join(', ')}) written to ${res.synthesisPath}`);
+    if (!flags.prompt) { if (!options.silent) console.error('❌ boomopen conduct council requires --prompt "<task>".'); return EXIT_USAGE; }
+    const res = await runMultiEngineCouncil({ cwd, homeDir: options.homeDir, task: flags.task || flags.role || 'research', engines: flags.engines, prompt: flags.prompt, output: flags.output, readOnlyFiles, dryRun: Boolean(flags.dryRun), mockProbes: options.mockProbes, mockRunner: options.mockRunner });
+    if (!options.silent) console.log(flags.json || flags.dryRun ? JSON.stringify(res, null, 2) : `🏛️ Council synthesis (${res.engines.join(', ')}) written to ${res.synthesisPath}`);
     return res.ok ? EXIT_OK : EXIT_FAIL;
   }
   if (sub === 'status') {
@@ -362,13 +348,6 @@ async function runConductorCli(argv = [], options = {}) {
 }
 
 module.exports = {
-  COUNCIL_LENSES,
-  COUNCIL_TASK_DIRECTIVES,
-  resolveEngineForRole,
-  renderHandoffEnvelope,
-  dispatchToEngine,
-  extractKeyPoints,
-  synthesizeCouncilPoints,
-  runMultiEngineCouncil,
-  runConductorCli,
+  READ_ONLY_ROLES, COUNCIL_LENSES, COUNCIL_TASK_DIRECTIVES, inferDispatchReadOnly, resolveEngineForRole,
+  renderHandoffEnvelope, dispatchToEngine, extractKeyPoints, synthesizeCouncilPoints, runMultiEngineCouncil, runConductorCli,
 };

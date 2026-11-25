@@ -3,4 +3,4 @@ interface:
   short_description: "🎼 Cross-Engine Role-Division Pipeline — Assign Claude Code, OpenAI Codex, Antigravity, Cursor, and Copilot to specialist roles (Planner/Docs -> Sharded Coders -> Cross-Family Reviewer & Debugger) in an automated pipeline."
   brand_color: "#7C3AED"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

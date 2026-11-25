@@ -168,8 +168,10 @@ test('hook registration keeps other settings/hooks and is reversible', () => {
     const data = JSON.parse(read(settingsPath));
     assert.equal(data.model, 'opus');
     assert.equal(data.hooks.PreToolUse.length, 2);
-    assert.equal(data.hooks.PreToolUse[1].matcher, 'Bash');
+    assert.equal(data.hooks.PreToolUse[1].matcher, 'Bash|PowerShell');
     assert.match(data.hooks.PreToolUse[1].hooks[0].command, /validate-tool-call\.mjs"$/);
+    assert.match(data.hooks.Stop[0].hooks[0].command, /stop-quality-gate\.mjs"$/);
+    assert.match(data.hooks.PreCompact[0].hooks[0].command, /stop-quality-gate\.mjs"$/);
 
     assert.equal(unregisterClaudeHook(settingsPath), 'removed');
     assert.equal(read(settingsPath), original, 'byte-exact restore');

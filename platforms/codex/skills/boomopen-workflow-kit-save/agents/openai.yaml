@@ -3,4 +3,4 @@ interface:
   short_description: "💾 Save Session & Project Memory — Persist cohesive SESSION-{date}.md Brain Artifact, sync .boomopen/project-ledger.json & cook state, and update .brain/ memory"
   brand_color: "#14B8A6"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

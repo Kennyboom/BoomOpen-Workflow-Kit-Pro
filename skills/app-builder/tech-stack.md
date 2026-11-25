@@ -14,17 +14,17 @@ Frontend:
   bundler: Turbopack (Stable for Dev & Build)
 
 Backend:
-  runtime: Node.js 23
-  framework: Next.js API Routes / Hono (for Edge)
-  validation: Zod / TypeBox
+  runtime: Node.js 24 LTS
+  framework: Next.js API Routes / Hono (for Edge & RPC)
+  validation: Zod v4 / TypeBox
 
 Database:
   primary: PostgreSQL
-  orm: Prisma / Drizzle
+  orm: Drizzle / Prisma
   hosting: Supabase / Neon
 
 Auth:
-  provider: Auth.js (v5) / Clerk
+  provider: Better Auth / Clerk
 
 Monorepo:
   tool: Turborepo 2.0

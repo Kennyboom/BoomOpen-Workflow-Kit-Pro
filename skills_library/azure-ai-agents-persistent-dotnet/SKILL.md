@@ -23,7 +23,7 @@ dotnet add package Azure.Identity
 
 ```bash
 PROJECT_ENDPOINT=https://<resource>.services.ai.azure.com/api/projects/<project>
-MODEL_DEPLOYMENT_NAME=gpt-4o-mini
+MODEL_DEPLOYMENT_NAME=gpt-4.1-mini
 AZURE_BING_CONNECTION_ID=<bing-connection-resource-id>
 AZURE_AI_SEARCH_CONNECTION_ID=<search-connection-resource-id>
 ```

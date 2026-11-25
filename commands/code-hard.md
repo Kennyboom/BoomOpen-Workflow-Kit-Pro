@@ -81,7 +81,7 @@ execution-mode: execute
    ```bash
    node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js reconcile <dir> --plan "<plan-path>" --strict --json
    ```
-   Spawn `spec-reconciler` (`agents/spec-reconciler.md`) to audit `REC-G1..G4` and reverse `30%–70%` spec slices. Whenever `gaps[]` exist, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook amend-plan "<plan-path>" --from-reconcile "<reconcile-path>"` and execute `Wave 2.5` delta/wiring shards (`integrator#wiring-1..k` / `{role}#delta-1..k`, up to `3` rounds) until `0` gaps remain.
+   Spawn `spec-reconciler` (`agents/spec-reconciler.md`) to audit `REC-G1..G4` and reverse `30%–70%` spec slices. Whenever `gaps[]` exist, run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook amend-plan "<plan-path>" --from-reconcile "<reconcile-path>"` and execute `Wave 2.5` delta/wiring shards (`tech-lead#wiring-1` / `backend-engineer#wiring-1` / `frontend-engineer#wiring-1` / `{role}#delta-1..k`, up to `3` rounds) until `0` gaps remain.
 
 ---
 

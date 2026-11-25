@@ -114,7 +114,7 @@ test('release config cannot publish to npm or cut an accidental 1.0.0', () => {
   const pkg = readJson('package.json');
   assert.equal(pkg.name, '@boomopen/workflow-kit');
   assert.equal(pkg.repository.url, 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git');
-  assert.equal(pkg.homepage, 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro#readme');
+  assert.equal(pkg.homepage, 'https://boomopen.com');
   assert.equal(pkg.bugs.url, 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/issues');
   assert.equal(release.repositoryUrl, 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git');
   assert.match(fs.readFileSync(path.join(REPO_ROOT, '.gitattributes'), 'utf8'), /^\* text=auto eol=lf$/m);

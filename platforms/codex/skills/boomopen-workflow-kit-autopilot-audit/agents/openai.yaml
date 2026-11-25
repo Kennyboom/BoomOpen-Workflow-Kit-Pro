@@ -3,4 +3,4 @@ interface:
   short_description: "🏛️ Autopilot Audit — End-to-End RTM Verification + Multi-Round Human-Gated Post-Completion Audit Engine (Zero Pre-Approval Mutation)"
   brand_color: "#8B5CF6"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

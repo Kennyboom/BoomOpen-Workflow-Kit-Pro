@@ -327,3 +327,71 @@ test('detectCookState Spec-SHA256 drift, renderShardPrompt enrichment, compilePl
     removeDir(root);
   }
 });
+
+test('REC-G1 Next.js 16 proxy.ts vs src/app/_components/DeadIsland.tsx, REC-G4 bracket/Python env parity, and canonical wiring roles', () => {
+  const root = tempDir('boomopen-rec-next16-env-');
+  try {
+    writeRel(root, '.env.example', 'DATABASE_URL=postgres://localhost/db\n');
+    writeRel(root, 'src/proxy.ts', 'export function proxy() { return null; }\n');
+    writeRel(root, 'src/instrumentation.ts', 'export function register() { return true; }\n');
+    writeRel(root, 'src/app/dashboard/page.tsx', [
+      '// process.env["COMMENTED_SECRET"]',
+      'const doc = "process.env[\'FAKE_STRING_KEY\']";',
+      'const k1 = process.env[\'BRACKET_SINGLE_KEY\'];',
+      'const k2 = process.env["BRACKET_DOUBLE_KEY"];',
+      'export default function DashboardPage() { return <div>{doc}{k1}{k2}</div>; }',
+    ].join('\n'));
+    writeRel(root, 'src/app/_components/DeadIsland.tsx', 'export function DeadIsland() { return <aside>Unused</aside>; }\n');
+    writeRel(root, 'src/routes/orphanRoute.ts', 'export const orphan = () => true;\n');
+    writeRel(root, 'src/utils/orphanUtil.ts', 'export const util = () => 1;\n');
+    writeRel(root, 'services/worker.py', [
+      '# os.getenv("PY_COMMENTED_OUT")',
+      '"""os.environ[\'PY_IN_DOCSTRING\']"""',
+      'import os',
+      'A = os.getenv(\'PY_GETENV_KEY\')',
+      'B = os.environ["PY_ENVIRON_BRACKET"]',
+      'C = os.environ.get("PY_ENVIRON_GET", "fallback")',
+    ].join('\n'));
+
+    const envRes = checkEnvParity(root);
+    assert.deepEqual(envRes.missingKeys, [
+      'BRACKET_DOUBLE_KEY',
+      'BRACKET_SINGLE_KEY',
+      'PY_ENVIRON_BRACKET',
+      'PY_ENVIRON_GET',
+      'PY_GETENV_KEY',
+    ]);
+
+    const scanRes = scanProjectReconciliation(root);
+    // src/proxy.ts, src/instrumentation.ts, src/app/dashboard/page.tsx are entrypoints -> NOT flagged
+    assert.ok(!scanRes.gates['REC-G1'].some((e) => /proxy\.ts|instrumentation\.ts|page\.tsx/.test(e)));
+    // DeadIsland.tsx under src/app/_components/ MUST be caught!
+    assert.ok(scanRes.gates['REC-G1'].some((e) => /src\/app\/_components\/DeadIsland\.tsx/.test(e)));
+
+    // Verify canonical specialist roles (zero 'integrator' roles anywhere!)
+    for (const gap of scanRes.gaps) {
+      assert.ok(!gap.role.includes('integrator'), `Unexpected phantom integrator role in ${JSON.stringify(gap)}`);
+    }
+    assert.equal(scanRes.gaps.find((g) => g.files.includes('src/app/_components/DeadIsland.tsx')).role, 'frontend-engineer#wiring-1');
+    assert.equal(scanRes.gaps.find((g) => g.files.includes('src/routes/orphanRoute.ts')).role, 'backend-engineer#wiring-1');
+    assert.equal(scanRes.gaps.find((g) => g.files.includes('src/utils/orphanUtil.ts')).role, 'tech-lead#wiring-1');
+
+    // Amending a plan with scanRes.gaps produces 100% PLAN-G4 valid canonical roles
+    writeRel(root, 'PLAN-next.md', [
+      '# Implementation Plan — Next 16',
+      '## Acceptance Criteria',
+      '- AC1: Clean wiring',
+      '## Wave 1: Base',
+      '### Task 1.1 (REQ-101): Dashboard',
+      '- **Agent**: `frontend-engineer#1`',
+      '- **Acceptance**: `AC1`',
+      '- **OWNED_FILES**: `src/app/dashboard/page.tsx`',
+      '- **Verify**: `node -e "process.exit(0)"`',
+    ].join('\n'));
+    const amended = amendPlanWithDeltaWave('PLAN-next.md', { gaps: scanRes.gaps }, { cwd: root });
+    assert.equal(amended.valid, true, amended.errors.join('; '));
+    assert.ok(!fs.readFileSync(path.join(root, 'PLAN-next.md'), 'utf8').includes('integrator'));
+  } finally {
+    removeDir(root);
+  }
+});

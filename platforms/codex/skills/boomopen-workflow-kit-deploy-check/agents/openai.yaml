@@ -3,4 +3,4 @@ interface:
   short_description: "✅ Deploy Check — Parallel 4-track pre-deployment readiness verification across code quality, tests, security, and infrastructure"
   brand_color: "#8B5CF6"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

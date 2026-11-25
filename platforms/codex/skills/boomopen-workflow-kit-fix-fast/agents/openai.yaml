@@ -3,4 +3,4 @@ interface:
   short_description: "⚡ Fast Fix — Mode A Direct (≤ 2 Known Files) or Single-Wave Surgical Fix with Bidirectional DEBUG Fast-Forward & Persistent Verification"
   brand_color: "#EF4444"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

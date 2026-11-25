@@ -29,7 +29,7 @@ dotnet add package Azure.AI.Agents.Persistent --prerelease
 
 ```bash
 PROJECT_ENDPOINT=https://<resource>.services.ai.azure.com/api/projects/<project>
-MODEL_DEPLOYMENT_NAME=gpt-4o-mini
+MODEL_DEPLOYMENT_NAME=gpt-4.1-mini
 CONNECTION_NAME=<your-connection-name>
 AI_SEARCH_CONNECTION_NAME=<ai-search-connection>
 ```
@@ -72,7 +72,7 @@ PersistentAgentsClient agentsClient = projectClient.GetPersistentAgentsClient();
 
 // Create agent
 PersistentAgent agent = await agentsClient.Administration.CreateAgentAsync(
-    model: "gpt-4o-mini",
+    model: "gpt-4.1-mini",
     name: "Math Tutor",
     instructions: "You are a personal math tutor.");
 
@@ -110,7 +110,7 @@ await agentsClient.Administration.DeleteAgentAsync(agent.Id);
 using Azure.AI.Projects.OpenAI;
 
 // Create agent with web search tool
-PromptAgentDefinition agentDefinition = new(model: "gpt-4o-mini")
+PromptAgentDefinition agentDefinition = new(model: "gpt-4.1-mini")
 {
     Instructions = "You are a helpful assistant that can search the web",
     Tools = {
@@ -174,7 +174,7 @@ foreach (var deployment in projectClient.Deployments.GetDeployments(modelPublish
 }
 
 // Get specific deployment
-ModelDeployment details = (ModelDeployment)projectClient.Deployments.GetDeployment("gpt-4o-mini");
+ModelDeployment details = (ModelDeployment)projectClient.Deployments.GetDeployment("gpt-4.1-mini");
 ```
 
 ### 5. Datasets
@@ -231,7 +231,7 @@ projectClient.Indexes.Delete(name: "my-index", version: "1.0");
 ```csharp
 // Create evaluation configuration
 var evaluatorConfig = new EvaluatorConfiguration(id: EvaluatorIDs.Relevance);
-evaluatorConfig.InitParams.Add("deployment_name", BinaryData.FromObjectAsJson("gpt-4o"));
+evaluatorConfig.InitParams.Add("deployment_name", BinaryData.FromObjectAsJson("gpt-4.1"));
 
 // Create evaluation
 Evaluation evaluation = new Evaluation(
@@ -272,7 +272,7 @@ if (!connection.TryGetLocatorAsUri(out Uri uri) || uri is null)
 uri = new Uri($"https://{uri.Host}");
 
 AzureOpenAIClient azureOpenAIClient = new AzureOpenAIClient(uri, new DefaultAzureCredential());
-ChatClient chatClient = azureOpenAIClient.GetChatClient("gpt-4o-mini");
+ChatClient chatClient = azureOpenAIClient.GetChatClient("gpt-4.1-mini");
 
 ChatCompletion result = chatClient.CompleteChat("List all rainbow colors");
 Console.WriteLine(result.Content[0].Text);

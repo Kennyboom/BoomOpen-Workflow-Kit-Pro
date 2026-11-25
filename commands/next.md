@@ -15,7 +15,7 @@ execution-mode: execute
 
 Act as the deterministic project compass whenever the user is unsure what step comes next. Inspect live CLI telemetry and Brain Artifacts first, then recommend the **exact next workflow** without unnecessary questioning.
 
-1. **0-Turn Sub-agent Scouting Gate (`> 2` Files Cold-Start Inspection)**: Prefer lightweight CLI & metadata checks (`run_command`, `read_file`). Only when no ledger or Brain Artifacts exist and assessing project state requires inspecting **`> 2` source or specification files**, spawn parallel `scouter#1..k` immediately on Turn 1 via `invoke_subagent(TypeName: "self", Model: "inherit")` using Antigravity 2.0 tools ONLY (`read_file`, `write_file`, `edit_file`, `run_command`, `invoke_subagent`, `send_message`, `ask_question`, `search_web`).
+1. **0-Turn Sub-agent Scouting Gate (`> 2` Files Cold-Start Inspection)**: Prefer lightweight CLI & metadata checks (`run_command`/`Bash`/shell, `read_file`/`Read`). Only when no ledger or Brain/report artifacts exist and assessing project state requires inspecting **`> 2` source or specification files**, spawn parallel `scouter#1..k` immediately on Turn 1 via your platform's native subagent tool (`invoke_subagent(TypeName: "self", Model: "inherit")` on Antigravity, `Task` on Claude Code, `spawn_agent` on Codex, `runSubagent` on Copilot, or native subagent/TIER 2 on Cursor).
 2. **Cohesive Brain Artifact Rule (`<= 500` lines, Zero `./reports/` Defaults)**: Never read/write legacy `./reports/` paths by default or split files at `150` lines. When persisting a navigation snapshot, update `<appDataDir>\brain\<conversation-id>\REPORT-status.md` or `SESSION-{date}.md` (`<= 500` lines) via `write_file` with explicit `ArtifactMetadata`:
    ```json
    {

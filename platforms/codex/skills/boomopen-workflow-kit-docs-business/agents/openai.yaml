@@ -3,4 +3,4 @@ interface:
   short_description: "💼 Business Docs — Generate 4 `./documents/business/business-*/` folders via collision-free parallel sharding (`<= 3–4 OWNED_FILES`/shard) and `BG/BR/BF/BW` traceability"
   brand_color: "#14B8A6"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

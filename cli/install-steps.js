@@ -1,22 +1,28 @@
 'use strict';
 
 /**
- * Building blocks of one install / uninstall: copying kit trees (framework, shared folders),
- * instruction-file blocks, the Codex config merge and the cleanup of pre-manifest installs.
- * Every step records failures with logError instead of throwing, so one bad file never aborts a run.
+ * Building blocks of one install / uninstall: copying kit trees (framework, shared folders,
+ * deduplicated ~/.agents/skills_library, native Antigravity plugin bundle), instruction-file blocks,
+ * the Codex config merge and the cleanup of pre-manifest installs.
  */
 
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { listSourceFiles, renderFile, applyReplacements } = require('./copy-engine.js');
+const { listSourceFiles, renderFile, applyReplacements, sharedVaultDir, pointsToSharedVault, removeLinkOnly, syncSharedVaultFiles, pruneUnreferencedSharedVault } = require('./copy-engine.js');
 const { progressState, tick, logError, printLine } = require('./progress.js');
 const { installInstructionFile, uninstallInstructionFile } = require('./instruction-files.js');
 const { mergeCodexConfigText, unmergeCodexConfigText, isManagedBlockEdited } = require('./codex-config.js');
 const { BACKUP_SUFFIX, backupUserFile, stripCodexManagedConfig } = require('./user-files.js');
 const { CODEX_MARKER_START } = require('./markers.js');
-const { moveFile, removeDirIfEmpty, isSymlink, restoreBackup } = require('./manifest.js');
-const { FRAMEWORK_FILE_LIST } = require('./tool-config.js');
+const { moveFile, removeDirIfEmpty, isSymlink, restoreBackup, pruneEmptyTree } = require('./manifest.js');
+const { FRAMEWORK_FILE_LIST, replacementsFor } = require('./tool-config.js');
+const { INTERNAL_SKIP_SUBDIRS, rewriteBrainArtifactPaths, compileAgentMarkdown, targetAgentRelPath, compileCommandMarkdown, claudeColonCommandAlias } = require('./platform-transforms.js');
+const { registerAntigravityHook, HOOK_SCRIPT_NAME } = require('./hook-registration.js');
+const { loadSettings } = require('./settings.js');
+const { KIT_VERSION } = require('./doctor-version.js');
+
+const FRAMEWORK_REWRITE_DIRS = new Set(['agents', 'rules', 'commands', 'workflows']);
 
 function readTextSafe(filePath) {
     try {
@@ -27,26 +33,51 @@ function readTextSafe(filePath) {
     }
 }
 
-/**
- * Copy a kit tree. With a ledger the destination is a shared folder (tracked + backed up);
- * without one it is the kit-owned framework folder (plain writes).
- * @returns {number} files written
- */
-function copyTree(src, dest, replacements, ledger = null) {
+function buildTransform(kind, platformKey) {
+    if (!platformKey) return null;
+    if (kind === 'commands') return (text, src) => (src.endsWith('.md') ? compileCommandMarkdown(text, platformKey, src) : text);
+    if (kind === 'agents') return (text, src) => (src.endsWith('.md') ? compileAgentMarkdown(text, platformKey, src) : text);
+    if (kind === 'skills' || kind === 'rules' || kind === 'framework-md') {
+        return (text, src) => (src.endsWith('.md') ? rewriteBrainArtifactPaths(text, platformKey) : text);
+    }
+    return null;
+}
+
+function writeTarget(target, data, dest, ledger) {
+    if (ledger) ledger.writeFile(target, data, dest);
+    else {
+        fs.mkdirSync(path.dirname(target), { recursive: true });
+        fs.writeFileSync(target, data);
+    }
+    progressState.copiedFiles.push(target);
+    tick();
+}
+
+/** Copy a kit tree, optionally applying per-IDE filtering, frontmatter compilation, and colon aliases. */
+function copyTree(src, dest, replacements, ledger = null, options = {}) {
     let count = 0;
-    for (const { rel, abs } of listSourceFiles(src)) {
-        const target = path.join(dest, rel);
+    const { kind = null, platformKey = null } = options;
+    const skipTop = kind && INTERNAL_SKIP_SUBDIRS[kind] ? INTERNAL_SKIP_SUBDIRS[kind] : null;
+    const transform = buildTransform(kind, platformKey);
+    const files = listSourceFiles(src, '', [], skipTop);
+    const topCommandStems = kind === 'commands' && platformKey === 'claude'
+        ? new Set(files.filter((f) => !f.rel.includes(path.sep) && f.rel.endsWith('.md')).map((f) => f.rel.slice(0, -3)))
+        : null;
+
+    for (const { rel, abs } of files) {
+        const destRel = kind === 'agents' ? targetAgentRelPath(rel, platformKey) : rel;
+        const target = path.join(dest, destRel);
         try {
-            const data = renderFile(abs, replacements);
-            if (ledger) {
-                ledger.writeFile(target, data, dest);
-            } else {
-                fs.mkdirSync(path.dirname(target), { recursive: true });
-                fs.writeFileSync(target, data);
-            }
-            progressState.copiedFiles.push(target);
-            tick();
+            const data = renderFile(abs, replacements, transform);
+            writeTarget(target, data, dest, ledger);
             count++;
+            if (topCommandStems) {
+                const aliasRel = claudeColonCommandAlias(rel, topCommandStems);
+                if (aliasRel) {
+                    writeTarget(path.join(dest, aliasRel), data, dest, ledger);
+                    count++;
+                }
+            }
         } catch (error) {
             logError('copy', abs, error);
         }
@@ -54,7 +85,6 @@ function copyTree(src, dest, replacements, ledger = null) {
     return count;
 }
 
-/** Copy one kit file into a shared folder through the ledger. */
 function copySharedFile(src, dest, replacements, ledger) {
     try {
         ledger.writeFile(dest, renderFile(src, replacements));
@@ -69,13 +99,10 @@ function copySharedFile(src, dest, replacements, ledger) {
 
 function describeInstructionResult(dest, result) {
     for (const backup of result.backups) printLine(`  💾 Saved your previous ${path.basename(dest)} → ${backup}`);
-    if (result.retiredBackup) {
-        printLine(`  💾 Kept an older ${path.basename(dest)} backup as ${result.retiredBackup} (not restored on uninstall)`);
-    }
+    if (result.retiredBackup) printLine(`  💾 Kept an older ${path.basename(dest)} backup as ${result.retiredBackup} (not restored on uninstall)`);
     if (result.action === 'merged') printLine(`  🔗 Added the kit block to your ${dest} (your text is kept above it)`);
 }
 
-/** Install the kit block into each shared instruction file. */
 function installInstructionFiles(entries, replacements) {
     let count = 0;
     for (const { src, dest } of entries) {
@@ -103,11 +130,6 @@ function describeUninstallResult(filePath, result) {
     }
 }
 
-/**
- * Remove the kit from shared instruction files (current and legacy names).
- * @param {string[]} paths
- * @param {string[]} kitTexts rendered kit contents (an unmarked copy equal to one is deleted without a saved copy)
- */
 function uninstallInstructionFiles(paths, kitTexts = []) {
     let count = 0;
     for (const filePath of paths) {
@@ -125,8 +147,20 @@ function uninstallInstructionFiles(paths, kitTexts = []) {
     return count;
 }
 
-/** Rebuild the kit-owned framework folder from scratch. */
-function installFramework(frameworkPath, root, coreDirs, rootFiles, hooksSrc, replacements, verbatimDirs) {
+function writeFrameworkFileList(frameworkPath) {
+    const listPath = path.join(frameworkPath, FRAMEWORK_FILE_LIST);
+    try {
+        const files = listSourceFiles(frameworkPath)
+            .map(({ rel }) => rel.split(path.sep).join('/'))
+            .filter((rel) => rel !== FRAMEWORK_FILE_LIST)
+            .sort();
+        fs.writeFileSync(listPath, `${JSON.stringify({ files }, null, 1)}\n`, 'utf8');
+    } catch (error) {
+        logError('framework', listPath, error);
+    }
+}
+
+function installFramework(frameworkPath, root, coreDirs, rootFiles, hooksSrc, replacements, verbatimDirs, platformKey = null) {
     let count = 0;
     try {
         fs.rmSync(frameworkPath, { recursive: true, force: true });
@@ -137,10 +171,10 @@ function installFramework(frameworkPath, root, coreDirs, rootFiles, hooksSrc, re
     }
     for (const dir of coreDirs) {
         const map = verbatimDirs.has(dir) ? null : replacements;
-        count += copyTree(path.join(root, dir), path.join(frameworkPath, dir), map);
+        const kind = FRAMEWORK_REWRITE_DIRS.has(dir) ? 'framework-md' : null;
+        count += copyTree(path.join(root, dir), path.join(frameworkPath, dir), map, null, { kind, platformKey });
     }
-    // Back-compat: commands are also published as workflows/
-    count += copyTree(path.join(root, 'commands'), path.join(frameworkPath, 'workflows'), replacements);
+    count += copyTree(path.join(root, 'commands'), path.join(frameworkPath, 'workflows'), replacements, null, { kind: 'framework-md', platformKey });
     count += copyTree(hooksSrc, path.join(frameworkPath, 'hooks'), null);
     for (const file of rootFiles) {
         const src = path.join(root, file);
@@ -159,46 +193,120 @@ function installFramework(frameworkPath, root, coreDirs, rootFiles, hooksSrc, re
     return count;
 }
 
-/** Record every file now in the framework folder, so doctor can check it without a kit checkout. */
-function writeFrameworkFileList(frameworkPath) {
-    const listPath = path.join(frameworkPath, FRAMEWORK_FILE_LIST);
+function installAntigravityPlugin(tool, root, coreDirs, rootFiles, hooksSrc, verbatimDirs, ledger) {
+    const pluginDir = tool.paths.pluginPath;
+    const pluginRel = 'gemini/config/plugins/boomopen-workflow-kit';
+    const pluginReplacements = {
+        ...replacementsFor(pluginRel, `${pluginRel}/skills/boomopen-workflow-kit`),
+        '~/.gemini/config/skills/boomopen-workflow-kit/': `~/.${pluginRel}/skills/boomopen-workflow-kit/`,
+    };
+    let count = 0;
     try {
-        const files = listSourceFiles(frameworkPath)
-            .map(({ rel }) => rel.split(path.sep).join('/'))
-            .filter((rel) => rel !== FRAMEWORK_FILE_LIST)
-            .sort();
-        fs.writeFileSync(listPath, `${JSON.stringify({ files }, null, 1)}\n`, 'utf8');
+        if (ledger) ledger.ensureDir(path.dirname(pluginDir));
+        fs.rmSync(pluginDir, { recursive: true, force: true });
+        fs.mkdirSync(pluginDir, { recursive: true });
+        const manifest = { ...JSON.parse(fs.readFileSync(tool.assets.pluginJson, 'utf8')), version: KIT_VERSION };
+        const manifestDest = path.join(pluginDir, 'plugin.json');
+        fs.writeFileSync(manifestDest, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+        const rulesDest = path.join(pluginDir, 'rules', 'AGENTS.md');
+        fs.mkdirSync(path.dirname(rulesDest), { recursive: true });
+        fs.writeFileSync(rulesDest, renderFile(tool.assets.geminiMd, pluginReplacements));
+        progressState.copiedFiles.push(manifestDest, rulesDest);
+        tick();
+        tick();
+        count += 2;
     } catch (error) {
-        logError('framework', listPath, error);
+        logError('plugin', pluginDir, error);
+        return 0;
+    }
+    count += copyTree(path.join(root, 'skills'), path.join(pluginDir, 'skills'), pluginReplacements, null, { kind: 'skills', platformKey: 'antigravity' });
+    count += installFramework(path.join(pluginDir, 'skills', 'boomopen-workflow-kit'), root, coreDirs, rootFiles, hooksSrc, pluginReplacements, verbatimDirs, 'antigravity');
+    count += copyTree(path.join(root, 'agents'), path.join(pluginDir, 'agents'), pluginReplacements, null, { kind: 'agents', platformKey: 'antigravity' });
+    count += copyTree(hooksSrc, path.join(pluginDir, 'hooks'), null);
+    try {
+        const hooksJson = path.join(pluginDir, 'hooks.json');
+        registerAntigravityHook(hooksJson, path.join(pluginDir, 'hooks', HOOK_SCRIPT_NAME));
+        progressState.copiedFiles.push(hooksJson);
+    } catch (error) {
+        logError('plugin-hooks', path.join(pluginDir, 'hooks.json'), error);
+    }
+    return count;
+}
+
+function installSharedSkillsLibrary(srcDir, linkPath, homeDir, ledger) {
+    try {
+        syncSharedVaultFiles(srcDir, homeDir);
+    } catch (error) {
+        logError('shared-vault', sharedVaultDir(homeDir), error);
+        return copyTree(srcDir, linkPath, null, ledger);
+    }
+    if (pointsToSharedVault(linkPath, homeDir)) {
+        if (ledger) { ledger.forgetSubtree(linkPath); ledger.ensureDir(path.dirname(linkPath)); }
+        progressState.copiedFiles.push(linkPath);
+        tick();
+        return 1;
+    }
+    if (isSymlink(linkPath)) return 0;
+    if (fs.existsSync(linkPath)) {
+        if (ledger) ledger.prunePreviousUnder(linkPath);
+        removeIdenticalCopies(srcDir, linkPath, null);
+        pruneEmptyTree(linkPath);
+        if (fs.existsSync(linkPath)) return copyTree(srcDir, linkPath, null, ledger);
+    }
+    try {
+        if (ledger) ledger.ensureDir(path.dirname(linkPath));
+        else fs.mkdirSync(path.dirname(linkPath), { recursive: true });
+        fs.symlinkSync(sharedVaultDir(homeDir), linkPath, process.platform === 'win32' ? 'junction' : 'dir');
+        if (ledger) ledger.forgetSubtree(linkPath);
+        progressState.copiedFiles.push(linkPath);
+        tick();
+        return 1;
+    } catch {
+        return copyTree(srcDir, linkPath, null, ledger);
     }
 }
 
-// ---------------------------------------------------------------------------
-// Codex config.toml
-// ---------------------------------------------------------------------------
+function unlinkToolSkillsLibrary(linkPath, homeDir) {
+    if (!pointsToSharedVault(linkPath, homeDir)) return false;
+    try {
+        removeLinkOnly(linkPath);
+        progressState.removedPaths.push(linkPath);
+        tick();
+        return true;
+    } catch (error) {
+        logError('unlink-vault', linkPath, error);
+        return false;
+    }
+}
 
-/** Remove the kit's changes, including blocks written by releases before format 2. */
+function cleanupSharedVaultIfUnreferenced(homeDir, allTools) {
+    try {
+        pruneUnreferencedSharedVault(homeDir, allTools);
+    } catch (error) {
+        logError('cleanup-vault', sharedVaultDir(homeDir), error);
+    }
+}
+
 function cleanCodexConfig(text, backupText) {
     const { text: cleaned, isLegacy } = unmergeCodexConfigText(text);
     return isLegacy ? stripCodexManagedConfig(text, backupText) : cleaned;
 }
 
-/** Merge the kit's agent roles into ~/.codex/config.toml. @returns {boolean} written */
-function mergeCodexConfigFile(templatePath, configPath) {
+function mergeCodexConfigFile(templatePath, configPath, homeDir = null) {
     try {
         const current = readTextSafe(configPath);
         if (current !== null) {
             const backupPath = backupUserFile(configPath, { isKitOwned: (text) => text.includes(CODEX_MARKER_START) });
             if (backupPath) printLine(`   💾 Backed up your config.toml → ${backupPath}`);
             if (isManagedBlockEdited(current)) {
-                // The kit's block is rewritten below; keep the user's edits to it.
                 const editedCopy = `${configPath}${BACKUP_SUFFIX}-${new Date().toISOString().replace(/[:.]/g, '-')}`;
                 fs.writeFileSync(editedCopy, current, 'utf8');
                 printLine(`   💾 You edited the kit's block in config.toml; saved your version → ${editedCopy}`);
             }
         }
+        const activeMaxThreads = homeDir ? loadSettings({ homeDir, scope: 'global' }).execution.maxParallelSubagents : undefined;
         const base = current === null ? '' : cleanCodexConfig(current, readTextSafe(configPath + BACKUP_SUFFIX));
-        const { text, notes } = mergeCodexConfigText(base, fs.readFileSync(templatePath, 'utf8'));
+        const { text, notes } = mergeCodexConfigText(base, fs.readFileSync(templatePath, 'utf8'), { maxThreads: activeMaxThreads });
         for (const note of notes) printLine(`   ℹ️  config.toml: ${note}`);
         if (text !== current) fs.writeFileSync(configPath, text, 'utf8');
         progressState.copiedFiles.push(configPath);
@@ -210,7 +318,6 @@ function mergeCodexConfigFile(templatePath, configPath) {
     }
 }
 
-/** Undo mergeCodexConfigFile. @returns {number} 1 when the file changed */
 function unmergeCodexConfigFile(configPath) {
     try {
         const current = readTextSafe(configPath);
@@ -219,12 +326,9 @@ function unmergeCodexConfigFile(configPath) {
         const backup = readTextSafe(backupPath);
         const cleaned = cleanCodexConfig(current, backup);
         if (cleaned === current) return 0;
-        // A symlinked config.toml keeps its link: content is written through it, never renamed over.
         if (cleaned === '' && !isSymlink(configPath)) fs.unlinkSync(configPath);
         else fs.writeFileSync(configPath, cleaned, 'utf8');
-        if (backup !== null && cleaned.replace(/\r\n/g, '\n').trimEnd() === backup.replace(/\r\n/g, '\n').trimEnd()) {
-            restoreBackup(backupPath, configPath); // byte-exact restore, backup no longer needed
-        }
+        if (backup !== null && cleaned.replace(/\r\n/g, '\n').trimEnd() === backup.replace(/\r\n/g, '\n').trimEnd()) restoreBackup(backupPath, configPath);
         progressState.removedPaths.push(configPath);
         tick();
         printLine(`  ✂️  Removed the kit's agent config from ${configPath}`);
@@ -235,33 +339,33 @@ function unmergeCodexConfigFile(configPath) {
     }
 }
 
-// ---------------------------------------------------------------------------
-// Installs made before the manifest existed
-// ---------------------------------------------------------------------------
+function pruneEmptyDirs(dest, relDirs) {
+    const unique = [...new Set(relDirs.filter((d) => d && d !== '.'))].sort((a, b) => b.split(path.sep).length - a.split(path.sep).length);
+    for (const rel of unique) {
+        let current = rel;
+        while (current && current !== '.') {
+            removeDirIfEmpty(path.join(dest, current));
+            current = path.dirname(current);
+        }
+    }
+}
 
-/**
- * Remove kit-named files from destDir: identical copies are deleted, anything else is moved to
- * backupDir (never deleted). Used for installs that have no manifest.
- * @returns {{ removed: number, moved: number }}
- */
-function removeUnmanifestedCopies(src, dest, replacements, backupDir) {
+function removeUnmanifestedCopies(src, dest, replacements, backupDir, options = {}) {
     const result = { removed: 0, moved: 0 };
     if (!fs.existsSync(src) || !fs.existsSync(dest)) return result;
+    const { kind = null, platformKey = null } = options;
+    const transform = buildTransform(kind, platformKey);
     const files = fs.statSync(src).isFile() ? [{ rel: '', abs: src }] : listSourceFiles(src);
     for (const { rel, abs } of files) {
-        const target = rel ? path.join(dest, rel) : dest;
+        const destRel = rel && kind === 'agents' ? targetAgentRelPath(rel, platformKey) : rel;
+        const target = destRel ? path.join(dest, destRel) : dest;
         try {
-            const stat = fs.lstatSync(target);
-            if (!stat.isFile()) continue;
-            if (fs.readFileSync(target).equals(renderFile(abs, replacements))) {
-                fs.unlinkSync(target);
-                result.removed++;
-            } else if (backupDir) {
-                moveFile(target, path.join(backupDir, path.basename(dest), rel));
-                result.moved++;
-            } else {
-                continue;
-            }
+            if (!fs.lstatSync(target).isFile()) continue;
+            const targetBuf = fs.readFileSync(target);
+            const isSame = targetBuf.equals(renderFile(abs, replacements, transform)) || (transform && targetBuf.equals(renderFile(abs, replacements)));
+            if (isSame) { fs.unlinkSync(target); result.removed++; }
+            else if (backupDir) { moveFile(target, path.join(backupDir, path.basename(dest), destRel)); result.moved++; }
+            else continue;
             progressState.removedPaths.push(target);
             tick();
         } catch (error) {
@@ -272,31 +376,11 @@ function removeUnmanifestedCopies(src, dest, replacements, backupDir) {
     return result;
 }
 
-/** Delete only byte-identical kit copies from dest (anything else is left alone). */
-function removeIdenticalCopies(src, dest, replacements) {
-    return removeUnmanifestedCopies(src, dest, replacements, null).removed;
-}
-
-function pruneEmptyDirs(dest, relDirs) {
-    const unique = [...new Set(relDirs.filter((d) => d && d !== '.'))];
-    unique.sort((a, b) => b.split(path.sep).length - a.split(path.sep).length);
-    for (const rel of unique) {
-        let current = rel;
-        while (current && current !== '.') {
-            removeDirIfEmpty(path.join(dest, current));
-            current = path.dirname(current);
-        }
-    }
-}
+const removeIdenticalCopies = (src, dest, replacements, options = {}) => removeUnmanifestedCopies(src, dest, replacements, null, options).removed;
 
 module.exports = {
-    copyTree,
-    copySharedFile,
-    installInstructionFiles,
-    uninstallInstructionFiles,
-    installFramework,
-    mergeCodexConfigFile,
-    unmergeCodexConfigFile,
-    removeUnmanifestedCopies,
-    removeIdenticalCopies,
+    copyTree, copySharedFile, installInstructionFiles, uninstallInstructionFiles,
+    installFramework, installAntigravityPlugin, installSharedSkillsLibrary,
+    unlinkToolSkillsLibrary, cleanupSharedVaultIfUnreferenced, pointsToSharedVault,
+    mergeCodexConfigFile, unmergeCodexConfigFile, removeUnmanifestedCopies, removeIdenticalCopies,
 };

@@ -1,0 +1,6 @@
+interface:
+  display_name: "/onboard"
+  short_description: "🗺️ Fast Codebase Onboarding — 60-second brownfield architecture mapping, entrypoints, data flows, risk hotspots & detected build/lint/test gates (zero /init collision, zero repo clutter)"
+  brand_color: "#0EA5E9"
+policy:
+  allow_implicit_invocation: true

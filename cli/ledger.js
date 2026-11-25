@@ -4,7 +4,7 @@
  * Multi-Session Project Ledger & Phase Gate Engine (`boomopen ledger`).
  * Manages `.boomopen/project-ledger.json`, `.boomopen/ROADMAP-PROGRESS.md`, and
  * `.boomopen/contracts/SHARED_CONTRACT.md` for Spec-Hash Drift Guard, Scoped Context Slicing,
- * Deterministic Phase Gate (`--strict-phase` + `--reconcile` + `--strict-locks` + `--run-verify`), and 100% RTM Audit.
+ * Deterministic Phase Gate, Git Checkpoint Rollbacks (`rollback --yes`), and 100% RTM Audit.
  */
 
 const { spawnSync } = require('node:child_process');
@@ -16,15 +16,13 @@ const { inspectSourceFile, resolveActiveStandards } = require('./checker.js');
 const { CODE_EXTENSIONS } = require('./checker-rules.js');
 const { EXIT_OK, EXIT_FAIL, EXIT_USAGE, parseSubcommandArgs, splitCommaOption, runVerifyCommands } = require('./cli-args.js');
 const { KIT_VERSION } = require('./doctor-version.js');
+const { createGitCheckpoint, rollbackToGitCheckpoint } = require('./git-checkpoints.js');
 const { countLines, readCleanText } = require('./markdown-fences.js');
 
 const DEFAULT_LEDGER_REL = path.join('.boomopen', 'project-ledger.json');
 const VALID_STATUSES = new Set(['pending', 'in_progress', 'verified']);
 const normRel = (p) => String(p || '').replace(/\\/g, '/').replace(/^\.\//, '');
-
-function hashFileSha256(filePath) {
-  return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
-}
+const hashFileSha256 = (filePath) => crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
 
 function resolvePaths(cwd, customFile) {
   const ledgerPath = customFile ? path.resolve(cwd, customFile) : path.join(cwd, DEFAULT_LEDGER_REL);
@@ -90,15 +88,14 @@ function renderProgressMarkdown(ledger) {
     `- **Phases Verified**: \`${verifiedPhases} / ${phases.length}\` | **Requirements Verified**: \`${verifiedReqs} / ${features.length}\` (**${pct}%**)`,
     `- **Cumulative Passing Tests Ratchet**: \`${cursor.baseline_passed_tests || 0}\``, '',
     '## 🗺️ Phase DAG Status', '| Phase ID | Title | Depends On | Status | Requirements |', '|----------|-------|------------|--------|--------------|',
+    ...phases.map((p) => {
+      const pReqs = features.filter((f) => f.phase_id === p.phase_id);
+      const pDone = pReqs.filter((f) => f.passes && f.status === 'verified').length;
+      return `| \`${p.phase_id}\` | ${p.title} | ${p.depends_on?.length ? p.depends_on.join(', ') : '—'} | \`${p.status}\` | ${pDone}/${pReqs.length} |`;
+    }),
+    '', '## 📋 Requirement Traceability Matrix (RTM)', '| REQ ID | Phase | Title | Source Doc | Status |', '|--------|-------|-------|------------|--------|',
+    ...features.map((f) => `| \`${f.req_id}\` | \`${f.phase_id}\` | ${f.title} | \`${f.source_doc || '—'}\` | \`${f.passes ? 'verified' : f.status}\` |`),
   ];
-  for (const p of phases) {
-    const pReqs = features.filter((f) => f.phase_id === p.phase_id);
-    const pDone = pReqs.filter((f) => f.passes && f.status === 'verified').length;
-    const deps = Array.isArray(p.depends_on) && p.depends_on.length ? p.depends_on.join(', ') : '—';
-    lines.push(`| \`${p.phase_id}\` | ${p.title} | ${deps} | \`${p.status}\` | ${pDone}/${pReqs.length} |`);
-  }
-  lines.push('', '## 📋 Requirement Traceability Matrix (RTM)', '| REQ ID | Phase | Title | Source Doc | Status |', '|--------|-------|-------|------------|--------|');
-  for (const f of features) lines.push(`| \`${f.req_id}\` | \`${f.phase_id}\` | ${f.title} | \`${f.source_doc || '—'}\` | \`${f.passes ? 'verified' : f.status}\` |`);
   return `${lines.join('\n')}\n`;
 }
 
@@ -153,9 +150,8 @@ function validateLedger(ledger, cwd, options = {}) {
     if (!phaseIds.has(f.phase_id)) errors.push(`Feature ${f.req_id} references unknown phase_id "${f.phase_id}"`);
     if (!f.source_doc) errors.push(`Feature ${f.req_id} missing source_doc citation`);
     if (!Array.isArray(f.acceptance_criteria) || !f.acceptance_criteria.length) errors.push(`Feature ${f.req_id} must define non-empty acceptance_criteria[]`);
-    if (!Array.isArray(f.owned_files) || !Array.isArray(f.test_files)) {
-      errors.push(`Feature ${f.req_id} must define owned_files[] and test_files[] arrays`);
-    } else {
+    if (!Array.isArray(f.owned_files) || !Array.isArray(f.test_files)) errors.push(`Feature ${f.req_id} must define owned_files[] and test_files[] arrays`);
+    else {
       if (f.owned_files.length > maxShardFiles) errors.push(`Feature ${f.req_id} owns ${f.owned_files.length} files (exceeds <= ${maxShardFiles})`);
       if ((f.passes || f.status === 'verified') && (!f.owned_files.length || !f.test_files.length)) errors.push(`Verified feature ${f.req_id} must have non-empty owned_files[] and test_files[]`);
       if (options.strictShards) {
@@ -172,17 +168,19 @@ function validateLedger(ledger, cwd, options = {}) {
 }
 
 function initLedger(options = {}) {
-  const cwd = options.cwd || process.cwd();
-  const paths = resolvePaths(cwd, options.file);
+  const [cwd, paths] = [options.cwd || process.cwd(), resolvePaths(options.cwd || process.cwd(), options.file)];
   const specDocs = (options.docs || []).map((relDoc) => {
     const absDoc = path.resolve(cwd, relDoc);
     if (!fs.existsSync(absDoc)) throw new Error(`Spec document not found: ${relDoc}`);
     return { path: relDoc, sha256: hashFileSha256(absDoc), lines: countLines(readCleanText(absDoc)) };
   });
+  const cp = createGitCheckpoint(cwd, 'phase-01');
+  const cpSha = cp.available ? cp.headSha : null;
   const ledger = {
     schema_version: KIT_VERSION, project_name: options.name || path.basename(cwd), updated_at: new Date().toISOString(),
-    spec_documents: specDocs, active_cursor: { current_phase_id: 'phase-01', baseline_passed_tests: 0 },
-    phases: [{ phase_id: 'phase-01', title: 'Phase 1 — Foundation & Core Contracts', status: 'pending', depends_on: [], doc_slices: specDocs.map((d) => `${d.path}#L1-L${d.lines}`) }],
+    spec_documents: specDocs, active_cursor: { current_phase_id: 'phase-01', baseline_passed_tests: 0, checkpoint_sha: cpSha },
+    checkpoints: cpSha ? { 'phase-01': cpSha } : {},
+    phases: [{ phase_id: 'phase-01', title: 'Phase 1 — Foundation & Core Contracts', status: 'pending', depends_on: [], doc_slices: specDocs.map((d) => `${d.path}#L1-L${d.lines}`), checkpoint_sha: cpSha }],
     features: [],
   };
   saveLedgerFile(paths.ledgerPath, ledger);
@@ -203,6 +201,7 @@ function getNextPhaseSlice(ledger, paths) {
   const nextPhase = findNextReadyPhase(ledger);
   return {
     complete: !nextPhase, phase_id: nextPhase ? nextPhase.phase_id : null, title: nextPhase ? nextPhase.title : null,
+    checkpoint_sha: (nextPhase && nextPhase.checkpoint_sha) || ledger.active_cursor?.checkpoint_sha || null,
     doc_slices: nextPhase ? nextPhase.doc_slices || [] : [],
     shared_contract: normRel(path.relative(paths.cwd, paths.contractPath)),
     baseline_passed_tests: ledger.active_cursor?.baseline_passed_tests || 0,
@@ -218,11 +217,9 @@ function checkPriorTestLocks(cwd, readOnlyPriorTests) {
   const [parts, changed] = [res.stdout.split('\0'), new Set()];
   for (let i = 0; i < parts.length; i++) {
     const e = parts[i];
-    if (!e || e.length < 4) continue;
-    const xy = e.slice(0, 2);
-    if (xy === '??') continue;
+    if (!e || e.length < 4 || e.slice(0, 2) === '??') continue;
     changed.add(normRel(e.slice(3)).toLowerCase());
-    if (xy[0] === 'R' || xy[0] === 'C' || xy[1] === 'R' || xy[1] === 'C') changed.add(normRel(parts[++i] || '').toLowerCase());
+    if ('RC'.includes(e[0]) || 'RC'.includes(e[1])) changed.add(normRel(parts[++i] || '').toLowerCase());
   }
   return readOnlyPriorTests.filter((t) => changed.has(normRel(t).toLowerCase())).map((t) => `[LEDGER-LOCK] Read-only prior test file mutated in git status: "${t}"`);
 }
@@ -246,8 +243,7 @@ function inspectRequirementFiles(reqs, cwd, options = {}) {
 }
 
 function verifyPhaseGate(ledger, phaseId, options = {}) {
-  const cwd = options.cwd || process.cwd();
-  const violations = [...validateLedger(ledger, cwd).errors];
+  const [cwd, violations] = [options.cwd || process.cwd(), [...validateLedger(ledger, options.cwd || process.cwd()).errors]];
   const phase = (ledger.phases || []).find((p) => p.phase_id === phaseId);
   if (!phase) return { passed: false, violations: [`Unknown phase_id "${phaseId}"`] };
 
@@ -260,8 +256,7 @@ function verifyPhaseGate(ledger, phaseId, options = {}) {
   if (options.strictLocks) violations.push(...checkPriorTestLocks(cwd, listReadOnlyPriorTests(ledger)));
   if (options.reconcile) {
     const { scanProjectReconciliation } = require('./reconcile.js');
-    const phaseOwned = [...new Set(phaseReqs.flatMap((r) => r.owned_files || []))];
-    violations.push(...scanProjectReconciliation(cwd, { ownedFiles: phaseOwned, strict: true }).errors);
+    violations.push(...scanProjectReconciliation(cwd, { ownedFiles: [...new Set(phaseReqs.flatMap((r) => r.owned_files || []))], strict: true }).errors);
   }
   if (options.runVerify) {
     const cmds = [...new Set(phaseReqs.map((r) => String(r.verification_cmd || '').trim()).filter(Boolean))];
@@ -278,8 +273,31 @@ function verifyPhaseGate(ledger, phaseId, options = {}) {
   for (const req of phaseReqs) { req.passes = true; req.status = 'verified'; }
   phase.status = 'verified';
   const nextReady = findNextReadyPhase(ledger);
-  ledger.active_cursor = { current_phase_id: nextReady ? nextReady.phase_id : null, baseline_passed_tests: options.passedTests ?? requiredTests };
-  return { passed: true, violations: [], next_phase_id: ledger.active_cursor.current_phase_id };
+  const cp = options.cwd ? createGitCheckpoint(cwd, nextReady ? nextReady.phase_id : `${phaseId}-verified`) : { available: false, headSha: null };
+  const cpSha = cp.available ? cp.headSha : null;
+  if (cpSha) {
+    if (!phase.checkpoint_sha) phase.checkpoint_sha = cpSha;
+    phase.verified_sha = cpSha;
+    if (nextReady) nextReady.checkpoint_sha = cpSha;
+    ledger.checkpoints = { ...(ledger.checkpoints || {}), [phaseId]: phase.checkpoint_sha || cpSha, ...(nextReady ? { [nextReady.phase_id]: cpSha } : {}) };
+  }
+  ledger.active_cursor = { current_phase_id: nextReady ? nextReady.phase_id : null, baseline_passed_tests: options.passedTests ?? requiredTests, checkpoint_sha: cpSha };
+  return { passed: true, violations: [], next_phase_id: ledger.active_cursor.current_phase_id, checkpoint_sha: cpSha };
+}
+
+function rollbackLedgerPhase(ledger, options = {}) {
+  const phaseId = options.phaseId || ledger.active_cursor?.current_phase_id || ledger.phases?.[ledger.phases.length - 1]?.phase_id;
+  const phase = (ledger.phases || []).find((p) => p.phase_id === phaseId);
+  if (options.phaseId && !phase) return { ok: false, error: `Unknown phase_id "${options.phaseId}"` };
+  const shaOrRef = phase?.checkpoint_sha || ledger.checkpoints?.[phaseId] || ledger.active_cursor?.checkpoint_sha || phaseId;
+  const rb = rollbackToGitCheckpoint(options.cwd, shaOrRef, { confirm: Boolean(options.confirm) });
+  if (!rb.ok) return { ok: false, phase_id: phaseId, error: rb.error };
+  if (phase) {
+    phase.status = 'pending';
+    for (const f of (ledger.features || []).filter((x) => x.phase_id === phaseId)) { f.status = 'pending'; f.passes = false; }
+    ledger.active_cursor = { ...(ledger.active_cursor || {}), current_phase_id: phaseId, checkpoint_sha: rb.restoredSha };
+  }
+  return { ok: true, phase_id: phaseId, restored_sha: rb.restoredSha, summary: rb.summary };
 }
 
 function auditLedger(ledger, cwd, options = {}) {
@@ -289,24 +307,13 @@ function auditLedger(ledger, cwd, options = {}) {
   if (features.length === 0) violations.push('Ledger has 0 features/requirements');
   for (const f of features) if (!f.passes || f.status !== 'verified') violations.push(`Unverified requirement: ${f.req_id} (${f.status})`);
   violations.push(...inspectRequirementFiles(features, cwd, options));
-  return {
-    passed: violations.length === 0, total_phases: phases.length, verified_phases: phases.filter((p) => p.status === 'verified').length,
-    total_requirements: features.length, verified_requirements: features.filter((f) => f.passes && f.status === 'verified').length, violations,
-  };
+  return { passed: violations.length === 0, total_phases: phases.length, verified_phases: phases.filter((p) => p.status === 'verified').length, total_requirements: features.length, verified_requirements: features.filter((f) => f.passes && f.status === 'verified').length, violations };
 }
 
-const LEDGER_HELP = `Usage: boomopen ledger <init|from-plan|validate|status|next|verify|audit|help> [options]
-  init [--name <name>] [--docs <a.md,b.md>]                                            Initialize .boomopen/project-ledger.json & contracts
-  from-plan <plan.md> [--file <path>] [--json]                                         Compile approved PLAN.md into .boomopen/project-ledger.json
-  validate [--file <path>] [--strict-shards]                                           Validate ledger schema, phase DAG, and spec SHA-256 drift
-  status [--file <path>] [--json]                                                      Print progress summary and refresh ROADMAP-PROGRESS.md
-  next [--file <path>] [--json]                                                        Output scoped context slice for the next ready phase
-  verify --phase <id> [--passed-tests <N>] [--run-verify] [--reconcile] [--strict-locks]  Run strict phase gate (alias: verify-phase)
-  audit [--file <path>] [--json]                                                       Run end-to-end 100% Requirement Traceability Matrix audit`;
-
+const LEDGER_HELP = 'Usage: boomopen ledger <init|from-plan|validate|status|next|verify|rollback|audit|help> [options]\n  init | from-plan <plan.md> | validate | status | next | verify --phase <id> | rollback [--phase <id>] --yes | audit';
 const LEDGER_ARG_SPEC = {
-  defaults: { file: null, name: null, docs: '', phase: null, passedTests: undefined, strictShards: false, runVerify: false, reconcile: false, strictLocks: false, json: false, help: false },
-  booleanFlags: { '-h': 'help', '--help': 'help', '--json': 'json', '--strict-shards': 'strictShards', '--run-verify': 'runVerify', '--reconcile': 'reconcile', '--strict-locks': 'strictLocks' },
+  defaults: { file: null, name: null, docs: '', phase: null, passedTests: undefined, strictShards: false, runVerify: false, reconcile: false, strictLocks: false, yes: false, json: false, help: false },
+  booleanFlags: { '-h': 'help', '--help': 'help', '--json': 'json', '--strict-shards': 'strictShards', '--run-verify': 'runVerify', '--reconcile': 'reconcile', '--strict-locks': 'strictLocks', '--yes': 'yes', '-y': 'yes' },
   valueFlags: { '--file': 'file', '--name': 'name', '--docs': 'docs', '--phase': 'phase', '--passed-tests': 'passedTests' },
 };
 
@@ -315,13 +322,11 @@ function runLedgerCli(argv = [], options = {}) {
   if (error) { if (!options.silent) console.error(`❌ boomopen ledger: ${error}\n\n${LEDGER_HELP}`); return EXIT_USAGE; }
   const sub = (positional[0] || 'status').toLowerCase();
   if (flags.help || sub === 'help') { if (!options.silent) console.log(LEDGER_HELP); return EXIT_OK; }
-  const cwd = options.cwd || process.cwd();
-  const paths = resolvePaths(cwd, flags.file);
+  const [cwd, paths] = [options.cwd || process.cwd(), resolvePaths(options.cwd || process.cwd(), flags.file)];
   try {
     if (sub === 'from-plan') {
       const { runPlanCli } = require('./plan.js');
-      const fwd = ['compile', ...positional.slice(1), ...(flags.file ? ['--file', flags.file] : []), ...(flags.name ? ['--name', flags.name] : []), ...(flags.json ? ['--json'] : [])];
-      return runPlanCli(fwd, options);
+      return runPlanCli(['compile', ...positional.slice(1), ...(flags.file ? ['--file', flags.file] : []), ...(flags.name ? ['--name', flags.name] : []), ...(flags.json ? ['--json'] : [])], options);
     }
     if (sub === 'init') {
       const { ledger } = initLedger({ cwd, file: flags.file, name: flags.name, docs: splitCommaOption(flags.docs) });
@@ -331,23 +336,24 @@ function runLedgerCli(argv = [], options = {}) {
     const ledger = loadLedgerFile(paths.ledgerPath, cwd);
     if (sub === 'validate') {
       const res = validateLedger(ledger, cwd, { strictShards: flags.strictShards });
-      if (!options.silent) {
-        if (res.valid) console.log(`✅ Ledger valid (${ledger.phases.length} phases, ${ledger.features.length} REQs, 0 spec drift)`);
-        else for (const err of res.errors) console.error(`❌ ${err}`);
-      }
+      if (!options.silent) { if (res.valid) console.log(`✅ Ledger valid (${ledger.phases.length} phases, ${ledger.features.length} REQs, 0 spec drift)`); else for (const err of res.errors) console.error(`❌ ${err}`); }
       return res.valid ? EXIT_OK : EXIT_FAIL;
     }
     if (sub === 'status') {
       writeProgressFile(paths.progressPath, ledger);
-      const summary = {
-        project_name: ledger.project_name, active_cursor: ledger.active_cursor,
-        phases_verified: ledger.phases.filter((p) => p.status === 'verified').length, phases_total: ledger.phases.length,
-        requirements_verified: ledger.features.filter((f) => f.passes && f.status === 'verified').length, requirements_total: ledger.features.length,
-      };
+      const summary = { project_name: ledger.project_name, active_cursor: ledger.active_cursor, phases_verified: ledger.phases.filter((p) => p.status === 'verified').length, phases_total: ledger.phases.length, requirements_verified: ledger.features.filter((f) => f.passes && f.status === 'verified').length, requirements_total: ledger.features.length };
       if (!options.silent) console.log(flags.json ? JSON.stringify(summary, null, 2) : renderProgressMarkdown(ledger));
       return EXIT_OK;
     }
-    if (sub === 'next') { if (!options.silent) console.log(JSON.stringify(getNextPhaseSlice(ledger, paths), null, 2)); return EXIT_OK; }
+    if (sub === 'next') {
+      const nextPhase = findNextReadyPhase(ledger);
+      if (nextPhase && !nextPhase.checkpoint_sha) {
+        const cp = createGitCheckpoint(cwd, nextPhase.phase_id);
+        if (cp.available) { nextPhase.checkpoint_sha = cp.headSha; ledger.active_cursor = { ...(ledger.active_cursor || {}), checkpoint_sha: cp.headSha }; ledger.checkpoints = { ...(ledger.checkpoints || {}), [nextPhase.phase_id]: cp.headSha }; saveLedgerFile(paths.ledgerPath, ledger); }
+      }
+      if (!options.silent) console.log(JSON.stringify(getNextPhaseSlice(ledger, paths), null, 2));
+      return EXIT_OK;
+    }
     if (sub === 'verify' || sub === 'verify-phase') {
       const phaseId = flags.phase || positional[1];
       if (!phaseId) { if (!options.silent) console.error('❌ boomopen ledger verify requires --phase <phaseId>'); return EXIT_USAGE; }
@@ -358,12 +364,17 @@ function runLedgerCli(argv = [], options = {}) {
       if (!options.silent) console.log(`✅ Phase "${phaseId}" verified! Next phase: ${res.next_phase_id || 'ALL COMPLETE'}`);
       return EXIT_OK;
     }
+    if (sub === 'rollback') {
+      if (!flags.yes) { if (!options.silent) console.error('❌ boomopen ledger rollback requires --yes.'); return EXIT_USAGE; }
+      const res = rollbackLedgerPhase(ledger, { cwd, phaseId: flags.phase || positional[1] || null, confirm: true });
+      if (!res.ok) { if (!options.silent) console.error(`❌ ${res.error}`); return EXIT_FAIL; }
+      saveLedgerFile(paths.ledgerPath, ledger); writeProgressFile(paths.progressPath, ledger);
+      if (!options.silent) console.log(flags.json ? JSON.stringify(res, null, 2) : `⏪ ${res.summary} (phase=${res.phase_id})`);
+      return EXIT_OK;
+    }
     if (sub === 'audit') {
       const res = auditLedger(ledger, cwd, { homeDir: options.homeDir });
-      if (!options.silent) {
-        console.log(flags.json ? JSON.stringify(res, null, 2) : `📊 RTM Audit: ${res.verified_requirements}/${res.total_requirements} REQs verified (${res.violations.length} violations)`);
-        if (!flags.json) for (const v of res.violations) console.error(`❌ ${v}`);
-      }
+      if (!options.silent) { console.log(flags.json ? JSON.stringify(res, null, 2) : `📊 RTM Audit: ${res.verified_requirements}/${res.total_requirements} REQs verified (${res.violations.length} violations)`); if (!flags.json) for (const v of res.violations) console.error(`❌ ${v}`); }
       return res.passed ? EXIT_OK : EXIT_FAIL;
     }
     if (!options.silent) console.error(`❌ Unknown ledger subcommand "${sub}"\n\n${LEDGER_HELP}`);
@@ -376,6 +387,6 @@ function runLedgerCli(argv = [], options = {}) {
 
 module.exports = {
   hashFileSha256, resolvePaths, normalizeLedgerShape, initLedger, loadLedgerFile, saveLedgerFile,
-  validateLedger, detectPhaseCycle, getNextPhaseSlice, verifyPhaseGate, auditLedger,
+  validateLedger, detectPhaseCycle, getNextPhaseSlice, verifyPhaseGate, rollbackLedgerPhase, auditLedger,
   renderProgressMarkdown, renderRoadmapMarkdown: renderProgressMarkdown, writeProgressFile, runLedgerCli,
 };

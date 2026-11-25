@@ -3,4 +3,4 @@ interface:
   short_description: "🏛️ Autopilot Init — Sharded Multi-Document Spec Ingestion, Reverse Coverage Audit, and Immutable .boomopen/project-ledger.json Initialization"
   brand_color: "#8B5CF6"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

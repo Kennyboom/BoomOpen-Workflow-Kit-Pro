@@ -3,4 +3,4 @@ interface:
   short_description: "⚡ Quick Answer — Mode A Direct (≤ 2 Known Files) or Turn-1 Parallel Codebase Scout (Zero Report Clutter)"
   brand_color: "#06B6D4"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

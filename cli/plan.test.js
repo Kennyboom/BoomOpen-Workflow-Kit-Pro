@@ -6,6 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const {
+  CANONICAL_AGENT_ROLES,
   parsePlanMarkdown,
   validatePlan,
   compilePlanToLedger,
@@ -299,5 +300,28 @@ test('regressions S1-BUG-04, S1-BUG-06..08, S1-BUG-12 & HARD_PLAN_LINES: Vietnam
     assert.equal(runPlanCli(['compile', planFile, '--file', '--json'], { cwd: root, silent: true }), 2);
   } finally {
     removeDir(root);
+  }
+});
+
+test('PLAN-G4 enforces the 22 canonical specialist roles + built-ins (self, research, browser) and rejects phantom integrator role', () => {
+  assert.equal(CANONICAL_AGENT_ROLES.size, 25);
+  assert.equal(CANONICAL_AGENT_ROLES.has('integrator'), false);
+
+  const phantomPlan = [
+    '# Implementation Plan: Phantom Role',
+    '## Wave 1: Wiring',
+    '### Task 1.1 (REQ-101): Wire Routes',
+    '- **Agent**: `integrator#wiring-1`',
+    '- **OWNED_FILES**: `src/index.ts`',
+    '- **Verify**: `npm test`',
+  ].join('\n');
+  const failRes = validatePlan(phantomPlan);
+  assert.equal(failRes.valid, false);
+  assert.ok(failRes.gates['PLAN-G4'].some((e) => /integrator/.test(e)));
+
+  for (const validRole of ['tech-lead#wiring-1', 'frontend-engineer#1', 'spec-reconciler#1', 'self#1', 'research#1', 'browser#1']) {
+    const okPlan = phantomPlan.replace('integrator#wiring-1', validRole);
+    const okRes = validatePlan(okPlan);
+    assert.equal(okRes.valid, true, `${validRole} should pass PLAN-G4: ${okRes.errors.join('; ')}`);
   }
 });

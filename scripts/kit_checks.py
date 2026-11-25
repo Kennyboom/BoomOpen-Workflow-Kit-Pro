@@ -11,7 +11,9 @@ Rules that keep the gate honest:
 - URL-based checks (Lighthouse, Playwright) receive the URL as their first
   argument, and a JSON result that reports an error counts as a failure even
   if the script exited 0.
-- A missing check script is a failure (incomplete install), and a run in
+- A missing core `skills/*` check script is a failure (incomplete install),
+  while optional `skills_library/*` checks are gracefully skipped when
+  `skills_library/` is not bundled (e.g. core-only / npm installs). A run in
   which no check actually executed is never reported as passed.
 - A checker that prints a line starting with "[SKIP]" and exits 0 had nothing
   to check (for example no API files); it is reported as skipped, not passed.
@@ -86,6 +88,11 @@ def kit_roots() -> List[Path]:
     return roots
 
 
+def has_skills_library() -> bool:
+    """Return True if the optional skills_library/ vault is bundled in this install."""
+    return any((root / "skills_library").is_dir() for root in kit_roots())
+
+
 def resolve_script(rel_path: str) -> Optional[Path]:
     """Return the kit's own copy of a check script, or None if not installed."""
     for root in kit_roots():
@@ -93,6 +100,13 @@ def resolve_script(rel_path: str) -> Optional[Path]:
         if candidate.is_file():
             return candidate
     return None
+
+
+def is_optional_library_check(spec: CheckSpec) -> bool:
+    """Library checks gracefully skip when skills_library/ is unbundled or non-required."""
+    if not spec.rel_path.startswith("skills_library/"):
+        return False
+    return not has_skills_library() or not spec.required
 
 
 def is_valid_url(url: str) -> bool:
@@ -109,15 +123,18 @@ def _json_reports_error(stdout: str) -> Optional[str]:
         return None
     if data.get("error"):
         return str(data["error"])
+    if data.get("passed") is False:
+        return str(data.get("summary") or "Check reported passed=false")
     if str(data.get("status", "")).lower() in ("error", "failed"):
         return str(data.get("summary") or data.get("status"))
     return None
 
 
-def _child_env() -> dict:
+def _child_env(project: Path) -> dict:
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
     env["PYTHONUTF8"] = "1"
+    env["BOOMOPEN_PROJECT_DIR"] = str(project)
     return env
 
 
@@ -125,6 +142,9 @@ def run_check(spec: CheckSpec, project: Path, url: Optional[str], timeout: int) 
     """Run one check script and classify the outcome."""
     script = resolve_script(spec.rel_path)
     if script is None:
+        if is_optional_library_check(spec):
+            print_warning(f"{spec.name}: SKIPPED - optional skills_library script not bundled")
+            return CheckResult(spec.name, STATUS_SKIPPED, error=f"Optional library script not bundled: {spec.rel_path}")
         print_error(f"{spec.name}: MISSING - {spec.rel_path} is not installed with the kit")
         return CheckResult(spec.name, STATUS_MISSING, error=f"Script not found: {spec.rel_path}")
 
@@ -142,7 +162,7 @@ def run_check(spec: CheckSpec, project: Path, url: Optional[str], timeout: int) 
             encoding="utf-8",
             errors="replace",
             timeout=timeout,
-            env=_child_env(),
+            env=_child_env(project),
         )
     except subprocess.TimeoutExpired:
         duration = time.monotonic() - started

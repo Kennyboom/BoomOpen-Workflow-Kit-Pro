@@ -1,11 +1,13 @@
 'use strict';
 
+const { spawnSync } = require('node:child_process');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
 const {
+  walkProjectSourceFiles,
   discoverSpecSources,
   extractVerticalFlows,
   scanCrossModuleHazards,
@@ -194,24 +196,10 @@ test('full 3-round human-gated lifecycle: init -> R1 record -> approve (--exclud
     write(root, 'r1-findings.json', JSON.stringify({
       round: 1,
       findings: [
-        {
-          severity: 'P1',
-          dimension: 'vertical_flow',
-          title: 'Negative order quantity accepted',
-          primary_location: 'src/orders.ts:1',
-          owned_files: ['src/orders.ts'],
-          test_files: ['src/orders.test.ts'],
-          verification_cmd: 'node -e "process.exit(0)"',
-        },
-        {
-          severity: 'P2',
-          dimension: 'architecture',
-          title: 'Legacy compatibility flag still exported',
-          primary_location: 'src/legacy.ts:1',
-          owned_files: ['src/legacy.ts'],
-        },
+        { severity: 'P1', dimension: 'vertical_flow', title: 'Negative order quantity accepted', primary_location: 'src/orders.ts:1', owned_files: ['src/orders.ts'], test_files: ['src/orders.test.ts'], verification_cmd: 'node -e "process.exit(0)"' },
+        { severity: 'P2', dimension: 'architecture', title: 'Legacy compatibility flag still exported', primary_location: 'src/legacy.ts:1', owned_files: ['src/legacy.ts'] },
       ],
-    }, null, 2));
+    }));
     assert.equal(runAuditCli(['record', '--round', '1', '--input', 'r1-findings.json'], { cwd: root, silent: true }), 0);
 
     ledger = loadAuditLedger(root);
@@ -235,10 +223,7 @@ test('full 3-round human-gated lifecycle: init -> R1 record -> approve (--exclud
     assert.equal(runAuditCli(['verify-fix', '--round', '1', '--passed-tests', '3'], { cwd: root, silent: true }), 1);
 
     write(root, 'src/orders.ts', 'export function calcOrder(n: number): number { return Math.max(0, n); }\n');
-    assert.equal(
-      runAuditCli(['verify-fix', '--round', '1', '--passed-tests', '4', '--locked-tests', 'src/orders.test.ts', '--run-verify'], { cwd: root, silent: true }),
-      0
-    );
+    assert.equal(runAuditCli(['verify-fix', '--round', '1', '--passed-tests', '4', '--locked-tests', 'src/orders.test.ts', '--run-verify'], { cwd: root, silent: true }), 0);
 
     ledger = loadAuditLedger(root);
     assert.equal(ledger.state, 'SCANNING_ROUND');
@@ -257,24 +242,10 @@ test('full 3-round human-gated lifecycle: init -> R1 record -> approve (--exclud
       round: 2,
       reopened_checks: [{ id: 'AUD-001', status: 'verified_closed' }],
       findings: [
-        {
-          // Duplicate of AUD-002 (wont_fix) -> MUST be suppressed!
-          severity: 'P2',
-          dimension: 'architecture',
-          title: 'Legacy compatibility flag still exported',
-          primary_location: 'src/legacy.ts:5',
-        },
-        {
-          severity: 'P1',
-          dimension: 'security',
-          title: 'Token length not validated in checkAuth',
-          primary_location: 'src/auth.ts:1',
-          owned_files: ['src/auth.ts'],
-          test_files: ['src/auth.test.ts'],
-          verification_cmd: 'node -e "process.exit(0)"',
-        },
+        { severity: 'P2', dimension: 'architecture', title: 'Legacy compatibility flag still exported', primary_location: 'src/legacy.ts:5' },
+        { severity: 'P1', dimension: 'security', title: 'Token length not validated in checkAuth', primary_location: 'src/auth.ts:1', owned_files: ['src/auth.ts'], test_files: ['src/auth.test.ts'], verification_cmd: 'node -e "process.exit(0)"' },
       ],
-    }, null, 2));
+    }));
     assert.equal(runAuditCli(['record', '--round', '2', '--input', 'r2-findings.json'], { cwd: root, silent: true }), 0);
 
     ledger = loadAuditLedger(root);
@@ -291,10 +262,7 @@ test('full 3-round human-gated lifecycle: init -> R1 record -> approve (--exclud
     write(root, 'src/auth.ts', 'export function checkAuth(tok: string): boolean { return tok.trim().length >= 16; }\n');
     write(root, 'src/auth.test.ts', 'import test from "node:test";\ntest("auth", () => {});\n');
     assert.equal(runAuditCli(['verify-fix', '--round', '2', '--passed-tests', '2'], { cwd: root, silent: true }), 1);
-    assert.equal(
-      runAuditCli(['verify-fix', '--round', '2', '--passed-tests', '6', '--locked-tests', 'src/auth.test.ts', '--run-verify'], { cwd: root, silent: true }),
-      0
-    );
+    assert.equal(runAuditCli(['verify-fix', '--round', '2', '--passed-tests', '6', '--locked-tests', 'src/auth.test.ts', '--run-verify'], { cwd: root, silent: true }), 0);
 
     // 6. Round 3: `UX_STATES_AND_OPS_READINESS` + `P3` nitpick freeze on untouched file -> `CONVERGED`!
     ledger = loadAuditLedger(root);
@@ -304,16 +272,8 @@ test('full 3-round human-gated lifecycle: init -> R1 record -> approve (--exclud
 
     write(root, 'r3-findings.json', JSON.stringify({
       round: 3,
-      findings: [
-        {
-          severity: 'P3',
-          dimension: 'style',
-          title: 'Minor naming preference on untouched helper',
-          primary_location: 'src/untouched.ts:1',
-          owned_files: ['src/untouched.ts'],
-        },
-      ],
-    }, null, 2));
+      findings: [{ severity: 'P3', dimension: 'style', title: 'Minor naming preference on untouched helper', primary_location: 'src/untouched.ts:1', owned_files: ['src/untouched.ts'] }],
+    }));
     assert.equal(runAuditCli(['record', '--round', '3', '--input', 'r3-findings.json'], { cwd: root, silent: true }), 0);
 
     ledger = loadAuditLedger(root);
@@ -383,5 +343,46 @@ test('oscillation circuit-breaker halts with HALTED_OSCILLATION when reopen_coun
 
     // Unknown flag returns EXIT_USAGE (2)
     assert.equal(runAuditCli(['status', '--unknown-flag'], { cwd: root, silent: true }), 2);
+  });
+});
+
+test('audit-scanners respects .gitignore, max_rounds halts on round === max_rounds, and audit rollback --yes restores pre_round_sha', () => {
+  withTempWorkspace((root) => {
+    spawnSync('git', ['init'], { cwd: root, windowsHide: true });
+    spawnSync('git', ['config', 'user.email', 'test@example.com'], { cwd: root, windowsHide: true });
+    spawnSync('git', ['config', 'user.name', 'Test'], { cwd: root, windowsHide: true });
+
+    write(root, '.gitignore', 'generated/\n*.gen.ts\n');
+    write(root, 'src/keep.ts', 'export const keep = 1;\n');
+    write(root, 'generated/ignored.ts', 'export const ignored: any = 2;\n');
+    write(root, 'src/schema.gen.ts', 'export const gen: any = 3;\n');
+    spawnSync('git', ['add', '.gitignore', 'src/keep.ts'], { cwd: root, windowsHide: true });
+    spawnSync('git', ['commit', '-m', 'initial-clean'], { cwd: root, windowsHide: true });
+    const headSha = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8', windowsHide: true }).stdout.trim();
+
+    // 1. .gitignore respected in walkProjectSourceFiles & runAuditStaticScan
+    assert.deepEqual(walkProjectSourceFiles(root), ['src/keep.ts']);
+    assert.deepEqual(walkProjectSourceFiles(root, { useGitIgnore: false }), ['generated/ignored.ts', 'src/keep.ts', 'src/schema.gen.ts']);
+
+    // 2. Init audit with max_rounds=4 records pre_round_sha & checkpoint ref
+    assert.equal(runAuditCli(['init', '--name', 'GitAudit', '--max-rounds', '4'], { cwd: root, silent: true }), 0);
+    let ledger = loadAuditLedger(root);
+    assert.equal(ledger.pre_round_sha, headSha);
+    assert.equal(ledger.baseline_metrics.scanned_files, 1);
+
+    // 3. Record Round 1 & approve -> mutate src/keep.ts -> rollback without --yes fails (2), with --yes restores src/keep.ts!
+    write(root, 'r1.json', JSON.stringify({ round: 1, findings: [{ severity: 'P1', dimension: 'logic', title: 'Fix keep', primary_location: 'src/keep.ts:1', owned_files: ['src/keep.ts'] }] }));
+    assert.equal(runAuditCli(['record', '--round', '1', '--input', 'r1.json'], { cwd: root, silent: true }), 0);
+    assert.equal(runAuditCli(['approve', '--round', '1'], { cwd: root, silent: true }), 0);
+    write(root, 'src/keep.ts', 'export const keep = 999; // broken fix\n');
+
+    assert.equal(runAuditCli(['rollback', '--round', '1'], { cwd: root, silent: true }), 2);
+    assert.equal(runAuditCli(['rollback', '--round', '1', '--yes'], { cwd: root, silent: true }), 0);
+    assert.equal(fs.readFileSync(path.join(root, 'src', 'keep.ts'), 'utf8'), 'export const keep = 1;\n');
+
+    // 4. Off-by-one fix: round === max_rounds (4) with open blockers halts with HALTED_OSCILLATION instead of allowing round 5
+    ledger = loadAuditLedger(root);
+    recordRoundFindings(ledger, { round: 4, findings: [{ severity: 'P1', dimension: 'sec', title: 'Late blocker on R4', primary_location: 'src/keep.ts:1' }] });
+    assert.equal(ledger.state, 'HALTED_OSCILLATION');
   });
 });

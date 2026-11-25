@@ -31,7 +31,9 @@ const NAME_COLUMN = 34;
 const REQUIRED_PLATFORM_ASSETS = [
   'platforms/antigravity/GEMINI.md',
   'platforms/antigravity/AntigravityGlobal.agent.md',
+  'platforms/antigravity/plugin.json',
   'platforms/antigravity/hooks/validate-tool-call.mjs',
+  'platforms/antigravity/hooks/stop-quality-gate.mjs',
   'platforms/claude/CLAUDE.md',
   'platforms/codex/CODEX.md',
   'platforms/codex/config.toml',
@@ -88,7 +90,7 @@ function checkRepoIndex(repoRoot, minSkills) {
   const notes = report.files
     .filter((f) => f.declaredCount !== null && f.declaredCount !== f.entries)
     .map((f) => `${f.file} skill_count ${f.declaredCount}≠${f.entries}`);
-  const fixHint = needsRebuild ? ' — run `node cli/doctor.js --rebuild-index`' : '';
+  const fixHint = needsRebuild ? ' — run `boomopen doctor --rebuild-index`' : '';
   const summary = `${payload.totalSkills} skills (${report.entryCount} entries, ${report.duplicates.length} multi-domain)`;
   return {
     name,

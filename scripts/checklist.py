@@ -32,7 +32,7 @@ from pathlib import Path
 sys.dont_write_bytecode = True  # keep the installed kit free of __pycache__
 
 from kit_checks import (  # noqa: E402
-    EXIT_USAGE, TARGET_URL, CheckSpec, is_valid_url, run_check, summarize,
+    EXIT_USAGE, TARGET_URL, CheckSpec, has_skills_library, is_valid_url, run_check, summarize,
 )
 from kit_console import force_utf8_output, print_error, print_header  # noqa: E402
 
@@ -90,6 +90,8 @@ def main() -> None:
     print_header("🚀 BOOMOPEN WORKFLOW KIT - MASTER CHECKLIST")
     print(f"Project: {project_path}")
     print(f"URL: {args.url if args.url else 'Not provided (performance checks skipped)'}")
+    if not has_skills_library():
+        print("Vault (skills_library): Not bundled (optional library checks will be skipped)")
 
     results = []
     print_header("📋 CORE CHECKS")

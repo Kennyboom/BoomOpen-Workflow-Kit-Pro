@@ -2,8 +2,8 @@
 
 /**
  * Per-platform diagnostics for the copies the installer wrote into the user's home:
- * entry files (kit-owned / kit block present), the framework folder, and the skills vault.
- * Layout mirrors cli/install.js TOOLS, but is computed from `homeDir` so tests can sandbox it.
+ * entry files (kit-owned / kit block present), the framework folder, and the skills vault
+ * (including shared ~/.agents/skills_library junctions and Antigravity --as-plugin bundles).
  */
 
 const fs = require('node:fs');
@@ -21,14 +21,18 @@ const {
   CODEX_MARKER_END,
   isKitOwnedText,
 } = require('./markers.js');
-const { HOOK_SCRIPT_NAME, isClaudeHookRegistered, isAntigravityHookRegistered } = require('./hook-registration.js');
+const {
+  HOOK_SCRIPT_NAME,
+  isClaudeHookRegistered,
+  isAntigravityHookRegistered,
+  isCursorHookRegistered,
+} = require('./hook-registration.js');
 const { loadManifest } = require('./manifest.js');
 const { getVSCodePromptsFolder } = require('./platform-paths.js');
 const { FRAMEWORK_FILE_LIST } = require('./tool-config.js');
 
 const MAX_ENTRY_LINES = 350;
 const FRAMEWORK_DIR = 'boomopen-workflow-kit';
-// Framework folders that must exist and hold every runtime file shipped by the kit.
 const REQUIRED_DIRS = ['rules', 'commands', 'agents', 'cli', 'scripts'];
 const MAX_NAMES_SHOWN = 3;
 
@@ -42,18 +46,45 @@ function getPlatformLayouts(homeDir, options = {}) {
   const vsCodePrompts = getVSCodePromptsFolder(homeDir, env, options.platform || process.platform);
   const home = (...parts) => path.join(homeDir, ...parts);
   const kitFile = (filePath) => ({ path: filePath, kind: 'kit-file' });
-  const layout = (name, skillsDir, entrypoints) => ({
+  const layout = (name, skillsDir, entrypoints, libraryOverride = null) => ({
     name,
     skillsDir,
-    libraryDir: `${skillsDir}_library`,
+    libraryDir: libraryOverride || `${skillsDir}_library`,
     frameworkPath: path.join(skillsDir, FRAMEWORK_DIR),
     entrypoints,
   });
-  return {
-    antigravity: layout('Antigravity', home('.gemini', 'config', 'skills'), [
+
+  const pluginDir = home('.gemini', 'config', 'plugins', FRAMEWORK_DIR);
+  const standardAgSkills = home('.gemini', 'config', 'skills');
+  const agPluginActive =
+    fs.existsSync(path.join(pluginDir, 'plugin.json')) &&
+    !fs.existsSync(path.join(standardAgSkills, FRAMEWORK_DIR));
+
+  const antigravityLayout = agPluginActive
+    ? {
+      ...layout(
+        'Antigravity',
+        path.join(pluginDir, 'skills'),
+        [kitFile(path.join(pluginDir, 'rules', 'AGENTS.md'))],
+        home('.gemini', 'config', 'skills_library')
+      ),
+      pluginDir,
+    }
+    : layout('Antigravity', standardAgSkills, [
       { path: home('.gemini', 'GEMINI.md'), kind: 'gemini-block' },
       kitFile(home('.gemini', 'agents', 'AntigravityGlobal.agent.md')),
-    ]),
+    ]);
+
+  const copilotEntries = [
+    kitFile(path.join(vsCodePrompts, 'boomopen-workflow-kit.agent.md')),
+    kitFile(home('.copilot', 'COPILOT.md')),
+  ];
+  if (fs.existsSync(home('.copilot', 'copilot-instructions.md'))) {
+    copilotEntries.push(kitFile(home('.copilot', 'copilot-instructions.md')));
+  }
+
+  return {
+    antigravity: antigravityLayout,
     claude: layout('Claude Code', home('.claude', 'skills'), [kitFile(home('.claude', 'CLAUDE.md'))]),
     codex: layout('Codex', home('.codex', 'skills'), [
       kitFile(home('.codex', 'AGENTS.md')),
@@ -63,10 +94,7 @@ function getPlatformLayouts(homeDir, options = {}) {
       kitFile(home('.cursor', 'rules', 'boomopen-workflow-kit.mdc')),
       kitFile(home('.cursor', 'CURSOR.md')),
     ]),
-    copilot: layout('GitHub Copilot', home('.copilot', 'skills'), [
-      kitFile(path.join(vsCodePrompts, 'boomopen-workflow-kit.agent.md')),
-      kitFile(home('.copilot', 'COPILOT.md')),
-    ]),
+    copilot: layout('GitHub Copilot', home('.copilot', 'skills'), copilotEntries),
   };
 }
 
@@ -81,7 +109,6 @@ function listNames(names) {
   return names.length > MAX_NAMES_SHOWN ? `${shown} +${names.length - MAX_NAMES_SHOWN} more` : shown;
 }
 
-/** Text between the first start/end markers (exclusive), or null. */
 function extractMarkedBlock(text, start, end) {
   const from = text.indexOf(start);
   if (from === -1) return null;
@@ -89,16 +116,12 @@ function extractMarkedBlock(text, start, end) {
   return to === -1 ? null : text.slice(from + start.length, to);
 }
 
-/**
- * @returns {string|null} problem description, or null when the entry file is healthy
- */
 function inspectEntrypoint(entry) {
   if (!fs.existsSync(entry.path)) return 'missing';
   const text = readTextFile(entry.path);
   if (entry.kind === 'codex-block') {
     return extractMarkedBlock(text, CODEX_MARKER_START, CODEX_MARKER_END) === null ? 'no kit block' : null;
   }
-  // Merged files keep the user's own text outside the kit block: only the block counts.
   const block = extractMarkedBlock(text, GEMINI_MARKER_START, GEMINI_MARKER_END);
   let kitText = block;
   if (entry.kind !== 'gemini-block' && block === null) kitText = isKitOwnedText(text) ? text : null;
@@ -153,7 +176,6 @@ function readPackageVersion(dir) {
   }
 }
 
-/** Recursive runtime files of a kit copy (rules, commands/_ref, agents/teams, cli, scripts) the framework must hold. */
 function missingAgainstReference(fw, referenceRoot) {
   const missing = [];
   for (const dir of REQUIRED_DIRS) {
@@ -165,7 +187,6 @@ function missingAgainstReference(fw, referenceRoot) {
   return missing;
 }
 
-/** Files recorded in <framework>/install-files.json at install time, or null without a list. */
 function readFileList(fw) {
   let files;
   try {
@@ -177,10 +198,6 @@ function readFileList(fw) {
   return Array.isArray(files) ? files.filter((rel) => typeof rel === 'string') : null;
 }
 
-/**
- * A folder is required when the reference kit (or the recorded file list) has files in it; when the
- * framework checks itself without a list, every REQUIRED_DIRS folder is.
- */
 function requiredDirs(referenceRoot, fileList) {
   return REQUIRED_DIRS.filter((dir) => {
     if (referenceRoot) return hasFiles(path.join(referenceRoot, dir));
@@ -189,11 +206,6 @@ function requiredDirs(referenceRoot, fileList) {
   });
 }
 
-/**
- * @param {object} layout
- * @param {string|null} referenceRoot kit copy to compare with; null = the framework checks itself
- *   (doctor run from this installed copy), so the file list recorded at install time is used
- */
 function checkFramework(layout, referenceRoot) {
   const fw = layout.frameworkPath;
   const name = `${layout.name}: framework files`;
@@ -224,10 +236,6 @@ function checkFramework(layout, referenceRoot) {
   };
 }
 
-/**
- * The kit copy the framework is compared with: the checkout, or the running CLI's own kit folder
- * when that is a different, complete copy. null when doctor runs from the framework being checked.
- */
 function referenceRootFor(layout, options) {
   if (options.isSourceCheckout) return options.repoRoot;
   if (!options.repoRoot) return null;
@@ -236,7 +244,6 @@ function referenceRootFor(layout, options) {
   return REQUIRED_DIRS.every((dir) => hasFiles(path.join(root, dir))) ? root : null;
 }
 
-/** An entry file that still carries kit content (a kit block, or a whole-file kit copy). */
 function hasKitEntry(entry) {
   if (!fs.existsSync(entry.path)) return false;
   const text = readTextFile(entry.path);
@@ -245,22 +252,17 @@ function hasKitEntry(entry) {
   return entry.kind === 'kit-file' && isKitOwnedText(text);
 }
 
-/**
- * Same rule as `uninstall`: a platform is installed when its framework folder, its install manifest
- * or kit content in an entry file exists. A partial install is therefore checked (and reported),
- * never listed as "not installed".
- */
 function isPlatformPresent(key, layout, homeDir) {
   if (fs.existsSync(layout.frameworkPath)) return true;
+  if (layout.pluginDir && fs.existsSync(path.join(layout.pluginDir, 'plugin.json'))) return true;
   try {
     if (loadManifest(homeDir, key) !== null) return true;
   } catch {
-    return true; // an unreadable manifest is reported by the install-state check
+    return true;
   }
   return layout.entrypoints.some(hasKitEntry);
 }
 
-/** Where an index entry path ("skills/x/SKILL.md" or "skills_library/x/SKILL.md") is installed. */
 function installedSkillPath(layout, entryPath) {
   const [root, ...rest] = String(entryPath).split('/');
   const base = root === 'skills_library' ? layout.libraryDir : layout.skillsDir;
@@ -271,10 +273,6 @@ function sameIndex(a, b) {
   return JSON.stringify(a.skills) === JSON.stringify(b.skills);
 }
 
-/**
- * Every skill in the installed index must exist in this platform's vault. Stale vault folders and
- * an install older than the kit source are reported but do not fail the check.
- */
 function checkVault(layout, repoIndex, homeDir) {
   const name = `${layout.name}: skills vault`;
   const { data, error } = readCompactIndex(path.join(layout.frameworkPath, 'matrix-skills', INDEX_FILE_NAME));
@@ -296,10 +294,18 @@ function checkVault(layout, repoIndex, homeDir) {
   return { name, passed: missing.length === 0, warning: notes.length > 0, detail };
 }
 
-/**
- * Informational: install manifest present (safe uninstall) and, for Claude Code, whether the opt-in
- * guard hook is registered. Never fails the run.
- */
+function checkHookStatus(key, layout, homeDir) {
+  if (key === 'claude') return isClaudeHookRegistered(path.join(homeDir, '.claude', 'settings.json'));
+  if (key === 'cursor') return isCursorHookRegistered(path.join(homeDir, '.cursor', 'hooks.json'));
+  if (key === 'antigravity') {
+    const hookFile = layout.pluginDir
+      ? path.join(layout.pluginDir, 'hooks.json')
+      : path.join(homeDir, '.gemini', 'config', 'hooks.json');
+    return isAntigravityHookRegistered(hookFile);
+  }
+  return null;
+}
+
 function checkInstallState(key, layout, homeDir) {
   const notes = [];
   let hasManifest = false;
@@ -312,12 +318,10 @@ function checkInstallState(key, layout, homeDir) {
     notes.push('no install manifest (installed by an older release; reinstall so uninstall and legacy skill cleanup are exact)');
   }
   let hookNote = '';
-  if (key === 'claude' || key === 'antigravity') {
+  if (key === 'claude' || key === 'antigravity' || key === 'cursor') {
     let registered = false;
     try {
-      registered = key === 'claude'
-        ? isClaudeHookRegistered(path.join(homeDir, '.claude', 'settings.json'))
-        : isAntigravityHookRegistered(path.join(homeDir, '.gemini', 'config', 'hooks.json'));
+      registered = Boolean(checkHookStatus(key, layout, homeDir));
     } catch {
       registered = false;
     }
@@ -333,12 +337,6 @@ function checkInstallState(key, layout, homeDir) {
   };
 }
 
-/**
- * Doctor checks for every installed platform (or only `options.platforms`).
- * @param {{ homeDir: string, repoRoot: string, env?: NodeJS.ProcessEnv, platform?: NodeJS.Platform,
- *           platforms?: string[], isSourceCheckout?: boolean }} options
- * @returns {{ installed: string[], checks: Array<object> }}
- */
 function checkInstalledPlatforms(options) {
   const layouts = getPlatformLayouts(options.homeDir, options);
   const wanted = options.platforms && options.platforms.length ? options.platforms : Object.keys(layouts);
@@ -348,7 +346,7 @@ function checkInstalledPlatforms(options) {
     try {
       repoIndex = buildCompactIndexData(options.repoRoot).payload;
     } catch {
-      repoIndex = null; // The repository index check reports this problem.
+      repoIndex = null;
     }
   }
   const checks = [];

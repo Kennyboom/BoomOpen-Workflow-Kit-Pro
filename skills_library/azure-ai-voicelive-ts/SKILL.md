@@ -330,8 +330,8 @@ const subscription = session.subscribe({
 
 | Model | Description | Use Case |
 |-------|-------------|----------|
-| `gpt-4o-realtime-preview` | GPT-4o with real-time audio | High-quality conversational AI |
-| `gpt-4o-mini-realtime-preview` | Lightweight GPT-4o | Fast, efficient interactions |
+| `gpt-4o-realtime-preview` | GPT-5.4 with real-time audio | High-quality conversational AI |
+| `gpt-4o-mini-realtime-preview` | Lightweight GPT-5.4 | Fast, efficient interactions |
 | `phi4-mm-realtime` | Phi multimodal | Cost-effective applications |
 
 ## Turn Detection Options

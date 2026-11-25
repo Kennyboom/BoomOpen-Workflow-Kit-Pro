@@ -1,0 +1,14 @@
+{
+  "name": "boomopen-workflow-kit",
+  "displayName": "BoomOpen Workflow Kit Pro",
+  "version": "5.5.0",
+  "description": "Multi-agent orchestration, Pragmatic 2-Tier coding guardrails, contract-first planning, and 1,462 indexed skills for Antigravity.",
+  "author": "BoomOpen Labs",
+  "homepage": "https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro#readme",
+  "repository": "https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git",
+  "suggestedPrompts": [
+    "/plan:hard Architect a contract-first multi-wave implementation plan",
+    "/cook:team Build a feature end-to-end with parallel specialists and adversarial review",
+    "/audit Run a stateful multi-round quality and security audit across the project"
+  ]
+}

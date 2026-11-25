@@ -3,4 +3,4 @@ interface:
   short_description: "⚡⚡⚡ Full Fix — Bidirectional DEBUG Fast-Forward, Elastic Hypothesis Sharding, Fail-First TDD & Sharded Engineer Verification"
   brand_color: "#EF4444"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

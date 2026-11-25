@@ -1,6 +1,6 @@
 # 📚 REFERENCE
 
-> **VERSION**: 5.5 — Smart-Hybrid Edition | **PURPOSE**: Fast lookup tables for 17-Language Intent-to-Workflow Routing, Research/Design/Plan Validators (`boomopen research|design|plan`), 5-Stage Cook/Code + Wave 2.5 Reconcile Engine (`boomopen cook|reconcile`), Stateful Multi-Round Audit (`boomopen audit`), Multi-Session Autopilot Ledger, Cross-Engine Conductor (`boomopen conduct`), 4-Tier Dynamic Elastic Swarm & Cross-Platform Tools (all 5 platforms)
+> **VERSION**: 5.5 — Frontier-Guardrails & Smart-Hybrid Edition | **PURPOSE**: Fast lookup tables for `36` Base Commands (`93` files = `87` workflows + `6` `_ref/`), Built-In Presets (`frontier-guardrails` default, `carbon-guardrails` alias, `smart-hybrid`, `solo-fast`, `deep-architect`, `adversarial-team`), 17-Language Routing, 5-Stage Cook/Code + Wave 2.5 Reconcile (`boomopen cook|reconcile`), 5-Layer Phase Ratchet (`boomopen ledger|audit` + `rollback`), Cross-Engine Conductor (`boomopen conduct`), Antigravity `run_workflow` Templates, & Cross-Platform Tools (all 5 platforms)
 
 ---
 
@@ -61,6 +61,8 @@ Commands, agents and rules are written in the **Antigravity tool vocabulary** (t
 |----------------------------|-------------|--------------|--------------------------|--------|
 | `invoke_subagent(TypeName: "self", Role: "role#shard", Prompt)` | `Task` / Agent tool, `subagent_type` = agent name from `~/.claude/agents/` (or `general-purpose`) | `spawn_agent` with a role from `~/.codex/config.toml` (`[agents.<role>]`) | `runSubagent` | Built-in subagent / Task tool when available; otherwise TIER 2 EMBODY |
 | `TypeName: "research"` (0-artifact ad-hoc Q&A only) | `subagent_type: "Explore"` | `spawn_agent` role `scouter` with a read-only prompt | `runSubagent` with read-only instructions | Read-only subagent prompt |
+| `TypeName: "browser"` (`Model: "flash"`, live visual UI/DOM E2E) | Playwright MCP / `Bash` (`npx playwright test`) | Playwright MCP / shell (`npx playwright test`) | Playwright MCP / `runInTerminal` | Playwright MCP / terminal |
+| `run_workflow(ScriptPath: ".../workflows/*.py")` | Parallel `Task` fan-out | Parallel `spawn_agent` fan-out | Parallel `runSubagent` fan-out | Parallel subagent / TIER 2 |
 | `send_message(Recipient: conversationId)` (Scoped Warm Reuse `role#shard`) | `SendMessage` to the running agent when available; otherwise spawn again with the full 5-field packet | `send_input` + `wait` | Not available → call `runSubagent` again with the full packet | Not available → spawn again with the full packet |
 | `Model: "inherit"` / `"pro"` | Omit `model` (inherits the session model) | Omit (role TOMLs inherit your configured model) | Omit (uses the selected chat model) | Omit |
 | `Model: "flash"` (trivial chores only) | `model: "haiku"` | Omit | Omit | Omit |
@@ -76,27 +78,28 @@ Commands, agents and rules are written in the **Antigravity tool vocabulary** (t
 
 ---
 
-## COMMAND TABLE & STANDALONE COMMANDS (Triggers Mode B)
+## COMMAND TABLE & STANDALONE COMMANDS (`36` Base Commands / `93` Files = `87` Workflows + `6` `_ref/`)
 
 | Command | Router | Variants | Standalone | File | Purpose |
 |---------|--------|----------|------------|------|---------|
 | `/cook` | `cook.md` | `fast`, `hard`, `team` | `/architect` | `architect.md` | C4, ADR, schema, API contracts (no code) |
 | `/fix` | `fix.md` | `fast`, `hard`, `team` | `/auto` | `auto.md` | Autonomous end-to-end workflow execution |
 | `/plan` | `plan.md` | `fast`, `hard`, `team` | `/deep-audit` | `deep-audit.md` | Logic audit of documentation before coding |
-| `/debug` | `debug.md` | `fast`, `hard`, `team` | `/init` | `init.md` | Bootstrap a new project |
-| `/test` | `test.md` | `fast`, `hard`, `team` | `/next` | `next.md` | Detect state & recommend next workflow |
-| `/review` | `review.md` | `fast`, `hard`, `team` | `/performance` | `performance.md` | Performance budgets, profiling & tuning |
-| `/docs` | `docs.md` | `core`, `business`, `audit` | `/preview` | `preview.md` | Start / stop / check local preview server |
-| `/design` | `design.md` | `fast`, `hard`, `team` | `/refactor` | `refactor.md` | Behavior-preserving refactoring |
-| `/deploy` | `deploy.md` | `check`, `preview`, `production`, `rollback` | `/rollback` | `rollback.md` | Emergency recovery of code/deploy/DB |
-| `/report` | `report.md` | `fast`, `hard`, `team` | `/security-audit` | `security-audit.md` | OWASP / STRIDE security audit & report |
-| `/research` | `research.md` | `fast`, `hard`, `team` | `/status` | `status.md` | Agent and project status board |
-| `/brainstorm` | `brainstorm.md` | `fast`, `hard`, `team` | `/ui-ux-pro-max` | `ui-ux-pro-max.md` | Design-system generation & UI/UX specs |
-| `/ask` | `ask.md` | `fast`, `hard` | `/orchestrate` | `orchestrate.md` | Multi-agent domain & shard orchestration |
-| `/code` | `code.md` | `fast`, `hard`, `team` | `/save`, `/recap` | `save.md`, `recap.md` | Save / restore session state & memory |
-| `/autopilot` | `autopilot.md` | `init`, `run`, `audit` | `/settings` | `settings.md` | Unified Settings & Control Center |
-| `/audit` | `audit.md` | `run`, `fix`, `auto` | — | — | Multi-round whole-project audit (`boomopen audit`) |
-| `/conduct` | `conduct.md` | `council`, `pipeline` | — | — | Cross-Engine Conductor (`boomopen conduct`) |
+| `/debug` | `debug.md` | `fast`, `hard`, `team` | `/init` | `init.md` | Bootstrap a new greenfield project |
+| `/test` | `test.md` | `fast`, `hard`, `team` | `/onboard` | `onboard.md` | 60s brownfield architecture map (`ARCHITECTURE-MAP.md`) |
+| `/review` | `review.md` | `fast`, `hard`, `team` | `/next` | `next.md` | Detect state & recommend next workflow |
+| `/docs` | `docs.md` | `core`, `business`, `audit` | `/performance` | `performance.md` | Performance budgets, profiling & tuning |
+| `/design` | `design.md` | `fast`, `hard`, `team` | `/preview` | `preview.md` | Start / stop / check local preview server |
+| `/deploy` | `deploy.md` | `check`, `preview`, `production`, `rollback` | `/refactor` | `refactor.md` | Behavior-preserving refactoring |
+| `/report` | `report.md` | `fast`, `hard`, `team` | `/rollback` | `rollback.md` | Emergency recovery of code/deploy/DB |
+| `/research` | `research.md` | `fast`, `hard`, `team` | `/security-audit` | `security-audit.md` | OWASP / STRIDE security audit & report |
+| `/brainstorm` | `brainstorm.md` | `fast`, `hard`, `team` | `/status` | `status.md` | Agent and project status board |
+| `/ask` | `ask.md` | `fast`, `hard` | `/ui-ux-pro-max` | `ui-ux-pro-max.md` | Design-system generation & UI/UX specs |
+| `/code` | `code.md` | `fast`, `hard`, `team` | `/orchestrate` | `orchestrate.md` | Multi-agent domain & `run_workflow` orchestration |
+| `/autopilot` | `autopilot.md` | `init`, `run`, `audit` | `/save`, `/recap` | `save.md`, `recap.md` | Save / restore session state & memory |
+| `/audit` | `audit.md` | `run`, `fix`, `auto` | `/settings` | `settings.md` | Unified Settings & Presets (`frontier-guardrails` default) |
+| `/conduct` | `conduct.md` | `council`, `pipeline` | `/release` | `release.md` | Semantic release, `CHANGELOG.md`, parity gates & tag |
+| `/pr` | `pr.md` | `review` (`pr-review.md`) | — | — | Pre-PR quality/reconcile gate, `gh pr create` & PR review |
 
 > On Claude Code, `/init`, `/review` and `/status` are also built-in commands; if the built-in one runs, ask for the kit workflow by name (e.g. "run the BoomOpen /review:hard workflow") or use a variant such as `/review:hard`.
 
@@ -126,12 +129,14 @@ design_cli_validator:   boomopen design <validate|contract> <design.md> [--json]
 plan_cli_validator:     boomopen plan <validate|compile> <plan.md> [--sync-ledger]  # 5-Gate static plan validator (< 50ms)
 cook_code_cli_engine:   boomopen cook <state|packets|verify-wave|preflight|amend-plan>  # 5-Stage Fast-Forward state, 5-Field Packet emitter, 3-Wave lock gate & delta wave amender
 reconcile_cli_engine:   boomopen reconcile [dir] [--plan <p>] [--specs <s1,s2>] [--strict] # Wave 2.5 REC-G1..G4 island shard, route parity, [SC-*] & .env.example parity scanner
-audit_cli_ledger:       ./.boomopen/audit-ledger.json + ./.boomopen/AUDIT-PROGRESS.md (boomopen audit <init|slice|record|approve|verify-fix|status>)
+active_presets:         frontier-guardrails (default) | carbon-guardrails (Antigravity alias) | smart-hybrid | solo-fast | deep-architect | adversarial-team
+antigravity_workflows:  platforms/antigravity/workflows/{audit_fanout,review_fanout,research_fanout}.py # Executable Antigravity run_workflow templates
+audit_cli_ledger:       ./.boomopen/audit-ledger.json + ./.boomopen/AUDIT-PROGRESS.md (boomopen audit <init|slice|record|approve|verify-fix|rollback|status>)
 strict_quality_gate:    boomopen check <dir> --strict-phase --no-stubs              # Pragmatic 2-Tier quality, line limits & anti-stub/anti-skip verifier
-autopilot_ledger:       ./.boomopen/project-ledger.json + ./.boomopen/ROADMAP-PROGRESS.md (boomopen ledger <init|from-plan|validate|status|next|verify|audit>)
+autopilot_ledger:       ./.boomopen/project-ledger.json + ./.boomopen/ROADMAP-PROGRESS.md (boomopen ledger <init|from-plan|validate|status|next|verify|rollback|audit>)
 conductor_runs:         ./.boomopen/conductor/runs/<runId>-COUNCIL-SYNTHESIS.md
 ```
 
 - **L1–L3**: Zero-Latency Entry; 100% Requirement, 17-Language NL Intent & `.boomopen/project-ledger.json` Integrity; 4-Tier Elastic Swarm Gate ($N_{\text{agents}}$, `≤ 3–4` files/shard).
 - **L4–L6**: Quality-First `Model: "inherit"` (never `flash_lite`); 3-Wave Contract-First (`SHARED_CONTRACT` + disjoint `OWNED_FILES`, gated by `boomopen research|design|plan validate`); Language Compliance.
-- **L7–L10**: 5-Stage Fast-Forward & Approved-Plan Direct Dispatch (`boomopen cook state` / `boomopen cook packets` without re-planning); Scoped Warm Reuse (`role#shard -> conversationId`); 4-Layer Phase Quality Ratchet (`boomopen cook verify-wave` + `boomopen check --strict-phase --no-stubs` + `boomopen ledger verify` + `boomopen conduct`); Clean Git Tree.
+- **L7–L10**: 5-Stage Fast-Forward & Approved-Plan Direct Dispatch (`boomopen cook state` / `boomopen cook packets` without re-planning); Scoped Warm Reuse (`role#shard -> conversationId`); **5-Layer Phase Quality Ratchet** (`G1 check --strict-phase --no-stubs` -> `G2 test/build` -> `G3 Wave 2.5 reconcile` -> `G4 adversarial review` -> **`G5 ledger verify --reconcile --strict-locks` RUNS LAST**, plus `ledger/audit rollback`); Clean Git Tree.

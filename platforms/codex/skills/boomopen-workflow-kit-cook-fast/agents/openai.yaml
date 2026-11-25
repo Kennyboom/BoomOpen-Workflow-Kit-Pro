@@ -3,4 +3,4 @@ interface:
   short_description: "⚡ Quick Feature — Rapid feature implementation with Turn-1 Fast-Forward, Mode A/B Gate & Strict CLI Verification"
   brand_color: "#F59E0B"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

@@ -3,4 +3,4 @@ interface:
   short_description: "⚡⚡⚡ Research Answer — Elastic Turn-1 Parallel Sharding (scouter#1..k + researcher#1..k) with 3-Wave Evidence-Gated Synthesis"
   brand_color: "#06B6D4"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

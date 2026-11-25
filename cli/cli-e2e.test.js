@@ -12,6 +12,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const { parseSubcommandArgs, splitCommaOption } = require('./cli-args.js');
 const {
   REPO_ROOT,
   tempDir,
@@ -201,5 +202,25 @@ test('install codex + claude keeps config.toml valid and user settings intact; u
     assert.deepEqual(leftovers.slice(0, 10), [], 'uninstall leaves no kit framework or vault files behind');
   } finally {
     removeDir(home);
+  }
+});
+
+test('parseSubcommandArgs comma-joins repeatable list flags while scalar flags use last-value-wins', () => {
+  const listFlags = ['docs', 'owned-files', 'read-only-files', 'read-only', 'engines', 'checks', 'tags', 'files', 'targets', 'domains', 'skills'];
+  const scalarFlags = ['out', 'plan', 'round', 'prompt', 'phase', 'role', 'engine', 'preset', 'scope', 'dir', 'cwd', 'max-rounds', 'passed-tests'];
+  const valueFlags = {};
+  for (const name of [...listFlags, ...scalarFlags]) valueFlags[`--${name}`] = name;
+
+  const argv = [];
+  for (const name of listFlags) argv.push(`--${name}`, `${name}-1`, `--${name}`, `${name}-2`);
+  for (const name of scalarFlags) argv.push(`--${name}`, `${name}-old`, `--${name}`, `${name}-new`);
+
+  const parsed = parseSubcommandArgs(argv, { valueFlags });
+  assert.equal(parsed.error, null);
+  for (const name of listFlags) {
+    assert.deepEqual(splitCommaOption(parsed.flags[name]), [`${name}-1`, `${name}-2`], `Expected list flag --${name} to comma-join`);
+  }
+  for (const name of scalarFlags) {
+    assert.equal(parsed.flags[name], `${name}-new`, `Expected scalar flag --${name} to use last-value-wins`);
   }
 });

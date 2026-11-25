@@ -32,6 +32,12 @@ Do **NOT** re-read all project documentation, re-spawn a middleman re-sharding a
    - **Shared Contract**: Read `.boomopen/contracts/SHARED_CONTRACT.md`.
    - **Baseline Passed Tests (`baseline_passed_tests`)**: Minimum passing test floor inherited from `Phase 1 .. Phase K-1`.
    - **Prior Phase Test Lock (`read_only_prior_tests`)**: Every test file from `Phase 1 .. Phase K-1` is **strictly locked in `READ_ONLY_FILES`** so `Phase K` shards can NEVER delete, weaken, or `.skip` prior tests!
+3. **Automatic Pre-Phase Git Checkpoint & Deterministic Rollback Safety**:
+   - Before dispatching `Phase K` executor shards on a Git repository, ensure a clean pre-phase checkpoint is recorded so partial or failed phase mutations never strand the repo.
+   - If `Phase K` encounters an unrecoverable mid-wave conflict, corrupted state, or user-requested abort before Gate 5 completes, unwind cleanly to the pre-phase checkpoint and restore `.boomopen/project-ledger.json` cursor state via:
+     ```bash
+     node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger rollback [--phase <Phase_K_ID>] --yes
+     ```
 
 ---
 

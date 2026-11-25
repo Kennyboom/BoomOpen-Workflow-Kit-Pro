@@ -1,88 +1,86 @@
 ---
 name: electron-desktop
-description: Electron desktop app template principles. Cross-platform, React, TypeScript.
+description: Desktop application template principles (2026 Edition). Tauri v2 (primary) or Electron 35+, React 19, TypeScript, Tailwind CSS v4.
 ---
 
-# Electron Desktop App Template
+# Desktop App Template — Tauri v2 & Electron 35+ (2026 Edition)
+
+> **2026 Architecture Choice**: Default to **Tauri v2** (~5–10 MB installers, Rust memory-safe core, capability-scoped ACLs, mobile/desktop parity). Choose **Electron 35+** only when bundling Node.js native addons or requiring identical Chromium rendering across OS versions.
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|------------|
-| Framework | Electron 28+ |
-| UI | React 18 |
-| Language | TypeScript |
-| Styling | Tailwind CSS |
-| Bundler | Vite + electron-builder |
-| IPC | Type-safe communication |
+| Component | Primary (Recommended) | Alternative (Chromium-Bundled) |
+|-----------|-----------------------|--------------------------------|
+| Desktop Shell | **Tauri v2** (Rust core + OS WebView) | **Electron 35+** (Node 22+ + Chromium) |
+| UI Runtime | **React 19** + TypeScript 5.7+ | **React 19** + TypeScript 5.7+ |
+| Styling | Tailwind CSS v4 (`@import "tailwindcss";`) | Tailwind CSS v4 (`@import "tailwindcss";`) |
+| Bundler | Vite 6+ + `@tauri-apps/cli` | `electron-vite` + `electron-builder` |
+| Native Bridge | `#[tauri::command]` + `invoke<T>()` + Capabilities ACL | `contextBridge.exposeInMainWorld` + typed `ipcMain.handle` |
 
 ---
 
-## Directory Structure
+## Directory Structure (Tauri v2 Primary)
 
 ```
 project-name/
-├── electron/
-│   ├── main.ts          # Main process
-│   ├── preload.ts       # Preload script
-│   └── ipc/             # IPC handlers
-├── src/
+├── src/                         # React 19 Frontend
 │   ├── App.tsx
+│   ├── globals.css              # Tailwind v4 `@import "tailwindcss"; @theme { ... }`
 │   ├── components/
-│   │   ├── TitleBar.tsx # Custom title bar
-│   │   └── ...
-│   └── hooks/
-├── public/
+│   │   ├── TitleBar.tsx         # Accessible native/custom window controls
+│   │   └── ui/
+│   └── lib/
+│       └── ipc.ts               # Typed wrappers around `@tauri-apps/api/core` invoke()
+├── src-tauri/                   # Rust Backend & Capability Sandbox
+│   ├── capabilities/
+│   │   └── default.json         # Explicit per-window command & fs scope allowlist
+│   ├── src/
+│   │   ├── lib.rs               # Command registration & plugin init
+│   │   └── main.rs
+│   ├── Cargo.toml
+│   └── tauri.conf.json          # CSP, bundle IDs, updater config
 └── package.json
 ```
 
----
-
-## Process Model
-
-| Process | Role |
-|---------|------|
-| Main | Node.js, system access |
-| Renderer | Chromium, React UI |
-| Preload | Bridge, context isolation |
+*(For **Electron 35+**, replace `src-tauri/` with `electron/{main.ts, preload.ts, ipc/}` enforcing `contextIsolation: true`, `sandbox: true`, and `nodeIntegration: false`.)*
 
 ---
 
-## Key Concepts
+## Security & IPC Guardrails (Mandatory)
 
-| Concept | Purpose |
-|---------|---------|
-| contextBridge | Safe API exposure |
-| ipcMain/ipcRenderer | Process communication |
-| nodeIntegration: false | Security |
-| contextIsolation: true | Security |
+| Boundary | Tauri v2 Rule | Electron 35+ Rule |
+|----------|---------------|-------------------|
+| **Command Surface** | Scope every plugin/command in `src-tauri/capabilities/*.json`; never grant unscoped filesystem or shell access. | Expose narrow domain methods via `contextBridge`; **never** expose raw `ipcRenderer` or `process.env` to the renderer. |
+| **Input Validation** | Deserialize typed Rust structs (`serde`) and canonicalize file paths within app data roots. | Validate every `ipcMain.handle` payload with Zod v4 (`z.strictObject`) and verify `event.senderFrame.url`. |
+| **Navigation & CSP** | Define strict `security.csp` in `tauri.conf.json`. | Intercept `will-navigate` and `setWindowOpenHandler` to block arbitrary external URLs inside privileged windows. |
 
 ---
 
 ## Setup Steps
 
-1. `npm create vite {{name}} -- --template react-ts`
-2. Install: `npm install -D electron electron-builder vite-plugin-electron`
-3. Create electron/ directory
-4. Configure main process
-5. `npm run electron:dev`
+### Option A: Tauri v2 + React 19 (Recommended)
+```bash
+npm create tauri-app@latest {{name}} -- --template react-ts
+cd {{name}}
+npm install -D tailwindcss @tailwindcss/vite
+npm run tauri dev
+```
+
+### Option B: Electron 35+ + React 19 (`electron-vite`)
+```bash
+npm create @quick-start/electron@latest {{name}} -- --template react-ts
+cd {{name}}
+npm install zod
+npm install -D electron@latest tailwindcss @tailwindcss/vite
+npm run dev
+```
 
 ---
 
 ## Build Targets
 
-| Platform | Output |
-|----------|--------|
-| Windows | NSIS, Portable |
-| macOS | DMG, ZIP |
-| Linux | AppImage, DEB |
-
----
-
-## Best Practices
-
-- Use preload script for main/renderer bridge
-- Type-safe IPC with typed handlers
-- Custom title bar for native feel
-- Handle window state (maximize, minimize)
-- Auto-updates with electron-updater
+| Platform | Tauri v2 Output | Electron 35+ Output |
+|----------|-----------------|---------------------|
+| Windows | `.msi`, NSIS `.exe` (WebView2) | NSIS `.exe`, Portable |
+| macOS | Universal `.dmg`, `.app` (Notarized) | Universal `.dmg`, `.zip` |
+| Linux | `.AppImage`, `.deb`, `.rpm` | `.AppImage`, `.deb` |

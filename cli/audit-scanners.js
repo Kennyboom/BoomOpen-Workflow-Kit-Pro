@@ -2,10 +2,11 @@
 
 /**
  * Deterministic Whole-Project Static Audit Scanners (`cli/audit-scanners.js`).
- * Walks 100% of project source files without truncation to discover specification sources,
- * extract vertical cross-layer journeys (`FLOW-01..M`), and detect cross-module hazards.
+ * Walks 100% of non-ignored project source files (respecting `.gitignore` in git repos) without truncation
+ * to discover specification sources, extract vertical journeys (`FLOW-01..M`), and detect cross-module hazards.
  */
 
+const { spawnSync } = require('node:child_process');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -35,7 +36,26 @@ function lineNumberAt(text, index) {
   for (let i = 0; i < index && i < text.length; i++) if (text[i] === '\n') line++;
   return line;
 }
-function walkProjectSourceFiles(cwd) {
+
+function walkProjectSourceFiles(cwd, options = {}) {
+  const root = path.resolve(cwd || process.cwd());
+  if (!fs.existsSync(root)) return [];
+  if (options.useGitIgnore !== false && fs.existsSync(path.join(root, '.git'))) {
+    const res = spawnSync('git', ['-C', root, 'ls-files', '-z', '--cached', '--others', '--exclude-standard'], {
+      encoding: 'utf8', timeout: 15000, maxBuffer: 64 * 1024 * 1024, windowsHide: true,
+    });
+    if (!res.error && res.status === 0) {
+      const matched = [];
+      for (const raw of res.stdout.split('\0').filter(Boolean)) {
+        const rel = raw.replace(/\\/g, '/');
+        if (!CODE_EXTENSIONS.has(path.extname(rel).toLowerCase())) continue;
+        if (toSegments(rel).slice(0, -1).some((seg) => isIgnoredSegment(seg))) continue;
+        const abs = path.join(root, rel);
+        if (fs.existsSync(abs) && fs.statSync(abs).isFile()) matched.push(rel);
+      }
+      return [...new Set(matched)].sort();
+    }
+  }
   const out = [];
   const visit = (dir, prefix) => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -45,10 +65,11 @@ function walkProjectSourceFiles(cwd) {
       else if (entry.isFile() && CODE_EXTENSIONS.has(path.extname(entry.name).toLowerCase())) out.push(rel);
     }
   };
-  if (fs.existsSync(cwd)) visit(cwd, '');
+  visit(root, '');
   return out.sort();
 }
-const normalizeFileList = (cwd, files) => (Array.isArray(files) ? [...new Set(files.map((f) => toPosixRel(cwd, f)).filter(Boolean))].sort() : walkProjectSourceFiles(cwd));
+
+const normalizeFileList = (cwd, files, options) => (Array.isArray(files) ? [...new Set(files.map((f) => toPosixRel(cwd, f)).filter(Boolean))].sort() : walkProjectSourceFiles(cwd, options));
 
 function analyzeSourceText(rawContent, ext) {
   if (!JS_FAMILY_EXTENSIONS.has(ext)) {
@@ -207,9 +228,9 @@ function classifyLayer(rel, code, routes) {
   return /\.(?:jsx|tsx)$/i.test(rel) || /(?:^|\/)(?:pages|views|screens|components|ui|frontend|client)\//i.test(rel) || /(?:^|\/)app\/.*\/page\.[cm]?[jt]sx?$/i.test(rel) ? 'ui' : 'module';
 }
 
-function buildProjectGraph(cwd, files) {
+function buildProjectGraph(cwd, files, options = {}) {
   const root = path.resolve(cwd || process.cwd());
-  const prodFiles = normalizeFileList(root, files).filter((r) => !isTestPath(toSegments(r)));
+  const prodFiles = normalizeFileList(root, files, options).filter((r) => !isTestPath(toSegments(r)));
   const [fileSet, nodes, allMounts] = [new Set(prodFiles), new Map(), []];
   for (const rel of prodFiles) {
     const abs = path.join(root, rel);
@@ -243,8 +264,8 @@ function collectTransitive(startRel, nodes, maxHops = 2) {
   return [...visited];
 }
 
-function extractVerticalFlows(cwd, files) {
-  const { nodes } = buildProjectGraph(cwd, files);
+function extractVerticalFlows(cwd, files, options = {}) {
+  const { nodes } = buildProjectGraph(cwd, files, options);
   const buckets = new Map();
   const ensureBucket = (key) => {
     if (!buckets.has(key)) buckets.set(key, { name: key, entrypoints: new Set(), client_calls: new Set(), api_routes: new Set(), services_and_models: new Set(), files: new Set() });
@@ -316,8 +337,8 @@ const isScreenFile = (rel, layer) => layer === 'ui' && (
   || /(?:Page|Screen|View)\.[cm]?[jt]sx$/i.test(rel)
 );
 
-function scanCrossModuleHazards(cwd, files) {
-  const { root, nodes } = buildProjectGraph(cwd, files);
+function scanCrossModuleHazards(cwd, files, options = {}) {
+  const { root, nodes } = buildProjectGraph(cwd, files, options);
   const [emptyCatches, nPlusOneLoops, apiMismatches, missingEnvKeys, uxScreenCoverage] = [[], [], [], [], []];
   const envExampleAbs = path.join(root, '.env.example');
   const hasEnvExample = fs.existsSync(envExampleAbs) && fs.statSync(envExampleAbs).isFile();
@@ -356,9 +377,9 @@ function scanCrossModuleHazards(cwd, files) {
 
 function runAuditStaticScan(cwd, options = {}) {
   const root = path.resolve(cwd || process.cwd());
-  const files = walkProjectSourceFiles(root);
+  const files = walkProjectSourceFiles(root, { useGitIgnore: options.useGitIgnore });
   const sc = files.length > 0 ? runCheck(root, { silent: true, strictPhase: true, useGitIgnore: options.useGitIgnore, homeDir: options.homeDir, cwd: root }) : { passed: true, violations: [], warnings: [] };
-  return { scanned_files: files.length, files, spec_sources: discoverSpecSources(root, options.docs), vertical_flows: extractVerticalFlows(root, files), cross_module_hazards: scanCrossModuleHazards(root, files), strict_check: { passed: sc.passed, violations: sc.violations, warnings: sc.warnings } };
+  return { scanned_files: files.length, files, spec_sources: discoverSpecSources(root, options.docs), vertical_flows: extractVerticalFlows(root, files, options), cross_module_hazards: scanCrossModuleHazards(root, files, options), strict_check: { passed: sc.passed, violations: sc.violations, warnings: sc.warnings } };
 }
 
-module.exports = { discoverSpecSources, extractVerticalFlows, scanCrossModuleHazards, runAuditStaticScan };
+module.exports = { walkProjectSourceFiles, discoverSpecSources, extractVerticalFlows, scanCrossModuleHazards, runAuditStaticScan };

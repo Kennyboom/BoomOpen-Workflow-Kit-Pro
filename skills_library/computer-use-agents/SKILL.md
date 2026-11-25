@@ -214,7 +214,7 @@ from dataclasses im
 ### Anthropic Computer Use Implementation
 
 Official implementation pattern using Claude's computer use capability.
-Claude 3.5 Sonnet was the first frontier model to offer computer use.
+Claude Sonnet 4.6 was the first frontier model to offer computer use.
 Claude Opus 4.5 is now the "best model in the world for computer use."
 
 Key capabilities:

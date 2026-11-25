@@ -68,7 +68,7 @@ function buildTools(home, root, env = process.env) {
         },
         copilot: {
             name: 'GitHub Copilot',
-            description: 'GitHub Copilot in VS Code',
+            description: 'GitHub Copilot in VS Code & CLI',
             paths: {
                 home: p('.copilot'),
                 skills: p('.copilot', 'skills'),
@@ -85,14 +85,11 @@ function buildTools(home, root, env = process.env) {
             name: 'Antigravity (Gemini)',
             description: 'Google Antigravity / Gemini',
             paths: {
-                editorHome: p('.antigravity'),
                 gemini: p('.gemini'),
                 antigravity: p('.gemini', 'config'),
                 skills: p('.gemini', 'config', 'skills'),
-                agents: p('.antigravity', 'agents'),
                 globalAgents: p('.gemini', 'agents'),
-                workflows: p('.antigravity', 'workflows'),
-                globalWorkflows: p('.gemini', 'config', 'global_workflows'),
+                pluginPath: p('.gemini', 'config', 'plugins', KIT_DIR_NAME),
                 frameworkPath: p('.gemini', 'config', 'skills', KIT_DIR_NAME),
             },
             replacements: {
@@ -102,6 +99,7 @@ function buildTools(home, root, env = process.env) {
             assets: {
                 geminiMd: r('platforms', 'antigravity', 'GEMINI.md'),
                 agentFile: r('platforms', 'antigravity', ANTIGRAVITY_AGENT_FILE),
+                pluginJson: r('platforms', 'antigravity', 'plugin.json'),
             },
         },
         claude: {
@@ -138,18 +136,18 @@ function buildTools(home, root, env = process.env) {
     };
 }
 
-/** Skills + vault copies every tool gets. */
+/** Skills + shared vault copies every tool gets. */
 function skillCopies(tool, root) {
     return [
-        { src: path.join(root, 'skills'), dest: tool.paths.skills },
-        { src: path.join(root, 'skills_library'), dest: `${tool.paths.skills}_library`, verbatim: true },
+        { src: path.join(root, 'skills'), dest: tool.paths.skills, kind: 'skills' },
+        { src: path.join(root, 'skills_library'), dest: `${tool.paths.skills}_library`, verbatim: true, sharedVault: true },
     ];
 }
 
 /**
  * Install plan for one tool.
  * @returns {{ instructionFiles: Array<{src:string,dest:string}>, legacyInstructionFiles: string[],
- *   shared: Array<{src:string,dest:string,verbatim?:boolean,file?:boolean}> }}
+ *   shared: Array<{src:string,dest:string,verbatim?:boolean,file?:boolean,kind?:string,sharedVault?:boolean}> }}
  */
 function buildPlan(key, tool, root) {
     const r = (...parts) => path.join(root, ...parts);
@@ -165,19 +163,23 @@ function buildPlan(key, tool, root) {
                 legacyInstructionFiles: [path.join(tool.paths.editorHome, 'CLAUDE.md')],
                 shared: [
                     { src: tool.assets.rules, dest: tool.paths.rules },
-                    { src: commands, dest: tool.paths.commands },
-                    { src: agents, dest: tool.paths.agents },
+                    { src: commands, dest: tool.paths.commands, kind: 'commands' },
+                    { src: agents, dest: tool.paths.agents, kind: 'agents' },
                     ...skillCopies(tool, root),
                 ],
             };
         case 'copilot':
             return {
-                instructionFiles: ['COPILOT.md', 'AGENT.md'].map((file) => ({ src: r(file), dest: path.join(tool.paths.home, file) })),
+                instructionFiles: [
+                    { src: r('COPILOT.md'), dest: path.join(tool.paths.home, 'copilot-instructions.md') },
+                    { src: r('COPILOT.md'), dest: path.join(tool.paths.home, 'COPILOT.md') },
+                    { src: r('AGENT.md'), dest: path.join(tool.paths.home, 'AGENT.md') },
+                ],
                 legacyInstructionFiles: [path.join(tool.paths.home, 'CLAUDE.md')],
                 shared: [
                     { src: tool.assets.agentFile, dest: path.join(tool.paths.vsCodePrompts, COPILOT_PROMPT_FILE), file: true },
-                    { src: commands, dest: tool.paths.commands },
-                    { src: agents, dest: tool.paths.agents },
+                    { src: commands, dest: tool.paths.commands, kind: 'commands' },
+                    { src: agents, dest: tool.paths.agents, kind: 'agents' },
                     ...skillCopies(tool, root),
                 ],
             };
@@ -186,11 +188,8 @@ function buildPlan(key, tool, root) {
                 instructionFiles: [{ src: tool.assets.geminiMd, dest: path.join(tool.paths.gemini, 'GEMINI.md') }],
                 legacyInstructionFiles: ['AGENT.md', 'CLAUDE.md'].map((file) => path.join(tool.paths.gemini, file)),
                 shared: [
-                    { src: commands, dest: tool.paths.workflows },
-                    { src: agents, dest: tool.paths.agents },
                     { src: tool.assets.agentFile, dest: path.join(tool.paths.globalAgents, ANTIGRAVITY_AGENT_FILE), file: true },
-                    { src: agents, dest: tool.paths.globalAgents },
-                    { src: commands, dest: tool.paths.globalWorkflows },
+                    { src: agents, dest: tool.paths.globalAgents, kind: 'agents' },
                     ...skillCopies(tool, root),
                 ],
             };
@@ -202,8 +201,8 @@ function buildPlan(key, tool, root) {
                 ],
                 legacyInstructionFiles: [],
                 shared: [
-                    { src: commands, dest: tool.paths.commands },
-                    { src: agents, dest: tool.paths.agents },
+                    { src: commands, dest: tool.paths.commands, kind: 'commands' },
+                    { src: agents, dest: tool.paths.agents, kind: 'agents' },
                     ...skillCopies(tool, root),
                 ],
             };
@@ -218,9 +217,9 @@ function buildPlan(key, tool, root) {
                 legacyInstructionFiles: [],
                 shared: [
                     { src: tool.assets.agentTomlDir, dest: tool.paths.agents },
-                    { src: commands, dest: tool.paths.commands },
+                    { src: commands, dest: tool.paths.commands, kind: 'commands' },
                     ...skillCopies(tool, root),
-                    { src: tool.assets.commandSkillsDir, dest: tool.paths.skills },
+                    { src: tool.assets.commandSkillsDir, dest: tool.paths.skills, kind: 'skills' },
                 ],
             };
         default:
@@ -235,6 +234,7 @@ module.exports = {
     CORE_DIRS,
     ROOT_FILES,
     VERBATIM_DIRS,
+    replacementsFor,
     buildTools,
     buildPlan,
 };

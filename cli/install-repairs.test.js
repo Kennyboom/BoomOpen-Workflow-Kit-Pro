@@ -96,21 +96,33 @@ test('doctor checks a partly installed platform and an installed copy that lost 
   assert.match(broken.stdout, /❌ Claude Code: framework files\s+Missing: .*rules\//);
 });
 
-test('upgrading a pre-manifest install: old kit folders are pruned on uninstall', { timeout: E2E_TIMEOUT_MS }, (t) => {
+test('upgrading a pre-manifest install: old kit folders and leaked _ref/teams are pruned on upgrade and uninstall', { timeout: E2E_TIMEOUT_MS }, (t) => {
   const { kitRoot, home } = withSandbox(t);
   assert.equal(cli(kitRoot, home, ['install', 'claude']).status, 0);
   const commands = path.join(home, '.claude', 'commands');
-  assert.ok(fs.existsSync(path.join(commands, '_ref')));
-  // Simulate an install made by a release that kept no manifest, plus a user edit to a kit file.
+  const agents = path.join(home, '.claude', 'agents');
+  assert.equal(fs.existsSync(path.join(commands, '_ref')), false, '_ref never leaked to IDE commands/');
+  assert.equal(fs.existsSync(path.join(agents, 'teams')), false, 'teams never leaked to IDE agents/');
+  assert.ok(fs.existsSync(path.join(commands, 'plan', 'hard.md')), 'nested colon command folder created');
+
+  // Simulate an install made by an older release that kept no manifest and leaked _ref/, plus a user edit.
   fs.rmSync(path.join(home, '.boomopen', 'manifests', 'claude.json'));
+  const refSample = fs.readdirSync(path.join(kitRoot, 'commands', '_ref')).find((f) => f.endsWith('.md'));
+  if (refSample) {
+    const rawRef = read(path.join(kitRoot, 'commands', '_ref', refSample))
+      .replaceAll('~/.{TOOL}/skills/boomopen-workflow-kit/', '~/.claude/skills/boomopen-workflow-kit/')
+      .replaceAll('{TOOL}', 'claude');
+    write(path.join(commands, '_ref', refSample), rawRef);
+  }
   write(path.join(commands, 'cook.md'), '# my own cook\n');
 
   const upgrade = cli(kitRoot, home, ['install', 'claude']);
   assert.equal(upgrade.status, 0, upgrade.out);
   assert.match(upgrade.out, /previous kit copies \(including any you edited\)/);
+  assert.equal(fs.existsSync(path.join(commands, '_ref')), false, 'pre-manifest leaked _ref pruned on upgrade');
 
   const uninstall = cli(kitRoot, home, ['uninstall', 'claude']);
   assert.equal(uninstall.status, 0, uninstall.out);
-  assert.equal(fs.existsSync(path.join(commands, '_ref')), false, 'empty kit sub-folders are pruned');
-  assert.equal(fs.existsSync(path.join(home, '.claude', 'agents', 'teams')), false);
+  assert.equal(fs.existsSync(path.join(commands, 'plan')), false, 'empty nested command folders are pruned');
+  assert.equal(fs.existsSync(path.join(agents, 'teams')), false);
 });

@@ -19,7 +19,9 @@
 | landing, promotional, marketing | Landing Page | nextjs-static |
 | docs, documentation | Documentation | astro-static |
 | extension, plugin, chrome | Browser Extension | chrome-extension |
-| desktop, electron | Desktop App | electron-desktop |
+| desktop, tauri, electron | Desktop App | electron-desktop |
+| mcp, model context protocol, tool server, mcp app | MCP Server / App | mcp-server |
+| agent worker, durable object, autonomous agent, workflow agent | Stateful AI Agent | ai-agent-worker |
 | cli, command line, terminal | CLI Tool | cli-tool |
 | monorepo, workspace | Monorepo | monorepo-turborepo |
 

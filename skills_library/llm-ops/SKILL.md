@@ -183,7 +183,7 @@ class SemanticCache:
 PRICING = {
         "claude-opus-4-20250805": {"input": 15.00, "output": 75.00},
         "claude-sonnet-4-5": {"input": 3.00, "output": 15.00},
-        "claude-haiku-3-5": {"input": 0.80, "output": 4.00},
+        "claude-haiku-4-5": {"input": 0.80, "output": 4.00},
     }
 
     def estimate_monthly_cost(model, avg_input, avg_output, req_per_day):
@@ -218,7 +218,7 @@ Criterios:
             "Nota 0-10 e justificativa para cada criterio. Formato JSON."
         )
         response = client.messages.create(
-            model="claude-haiku-3-5", max_tokens=1024,
+            model="claude-haiku-4-5", max_tokens=1024,
             messages=[{"role": "user", "content": eval_prompt}]
         )
         import json

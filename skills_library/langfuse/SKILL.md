@@ -60,8 +60,8 @@ trace = langfuse.trace(
 
 # Log a generation (LLM call)
 generation = trace.generation(
-    name="gpt-4o-response",
-    model="gpt-4o",
+    name="gpt-4.1-response",
+    model="gpt-4.1",
     model_parameters={"temperature": 0.7},
     input={"messages": [{"role": "user", "content": "Hello"}]},
     metadata={"attempt": 1}
@@ -69,7 +69,7 @@ generation = trace.generation(
 
 # Make actual LLM call
 response = openai.chat.completions.create(
-    model="gpt-4o",
+    model="gpt-4.1",
     messages=[{"role": "user", "content": "Hello"}]
 )
 
@@ -106,7 +106,7 @@ from langfuse.openai import openai
 # All calls automatically traced
 
 response = openai.chat.completions.create(
-    model="gpt-4o",
+    model="gpt-4.1",
     messages=[{"role": "user", "content": "Hello"}],
     # Langfuse-specific parameters
     name="greeting",  # Trace name
@@ -118,7 +118,7 @@ response = openai.chat.completions.create(
 
 # Works with streaming
 stream = openai.chat.completions.create(
-    model="gpt-4o",
+    model="gpt-4.1",
     messages=[{"role": "user", "content": "Tell me a story"}],
     stream=True,
     name="story-generation"
@@ -135,7 +135,7 @@ async_client = AsyncOpenAI()
 
 async def main():
     response = await async_client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4.1",
         messages=[{"role": "user", "content": "Hello"}],
         name="async-greeting"
     )
@@ -162,7 +162,7 @@ langfuse_handler = CallbackHandler(
 )
 
 # Use with any LangChain component
-llm = ChatOpenAI(model="gpt-4o")
+llm = ChatOpenAI(model="gpt-4.1")
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", "You are a helpful assistant."),

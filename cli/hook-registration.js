@@ -1,14 +1,9 @@
 'use strict';
 
 /**
- * Registers the kit's destructive-command guard (hooks/validate-tool-call.mjs) as an opt-in
- * PreToolUse hook for Claude Code (~/.claude/settings.json) and Antigravity 2.0
- * (~/.gemini/config/hooks.json) via `install <tool> --with-hooks`, removing it again on uninstall.
- *
- * Only the kit's own hook entry is ever added or removed; every other setting and hook is kept.
- * A config file that is not valid JSON is never rewritten (a leading UTF-8 BOM, as written by
- * Windows PowerShell 5.1, is accepted). Uninstall never parses a file that does not even mention
- * the kit's hook, so a JSONC file the kit never touched cannot fail an uninstall.
+ * Registers the kit's destructive-command guard (hooks/validate-tool-call.mjs) and stop quality gate
+ * (hooks/stop-quality-gate.mjs) as opt-in hooks via `install <tool> --with-hooks`, removing them on
+ * uninstall while preserving every sibling setting, hook, BOM, CRLF, and symlink.
  */
 
 const fs = require('node:fs');
@@ -17,12 +12,17 @@ const path = require('node:path');
 const { isSymlink, restoreBackup } = require('./manifest.js');
 
 const HOOK_SCRIPT_NAME = 'validate-tool-call.mjs';
+const STOP_HOOK_SCRIPT_NAME = 'stop-quality-gate.mjs';
 const HOOK_OWNER_TAG = 'boomopen-workflow-kit';
 const CLAUDE_HOOK_EVENT = 'PreToolUse';
-const CLAUDE_SHELL_MATCHER = 'Bash';
+const CLAUDE_STOP_EVENT = 'Stop';
+const CLAUDE_PRE_COMPACT_EVENT = 'PreCompact';
+const CLAUDE_SHELL_MATCHER = 'Bash|PowerShell';
 const ANTIGRAVITY_HOOK_NAME = 'boomopen-guard';
 const ANTIGRAVITY_SHELL_MATCHER = 'run_command';
+const CURSOR_SHELL_EVENT = 'beforeShellExecution';
 const HOOK_TIMEOUT_SECONDS = 10;
+const STOP_HOOK_TIMEOUT_SECONDS = 15;
 const SETTINGS_BACKUP_SUFFIX = '.boomopen-backup';
 
 class HookConfigError extends Error {
@@ -34,16 +34,10 @@ class HookConfigError extends Error {
 
 const isPlainObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 
-/** Command line for the hook; forward slashes work in cmd, PowerShell and bash alike. */
 function buildHookCommand(scriptPath) {
     return `node "${scriptPath.replace(/\\/g, '/')}"`;
 }
 
-/**
- * Antigravity runs hooks.json commands with cwd = path.dirname(hooksJsonPath), via `cmd /c` on
- * Windows where Go's syscall.EscapeArg turns `"` into `\"` and breaks quoted paths with spaces.
- * A clean `./skills/...` path relative to hooks.json's folder avoids quotes and spaces completely.
- */
 function buildAntigravityHookCommand(hooksJsonPath, scriptPath) {
     const rel = path.relative(path.dirname(hooksJsonPath), scriptPath).replace(/\\/g, '/');
     if (rel && !rel.startsWith('..') && !path.isAbsolute(rel) && !/[\s"&|<>^]/.test(rel)) {
@@ -52,13 +46,20 @@ function buildAntigravityHookCommand(hooksJsonPath, scriptPath) {
     return buildHookCommand(scriptPath);
 }
 
+function resolveStopScriptPath(scriptPath, stopScriptPath) {
+    if (stopScriptPath) return stopScriptPath;
+    return path.join(path.dirname(scriptPath), STOP_HOOK_SCRIPT_NAME);
+}
+
+function isKitCommandString(command) {
+    if (typeof command !== 'string') return false;
+    const hasScript = command.includes(HOOK_SCRIPT_NAME) || command.includes(STOP_HOOK_SCRIPT_NAME);
+    // Relative `./hooks/...` inside a plugin's own hooks.json has no parent folder in the command string.
+    return hasScript && (command.includes(HOOK_OWNER_TAG) || command.includes(`./hooks/${HOOK_SCRIPT_NAME}`) || command.includes(`./hooks/${STOP_HOOK_SCRIPT_NAME}`));
+}
+
 function isKitHook(hook) {
-    return (
-        isPlainObject(hook) &&
-        typeof hook.command === 'string' &&
-        hook.command.includes(HOOK_SCRIPT_NAME) &&
-        hook.command.includes(HOOK_OWNER_TAG)
-    );
+    return isPlainObject(hook) && isKitCommandString(hook.command);
 }
 
 function readSettings(settingsPath) {
@@ -81,12 +82,24 @@ function readSettings(settingsPath) {
     return { exists: true, data, raw };
 }
 
-/** Event entries with every kit hook removed (entries left empty are dropped). */
-function withoutKitHooks(entries) {
+function readSettingsIfMentioned(settingsPath) {
+    let raw;
+    try {
+        raw = fs.readFileSync(settingsPath, 'utf8');
+    } catch (error) {
+        if (error && error.code === 'ENOENT') return { exists: false, data: {}, raw: null };
+        throw error;
+    }
+    const mentionsScript = raw.includes(HOOK_SCRIPT_NAME) || raw.includes(STOP_HOOK_SCRIPT_NAME);
+    if (!mentionsScript) return { exists: true, data: {}, raw: null };
+    return readSettings(settingsPath);
+}
+
+function withoutKitGroupedHooks(entries) {
     const kept = [];
     for (const entry of entries) {
         if (!isPlainObject(entry) || !Array.isArray(entry.hooks)) {
-            kept.push(entry);
+            if (!isKitHook(entry)) kept.push(entry);
             continue;
         }
         const hooks = entry.hooks.filter((hook) => !isKitHook(hook));
@@ -96,12 +109,16 @@ function withoutKitHooks(entries) {
     return kept;
 }
 
-function getEventEntries(data, settingsPath) {
-    if (data.hooks === undefined) return [];
-    if (!isPlainObject(data.hooks)) throw new HookConfigError(`"hooks" in ${settingsPath} is not an object`);
-    const entries = data.hooks[CLAUDE_HOOK_EVENT];
+function withoutKitFlatHooks(entries) {
+    return withoutKitGroupedHooks(entries);
+}
+
+function getHookArray(hooksObj, eventName, filePath, prefix = 'hooks') {
+    if (hooksObj === undefined) return [];
+    if (!isPlainObject(hooksObj)) throw new HookConfigError(`"${prefix}" in ${filePath} is not an object`);
+    const entries = hooksObj[eventName];
     if (entries === undefined) return [];
-    if (!Array.isArray(entries)) throw new HookConfigError(`"hooks.${CLAUDE_HOOK_EVENT}" in ${settingsPath} is not an array`);
+    if (!Array.isArray(entries)) throw new HookConfigError(`"${prefix}.${eventName}" in ${filePath} is not an array`);
     return entries;
 }
 
@@ -110,161 +127,6 @@ function writeSettings(settingsPath, data) {
     fs.writeFileSync(settingsPath, JSON.stringify(data, null, 2) + '\n', 'utf8');
 }
 
-function finalizeUnregister(filePath, next) {
-    const backupPath = filePath + SETTINGS_BACKUP_SUFFIX;
-    const backup = readBackup(backupPath);
-    if (backup.exists && backup.data !== null && JSON.stringify(backup.data) === JSON.stringify(next)) {
-        // Byte-exact restore (BOM, CRLF, formatting); a symlinked config file keeps its link.
-        restoreBackup(backupPath, filePath);
-    } else if (!backup.exists && Object.keys(next).length === 0 && !isSymlink(filePath)) {
-        fs.unlinkSync(filePath); // no backup: the installer created this file only for the hook
-    } else {
-        writeSettings(filePath, next);
-    }
-}
-
-/**
- * @param {string} settingsPath ~/.claude/settings.json
- * @param {string} scriptPath absolute path of the installed hook script
- * @returns {'added'|'updated'|'unchanged'}
- * @throws {HookConfigError} when settings.json cannot be safely edited
- */
-function registerClaudeHook(settingsPath, scriptPath) {
-    const { exists, data, raw } = readSettings(settingsPath);
-    const entries = getEventEntries(data, settingsPath);
-    const cleaned = withoutKitHooks(entries);
-    const hadKitHook = JSON.stringify(cleaned) !== JSON.stringify(entries);
-    const kitEntry = {
-        matcher: CLAUDE_SHELL_MATCHER,
-        hooks: [{ type: 'command', command: buildHookCommand(scriptPath), timeout: HOOK_TIMEOUT_SECONDS }],
-    };
-    const next = { ...data, hooks: { ...(data.hooks || {}), [CLAUDE_HOOK_EVENT]: [...cleaned, kitEntry] } };
-    if (exists && JSON.stringify(next) === JSON.stringify(data)) return 'unchanged';
-
-    const backupPath = settingsPath + SETTINGS_BACKUP_SUFFIX;
-    if (exists && raw !== null && !hadKitHook && !fs.existsSync(backupPath)) fs.writeFileSync(backupPath, raw, 'utf8');
-    writeSettings(settingsPath, next);
-    return hadKitHook ? 'updated' : 'added';
-}
-
-/** True when settings.json already carries the kit's hook (unreadable files count as false). */
-function isClaudeHookRegistered(settingsPath) {
-    try {
-        const { data } = readSettings(settingsPath);
-        return getEventEntries(data, settingsPath).some(
-            (entry) => isPlainObject(entry) && Array.isArray(entry.hooks) && entry.hooks.some(isKitHook)
-        );
-    } catch (error) {
-        if (error instanceof HookConfigError) return false;
-        throw error;
-    }
-}
-
-/** Like readSettings, but a file that does not mention the kit's hook is not parsed at all. */
-function readSettingsIfMentioned(settingsPath) {
-    let raw;
-    try {
-        raw = fs.readFileSync(settingsPath, 'utf8');
-    } catch (error) {
-        if (error && error.code === 'ENOENT') return { exists: false, data: {}, raw: null };
-        throw error;
-    }
-    if (!raw.includes(HOOK_SCRIPT_NAME) || !raw.includes(HOOK_OWNER_TAG)) return { exists: true, data: {}, raw: null };
-    return readSettings(settingsPath);
-}
-
-/**
- * @returns {'removed'|'missing'}
- * @throws {HookConfigError} when settings.json cannot be safely edited
- */
-function unregisterClaudeHook(settingsPath) {
-    const { exists, data, raw } = readSettingsIfMentioned(settingsPath);
-    if (!exists || raw === null) return 'missing';
-    const entries = getEventEntries(data, settingsPath);
-    const cleaned = withoutKitHooks(entries);
-    if (JSON.stringify(cleaned) === JSON.stringify(entries)) return 'missing';
-
-    const hooks = { ...data.hooks };
-    if (cleaned.length > 0) hooks[CLAUDE_HOOK_EVENT] = cleaned;
-    else delete hooks[CLAUDE_HOOK_EVENT];
-    const next = { ...data };
-    if (Object.keys(hooks).length > 0) next.hooks = hooks;
-    else delete next.hooks;
-    finalizeUnregister(settingsPath, next);
-    return 'removed';
-}
-
-function getAntigravityEntries(data, hooksJsonPath) {
-    const group = data[ANTIGRAVITY_HOOK_NAME];
-    if (group === undefined) return { group: null, entries: [] };
-    if (!isPlainObject(group)) throw new HookConfigError(`"${ANTIGRAVITY_HOOK_NAME}" in ${hooksJsonPath} is not an object`);
-    const entries = group[CLAUDE_HOOK_EVENT];
-    if (entries === undefined) return { group, entries: [] };
-    if (!Array.isArray(entries)) {
-        throw new HookConfigError(`"${ANTIGRAVITY_HOOK_NAME}.${CLAUDE_HOOK_EVENT}" in ${hooksJsonPath} is not an array`);
-    }
-    return { group, entries };
-}
-
-/**
- * @param {string} hooksJsonPath ~/.gemini/config/hooks.json
- * @param {string} scriptPath absolute path of the installed hook script
- * @returns {'added'|'updated'|'unchanged'}
- */
-function registerAntigravityHook(hooksJsonPath, scriptPath) {
-    const { exists, data, raw } = readSettings(hooksJsonPath);
-    const { group, entries } = getAntigravityEntries(data, hooksJsonPath);
-    const cleaned = withoutKitHooks(entries);
-    const hadKitHook = JSON.stringify(cleaned) !== JSON.stringify(entries);
-    const kitEntry = {
-        matcher: ANTIGRAVITY_SHELL_MATCHER,
-        hooks: [{ type: 'command', command: buildAntigravityHookCommand(hooksJsonPath, scriptPath), timeout: HOOK_TIMEOUT_SECONDS }],
-    };
-    const enabled = group && typeof group.enabled === 'boolean' ? group.enabled : true;
-    const nextGroup = { ...(group || {}), enabled, [CLAUDE_HOOK_EVENT]: [...cleaned, kitEntry] };
-    const next = { ...data, [ANTIGRAVITY_HOOK_NAME]: nextGroup };
-    if (exists && JSON.stringify(next) === JSON.stringify(data)) return 'unchanged';
-
-    const backupPath = hooksJsonPath + SETTINGS_BACKUP_SUFFIX;
-    if (exists && raw !== null && !hadKitHook && !fs.existsSync(backupPath)) fs.writeFileSync(backupPath, raw, 'utf8');
-    writeSettings(hooksJsonPath, next);
-    return hadKitHook ? 'updated' : 'added';
-}
-
-function isAntigravityHookRegistered(hooksJsonPath) {
-    try {
-        const { data } = readSettings(hooksJsonPath);
-        const { entries } = getAntigravityEntries(data, hooksJsonPath);
-        return entries.some((entry) => isPlainObject(entry) && Array.isArray(entry.hooks) && entry.hooks.some(isKitHook));
-    } catch (error) {
-        if (error instanceof HookConfigError) return false;
-        throw error;
-    }
-}
-
-function unregisterAntigravityHook(hooksJsonPath) {
-    const { exists, data, raw } = readSettingsIfMentioned(hooksJsonPath);
-    if (!exists || raw === null) return 'missing';
-    const { group, entries } = getAntigravityEntries(data, hooksJsonPath);
-    if (!group) return 'missing';
-    const cleaned = withoutKitHooks(entries);
-    if (JSON.stringify(cleaned) === JSON.stringify(entries)) return 'missing';
-
-    const nextGroup = { ...group };
-    if (cleaned.length > 0) nextGroup[CLAUDE_HOOK_EVENT] = cleaned;
-    else delete nextGroup[CLAUDE_HOOK_EVENT];
-    const next = { ...data };
-    if (Object.keys(nextGroup).some((k) => k !== 'enabled')) next[ANTIGRAVITY_HOOK_NAME] = nextGroup;
-    else delete next[ANTIGRAVITY_HOOK_NAME];
-    finalizeUnregister(hooksJsonPath, next);
-    return 'removed';
-}
-
-/**
- * The pre-registration copy of settings.json. data is null when the copy cannot be parsed; an empty
- * file counts as {} and a leading UTF-8 BOM is ignored, exactly as readSettings does.
- * @returns {{ exists: boolean, data: object|null }}
- */
 function readBackup(backupPath) {
     let raw;
     try {
@@ -283,11 +145,227 @@ function readBackup(backupPath) {
     }
 }
 
-/** Manual registration instructions for hosts the installer does not configure itself. */
+function finalizeUnregister(filePath, next) {
+    const backupPath = filePath + SETTINGS_BACKUP_SUFFIX;
+    const backup = readBackup(backupPath);
+    if (backup.exists && backup.data !== null && JSON.stringify(backup.data) === JSON.stringify(next)) {
+        restoreBackup(backupPath, filePath);
+    } else if (!backup.exists && Object.keys(next).length === 0 && !isSymlink(filePath)) {
+        fs.unlinkSync(filePath);
+    } else {
+        writeSettings(filePath, next);
+    }
+}
+
+function registerClaudeHook(settingsPath, scriptPath, stopScriptPath = null) {
+    const { exists, data, raw } = readSettings(settingsPath);
+    const stopPath = resolveStopScriptPath(scriptPath, stopScriptPath);
+    const preEntries = getHookArray(data.hooks, CLAUDE_HOOK_EVENT, settingsPath);
+    const stopEntries = getHookArray(data.hooks, CLAUDE_STOP_EVENT, settingsPath);
+    const compactEntries = getHookArray(data.hooks, CLAUDE_PRE_COMPACT_EVENT, settingsPath);
+
+    const cleanedPre = withoutKitGroupedHooks(preEntries);
+    const cleanedStop = withoutKitGroupedHooks(stopEntries);
+    const cleanedCompact = withoutKitGroupedHooks(compactEntries);
+    const hadKitHook =
+        JSON.stringify(cleanedPre) !== JSON.stringify(preEntries) ||
+        JSON.stringify(cleanedStop) !== JSON.stringify(stopEntries) ||
+        JSON.stringify(cleanedCompact) !== JSON.stringify(compactEntries);
+
+    const kitPre = {
+        matcher: CLAUDE_SHELL_MATCHER,
+        hooks: [{ type: 'command', command: buildHookCommand(scriptPath), timeout: HOOK_TIMEOUT_SECONDS }],
+    };
+    const kitStop = {
+        hooks: [{ type: 'command', command: buildHookCommand(stopPath), timeout: STOP_HOOK_TIMEOUT_SECONDS }],
+    };
+    const kitCompact = {
+        hooks: [{ type: 'command', command: buildHookCommand(stopPath), timeout: HOOK_TIMEOUT_SECONDS }],
+    };
+
+    const next = {
+        ...data,
+        hooks: {
+            ...(data.hooks || {}),
+            [CLAUDE_HOOK_EVENT]: [...cleanedPre, kitPre],
+            [CLAUDE_STOP_EVENT]: [...cleanedStop, kitStop],
+            [CLAUDE_PRE_COMPACT_EVENT]: [...cleanedCompact, kitCompact],
+        },
+    };
+    if (exists && JSON.stringify(next) === JSON.stringify(data)) return 'unchanged';
+
+    const backupPath = settingsPath + SETTINGS_BACKUP_SUFFIX;
+    if (exists && raw !== null && !hadKitHook && !fs.existsSync(backupPath)) fs.writeFileSync(backupPath, raw, 'utf8');
+    writeSettings(settingsPath, next);
+    return hadKitHook ? 'updated' : 'added';
+}
+
+function isClaudeHookRegistered(settingsPath) {
+    try {
+        const { data } = readSettings(settingsPath);
+        return getHookArray(data.hooks, CLAUDE_HOOK_EVENT, settingsPath).some(
+            (entry) => isPlainObject(entry) && Array.isArray(entry.hooks) && entry.hooks.some(isKitHook)
+        );
+    } catch (error) {
+        if (error instanceof HookConfigError) return false;
+        throw error;
+    }
+}
+
+function unregisterClaudeHook(settingsPath) {
+    const { exists, data, raw } = readSettingsIfMentioned(settingsPath);
+    if (!exists || raw === null) return 'missing';
+    const hooks = isPlainObject(data.hooks) ? { ...data.hooks } : {};
+    let changed = false;
+    for (const eventName of [CLAUDE_HOOK_EVENT, CLAUDE_STOP_EVENT, CLAUDE_PRE_COMPACT_EVENT]) {
+        const entries = getHookArray(data.hooks, eventName, settingsPath);
+        const cleaned = withoutKitGroupedHooks(entries);
+        if (JSON.stringify(cleaned) !== JSON.stringify(entries)) changed = true;
+        if (cleaned.length > 0) hooks[eventName] = cleaned;
+        else delete hooks[eventName];
+    }
+    if (!changed) return 'missing';
+    const next = { ...data };
+    if (Object.keys(hooks).length > 0) next.hooks = hooks;
+    else delete next.hooks;
+    finalizeUnregister(settingsPath, next);
+    return 'removed';
+}
+
+function registerAntigravityHook(hooksJsonPath, scriptPath, stopScriptPath = null) {
+    const { exists, data, raw } = readSettings(hooksJsonPath);
+    const stopPath = resolveStopScriptPath(scriptPath, stopScriptPath);
+    const group = data[ANTIGRAVITY_HOOK_NAME];
+    if (group !== undefined && !isPlainObject(group)) {
+        throw new HookConfigError(`"${ANTIGRAVITY_HOOK_NAME}" in ${hooksJsonPath} is not an object`);
+    }
+    const preEntries = getHookArray(group, CLAUDE_HOOK_EVENT, hooksJsonPath, ANTIGRAVITY_HOOK_NAME);
+    const stopEntries = getHookArray(group, CLAUDE_STOP_EVENT, hooksJsonPath, ANTIGRAVITY_HOOK_NAME);
+    const cleanedPre = withoutKitGroupedHooks(preEntries);
+    const cleanedStop = withoutKitFlatHooks(stopEntries);
+    const hadKitHook =
+        JSON.stringify(cleanedPre) !== JSON.stringify(preEntries) ||
+        JSON.stringify(cleanedStop) !== JSON.stringify(stopEntries);
+
+    const kitPre = {
+        matcher: ANTIGRAVITY_SHELL_MATCHER,
+        hooks: [{ type: 'command', command: buildAntigravityHookCommand(hooksJsonPath, scriptPath), timeout: HOOK_TIMEOUT_SECONDS }],
+    };
+    const kitStop = {
+        type: 'command',
+        command: buildAntigravityHookCommand(hooksJsonPath, stopPath),
+        timeout: STOP_HOOK_TIMEOUT_SECONDS,
+    };
+    const enabled = group && typeof group.enabled === 'boolean' ? group.enabled : true;
+    const nextGroup = {
+        ...(group || {}),
+        enabled,
+        [CLAUDE_HOOK_EVENT]: [...cleanedPre, kitPre],
+        [CLAUDE_STOP_EVENT]: [...cleanedStop, kitStop],
+    };
+    const next = { ...data, [ANTIGRAVITY_HOOK_NAME]: nextGroup };
+    if (exists && JSON.stringify(next) === JSON.stringify(data)) return 'unchanged';
+
+    const backupPath = hooksJsonPath + SETTINGS_BACKUP_SUFFIX;
+    if (exists && raw !== null && !hadKitHook && !fs.existsSync(backupPath)) fs.writeFileSync(backupPath, raw, 'utf8');
+    writeSettings(hooksJsonPath, next);
+    return hadKitHook ? 'updated' : 'added';
+}
+
+function isAntigravityHookRegistered(hooksJsonPath) {
+    try {
+        const { data } = readSettings(hooksJsonPath);
+        const group = data[ANTIGRAVITY_HOOK_NAME];
+        if (!isPlainObject(group)) return false;
+        const preEntries = getHookArray(group, CLAUDE_HOOK_EVENT, hooksJsonPath, ANTIGRAVITY_HOOK_NAME);
+        return preEntries.some((entry) => isPlainObject(entry) && Array.isArray(entry.hooks) && entry.hooks.some(isKitHook));
+    } catch (error) {
+        if (error instanceof HookConfigError) return false;
+        throw error;
+    }
+}
+
+function unregisterAntigravityHook(hooksJsonPath) {
+    const { exists, data, raw } = readSettingsIfMentioned(hooksJsonPath);
+    if (!exists || raw === null) return 'missing';
+    const group = data[ANTIGRAVITY_HOOK_NAME];
+    if (!isPlainObject(group)) return 'missing';
+    const preEntries = getHookArray(group, CLAUDE_HOOK_EVENT, hooksJsonPath, ANTIGRAVITY_HOOK_NAME);
+    const stopEntries = getHookArray(group, CLAUDE_STOP_EVENT, hooksJsonPath, ANTIGRAVITY_HOOK_NAME);
+    const cleanedPre = withoutKitGroupedHooks(preEntries);
+    const cleanedStop = withoutKitFlatHooks(stopEntries);
+    if (JSON.stringify(cleanedPre) === JSON.stringify(preEntries) && JSON.stringify(cleanedStop) === JSON.stringify(stopEntries)) {
+        return 'missing';
+    }
+
+    const nextGroup = { ...group };
+    if (cleanedPre.length > 0) nextGroup[CLAUDE_HOOK_EVENT] = cleanedPre;
+    else delete nextGroup[CLAUDE_HOOK_EVENT];
+    if (cleanedStop.length > 0) nextGroup[CLAUDE_STOP_EVENT] = cleanedStop;
+    else delete nextGroup[CLAUDE_STOP_EVENT];
+    const next = { ...data };
+    if (Object.keys(nextGroup).some((k) => k !== 'enabled')) next[ANTIGRAVITY_HOOK_NAME] = nextGroup;
+    else delete next[ANTIGRAVITY_HOOK_NAME];
+    finalizeUnregister(hooksJsonPath, next);
+    return 'removed';
+}
+
+function registerCursorHook(hooksJsonPath, scriptPath) {
+    const { exists, data, raw } = readSettings(hooksJsonPath);
+    const entries = getHookArray(data.hooks, CURSOR_SHELL_EVENT, hooksJsonPath);
+    const cleaned = withoutKitFlatHooks(entries);
+    const hadKitHook = JSON.stringify(cleaned) !== JSON.stringify(entries);
+    const kitEntry = { command: buildHookCommand(scriptPath) };
+    const version = typeof data.version === 'number' ? data.version : 1;
+    const next = {
+        ...data,
+        version,
+        hooks: { ...(data.hooks || {}), [CURSOR_SHELL_EVENT]: [...cleaned, kitEntry] },
+    };
+    if (exists && JSON.stringify(next) === JSON.stringify(data)) return 'unchanged';
+
+    const backupPath = hooksJsonPath + SETTINGS_BACKUP_SUFFIX;
+    if (exists && raw !== null && !hadKitHook && !fs.existsSync(backupPath)) fs.writeFileSync(backupPath, raw, 'utf8');
+    writeSettings(hooksJsonPath, next);
+    return hadKitHook ? 'updated' : 'added';
+}
+
+function isCursorHookRegistered(hooksJsonPath) {
+    try {
+        const { data } = readSettings(hooksJsonPath);
+        return getHookArray(data.hooks, CURSOR_SHELL_EVENT, hooksJsonPath).some(isKitHook);
+    } catch (error) {
+        if (error instanceof HookConfigError) return false;
+        throw error;
+    }
+}
+
+function unregisterCursorHook(hooksJsonPath) {
+    const { exists, data, raw } = readSettingsIfMentioned(hooksJsonPath);
+    if (!exists || raw === null) return 'missing';
+    const entries = getHookArray(data.hooks, CURSOR_SHELL_EVENT, hooksJsonPath);
+    const cleaned = withoutKitFlatHooks(entries);
+    if (JSON.stringify(cleaned) === JSON.stringify(entries)) return 'missing';
+
+    const hooks = { ...(data.hooks || {}) };
+    if (cleaned.length > 0) hooks[CURSOR_SHELL_EVENT] = cleaned;
+    else delete hooks[CURSOR_SHELL_EVENT];
+    const next = { ...data };
+    if (Object.keys(hooks).length > 0) {
+        next.hooks = hooks;
+    } else {
+        delete next.hooks;
+        const backup = readBackup(hooksJsonPath + SETTINGS_BACKUP_SUFFIX);
+        if (!backup.exists && Object.keys(next).length === 1 && next.version === 1) delete next.version;
+    }
+    finalizeUnregister(hooksJsonPath, next);
+    return 'removed';
+}
+
 function describeManualRegistration(scriptPath) {
     const command = buildHookCommand(scriptPath);
     return [
-        `Antigravity 2.0: run \`boomopen install antigravity --with-hooks\` (writes ~/.gemini/config/hooks.json PreToolUse matcher "run_command")`,
+        'Antigravity / Claude / Cursor: run `boomopen install <antigravity|claude|cursor> --with-hooks`',
         `Gemini CLI: add to ~/.gemini/settings.json → "hooks": { "BeforeTool": [ { "matcher": "run_shell_command",`,
         `  "hooks": [ { "name": "boomopen-guard", "type": "command", "command": ${JSON.stringify(command)} } ] } ] }`,
         `Other hosts: run ${command} before each shell command with the tool call JSON on stdin; exit code 2 = blocked.`,
@@ -296,7 +374,10 @@ function describeManualRegistration(scriptPath) {
 
 module.exports = {
     HOOK_SCRIPT_NAME,
+    STOP_HOOK_SCRIPT_NAME,
+    CLAUDE_SHELL_MATCHER,
     ANTIGRAVITY_HOOK_NAME,
+    CURSOR_SHELL_EVENT,
     HookConfigError,
     buildHookCommand,
     registerClaudeHook,
@@ -305,5 +386,8 @@ module.exports = {
     registerAntigravityHook,
     unregisterAntigravityHook,
     isAntigravityHookRegistered,
+    registerCursorHook,
+    unregisterCursorHook,
+    isCursorHookRegistered,
     describeManualRegistration,
 };

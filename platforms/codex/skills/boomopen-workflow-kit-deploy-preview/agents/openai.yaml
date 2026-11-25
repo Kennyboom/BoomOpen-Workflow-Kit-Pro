@@ -3,4 +3,4 @@ interface:
   short_description: "🔍 Deploy Preview — Staging/preview deployment with pre-deploy CLI gate, live URL delivery, and smoke verification"
   brand_color: "#8B5CF6"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

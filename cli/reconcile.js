@@ -13,15 +13,17 @@ const { stripNonCode } = require('./checker-strip.js');
 const { EXIT_OK, EXIT_FAIL, EXIT_USAGE, parseSubcommandArgs, splitCommaOption } = require('./cli-args.js');
 const { loadLedgerFile } = require('./ledger.js');
 const { readCleanText, extractFencedBlocks } = require('./markdown-fences.js');
-const { parsePlanMarkdown, validatePlan } = require('./plan.js');
+const { CANONICAL_AGENT_ROLES, parsePlanMarkdown, validatePlan } = require('./plan.js');
 
 const JS_RESOLVE_EXTS = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.mts', '.cts'];
 const JSX_EXTS = new Set(['.js', '.jsx', '.tsx']);
 const TS_EXT_REMAP = { '.js': ['.ts', '.tsx', '.js'], '.jsx': ['.tsx', '.jsx'], '.mjs': ['.mts', '.mjs'], '.cjs': ['.cts', '.cjs'] };
-const ENTRYPOINT_BASE_RE = /^(?:index|main|app|server|route|page|layout|middleware)\.[^.]+$/i;
-const ENTRYPOINT_DIR_RE = /^(?:cli|scripts|bin|app|pages|src\/app|src\/pages)\//i;
+const ENTRYPOINT_BASE_RE = /^(?:page|layout|loading|error|not-found|template|default|route|middleware|proxy|instrumentation(?:\.node)?|opengraph-image|icon|sitemap|robots|\+(?:page|layout|server|error)(?:\.server)?|index|main|app|server)\.[^.]+$/i;
+const ENTRYPOINT_DIR_RE = /^(?:cli|scripts|bin)\//i;
 const IGNORED_ENV_VARS = new Set(['NODE_ENV', 'CI', 'PORT', 'HOST', 'HOME', 'USERPROFILE', 'PATH', 'PWD', 'TZ', 'LANG', 'DEBUG', 'BASE_URL', 'MODE', 'DEV', 'PROD', 'SSR']);
 const MODULE_SPEC_RES = [/\bfrom\s*(['"`])([ \t]*)\1/g, /\bimport\s*(['"`])([ \t]*)\1/g, /\bimport\s*\(\s*(['"`])([ \t]*)\1\s*(?:,|\))/g, /\brequire(?:\s*\.\s*resolve)?\s*\(\s*(['"`])([ \t]*)\1\s*\)/g];
+const PY_COMMENT_OR_STR_RE = /(?:[fFrRbBuU]{0,2})(?:"""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\\r\n])*"|'(?:\\.|[^'\\\r\n])*')|(#[^\r\n]*)/g;
+const PY_ENV_RE = /\bos\s*\.\s*(?:getenv\s*\(\s*(['"])([A-Za-z_][A-Za-z0-9_]*)\1|environ(?:\s*\.\s*get\s*\(\s*(['"])([A-Za-z_][A-Za-z0-9_]*)\3|\s*\[\s*(['"])([A-Za-z_][A-Za-z0-9_]*)\5\s*\]))/g;
 const MAX_DELTA_FILES = 4;
 
 const normRel = (p) => String(p || '').trim().replace(/^['"`]+|['"`]+$/g, '').replace(/\\/g, '/').replace(/^\.\//, '').replace(/\/+$/, '');
@@ -30,6 +32,12 @@ const isNonTestJs = (rel) => JS_FAMILY_EXTENSIONS.has(path.extname(rel).toLowerC
 const mustResolveFile = (absDir, ref, label) => { const abs = path.resolve(absDir, String(ref)); if (!fs.existsSync(abs)) throw usageMissingError(`${label} file not found: ${ref}`); return abs; };
 const listNonTestFiles = (absDir, options = {}) => !fs.existsSync(absDir) ? [] : collectSourceFiles(absDir, { useGitIgnore: options.useGitIgnore })
   .map((abs) => ({ abs, rel: normRel(path.relative(absDir, abs)) })).filter(({ rel }) => !isTestPath(toSegments(rel)));
+
+function inferCanonicalRole(files = []) {
+  const list = files.map(normRel).filter(Boolean);
+  if (list.some((f) => !/(?:^|\/)pages\/api(?:\/|$)/i.test(f) && (/\.(?:tsx|jsx|vue|svelte)$/i.test(f) || /(?:^|\/)(?:components|pages)(?:\/|$)/i.test(f)))) return 'frontend-engineer';
+  return list.some((f) => /(?:^|\/)(?:api|routes|services|server|db)(?:\/|\.)/i.test(f)) ? 'backend-engineer' : 'tech-lead';
+}
 
 function extractPackageEntrypoints(absDir) {
   const [pkgPath, entries] = [path.join(absDir, 'package.json'), new Set()];
@@ -190,24 +198,38 @@ function extractRoutesAndClientCalls(dir, options = {}) {
   return { backendRoutes, clientCalls, mismatches };
 }
 
+function stripCommentsPreservingStrings(raw, ext) {
+  const comments = [];
+  const stripped = ext === '.py'
+    ? raw.replace(PY_COMMENT_OR_STR_RE, (full, cmt, off) => { if (cmt) comments.push({ text: cmt, offset: off }); return full.replace(/[^\r\n]/g, ' '); })
+    : stripNonCode(raw, { jsx: JSX_EXTS.has(ext), onComment: (text, offset) => comments.push({ text, offset }) });
+  if (!comments.length) return { stripped, commentFree: raw };
+  const chars = raw.split('');
+  for (const { text, offset } of comments) for (let i = offset; i < offset + text.length && i < chars.length; i++) if (chars[i] !== '\n' && chars[i] !== '\r') chars[i] = ' ';
+  return { stripped, commentFree: chars.join('') };
+}
+
 function checkEnvParity(dir, options = {}) {
   const absDir = path.resolve(dir || process.cwd());
   const envExamplePath = path.join(absDir, '.env.example');
   if (!fs.existsSync(envExamplePath)) return { applicable: false, definedKeys: [], referencedKeys: [], missingKeys: [], references: {} };
   const definedSet = new Set([...readCleanText(envExamplePath).matchAll(/^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=/gm)].map((m) => m[1]));
   const refMap = new Map();
-  const recordKey = (key, rel) => {
-    if (!key || IGNORED_ENV_VARS.has(key) || /^npm_/i.test(key)) return;
-    if (!refMap.has(key)) refMap.set(key, new Set());
-    refMap.get(key).add(rel);
-  };
+  const recordKey = (key, rel) => { if (key && !IGNORED_ENV_VARS.has(key) && !/^npm_/i.test(key)) { if (!refMap.has(key)) refMap.set(key, new Set()); refMap.get(key).add(rel); } };
   for (const { abs, rel } of listNonTestFiles(absDir, options)) {
+    const ext = path.extname(rel).toLowerCase();
+    if (ext === '.py') {
+      const { stripped, commentFree } = stripCommentsPreservingStrings(readCleanText(abs), ext);
+      for (const m of commentFree.matchAll(PY_ENV_RE)) if (stripped.slice(m.index, m.index + 2) === 'os') recordKey(m[2] || m[4] || m[6], rel);
+      continue;
+    }
     if (!isNonTestJs(rel)) continue;
-    const stripped = stripNonCode(readCleanText(abs), { jsx: JSX_EXTS.has(path.extname(rel).toLowerCase()) });
+    const { stripped, commentFree } = stripCommentsPreservingStrings(readCleanText(abs), ext);
     for (const m of stripped.matchAll(/\b(?:process\s*\.\s*env|import\s*\.\s*meta\s*\.\s*env)\s*\.\s*([A-Za-z_][A-Za-z0-9_]*)\b/g)) recordKey(m[1], rel);
     for (const dm of stripped.matchAll(/(?:const|let|var)\s*\{([^}]+)\}\s*=\s*(?:process\s*\.\s*env|import\s*\.\s*meta\s*\.\s*env)\b/g)) {
       for (const part of dm[1].split(',')) { const id = /^([A-Za-z_][A-Za-z0-9_]*)/.exec(part.trim()); if (id) recordKey(id[1], rel); }
     }
+    for (const bm of commentFree.matchAll(/\b(?:process\s*\.\s*env|import\s*\.\s*meta\s*\.\s*env)\s*\[\s*(['"`])([A-Za-z_][A-Za-z0-9_]*)\1\s*\]/g)) if (/^(?:process|import)\b/.test(stripped.slice(bm.index))) recordKey(bm[2], rel);
   }
   const missingKeys = [...refMap.keys()].filter((k) => !definedSet.has(k)).sort();
   return { applicable: true, definedKeys: [...definedSet].sort(), referencedKeys: [...refMap.keys()].sort(), missingKeys, references: Object.fromEntries([...refMap.entries()].map(([k, s]) => [k, [...s].sort()])) };
@@ -215,16 +237,13 @@ function checkEnvParity(dir, options = {}) {
 
 function collectUnverifiedSubClauses(absDir, plan, specPaths) {
   const clauses = new Map((plan?.subClauses || []).map((sc) => [sc.id.toUpperCase(), { ...sc, id: sc.id.toUpperCase() }]));
-  for (const sp of specPaths) {
-    for (const m of readCleanText(sp).matchAll(/^\s*[-*]\s+(?:\[([ xX])\]\s+)?(?:`?\[(SC-[A-Za-z0-9_.-]+)\]`?|`(SC-[A-Za-z0-9_.-]+)`)\s*[:—–-]?\s*(.*)$/gim)) {
-      const id = (m[2] || m[3]).toUpperCase();
-      if (!clauses.has(id)) clauses.set(id, { id, checked: Boolean(m[1] && m[1].toLowerCase() === 'x'), text: `[${id}] ${m[4].trim()}`.trim() });
-    }
+  for (const sp of specPaths) for (const m of readCleanText(sp).matchAll(/^\s*[-*]\s+(?:\[([ xX])\]\s+)?(?:`?\[(SC-[A-Za-z0-9_.-]+)\]`?|`(SC-[A-Za-z0-9_.-]+)`)\s*[:—–-]?\s*(.*)$/gim)) {
+    const id = (m[2] || m[3]).toUpperCase();
+    if (!clauses.has(id)) clauses.set(id, { id, checked: Boolean(m[1] && m[1].toLowerCase() === 'x'), text: `[${id}] ${m[4].trim()}`.trim() });
   }
   if (clauses.size === 0) return [];
   const cited = new Set();
-  for (const abs of fs.existsSync(absDir) ? collectSourceFiles(absDir, {}) : []) {
-    if (!isTestPath(toSegments(normRel(path.relative(absDir, abs))))) continue;
+  for (const abs of fs.existsSync(absDir) ? collectSourceFiles(absDir, {}) : []) if (isTestPath(toSegments(normRel(path.relative(absDir, abs))))) {
     for (const m of readCleanText(abs).matchAll(/\b(SC-[A-Za-z0-9_.-]+)\b/gi)) cited.add(m[1].toUpperCase());
   }
   return [...clauses.values()].filter((sc) => !sc.checked && !cited.has(sc.id));
@@ -239,7 +258,8 @@ function scanProjectReconciliation(dir = process.cwd(), options = {}) {
   const ledger = ledgerRef ? loadLedgerFile(mustResolveFile(absDir, ledgerRef, 'Ledger'), absDir) : null;
   const specPaths = (Array.isArray(options.specs) ? options.specs : splitCommaOption(options.specs)).map((s) => mustResolveFile(absDir, s, 'Spec'));
 
-  const [g1, g2, g3, g4, warnings, gaps] = [[], [], [], [], [], []];
+  const [g1, g2, g3, g4, warnings, gaps, roleSeq] = [[], [], [], [], [], [], new Map()];
+  const nextWiringRole = (files) => { const r = inferCanonicalRole(files); const n = (roleSeq.get(r) || 0) + 1; roleSeq.set(r, n); return `${r}#wiring-${n}`; };
   const graph = buildImportGraph(absDir, options);
   const fileLookup = new Map(graph.files.map((f) => [f.toLowerCase(), f]));
   const rawTargets = Array.isArray(options.ownedFiles) ? options.ownedFiles
@@ -250,24 +270,26 @@ function scanProjectReconciliation(dir = process.cwd(), options = {}) {
     const canonical = fileLookup.get(cand.toLowerCase());
     if (canonical && isNonTestJs(canonical) && !graph.entrypoints.has(canonical) && (graph.importedBy.get(canonical)?.size || 0) === 0) {
       g1.push(`[REC-G1] Unwired island module "${canonical}" is neither an entrypoint nor imported by any non-test file.`);
-      gaps.push({ id: `GAP-G1-${gaps.length + 1}`, gate: 'REC-G1', role: 'integrator', files: defaultParent ? [defaultParent, canonical] : [canonical], title: `Wire island module ${canonical} into parent caller` });
+      gaps.push({ id: `GAP-G1-${gaps.length + 1}`, gate: 'REC-G1', role: nextWiringRole([canonical]), files: defaultParent ? [defaultParent, canonical] : [canonical], title: `Wire island module ${canonical} into parent caller` });
     }
   }
   const routeParity = extractRoutesAndClientCalls(absDir, options);
   for (const m of routeParity.mismatches) {
     g2.push(`[REC-G2] Frontend call ${m.method} "${m.rawPath}" in "${m.file}" matches 0 backend routes.`);
-    gaps.push({ id: `GAP-G2-${gaps.length + 1}`, gate: 'REC-G2', role: 'integrator', files: [m.file], title: `Reconcile unmatched API route ${m.method} ${m.rawPath}` });
+    gaps.push({ id: `GAP-G2-${gaps.length + 1}`, gate: 'REC-G2', role: nextWiringRole([m.file]), files: [m.file], title: `Reconcile unmatched API route ${m.method} ${m.rawPath}` });
   }
   for (const sc of collectUnverifiedSubClauses(absDir, plan, specPaths)) {
     const msg = `[REC-G3] Unverified sub-clause ${sc.id} ("${sc.text}") is unchecked (- [ ]) and has 0 test citations.`;
     g3.push(msg); if (!options.strict) warnings.push(msg);
     const ownerTask = plan?.tasks.find((t) => t.reqId === sc.taskId);
-    gaps.push({ id: sc.id, gate: 'REC-G3', role: ownerTask?.agent || 'integrator', files: ownerTask?.ownedFiles?.slice(0, MAX_DELTA_FILES) || (defaultParent ? [defaultParent] : []), sub_clauses: [sc.id], title: `Complete & test sub-clause ${sc.text}` });
+    const gapFiles = ownerTask?.ownedFiles?.slice(0, MAX_DELTA_FILES) || (defaultParent ? [defaultParent] : []);
+    const ownerBase = String(ownerTask?.agent || '').split('#')[0].trim().toLowerCase();
+    gaps.push({ id: sc.id, gate: 'REC-G3', role: CANONICAL_AGENT_ROLES.has(ownerBase) ? ownerTask.agent : nextWiringRole(gapFiles), files: gapFiles, sub_clauses: [sc.id], title: `Complete & test sub-clause ${sc.text}` });
   }
   const envParity = checkEnvParity(absDir, options);
   if (envParity.applicable && envParity.missingKeys.length > 0) {
     for (const key of envParity.missingKeys) g4.push(`[REC-G4] Environment variable "${key}" (referenced in ${envParity.references[key].join(', ')}) is missing from .env.example.`);
-    gaps.push({ id: `GAP-G4-${gaps.length + 1}`, gate: 'REC-G4', role: 'integrator', files: ['.env.example'], title: `Document missing env keys (${envParity.missingKeys.join(', ')}) in .env.example` });
+    gaps.push({ id: `GAP-G4-${gaps.length + 1}`, gate: 'REC-G4', role: nextWiringRole(['.env.example']), files: ['.env.example'], title: `Document missing env keys (${envParity.missingKeys.join(', ')}) in .env.example` });
   }
   const errors = [...g1, ...g2, ...(options.strict ? g3 : []), ...g4];
   return { valid: errors.length === 0, errors, warnings, gates: { 'REC-G1': g1, 'REC-G2': g2, 'REC-G3': g3, 'REC-G4': g4 }, gaps, routeParity, envParity };
@@ -289,8 +311,7 @@ function amendPlanWithDeltaWave(planPath, reconcileInputPath, options = {}) {
   const cwd = path.resolve(options.cwd || process.cwd());
   if (!planPath) throw usageMissingError('Plan file is required');
   const absPlan = mustResolveFile(cwd, planPath, 'Plan');
-  const delta = parseReconcileDeltaInput(reconcileInputPath, cwd);
-  const rawGaps = Array.isArray(delta?.gaps) ? delta.gaps : [];
+  const rawGaps = Array.isArray(parseReconcileDeltaInput(reconcileInputPath, cwd)?.gaps) ? parseReconcileDeltaInput(reconcileInputPath, cwd).gaps : [];
   let planText = readCleanText(absPlan).replace(/\r\n/g, '\n');
   const existing = parsePlanMarkdown(planText, planPath);
   if (rawGaps.length === 0) return { valid: true, amended: false, addedTasks: 0, phaseId: null, errors: [], planPath: absPlan };
@@ -307,10 +328,13 @@ function amendPlanWithDeltaWave(planPath, reconcileInputPath, options = {}) {
   for (const g of rawGaps) {
     const rawFiles = [...(g.files || []), ...(g.target_files || []), ...(g.owned_files || []), ...(g.file ? [g.file] : [])].map(normRel).filter(Boolean);
     const freshFiles = rawFiles.filter((f) => !claimedFiles.has(f.toLowerCase()));
-    const rawRole = String(g.role || g.agent || 'integrator').split('#')[0].trim() || 'integrator';
-    const prefix = (rawRole === 'integrator' || /^REC-G[124]$/.test(g.gate || '') || g.type === 'wiring') ? 'integrator#wiring' : `${rawRole}#delta`;
-    if (freshFiles.length === 0 && rawFiles.length > 0 && claimedFiles.has(rawFiles[0].toLowerCase())) { claimedFiles.get(rawFiles[0].toLowerCase()).gaps.push(g); continue; }
     const filesToAssign = freshFiles.length > 0 ? freshFiles : [fallbackFile];
+    const rawAgentStr = String(g.role || g.agent || '').trim();
+    const rawRole = rawAgentStr.split('#')[0].trim().toLowerCase();
+    const isValidRole = CANONICAL_AGENT_ROLES.has(rawRole);
+    const resolvedRole = isValidRole ? rawRole : inferCanonicalRole(rawFiles.length ? rawFiles : filesToAssign);
+    const prefix = (!isValidRole || /^REC-G[124]$/.test(g.gate || '') || g.type === 'wiring' || /#wiring\b/i.test(rawAgentStr)) ? `${resolvedRole}#wiring` : `${resolvedRole}#delta`;
+    if (freshFiles.length === 0 && rawFiles.length > 0 && claimedFiles.has(rawFiles[0].toLowerCase())) { claimedFiles.get(rawFiles[0].toLowerCase()).gaps.push(g); continue; }
     let bucket = buckets.find((b) => b.prefix === prefix && b.files.length + filesToAssign.length <= MAX_DELTA_FILES);
     if (!bucket) { bucket = { prefix, files: [], gaps: [] }; buckets.push(bucket); }
     for (const f of filesToAssign) {
@@ -349,7 +373,7 @@ function amendPlanWithDeltaWave(planPath, reconcileInputPath, options = {}) {
   return { valid: val.valid, amended: true, phaseId: `WAVE-${waveLabel}`, addedTasks: taskBlocks.length, errors: val.errors, planPath: absPlan };
 }
 
-const RECONCILE_HELP = `Usage: boomopen reconcile [dir] [--plan <plan.md>] [--specs <a.md,b.md>] [--ledger <file>] [--strict] [--json] [--help]\n  REC-G1: Island Shard | REC-G2: Route Parity | REC-G3: [SC-*] Traceability | REC-G4: .env.example Parity`;
+const RECONCILE_HELP = 'Usage: boomopen reconcile [dir] [--plan <plan.md>] [--specs <a.md,b.md>] [--ledger <file>] [--strict] [--json] [--help]\n  REC-G1: Island Shard | REC-G2: Route Parity | REC-G3: [SC-*] Traceability | REC-G4: .env.example Parity';
 const RECONCILE_ARG_SPEC = { defaults: { plan: null, specs: '', ledger: null, strict: false, json: false, help: false }, booleanFlags: { '-h': 'help', '--help': 'help', '--strict': 'strict', '--json': 'json' }, valueFlags: { '--plan': 'plan', '--specs': 'specs', '--ledger': 'ledger' } };
 
 function runReconcileCli(argv = [], options = {}) {
@@ -366,11 +390,8 @@ function runReconcileCli(argv = [], options = {}) {
       else for (const err of res.errors) console.error(`❌ ${err}`);
     }
     return res.valid ? EXIT_OK : EXIT_FAIL;
-  } catch (err) {
-    if (!options.silent) console.error(`❌ boomopen reconcile: ${err instanceof Error ? err.message : String(err)}`);
-    return err && err.code === 'ENOENT_USAGE' ? EXIT_USAGE : EXIT_FAIL;
-  }
+  } catch (err) { if (!options.silent) console.error(`❌ boomopen reconcile: ${err instanceof Error ? err.message : String(err)}`); return err && err.code === 'ENOENT_USAGE' ? EXIT_USAGE : EXIT_FAIL; }
 }
 
 if (require.main === module) process.exitCode = runReconcileCli(process.argv.slice(2));
-module.exports = { scanProjectReconciliation, buildImportGraph, extractRoutesAndClientCalls, checkEnvParity, amendPlanWithDeltaWave, runReconcileCli };
+module.exports = { scanProjectReconciliation, buildImportGraph, extractRoutesAndClientCalls, checkEnvParity, amendPlanWithDeltaWave, inferCanonicalRole, runReconcileCli };

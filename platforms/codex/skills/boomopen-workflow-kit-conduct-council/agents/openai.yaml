@@ -3,4 +3,4 @@ interface:
   short_description: "🏛️ Multi-Engine Parallel Council — Run Claude Code, OpenAI Codex, Antigravity, Cursor, and Copilot in parallel on the same Research, Plan, Review, Debug, or Brainstorm task with 4-Part Consensus Synthesis."
   brand_color: "#7C3AED"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

@@ -1,0 +1,6 @@
+interface:
+  display_name: "/pr"
+  short_description: "🚀 Pull Request Gate & Creator — Pre-PR strict quality gate (boomopen check, reconcile & diff tests), branch/commit hygiene check, and structured gh pr create"
+  brand_color: "#2563EB"
+policy:
+  allow_implicit_invocation: true

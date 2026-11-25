@@ -3,4 +3,4 @@ interface:
   short_description: "🔺 Team Design — 2.5x faster 2-Stage Elastic Golden Diamond, ui-ux-pro-max intelligence, 6-Block DESIGN_CONTRACT & 4-Gate adversarial validation"
   brand_color: "#EC4899"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

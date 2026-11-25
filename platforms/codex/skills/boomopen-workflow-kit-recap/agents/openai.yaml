@@ -3,4 +3,4 @@ interface:
   short_description: "🔄 Restore Session Context — Recover project state in seconds from .boomopen/project-ledger.json, cook state, SESSION-{date}.md Brain Artifacts, and session_manager.py"
   brand_color: "#14B8A6"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

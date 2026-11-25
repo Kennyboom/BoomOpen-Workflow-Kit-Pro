@@ -2,9 +2,8 @@
 
 /**
  * Multi-Round Human-Gated Post-Completion Audit Engine (`boomopen audit`).
- * Manages `.boomopen/audit-ledger.json` and `.boomopen/AUDIT-PROGRESS.md` across
- * progressive rounds (`R1..R4+`), fingerprint deduplication, `wont_fix` suppression,
- * `P3` nitpick freeze, oscillation circuit-breaking, and strict `RED -> GREEN` fix ratchets.
+ * Manages `.boomopen/audit-ledger.json` and `.boomopen/AUDIT-PROGRESS.md` across progressive rounds,
+ * fingerprint deduplication, `wont_fix` suppression, `P3` nitpick freeze, oscillation halts, and git rollback.
  */
 
 const crypto = require('node:crypto');
@@ -16,6 +15,7 @@ const { inspectSourceFile, resolveActiveStandards } = require('./checker.js');
 const { CODE_EXTENSIONS } = require('./checker-rules.js');
 const { EXIT_OK, EXIT_FAIL, EXIT_USAGE, parseSubcommandArgs, splitCommaOption, runVerifyCommands } = require('./cli-args.js');
 const { KIT_VERSION } = require('./doctor-version.js');
+const { createGitCheckpoint, rollbackToGitCheckpoint } = require('./git-checkpoints.js');
 const { readCleanText } = require('./markdown-fences.js');
 
 const DEFAULT_AUDIT_REL = path.join('.boomopen', 'audit-ledger.json');
@@ -58,8 +58,7 @@ function renderAuditProgressMarkdown(ledger) {
     '|-------|-------|-------|----------|-----------------|------------|-----------|---------------|-------------|',
     ...(ledger.rounds || []).map((r) => `| \`R${r.round}\` | \`${r.focus}\` | ${r.added_ids.length} | ${r.reopened_ids.length} | ${r.verified_closed_ids.length} | ${r.suppressed_count} | ${r.nitpick_frozen_dropped} | ${r.open_blockers} | \`${r.state_after}\` |`),
     '', '## 📋 Audit Findings Ledger', '| ID | Sev | Dimension | Location | Title | Status | Reopens |', '|----|-----|-----------|----------|-------|--------|---------|',
-    ...(ledger.findings || []).map((f) => `| \`${f.id}\` | \`${f.severity}\` | \`${f.dimension}\` | \`${f.primary_location}\` | ${f.title} | \`${f.status}\` | ${f.reopen_count || 0} |`),
-    '',
+    ...(ledger.findings || []).map((f) => `| \`${f.id}\` | \`${f.severity}\` | \`${f.dimension}\` | \`${f.primary_location}\` | ${f.title} | \`${f.status}\` | ${f.reopen_count || 0} |`), '',
   ].join('\n');
 }
 
@@ -73,19 +72,20 @@ function saveAuditLedger(pathOrCwd, ledger) {
   fs.writeFileSync(progressPath, renderAuditProgressMarkdown(ledger), 'utf8');
   return { ledgerPath, progressPath };
 }
+
 function loadAuditLedger(pathOrOpts, cwd) {
   const base = pathOrOpts && typeof pathOrOpts === 'object' ? null : path.resolve(cwd || process.cwd(), String(pathOrOpts || DEFAULT_AUDIT_REL));
   const ledgerPath = base ? (fs.existsSync(base) && fs.statSync(base).isDirectory() ? path.join(base, DEFAULT_AUDIT_REL) : base) : resolveAuditPaths(pathOrOpts.cwd || cwd, pathOrOpts.file).ledgerPath;
   if (!fs.existsSync(ledgerPath)) throw new Error(`Audit ledger not found at ${ledgerPath}. Run "boomopen audit init" first.`);
   return JSON.parse(readCleanText(ledgerPath));
 }
+
 function initAuditLedger(options = {}) {
   const paths = resolveAuditPaths(options.cwd, options.file);
   const maxRounds = options.maxRounds === undefined ? 4 : Number.parseInt(String(options.maxRounds), 10);
   if (!Number.isInteger(maxRounds) || maxRounds < 1) throw new Error('--max-rounds must be a positive integer.');
   const scan = runAuditStaticScan(paths.cwd, { docs: options.docs, homeDir: options.homeDir, useGitIgnore: options.useGitIgnore });
-  let baselineTests = Number.isInteger(options.passedTests) ? options.passedTests : 0;
-  const priorTests = [];
+  let [baselineTests, priorTests] = [Number.isInteger(options.passedTests) ? options.passedTests : 0, []];
   if (scan.spec_sources.ledger_present) {
     try {
       const proj = JSON.parse(readCleanText(path.join(paths.cwd, '.boomopen', 'project-ledger.json')));
@@ -93,11 +93,13 @@ function initAuditLedger(options = {}) {
       for (const f of proj.features || []) if (f.passes && Array.isArray(f.test_files)) priorTests.push(...f.test_files);
     } catch { /* optional project-ledger enrichment */ }
   }
-  const now = new Date().toISOString();
+  const cp = createGitCheckpoint(paths.cwd, 'audit-round-1');
+  const [preSha, now] = [cp.available ? cp.headSha : null, new Date().toISOString()];
   const ledger = {
     schema_version: KIT_VERSION, project_name: options.name || scan.spec_sources.project_name || path.basename(paths.cwd),
     created_at: now, updated_at: now, mode: scan.spec_sources.mode, auto_fix: Boolean(options.autoFix),
     state: 'SCANNING_ROUND', current_round: 1, max_rounds: maxRounds, approval_policy: 'P0_P1_P2',
+    pre_round_sha: preSha, round_checkpoints: preSha ? { '1': preSha } : {},
     current_passed_tests: baselineTests, locked_regression_tests: normalizeFileArray(priorTests), modified_files_by_round: {},
     baseline_metrics: { scanned_files: scan.scanned_files, strict_violations: scan.strict_check.violations.length, static_hazards: scan.cross_module_hazards.hazards.length, current_passed_tests: baselineTests },
     spec_sources: scan.spec_sources, system_graph: { files: scan.files, vertical_flows: scan.vertical_flows, static_hazards: scan.cross_module_hazards, strict_violations: scan.strict_check.violations },
@@ -106,6 +108,7 @@ function initAuditLedger(options = {}) {
   saveAuditLedger(paths.ledgerPath, ledger);
   return { ledger, paths };
 }
+
 function findOneHopNeighbors(targetFiles, ledger) {
   const seed = new Set(targetFiles.map(normFileOnly).filter(Boolean));
   const neighbors = new Set(seed);
@@ -143,8 +146,7 @@ function getRoundSlice(ledger, options = {}) {
   return {
     round, max_rounds: ledger.max_rounds, focus, mode: ledger.mode, read_only_lock: true, nitpick_freeze: round >= 3,
     reaudit_items: reauditItems, reaudit_files: reauditFiles, suppressed_fingerprints: suppressed,
-    pre_findings: round === 1 ? [...(hazards.hazards || []), ...(ledger.system_graph?.strict_violations || []).map((v) => ({ category: 'strict_check', severity: 'P1', message: v }))] : [],
-    shards,
+    pre_findings: round === 1 ? [...(hazards.hazards || []), ...(ledger.system_graph?.strict_violations || []).map((v) => ({ category: 'strict_check', severity: 'P1', message: v }))] : [], shards,
   };
 }
 
@@ -190,7 +192,6 @@ function recordRoundFindings(ledger, payload, options = {}) {
     const [sev, loc] = [normalizeSeverity(raw.severity), normRel(raw.primary_location || raw.file || raw.owned_files?.[0] || 'global')];
     const owned = normalizeFileArray(raw.owned_files || raw.files || [loc]);
     if (round >= 3 && sev === 'P3' && !owned.some((f) => touchedPrior.has(f))) { nitpickFrozenDropped++; continue; }
-
     const id = `AUD-${String(ledger.findings.length + 1).padStart(3, '0')}`;
     const finding = {
       id, fingerprint: fp, severity: sev, dimension: String(raw.dimension || raw.category || 'general').trim().toLowerCase(),
@@ -202,16 +203,14 @@ function recordRoundFindings(ledger, payload, options = {}) {
     ledger.findings.push(finding); byId.set(id, finding); byFp.set(fp, finding); addedIds.push(id);
   }
   for (const f of ledger.findings) {
-    if (f.status === 'fixed_pending_reaudit' && (f.fixed_in_round || 0) < round && !handledPending.has(f.id)) {
-      applyReauditOutcome(f, 'verified_closed', round, handledPending, reopenedIds, verifiedClosedIds);
-    }
+    if (f.status === 'fixed_pending_reaudit' && (f.fixed_in_round || 0) < round && !handledPending.has(f.id)) applyReauditOutcome(f, 'verified_closed', round, handledPending, reopenedIds, verifiedClosedIds);
   }
   const openBlockers = ledger.findings.filter((f) => ACTIVE_OPEN.has(f.status) && BLOCKING_SEVERITIES.has(f.severity)).length;
   const pendingReaudit = ledger.findings.filter((f) => f.status === 'fixed_pending_reaudit').length;
   const hasOscillation = ledger.findings.some((f) => (f.reopen_count || 0) >= 2 && ACTIVE_OPEN.has(f.status));
-  ledger.state = hasOscillation || (round > (ledger.max_rounds || 4) && openBlockers > 0) ? 'HALTED_OSCILLATION' : (openBlockers === 0 && pendingReaudit === 0 ? 'CONVERGED' : 'AWAITING_USER_APPROVAL');
+  ledger.state = hasOscillation || (round >= (ledger.max_rounds || 4) && openBlockers > 0) ? 'HALTED_OSCILLATION' : (openBlockers === 0 && pendingReaudit === 0 ? 'CONVERGED' : 'AWAITING_USER_APPROVAL');
 
-  const summary = { round, focus: ROUND_FOCUS[round] || 'SCOPED_DELTA_SIGNOFF', recorded_at: new Date().toISOString(), added_ids: addedIds, reopened_ids: reopenedIds, verified_closed_ids: verifiedClosedIds, suppressed_count: suppressedCount, nitpick_frozen_dropped: nitpickFrozenDropped, open_blockers: openBlockers, state_after: ledger.state };
+  const summary = { round, focus: ROUND_FOCUS[round] || 'SCOPED_DELTA_SIGNOFF', recorded_at: new Date().toISOString(), added_ids: addedIds, reopened_ids: reopenedIds, verified_closed_ids: verifiedClosedIds, suppressed_count: suppressedCount, nitpick_frozen_dropped: nitpickFrozenDropped, open_blockers: openBlockers, state_after: ledger.state, pre_round_sha: ledger.round_checkpoints?.[String(round)] || ledger.pre_round_sha || null };
   ledger.rounds = [...(ledger.rounds || []).filter((r) => r.round !== round), summary].sort((a, b) => a.round - b.round);
   return summary;
 }
@@ -255,29 +254,28 @@ function applyUserDecisions(ledger, options = {}) {
     const idUp = f.id.toUpperCase();
     if (excludeSet.has(idUp)) { f.status = 'wont_fix'; wontFixIds.push(f.id); }
     else if (deferSet.has(idUp)) { f.status = 'deferred'; deferredIds.push(f.id); }
-    else if (ACTIVE_OPEN.has(f.status) && (selectTokens.has('ALL') || selectTokens.has(idUp) || selectTokens.has(f.severity.toUpperCase()))) {
-      f.status = 'approved'; approvedIds.push(f.id);
-    }
+    else if (ACTIVE_OPEN.has(f.status) && (selectTokens.has('ALL') || selectTokens.has(idUp) || selectTokens.has(f.severity.toUpperCase()))) { f.status = 'approved'; approvedIds.push(f.id); }
   }
   const approvedFindings = (ledger.findings || []).filter((f) => f.status === 'approved');
   const pendingReaudit = (ledger.findings || []).filter((f) => f.status === 'fixed_pending_reaudit').length;
   if (approvedFindings.length === 0 && pendingReaudit === 0) {
     ledger.state = 'CONVERGED'; ledger.fix_packets = [];
-    return { state: ledger.state, short_circuited: true, approved_ids: [], wont_fix_ids: wontFixIds, deferred_ids: deferredIds, fix_packets: [] };
+    return { state: ledger.state, short_circuited: true, approved_ids: [], wont_fix_ids: wontFixIds, deferred_ids: deferredIds, fix_packets: [], pre_round_sha: ledger.pre_round_sha || null };
+  }
+  if (options.cwd) {
+    const cp = createGitCheckpoint(options.cwd, `audit-round-${round}`);
+    if (cp.available) { ledger.pre_round_sha = cp.headSha; ledger.round_checkpoints = { ...(ledger.round_checkpoints || {}), [String(round)]: cp.headSha }; }
   }
   ledger.fix_packets = buildFixShardPackets(approvedFindings, ledger, round);
   ledger.state = 'FIXING';
-  return { state: ledger.state, short_circuited: false, approved_ids: approvedIds, wont_fix_ids: wontFixIds, deferred_ids: deferredIds, fix_packets: ledger.fix_packets };
+  return { state: ledger.state, short_circuited: false, approved_ids: approvedIds, wont_fix_ids: wontFixIds, deferred_ids: deferredIds, fix_packets: ledger.fix_packets, pre_round_sha: ledger.round_checkpoints?.[String(round)] || ledger.pre_round_sha || null };
 }
 
 function verifyRoundFixes(ledger, options = {}) {
-  const cwd = path.resolve(options.cwd || process.cwd());
-  const round = parseRoundOpt(options.round, ledger.current_round || 1);
-  const approved = (ledger.findings || []).filter((f) => f.status === 'approved');
-  const lockedTests = normalizeFileArray(options.lockedTests || []);
+  const [cwd, round] = [path.resolve(options.cwd || process.cwd()), parseRoundOpt(options.round, ledger.current_round || 1)];
+  const [approved, lockedTests] = [(ledger.findings || []).filter((f) => f.status === 'approved'), normalizeFileArray(options.lockedTests || [])];
   const touched = [...new Set([...approved.flatMap((f) => [...(f.owned_files || []), ...(f.test_files || [])]), ...lockedTests])];
-  const activeStd = resolveActiveStandards(cwd, { cwd, homeDir: options.homeDir });
-  const violations = [];
+  const [activeStd, violations] = [resolveActiveStandards(cwd, { cwd, homeDir: options.homeDir }), []];
 
   for (const rel of touched) {
     const abs = path.resolve(cwd, rel);
@@ -308,10 +306,28 @@ function verifyRoundFixes(ledger, options = {}) {
     ledger.state = 'CONVERGED';
   } else {
     for (const f of approved) { f.status = 'fixed_pending_reaudit'; f.fixed_in_round = round; }
-    ledger.current_round = round + 1; ledger.state = 'SCANNING_ROUND';
+    const nextRound = round + 1;
+    ledger.current_round = nextRound; ledger.state = 'SCANNING_ROUND';
+    if (options.cwd) {
+      const cp = createGitCheckpoint(cwd, `audit-round-${nextRound}`);
+      if (cp.available) { ledger.pre_round_sha = cp.headSha; ledger.round_checkpoints = { ...(ledger.round_checkpoints || {}), [String(nextRound)]: cp.headSha }; }
+    }
   }
   ledger.fix_packets = [];
-  return { passed: true, violations: [], state: ledger.state, current_round: ledger.current_round, locked_regression_tests: ledger.locked_regression_tests };
+  return { passed: true, violations: [], state: ledger.state, current_round: ledger.current_round, locked_regression_tests: ledger.locked_regression_tests, pre_round_sha: ledger.pre_round_sha || null };
+}
+
+function rollbackAuditRound(ledger, options = {}) {
+  const round = parseRoundOpt(options.round, ledger.current_round || 1);
+  const shaOrRef = ledger.round_checkpoints?.[String(round)] || ledger.rounds?.find((r) => r.round === round)?.pre_round_sha || ledger.pre_round_sha || `audit-round-${round}`;
+  const rb = rollbackToGitCheckpoint(options.cwd, shaOrRef, { confirm: Boolean(options.confirm) });
+  if (!rb.ok) return { ok: false, round, error: rb.error };
+  for (const f of ledger.findings || []) {
+    if (f.status === 'approved' || (f.status === 'fixed_pending_reaudit' && (f.fixed_in_round || 0) >= round)) { f.status = 'open'; delete f.fixed_in_round; }
+  }
+  ledger.fix_packets = []; ledger.current_round = round; ledger.pre_round_sha = rb.restoredSha;
+  ledger.state = (ledger.findings || []).some((f) => ACTIVE_OPEN.has(f.status)) ? 'AWAITING_USER_APPROVAL' : 'SCANNING_ROUND';
+  return { ok: true, round, restored_sha: rb.restoredSha, summary: rb.summary, state: ledger.state };
 }
 
 function getAuditStatus(ledger) {
@@ -321,20 +337,13 @@ function getAuditStatus(ledger) {
     if (counts[f.status] !== undefined) counts[f.status]++;
     if (ACTIVE_OPEN.has(f.status) && openBySev[f.severity] !== undefined) openBySev[f.severity]++;
   }
-  return { project_name: ledger.project_name, mode: ledger.mode, state: ledger.state, current_round: ledger.current_round, max_rounds: ledger.max_rounds, auto_fix: Boolean(ledger.auto_fix), current_passed_tests: ledger.current_passed_tests || 0, locked_regression_tests: ledger.locked_regression_tests || [], open_blockers: openBySev.P0 + openBySev.P1 + openBySev.P2 + openBySev.SPEC_GAP, counts, open_by_severity: openBySev, rounds: ledger.rounds || [] };
+  return { project_name: ledger.project_name, mode: ledger.mode, state: ledger.state, current_round: ledger.current_round, max_rounds: ledger.max_rounds, auto_fix: Boolean(ledger.auto_fix), pre_round_sha: ledger.pre_round_sha || null, current_passed_tests: ledger.current_passed_tests || 0, locked_regression_tests: ledger.locked_regression_tests || [], open_blockers: openBySev.P0 + openBySev.P1 + openBySev.P2 + openBySev.SPEC_GAP, counts, open_by_severity: openBySev, rounds: ledger.rounds || [] };
 }
 
-const AUDIT_HELP = [
-  'Usage: boomopen audit <init|slice|record|approve|verify-fix|status|help> [options]',
-  '  init [--docs <a.md,b.md>] [--max-rounds <N>] [--auto-fix] [--file <path>] [--json]',
-  '  slice [--round <k>] [--file <path>] [--json] | record [--round <k>] --input <findings.json> [--json]',
-  '  approve [--round <k>] [--select <all|P0,P1,P2|AUD-001,...>] [--exclude <ids>] [--defer <ids>] [--json]',
-  '  verify-fix [--round <k>] [--passed-tests <N>] [--locked-tests <a,b>] [--run-verify] [--finalize] [--json]',
-].join('\n');
-
+const AUDIT_HELP = 'Usage: boomopen audit <init|slice|record|approve|verify-fix|rollback|status|help> [options]\n  init | slice | record --input <file> | approve | verify-fix | rollback [--round <k>] --yes | status';
 const AUDIT_ARG_SPEC = {
-  defaults: { docs: '', name: null, maxRounds: undefined, autoFix: false, round: undefined, input: null, select: '', exclude: '', defer: '', passedTests: undefined, lockedTests: '', verifyCmd: '', runVerify: false, finalize: false, file: null, json: false, help: false },
-  booleanFlags: { '-h': 'help', '--help': 'help', '--json': 'json', '--auto-fix': 'autoFix', '--run-verify': 'runVerify', '--finalize': 'finalize' },
+  defaults: { docs: '', name: null, maxRounds: undefined, autoFix: false, round: undefined, input: null, select: '', exclude: '', defer: '', passedTests: undefined, lockedTests: '', verifyCmd: '', runVerify: false, finalize: false, yes: false, file: null, json: false, help: false },
+  booleanFlags: { '-h': 'help', '--help': 'help', '--json': 'json', '--auto-fix': 'autoFix', '--run-verify': 'runVerify', '--finalize': 'finalize', '--yes': 'yes', '-y': 'yes' },
   valueFlags: { '--docs': 'docs', '--name': 'name', '--max-rounds': 'maxRounds', '--round': 'round', '--input': 'input', '--select': 'select', '--exclude': 'exclude', '--defer': 'defer', '--passed-tests': 'passedTests', '--locked-tests': 'lockedTests', '--verify-cmd': 'verifyCmd', '--file': 'file' },
 };
 
@@ -343,8 +352,7 @@ function runAuditCli(argv = [], options = {}) {
   if (error) { if (!options.silent) console.error(`❌ boomopen audit: ${error}\n\n${AUDIT_HELP}`); return EXIT_USAGE; }
   const sub = (positional[0] || 'status').toLowerCase();
   if (flags.help || sub === 'help') { if (!options.silent) console.log(AUDIT_HELP); return EXIT_OK; }
-  const cwd = path.resolve(options.cwd || process.cwd());
-  const paths = resolveAuditPaths(cwd, flags.file);
+  const [cwd, paths] = [path.resolve(options.cwd || process.cwd()), resolveAuditPaths(options.cwd, flags.file)];
   const printOut = (obj, text) => { if (!options.silent) console.log(flags.json ? JSON.stringify(obj, null, 2) : text); };
   try {
     if (sub === 'init') {
@@ -358,23 +366,23 @@ function runAuditCli(argv = [], options = {}) {
       const inputPath = flags.input || positional[1];
       if (!inputPath) { if (!options.silent) console.error('❌ boomopen audit record requires --input <findings.json>'); return EXIT_USAGE; }
       const res = recordRoundFindings(ledger, JSON.parse(readCleanText(path.resolve(cwd, inputPath))), { round: flags.round });
-      saveAuditLedger(paths.ledgerPath, ledger);
-      printOut(res, `📊 Recorded Round ${res.round}: state=${res.state_after} (${res.open_blockers} open blockers)`);
-      return EXIT_OK;
+      saveAuditLedger(paths.ledgerPath, ledger); printOut(res, `📊 Recorded Round ${res.round}: state=${res.state_after} (${res.open_blockers} open blockers)`); return EXIT_OK;
     }
     if (sub === 'approve') {
-      const res = applyUserDecisions(ledger, { round: flags.round, select: flags.select, exclude: flags.exclude, defer: flags.defer });
-      saveAuditLedger(paths.ledgerPath, ledger);
-      printOut(res, `✅ Audit state: ${res.state} (${res.approved_ids.length} approved, ${res.fix_packets.length} shards)`);
-      return EXIT_OK;
+      const res = applyUserDecisions(ledger, { cwd, round: flags.round, select: flags.select, exclude: flags.exclude, defer: flags.defer });
+      saveAuditLedger(paths.ledgerPath, ledger); printOut(res, `✅ Audit state: ${res.state} (${res.approved_ids.length} approved, ${res.fix_packets.length} shards)`); return EXIT_OK;
     }
     if (sub === 'verify-fix' || sub === 'verify') {
       const passedTests = flags.passedTests === undefined ? undefined : (/^\d+$/.test(String(flags.passedTests)) ? Number.parseInt(String(flags.passedTests), 10) : Number.NaN);
       const res = verifyRoundFixes(ledger, { cwd, homeDir: options.homeDir, round: flags.round, passedTests, lockedTests: flags.lockedTests, verifyCmd: flags.verifyCmd, runVerify: flags.runVerify, finalize: flags.finalize });
       if (!res.passed) { if (!options.silent) for (const v of res.violations) console.error(`❌ ${v}`); return EXIT_FAIL; }
-      saveAuditLedger(paths.ledgerPath, ledger);
-      printOut(res, `✅ Verified fixes! Next state: ${res.state} (Round ${res.current_round})`);
-      return EXIT_OK;
+      saveAuditLedger(paths.ledgerPath, ledger); printOut(res, `✅ Verified fixes! Next state: ${res.state} (Round ${res.current_round})`); return EXIT_OK;
+    }
+    if (sub === 'rollback') {
+      if (!flags.yes) { if (!options.silent) console.error('❌ boomopen audit rollback requires --yes.'); return EXIT_USAGE; }
+      const res = rollbackAuditRound(ledger, { cwd, round: flags.round, confirm: true });
+      if (!res.ok) { if (!options.silent) console.error(`❌ ${res.error}`); return EXIT_FAIL; }
+      saveAuditLedger(paths.ledgerPath, ledger); printOut(res, `⏪ ${res.summary} (Round ${res.round}, state=${res.state})`); return EXIT_OK;
     }
     if (sub === 'status') { saveAuditLedger(paths.ledgerPath, ledger); printOut(getAuditStatus(ledger), renderAuditProgressMarkdown(ledger)); return EXIT_OK; }
     if (!options.silent) console.error(`❌ Unknown audit subcommand "${sub}"\n\n${AUDIT_HELP}`);
@@ -386,4 +394,4 @@ function runAuditCli(argv = [], options = {}) {
 }
 
 if (require.main === module) process.exitCode = runAuditCli(process.argv.slice(2));
-module.exports = { computeFindingFingerprint, initAuditLedger, loadAuditLedger, saveAuditLedger, getRoundSlice, recordRoundFindings, applyUserDecisions, verifyRoundFixes, getAuditStatus, runAuditCli };
+module.exports = { computeFindingFingerprint, initAuditLedger, loadAuditLedger, saveAuditLedger, getRoundSlice, recordRoundFindings, applyUserDecisions, verifyRoundFixes, rollbackAuditRound, getAuditStatus, runAuditCli };

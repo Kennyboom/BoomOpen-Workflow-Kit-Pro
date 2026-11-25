@@ -7,7 +7,7 @@ const { spawnSync } = require('node:child_process');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const FIXTURE_DIRS = ['cli', 'agents', 'commands', 'rules', 'documents', 'matrix-skills', 'skills', 'platforms'];
-const FIXTURE_FILES = ['README.md', 'SKILL.md', 'AGENT.md', 'CLAUDE.md', 'COPILOT.md', 'GEMINI.md', 'package.json'];
+const FIXTURE_FILES = ['README.md', 'SKILL.md', 'AGENT.md', 'CLAUDE.md', 'CODEX.md', 'COPILOT.md', 'CURSOR.md', 'GEMINI.md', 'package.json'];
 const CLI_TIMEOUT_MS = 180000;
 
 const tempDir = (prefix) => fs.mkdtempSync(path.join(os.tmpdir(), prefix));
@@ -56,7 +56,7 @@ function vsCodePromptsFile(home) {
   return path.join(base, 'boomopen-workflow-kit.agent.md');
 }
 
-test('every installed file with a settings block is synced; user files and other tools are not (H9/H10)', { timeout: 600000 }, () => {
+test('fresh install writes <2.5KB frontier-guardrails slim entrypoints, round-trips presets, and uninstalls cleanly', { timeout: 600000 }, () => {
   const kitRoot = buildFixtureKit();
   const home = tempDir('boomopen-settings-home-');
   const cwd = tempDir('boomopen-settings-cwd-');
@@ -70,7 +70,6 @@ test('every installed file with a settings block is synced; user files and other
 
     runCli(kitRoot, home, cwd, ['install', 'copilot']);
     runCli(kitRoot, home, cwd, ['install', 'cursor']);
-    runCli(kitRoot, home, cwd, ['settings', 'set', 'execution.mode', 'team']);
 
     const synced = [
       vsCodePromptsFile(home),
@@ -80,6 +79,16 @@ test('every installed file with a settings block is synced; user files and other
       path.join(home, '.cursor', 'AGENT.md'),
       path.join(home, '.cursor', 'rules', 'boomopen-workflow-kit.mdc'),
     ];
+    for (const file of synced) {
+      const content = read(file);
+      assert.ok(Buffer.byteLength(content, 'utf8') < 2500, `${file} fresh install must be < 2.5KB`);
+      assert.match(content, /\*\*Active Preset\*\*: `frontier-guardrails`/);
+      assert.doesNotMatch(content, /Carbon drives/);
+    }
+    assert.match(read(path.join(home, '.cursor', 'rules', 'boomopen-workflow-kit.mdc')), /^---\r?\ndescription:/);
+    assert.match(read(vsCodePromptsFile(home)), /^---\r?\nname: BoomOpen Workflow Kit/);
+
+    runCli(kitRoot, home, cwd, ['settings', 'set', 'execution.mode', 'team']);
     for (const file of synced) {
       assert.match(read(file), /\*\*Execution Mode \(`execution.mode`\)\*\*: `team`/, `${file} must be synced`);
     }
@@ -102,16 +111,25 @@ test('every installed file with a settings block is synced; user files and other
       assert.equal(fs.existsSync(file), false, `${file} must be removed by uninstall after a settings sync`);
     }
 
-    // Antigravity --with-hooks + carbon-guardrails E2E: <3KB GEMINI.md, hooks.json active, clean uninstall
+    // Antigravity --with-hooks: fresh frontier-guardrails <2.5KB -> smart-hybrid full -> carbon-guardrails <2.5KB -> uninstall
     fs.unlinkSync(userGemini);
+    runCli(kitRoot, home, cwd, ['settings', 'reset']);
     runCli(kitRoot, home, cwd, ['install', 'antigravity', '--with-hooks']);
-    runCli(kitRoot, home, cwd, ['settings', 'preset', 'carbon-guardrails']);
     const agGemini = path.join(home, '.gemini', 'GEMINI.md');
+    const agAgent = path.join(home, '.gemini', 'agents', 'AntigravityGlobal.agent.md');
     const agHooks = path.join(home, '.gemini', 'config', 'hooks.json');
-    assert.ok(Buffer.byteLength(read(agGemini), 'utf8') < 3000, 'carbon-guardrails GEMINI.md must be < 3KB');
+    assert.ok(Buffer.byteLength(read(agGemini), 'utf8') < 2500, 'default frontier-guardrails GEMINI.md must be < 2.5KB');
+    const agAgentBody = read(agAgent).replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n+/, '');
+    assert.ok(Buffer.byteLength(agAgentBody, 'utf8') < 2500, 'default AntigravityGlobal.agent.md slim body must be < 2.5KB');
+    runCli(kitRoot, home, cwd, ['settings', 'preset', 'smart-hybrid']);
+    assert.match(read(agGemini), /Anti-Solo-Crawling Rule/);
+    runCli(kitRoot, home, cwd, ['settings', 'preset', 'carbon-guardrails']);
+    assert.ok(Buffer.byteLength(read(agGemini), 'utf8') < 2500, 'carbon-guardrails GEMINI.md must be < 2.5KB');
+    assert.match(read(agGemini), /CARBON-GUARDRAILS EDITION/);
     assert.match(read(agHooks), /boomopen-guard/);
     runCli(kitRoot, home, cwd, ['uninstall', 'antigravity']);
     assert.equal(fs.existsSync(agGemini), false);
+    assert.equal(fs.existsSync(agAgent), false);
     assert.equal(fs.existsSync(agHooks), false);
   } finally {
     for (const dir of [home, cwd, kitRoot]) fs.rmSync(dir, { recursive: true, force: true });

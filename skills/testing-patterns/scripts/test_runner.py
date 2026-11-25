@@ -36,7 +36,20 @@ EXIT_USAGE = 2
 PYTEST_NO_TESTS_EXIT_CODE = 5
 TEST_TIMEOUT_SECONDS = 300
 NPM_PLACEHOLDER_TEST = "no test specified"
-NODE_TEST_SUFFIXES = (".test.js", ".test.mjs", ".test.cjs")
+NODE_TEST_SUFFIXES = (
+    ".test.js",
+    ".test.mjs",
+    ".test.cjs",
+    ".test.jsx",
+    ".test.ts",
+    ".test.tsx",
+    ".spec.js",
+    ".spec.mjs",
+    ".spec.cjs",
+    ".spec.jsx",
+    ".spec.ts",
+    ".spec.tsx",
+)
 SKIP_SCAN_DIRS = {"node_modules", ".git", "dist", "build", ".next", "coverage", "__pycache__", ".venv", "venv", "target"}
 
 

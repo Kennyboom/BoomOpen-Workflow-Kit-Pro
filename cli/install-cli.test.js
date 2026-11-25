@@ -84,7 +84,7 @@ test('CLI flags, exit codes and machine-readable output', () => {
     for (const args of [['frobnicate'], ['install', 'bogus-tool'], ['uninstall'], ['uninstall', 'bogus-tool'], ['install']]) {
       assert.equal(runCli(kitRoot, home, args).status, 1, `boomopen ${args.join(' ')} must fail`);
     }
-    for (const args of [['install', 'claude', '--with-hook'], ['uninstall', '--all', '--dry-run'], ['install', 'claude', 'cursor']]) {
+    for (const args of [['install', 'claude', '--with-hook'], ['uninstall', '--all', '--dry-run'], ['install', 'claude', 'cursor'], ['install', 'claude', '--as-plugin']]) {
       assert.equal(runCli(kitRoot, home, args).status, 2, `boomopen ${args.join(' ')} must reject invalid options with exit 2`);
     }
     assert.equal(fs.existsSync(path.join(home, '.claude')), false, 'a non-interactive or rejected `install` writes nothing');
@@ -146,10 +146,22 @@ test('claude: install, upgrade and uninstall keep user files and leave nothing o
     const framework = path.join(claude, 'skills', 'boomopen-workflow-kit');
     assert.ok(fs.readdirSync(path.join(framework, 'scripts')).some((f) => f.endsWith('.py')), 'Python helpers installed');
     assert.ok(fs.existsSync(path.join(framework, 'hooks', 'validate-tool-call.mjs')), 'guard hook installed');
+    assert.ok(fs.existsSync(path.join(framework, 'hooks', 'stop-quality-gate.mjs')), 'stop quality gate hook installed');
+    assert.ok(fs.existsSync(path.join(framework, 'commands', '_ref')), '_ref kept inside framework commands/');
+    assert.ok(fs.existsSync(path.join(framework, 'agents', 'teams')), 'teams kept inside framework agents/');
+    assert.equal(fs.existsSync(path.join(claude, 'commands', '_ref')), false, '_ref skipped in IDE commands picker');
+    assert.equal(fs.existsSync(path.join(claude, 'agents', 'teams')), false, 'teams skipped in IDE agents picker');
+    assert.ok(fs.existsSync(path.join(claude, 'commands', 'plan', 'hard.md')), 'Claude colon command /plan:hard generated');
+    assert.ok(fs.existsSync(path.join(claude, 'commands', 'cook', 'team.md')), 'Claude colon command /cook:team generated');
+    assert.ok(fs.existsSync(path.join(claude, 'commands', 'audit', 'fix.md')), 'Claude colon command /audit:fix generated');
+    assert.match(read(path.join(claude, 'commands', 'deploy-production.md')), /disable-model-invocation: true/);
+    assert.match(read(path.join(claude, 'commands', 'deploy-rollback.md')), /disable-model-invocation: true/);
+    assert.doesNotMatch(read(path.join(claude, 'commands', 'plan-hard.md')), /<appDataDir>[\\/]+brain[\\/]+<conversation-id>/);
     const installedCli = fs.readdirSync(path.join(framework, 'cli'));
     assert.ok(installedCli.includes('install.js'), 'CLI installed');
     assert.deepEqual(installedCli.filter((f) => /\.test(?:-helper)?\.js$/.test(f)), [], 'test-only files are not installed');
-    assert.match(read(path.join(claude, 'settings.json')), /validate-tool-call\.mjs/, 'opt-in guard hook registered');
+    assert.match(read(path.join(claude, 'settings.json')), /Bash\|PowerShell/, 'Bash|PowerShell matcher registered');
+    assert.match(read(path.join(claude, 'settings.json')), /stop-quality-gate\.mjs/, 'Stop & PreCompact hook registered');
     assert.ok(fs.existsSync(path.join(claude, 'skills_library', 'demo-vault', '.env.example')), 'dotfiles ship');
     assert.match(read(path.join(claude, 'skills_library', 'demo-vault', 'SKILL.md')), /\{TOOL\}/, 'vendored text is verbatim');
     // No earlier kit install exists, so a skill that merely shares a legacy kit name is the user's
@@ -222,5 +234,40 @@ test('settings --project writes to the caller folder only for `npm run settings`
     assert.equal(viaNpm.status, 0, viaNpm.stderr);
     assert.ok(fs.existsSync(path.join(caller, '.boomopen.json')));
     assert.equal(fs.existsSync(path.join(kitRoot, '.boomopen.json')), false);
+  });
+});
+
+test('antigravity --as-plugin, copilot .agent.md + copilot-instructions.md, and cursor --with-hooks work end-to-end', { timeout: 600000 }, () => {
+  withSandbox((kitRoot, home) => {
+    // Malformed legacy ~/.gemini/config/skills.json without "entries" array is removed on Antigravity install
+    write(path.join(home, '.gemini', 'config', 'skills.json'), '{"legacy":true}\n');
+    const agPlugin = runCli(kitRoot, home, ['install', 'antigravity', '--as-plugin']);
+    assert.equal(agPlugin.status, 0, agPlugin.stdout + agPlugin.stderr);
+    assert.equal(fs.existsSync(path.join(home, '.gemini', 'config', 'skills.json')), false, 'malformed legacy skills.json removed');
+    assert.equal(fs.existsSync(path.join(home, '.antigravity')), false, 'dead ~/.antigravity folder never created');
+    assert.equal(fs.existsSync(path.join(home, '.gemini', 'config', 'global_workflows')), false, 'deprecated global_workflows never created');
+
+    const pluginDir = path.join(home, '.gemini', 'config', 'plugins', 'boomopen-workflow-kit');
+    assert.ok(fs.existsSync(path.join(pluginDir, 'plugin.json')));
+    assert.ok(fs.existsSync(path.join(pluginDir, 'rules', 'AGENTS.md')));
+    assert.ok(fs.existsSync(path.join(pluginDir, 'hooks.json')));
+    assert.ok(fs.existsSync(path.join(pluginDir, 'agents', 'debugger.md')));
+    assert.equal(fs.existsSync(path.join(pluginDir, 'agents', 'teams')), false);
+    assert.equal(runCli(kitRoot, home, ['uninstall', 'antigravity']).status, 0);
+    assert.equal(fs.existsSync(pluginDir), false);
+
+    // Copilot installs copilot-instructions.md + COPILOT.md and <stem>.agent.md without string-array handoffs
+    assert.equal(runCli(kitRoot, home, ['install', 'copilot']).status, 0);
+    assert.ok(fs.existsSync(path.join(home, '.copilot', 'copilot-instructions.md')));
+    assert.ok(fs.existsSync(path.join(home, '.copilot', 'COPILOT.md')));
+    assert.ok(fs.existsSync(path.join(home, '.copilot', 'agents', 'backend-engineer.agent.md')));
+    assert.doesNotMatch(read(path.join(home, '.copilot', 'agents', 'backend-engineer.agent.md')), /^handoffs:/m);
+    assert.equal(runCli(kitRoot, home, ['uninstall', 'copilot']).status, 0);
+
+    // Cursor --with-hooks writes ~/.cursor/hooks.json beforeShellExecution and uninstalls cleanly
+    assert.equal(runCli(kitRoot, home, ['install', 'cursor', '--with-hooks']).status, 0);
+    assert.match(read(path.join(home, '.cursor', 'hooks.json')), /beforeShellExecution/);
+    assert.equal(runCli(kitRoot, home, ['uninstall', 'cursor']).status, 0);
+    assert.equal(fs.existsSync(path.join(home, '.cursor', 'hooks.json')), false);
   });
 });

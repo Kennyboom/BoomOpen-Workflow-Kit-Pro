@@ -2,7 +2,8 @@
 
 /**
  * Static checks on the platform bundles in platforms/ (no install, no network):
- * generated Codex command skills, clean frontmatter, role TOMLs that inherit the user's model,
+ * generated Codex command skills, implicit-invocation gating, Antigravity run_workflow Python
+ * orchestration templates, clean frontmatter, role TOMLs that inherit the user's model,
  * and entry files the installer recognises as kit-owned.
  */
 
@@ -17,8 +18,21 @@ const { isKitOwnedText } = require('./markers.js');
 const REPO_ROOT = path.resolve(__dirname, '..');
 const PLATFORMS_DIR = path.join(REPO_ROOT, 'platforms');
 const CODEX_SKILLS_DIR = path.join(PLATFORMS_DIR, 'codex', 'skills');
+const ANTIGRAVITY_WORKFLOWS_DIR = path.join(PLATFORMS_DIR, 'antigravity', 'workflows');
 const C1_CONTROL_CHARS = /[\u0080-\u009F]/;
-const TEXT_EXTENSIONS = new Set(['.md', '.mdc', '.toml', '.yaml', '.yml', '.json', '']);
+const TEXT_EXTENSIONS = new Set(['.md', '.mdc', '.toml', '.yaml', '.yml', '.json', '.py', '']);
+const MAX_WORKFLOW_PY_LINES = 120;
+const PYTHON_CANDIDATES = [['python3'], ['python'], ['py', '-3']];
+
+function findPython() {
+  for (const candidate of PYTHON_CANDIDATES) {
+    const probe = spawnSync(candidate[0], [...candidate.slice(1), '-c', 'import sys; print(sys.version_info[0])'], {
+      encoding: 'utf8',
+    });
+    if (probe.status === 0 && probe.stdout.trim() === '3') return candidate;
+  }
+  return null;
+}
 
 function listFiles(dir) {
   const out = [];
@@ -30,17 +44,55 @@ function listFiles(dir) {
   return out;
 }
 
-test('Codex command skills are generated from commands/*.md and up to date (L10, L11, M11)', () => {
+test('Codex command skills are generated from commands/*.md and gate implicit invocation cleanly (L10, L11, M11)', () => {
   const script = path.join(REPO_ROOT, '.github', 'scripts', 'generate-codex-skills.js');
   const result = spawnSync(process.execPath, [script, '--check'], { encoding: 'utf8' });
   assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
   const commands = fs.readdirSync(path.join(REPO_ROOT, 'commands')).filter((name) => name.endsWith('.md'));
+  assert.equal(commands.length, 87, 'expected 87 workflow command files in commands/*.md');
+  for (const required of ['onboard.md', 'pr.md', 'pr-review.md', 'release.md']) {
+    assert.ok(commands.includes(required), `missing commands/${required}`);
+  }
+
+  let implicitTrue = 0;
   for (const name of commands) {
-    const skillDir = path.join(CODEX_SKILLS_DIR, `boomopen-workflow-kit-${name.slice(0, -3)}`);
+    const stem = name.slice(0, -3);
+    const skillDir = path.join(CODEX_SKILLS_DIR, `boomopen-workflow-kit-${stem}`);
     assert.ok(fs.existsSync(path.join(skillDir, 'SKILL.md')), `missing Codex skill for commands/${name}`);
     const yaml = fs.readFileSync(path.join(skillDir, 'agents', 'openai.yaml'), 'utf8');
     assert.match(yaml, /^interface:\r?\n {2}display_name: /m, `${name}: openai.yaml must nest keys under interface:`);
-    assert.match(yaml, /^policy:\r?\n {2}allow_implicit_invocation: /m, `${name}: openai.yaml must nest keys under policy:`);
+    assert.match(yaml, /^policy:\r?\n {2}allow_implicit_invocation: (?:true|false)/m, `${name}: openai.yaml must nest keys under policy:`);
+    if (/allow_implicit_invocation: true/.test(yaml)) implicitTrue += 1;
+  }
+
+  for (const explicitOnly of ['cook-hard', 'cook-fast', 'cook-team', 'pr-review', 'audit-run', 'autopilot-run', 'conduct-council', 'docs-core', 'deploy-production', 'deploy', 'release', 'save', 'recap', 'settings']) {
+    const yaml = fs.readFileSync(path.join(CODEX_SKILLS_DIR, `boomopen-workflow-kit-${explicitOnly}`, 'agents', 'openai.yaml'), 'utf8');
+    assert.match(yaml, /allow_implicit_invocation: false/, `${explicitOnly} must disable implicit invocation`);
+  }
+  for (const safePrimary of ['cook', 'plan', 'onboard', 'pr', 'review']) {
+    const yaml = fs.readFileSync(path.join(CODEX_SKILLS_DIR, `boomopen-workflow-kit-${safePrimary}`, 'agents', 'openai.yaml'), 'utf8');
+    assert.match(yaml, /allow_implicit_invocation: true/, `${safePrimary} should allow implicit invocation`);
+  }
+  assert.ok(implicitTrue <= 32, `expected <= 32 implicit Codex skills, got ${implicitTrue}`);
+});
+
+test('Antigravity run_workflow Python templates are <= 120 LF lines and py_compile clean', () => {
+  const expected = ['audit_fanout.py', 'review_fanout.py', 'research_fanout.py'];
+  const py = findPython();
+  for (const file of expected) {
+    const full = path.join(ANTIGRAVITY_WORKFLOWS_DIR, file);
+    assert.ok(fs.existsSync(full), `missing platforms/antigravity/workflows/${file}`);
+    const content = fs.readFileSync(full, 'utf8');
+    assert.ok(!content.includes('\r\n'), `${file} must use LF line endings`);
+    const lines = content.split('\n').length - (content.endsWith('\n') ? 1 : 0);
+    assert.ok(lines <= MAX_WORKFLOW_PY_LINES, `${file}: ${lines} lines > ${MAX_WORKFLOW_PY_LINES}`);
+    for (const primitive of ['phase(', 'agent(', 'parallel(', 'log(', 'WORKSPACES', 'schema=']) {
+      assert.ok(content.includes(primitive), `${file} must use run_workflow primitive ${primitive}`);
+    }
+    if (py) {
+      const check = spawnSync(py[0], [...py.slice(1), '-B', '-m', 'py_compile', full], { encoding: 'utf8' });
+      assert.equal(check.status, 0, `${file} failed py_compile: ${check.stderr}`);
+    }
   }
 });
 

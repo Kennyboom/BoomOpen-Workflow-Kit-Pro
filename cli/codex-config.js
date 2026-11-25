@@ -7,19 +7,18 @@
  *  - tables are only ever appended inside the managed block at the end of the file;
  *  - tables or keys the user already defines are never redefined ([agents], [agents.<role>],
  *    [features], dotted features.* keys, inline tables): the kit skips them and says so;
+ *  - [agents].max_threads syncs from active settings execution.maxParallelSubagents (default 8);
  *  - single lines the kit adds outside the block end with KIT_LINE_TAG;
  *  - a user line the kit rewrites (project_doc_fallback_filenames) is tagged KIT_MERGED_TAG and its
  *    original text is stored inside the block, so uninstall restores it byte-for-byte;
- *  - edits the user makes to tagged lines are folded back into their own config (reinstall and
- *    uninstall keep them): e.g. a name added to the merged list, or multi_agent switched off;
- *  - the block stores a hash of its body, so an edit inside the block can be detected (and the
- *    file backed up) before a reinstall resets it;
+ *  - the block stores a hash of its body, so an edit inside the block can be detected before reset;
  *  - a leading UTF-8 BOM (Windows PowerShell 5.1) is set aside while editing and put back.
  */
 
 const crypto = require('node:crypto');
 
 const { CODEX_MARKER_START, CODEX_MARKER_END, stripMarkedBlock } = require('./markers.js');
+const { loadGlobalSettings } = require('./settings-store.js');
 const { scanToml } = require('./toml-lite.js');
 
 const KIT_LINE_TAG = '# boomopen-workflow-kit';
@@ -27,12 +26,13 @@ const KIT_MERGED_TAG = '# boomopen-workflow-kit:merged';
 const ORIGINAL_LINE_PREFIX = '# boomopen-original-line: ';
 const BLOCK_HASH_PREFIX = '# boomopen-block-sha256: ';
 const FORMAT_LINE = '# boomopen-config-format: 2';
-const BOM = '﻿';
+const BOM = '\uFEFF';
 const FALLBACK_KEY = 'project_doc_fallback_filenames';
 const KIT_FALLBACK_FILES = ['AGENT.md', 'CODEX.md', 'AGENTS.md', '.agents.md'];
 const AGENTS_TABLE = 'agents';
 const FEATURES_TABLE = 'features';
 const MULTI_AGENT_KEY = 'multi_agent';
+const DEFAULT_MAX_THREADS = 8;
 
 class CodexConfigError extends Error {
     constructor(message) {
@@ -77,15 +77,34 @@ function parseStringArray(rawValue) {
     return items;
 }
 
+function resolveMaxThreads(options = {}) {
+    if (Number.isInteger(options.maxThreads) && options.maxThreads > 0) return options.maxThreads;
+    const fromSettings = options.settings && options.settings.execution && options.settings.execution.maxParallelSubagents;
+    if (Number.isInteger(fromSettings) && fromSettings > 0) return fromSettings;
+    if (options.homeDir) {
+        try {
+            const loaded = loadGlobalSettings({ homeDir: options.homeDir }).execution.maxParallelSubagents;
+            if (Number.isInteger(loaded) && loaded > 0) return loaded;
+        } catch {
+            return DEFAULT_MAX_THREADS;
+        }
+    }
+    return DEFAULT_MAX_THREADS;
+}
+
 /** Sections of the bundled template: [{ path, lines }] for every table header. */
-function parseTemplate(templateText) {
+function parseTemplate(templateText, maxThreads = DEFAULT_MAX_THREADS) {
     const scan = scanToml(templateText);
     if (!scan.ok) throw new CodexConfigError(`bundled config template is invalid: ${scan.error}`);
     const { lines } = splitLines(templateText);
     const headers = scan.statements.filter((s) => s.type === 'header');
     return headers.map((header, i) => {
         const nextStart = i + 1 < headers.length ? headers[i + 1].startLine : lines.length;
-        const body = lines.slice(header.startLine, nextStart).filter((l) => l.trim() !== '' && !l.trim().startsWith('#'));
+        const isRootAgents = header.path.length === 1 && header.path[0] === AGENTS_TABLE;
+        const body = lines
+            .slice(header.startLine, nextStart)
+            .filter((l) => l.trim() !== '' && !l.trim().startsWith('#'))
+            .map((l) => (isRootAgents ? l.replace(/^(\s*max_threads\s*=\s*)\d+/, `$1${maxThreads}`) : l));
         return { path: header.path, lines: body };
     });
 }
@@ -117,12 +136,10 @@ function extractBlock(text) {
     return { blockText: text.slice(start, end), hasBlock: true };
 }
 
-/** Split a leading UTF-8 BOM off the text. */
 function splitBom(text) {
     return text.startsWith(BOM) ? { bom: BOM, body: text.slice(BOM.length) } : { bom: '', body: text };
 }
 
-/** String items of a `project_doc_fallback_filenames = [...]` line, or null for any other line. */
 function fallbackValues(line) {
     const match = /^\s*project_doc_fallback_filenames\s*=\s*([\s\S]*)$/.exec(line);
     return match ? parseStringArray(match[1]) : null;
@@ -131,13 +148,9 @@ function fallbackValues(line) {
 const sameList = (a, b) => a.length === b.length && a.every((value, i) => value === b[i]);
 const squash = (line) => line.replace(/\s+/g, '');
 
-/**
- * The user's line behind a KIT_MERGED_TAG line: the stored original when the line is still what the
- * kit wrote, otherwise the user's edited list without the names the kit added.
- */
 function unmergeMergedLine(body, original) {
     const current = fallbackValues(body);
-    if (typeof original !== 'string' || current === null) return [body]; // no stored original, or rewritten by hand
+    if (typeof original !== 'string' || current === null) return [body];
     const originalValues = fallbackValues(original);
     if (originalValues === null) return original.split(/\r?\n/);
     const kitAdded = KIT_FALLBACK_FILES.filter((name) => !originalValues.includes(name));
@@ -149,21 +162,14 @@ const PRISTINE_KIT_LINES = new Set(
     [`${FALLBACK_KEY} = ${quoteList(KIT_FALLBACK_FILES)}`, `${FEATURES_TABLE}.${MULTI_AGENT_KEY} = true`, `${MULTI_AGENT_KEY} = true`].map(squash)
 );
 
-/** What is left of a KIT_LINE_TAG line: nothing while unchanged, the user's edit otherwise. */
 function unmergeKitLine(body) {
     if (body === '' || PRISTINE_KIT_LINES.has(squash(body))) return [];
     const values = fallbackValues(body);
-    if (values === null) return [body]; // e.g. multi_agent switched to false: now the user's line
+    if (values === null) return [body];
     const own = values.filter((name) => !KIT_FALLBACK_FILES.includes(name));
     return own.length ? [`${FALLBACK_KEY} = ${quoteList(own)}`] : [];
 }
 
-/**
- * Remove everything the kit added. Returns '' when nothing user-authored remains.
- * Edits the user made to tagged lines are kept as their own lines.
- * @param {string} text current config.toml
- * @returns {{ text: string, isLegacy: boolean }} isLegacy: block written by an older kit (no format line)
- */
 function unmergeCodexConfigText(text) {
     const { bom, body: source } = splitBom(text);
     const { blockText, hasBlock } = extractBlock(source);
@@ -186,17 +192,11 @@ function unmergeCodexConfigText(text) {
     return { text: result.trim() === '' ? '' : bom + result.trimEnd() + eol, isLegacy };
 }
 
-/** sha256 of the block's TOML lines (comments and blank lines excluded). */
 function hashBlockBody(lines) {
     const body = lines.map((l) => l.trimEnd()).filter((l) => l.trim() !== '' && !l.trim().startsWith('#'));
     return crypto.createHash('sha256').update(body.join('\n')).digest('hex');
 }
 
-/**
- * True when the TOML inside the kit's managed block differs from what the kit wrote (the user
- * edited it); a reinstall would reset those edits. Blocks without a stored hash report false.
- * @param {string} text current config.toml
- */
 function isManagedBlockEdited(text) {
     let blockText;
     try {
@@ -322,12 +322,12 @@ function buildBlock(edits, original, eol) {
 /**
  * @param {string} userText current config.toml ('' when missing)
  * @param {string} templateText bundled platforms/codex/config.toml
+ * @param {{ maxThreads?: number, settings?: object, homeDir?: string }} [options]
  * @returns {{ text: string, notes: string[] }}
- * @throws {CodexConfigError} when the existing file or the result is not valid TOML
  */
-function mergeCodexConfigText(userText, templateText) {
-    const template = parseTemplate(templateText);
-    // The BOM is set aside: inserted root lines must never land between it and the first line.
+function mergeCodexConfigText(userText, templateText, options = {}) {
+    const maxThreads = resolveMaxThreads(options);
+    const template = parseTemplate(templateText, maxThreads);
     const { bom, body: userBody } = splitBom(userText);
     const cleaned = unmergeCodexConfigText(userBody).text;
     const scan = scanToml(cleaned);
@@ -354,6 +354,7 @@ module.exports = {
     KIT_LINE_TAG,
     KIT_MERGED_TAG,
     KIT_FALLBACK_FILES,
+    DEFAULT_MAX_THREADS,
     CodexConfigError,
     mergeCodexConfigText,
     isManagedBlockEdited,

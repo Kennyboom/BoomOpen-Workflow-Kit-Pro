@@ -207,7 +207,7 @@ async def on_poem_message(context: TurnContext, _state: TurnState):
 
     # Stream from Azure OpenAI
     streamed_response = await CLIENT.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4.1",
         messages=[
             {"role": "system", "content": "You are a creative assistant."},
             {"role": "user", "content": "Write a poem about Python."}

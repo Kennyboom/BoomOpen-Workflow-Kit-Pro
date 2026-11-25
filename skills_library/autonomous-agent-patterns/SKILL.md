@@ -98,9 +98,9 @@ class MultiModelAgent:
 
     def __init__(self):
         self.models = {
-            "fast": "gpt-3.5-turbo",      # Quick decisions
-            "smart": "gpt-4-turbo",        # Complex reasoning
-            "code": "claude-3-sonnet",     # Code generation
+            "fast": "gpt-4.1-mini",      # Quick decisions
+            "smart": "gpt-5.4",        # Complex reasoning
+            "code": "claude-sonnet-4-6",     # Code generation
         }
 
     def select_model(self, task_type: str) -> str:

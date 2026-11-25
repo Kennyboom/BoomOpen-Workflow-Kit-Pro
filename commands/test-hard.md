@@ -61,6 +61,13 @@ node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <test-dir> --st
 ```
 *(Also run `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py --suite <project-root>` or `playwright_runner.py <http-url> [--a11y] [--screenshot]` when E2E tests exist, and `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <ui-dir>` when UI files are in scope.)*
 
+### 🌐 Visual Browser E2E Verification *(Mandatory When Web/UI Routes Are in Scope)*
+Static code tests cannot catch runtime hydration crashes, broken CSS layout stacking, or dead click handlers. Whenever web UI screens or frontend routes are in scope:
+1. Start (or confirm) the local dev/preview server (`python ~/.{TOOL}/skills/boomopen-workflow-kit/scripts/auto_preview.py start` or existing localhost URL).
+2. Execute live **Visual Browser E2E Verification**:
+   - **Antigravity 2.0**: Dispatch the native browser subagent via `invoke_subagent(TypeName: "browser", Model: "flash", Role: "Visual UI E2E Verifier", Prompt: "Open <localhost-url>, verify live DOM rendering, exercise primary click/form flows, check responsive viewports at 375px, 768px, and 1440px, and report any hydrated console/page errors or broken UI states.")` and cross-check `BROWSER_HOST_FACTS`.
+   - **Claude Code / OpenAI Codex / Cursor / Copilot**: Run **Playwright MCP** browser actions or execute `npx playwright test` (and `python ~/.{TOOL}/skills/webapp-testing/scripts/playwright_runner.py <http-url> --a11y --screenshot`) to verify live DOM rendering, interactive click flows, responsive viewports (`375px` / `768px` / `1440px`), and **zero hydrated browser console/runtime errors**!
+
 Synthesize **1 cohesive `<appDataDir>\brain\<conversation-id>\TEST-{scope}.md` (`<= 500` lines)**:
 1. **Executive Gate Verdict & Coverage Summary** (`Pass/Fail` counts per pyramid layer, coverage %, `QA-G1..G4` status).
 2. **Requirements Traceability Matrix (`AC -> Shard -> Test File:Line -> Status`)**.

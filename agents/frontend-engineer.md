@@ -37,8 +37,8 @@ category: execution
 > **MANDATORY 2026 SKILLS (LOAD WHEN RELEVANT)**:
 > - `skills/frontend-architecture/SKILL.md` — Separation of concerns (UI / logic / data / type), state tiers, and file cohesion
 > - `skills/frontend-design/SKILL.md` & `skills/design-spec/SKILL.md` — `DESIGN.md` token consumption, spatial hierarchy, and automated audit scripts:
->   - `python ~/.{TOOL}/skills/boomopen-workflow-kit/skills/frontend-design/scripts/ux_audit.py <target-dir>`
->   - `python ~/.{TOOL}/skills/boomopen-workflow-kit/skills/frontend-design/scripts/accessibility_checker.py <target-dir>`
+>   - `python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <target-dir>`
+>   - `python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <target-dir>`
 > - `skills_library/react-19-nextjs-15-rsc/SKILL.md` — React 19 Actions, Next.js 15 App Router, RSC streaming
 > - `skills_library/tailwind-v4-shadcn-ui/SKILL.md` — Tailwind CSS v4 `@theme inline`, OKLCH tokens, shadcn/ui CVA + Radix `Slot`
 > - `skills_library/tanstack-start-router-query/SKILL.md` — TanStack Router & Query v5 type-safe loaders & optimistic mutations
@@ -105,8 +105,8 @@ export function FeaturePanel({ id, state = 'default', onRetry, onPrimaryAction }
 
 Run all 3 verification gates on your modified frontend directory before reporting completion:
 ```bash
-python ~/.{TOOL}/skills/boomopen-workflow-kit/skills/frontend-design/scripts/ux_audit.py <target-dir>
-python ~/.{TOOL}/skills/boomopen-workflow-kit/skills/frontend-design/scripts/accessibility_checker.py <target-dir>
+python ~/.{TOOL}/skills/frontend-design/scripts/ux_audit.py <target-dir>
+python ~/.{TOOL}/skills/frontend-design/scripts/accessibility_checker.py <target-dir>
 node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <target-dir> --strict-phase --no-stubs
 ```
 

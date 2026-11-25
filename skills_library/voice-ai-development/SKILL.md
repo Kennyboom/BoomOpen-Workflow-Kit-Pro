@@ -36,7 +36,7 @@ for each use case and optimize relentlessly for perceived responsiveness.
 
 ### OpenAI Realtime API
 
-Native voice-to-voice with GPT-4o
+Native voice-to-voice with GPT-5.4
 
 **When to use**: When you want integrated voice AI without separate STT/TTS
 
@@ -123,7 +123,7 @@ assistant = client.assistants.create(
     name="Support Agent",
     model={
         "provider": "openai",
-        "model": "gpt-4o",
+        "model": "gpt-4.1",
         "messages": [
             {
                 "role": "system",

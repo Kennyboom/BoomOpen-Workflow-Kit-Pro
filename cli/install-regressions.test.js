@@ -316,3 +316,70 @@ test('doctor --source-only skips corrupt host ~/.boomopen/settings.json and Anti
     }
   });
 });
+
+test('shared ~/.agents/skills_library deduplicates across platforms and survives partial uninstalls', () => {
+  withSandbox((kit, home) => {
+    ok(runCli(kit, home, ['install', 'claude']), 'install claude');
+    ok(runCli(kit, home, ['install', 'cursor']), 'install cursor');
+
+    const sharedVault = path.join(home, '.agents', 'skills_library');
+    assert.ok(fs.existsSync(path.join(sharedVault, LEGACY_SKILL, 'SKILL.md')), 'shared vault populated once');
+    assert.ok(fs.existsSync(path.join(home, '.claude', 'skills_library', LEGACY_SKILL, 'SKILL.md')));
+    assert.ok(fs.existsSync(path.join(home, '.cursor', 'skills_library', LEGACY_SKILL, 'SKILL.md')));
+
+    // Uninstalling claude removes claude's link without deleting shared ~/.agents/skills_library while cursor still uses it
+    ok(runCli(kit, home, ['uninstall', 'claude']), 'uninstall claude');
+    assert.equal(fs.existsSync(path.join(home, '.claude', 'skills_library')), false);
+    assert.ok(fs.existsSync(path.join(sharedVault, LEGACY_SKILL, 'SKILL.md')), 'shared vault kept for cursor');
+    assert.ok(fs.existsSync(path.join(home, '.cursor', 'skills_library', LEGACY_SKILL, 'SKILL.md')));
+
+    // Uninstalling the last referencing tool cleans up ~/.agents/skills_library and ~/.agents
+    ok(runCli(kit, home, ['uninstall', 'cursor']), 'uninstall cursor');
+    assert.equal(fs.existsSync(sharedVault), false);
+    assert.equal(fs.existsSync(path.join(home, '.agents')), false);
+  });
+});
+
+test('upgrading a real manifested skills_library directory (with retired skills) converts to shared junction without wiping ~/.agents/skills_library', () => {
+  const { sha256 } = require('./manifest.js');
+  withSandbox((kit, home) => {
+    // Simulate a pre-dedup v5.5 install where ~/.claude/skills_library was a real folder recorded in claude.json,
+    // including a retired skill ('old-retired-skill') that the current kit no longer ships.
+    const claudeLib = path.join(home, '.claude', 'skills_library');
+    const retiredContent = '# retired skill\n';
+    write(path.join(claudeLib, LEGACY_SKILL, 'SKILL.md'), VAULT_SKILL_TEXT);
+    write(path.join(claudeLib, 'old-retired-skill', 'SKILL.md'), retiredContent);
+    write(path.join(home, '.claude', 'skills', 'boomopen-workflow-kit', 'SKILL.md'), '# kit\n');
+    write(
+      manifestPath(home, 'claude'),
+      JSON.stringify({
+        format: 1,
+        tool: 'claude',
+        kitVersion: KIT_VERSION,
+        files: {
+          [`.claude/skills_library/${LEGACY_SKILL}/SKILL.md`]: sha256(Buffer.from(VAULT_SKILL_TEXT)),
+          '.claude/skills_library/old-retired-skill/SKILL.md': sha256(Buffer.from(retiredContent)),
+        },
+        dirs: [
+          '.claude/skills_library',
+          `.claude/skills_library/${LEGACY_SKILL}`,
+          '.claude/skills_library/old-retired-skill',
+        ],
+        backups: {},
+        legacyMoves: {},
+      }, null, 1) + '\n'
+    );
+
+    // First upgrade converts directly to a junction and pruneStale MUST NOT follow the junction or delete it
+    ok(runCli(kit, home, ['install', 'claude']), 'upgrade claude 1');
+    const sharedVault = path.join(home, '.agents', 'skills_library');
+    assert.ok(fs.existsSync(path.join(sharedVault, LEGACY_SKILL, 'SKILL.md')), 'shared vault intact after upgrade');
+    assert.ok(fs.existsSync(path.join(claudeLib, LEGACY_SKILL, 'SKILL.md')), 'claude skills_library link resolves');
+    assert.equal(fs.existsSync(path.join(claudeLib, 'old-retired-skill')), false, 'retired skill pruned cleanly');
+
+    // Second reinstall remains healthy and idempotent
+    ok(runCli(kit, home, ['install', 'claude']), 'upgrade claude 2');
+    assert.ok(fs.existsSync(path.join(sharedVault, LEGACY_SKILL, 'SKILL.md')), 'shared vault intact on reinstall');
+    assert.ok(fs.existsSync(path.join(claudeLib, LEGACY_SKILL, 'SKILL.md')), 'claude skills_library link still resolves');
+  });
+});

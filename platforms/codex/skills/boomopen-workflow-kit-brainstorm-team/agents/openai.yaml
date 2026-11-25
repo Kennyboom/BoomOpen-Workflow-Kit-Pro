@@ -3,4 +3,4 @@ interface:
   short_description: "🔺 Team Brainstorm — 2-Stage Elastic Golden Diamond Grounding, Multi-Engine Council, Devil's Advocate Pre-Mortem Cross-Exam & MCDA Decision Blueprint"
   brand_color: "#EC4899"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

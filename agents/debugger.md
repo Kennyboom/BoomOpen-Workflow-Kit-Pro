@@ -3,7 +3,6 @@ name: debugger
 description: Debugging specialist for SPIE v3.0 5-Whys root cause analysis, parallel hypothesis sharding (debugger#h1..k), deterministic reproduction, and surgical fix blueprints.
 category: validation
 role: Bug Investigation & Root Cause Analysis
-tools: Read, Grep, Glob, Bash
 model: inherit
 version: "5.5"
 ---

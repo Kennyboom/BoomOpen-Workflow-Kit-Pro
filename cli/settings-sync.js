@@ -1,14 +1,14 @@
 'use strict';
 
 /**
- * Renders the active-settings block and hot-syncs it into the kit's installed entry files.
+ * Renders the active-settings block and hot-syncs it (including < 2.5 KB Slim Guardrails swaps)
+ * into the kit's installed entry files across all 5 supported platforms.
  *
  * Safety rules:
  * - only kit-owned files (see markers.isKitOwnedText) are touched;
  * - only a file with exactly one standalone START line followed by exactly one END line is updated;
  * - in a shared instruction file only the kit's own marked block is searched, never the user's text;
- * - sync never inserts a new block (installed files already ship with one), so a user file can never
- *   gain a block and a damaged marker pair can never eat surrounding text;
+ * - YAML frontmatter on `.agent.md` and `.mdc` files is preserved across slim/full swaps;
  * - one unreadable/unwritable file is reported and the remaining files are still synced.
  */
 
@@ -28,39 +28,20 @@ const { DEFAULT_SETTINGS, validateAndSanitizeSettings, resolvePresetLabel } = re
 const { canonicalPath } = require('./install-ownership.js');
 const { recordKitRewrite } = require('./manifest.js');
 const { loadGlobalSettings } = require('./settings-store.js');
+const {
+  KIT_DIR_NAME,
+  isSlimGuardrailsPreset,
+  isSlimRegion,
+  extractLeadingFrontmatter,
+  renderActiveSettingsMarkdown,
+  renderPlatformSlimBody,
+  renderAntigravitySlimBody,
+  cacheFullTemplateIfManifested,
+  loadPlatformFullTemplate,
+} = require('./settings-slim.js');
 
-const KIT_DIR_NAME = 'boomopen-workflow-kit';
 const COPILOT_AGENT_FILE = 'boomopen-workflow-kit.agent.md';
-const ANTIGRAVITY_EDITION_TAG = 'GEMINI/ANTIGRAVITY ';
-const CARBON_SLIM_TAG = 'GEMINI/ANTIGRAVITY CARBON-GUARDRAILS EDITION';
 const FENCE_PATTERN = /^\s*(```|~~~)/;
-
-function renderActiveSettingsMarkdown(settings = DEFAULT_SETTINGS) {
-  const s = validateAndSanitizeSettings(settings, DEFAULT_SETTINGS);
-  const cs = s.codingStandards;
-  const t = s.execution.modeAThresholdFiles;
-  if (s.preset === 'carbon-guardrails') {
-    return [
-      SETTINGS_MARKER_START,
-      '## 🎛️ ACTIVE USER SETTINGS (`~/.boomopen/settings.json` | `/settings`)',
-      `- **Active Preset**: \`${s.preset}\` | **Execution Mode (\`execution.mode\`)**: \`${s.execution.mode}\` (\`≤ ${t}\` files direct; Carbon drives daily tasks) | **Swarm**: \`${s.execution.swarmScaling}\` (max \`${s.execution.maxParallelSubagents}\`)`,
-      `- **Workflows**: \`defaultVariant = ${s.workflows.defaultVariant}\` | \`naturalLanguageResearchTrigger = ${s.workflows.naturalLanguageResearchTrigger}\` (explicit \`/cmd\` only — zero NL hijacking)`,
-      `- **Standards**: \`${cs.preset}\` (Soft \`${cs.softFileLines}\` / Hard \`${cs.hardFileLines}\`L, \`forbidExplicitAny = ${cs.forbidExplicitAny}\`, \`warnConsoleLog = ${cs.warnConsoleLog}\`) | \`verification = ${s.verification.level}\` | \`deliverables = ${s.deliverables.routing}\` | \`lang = ${s.language.response}\``,
-      SETTINGS_MARKER_END,
-    ].join('\n');
-  }
-  return [
-    SETTINGS_MARKER_START,
-    '## 🎛️ ACTIVE USER SETTINGS OVERRIDE (Managed via `/settings` & `~/.boomopen/settings.json`)',
-    '> **PRECEDENCE**: `1. Explicit Turn Command (/cmd:variant, @fast/@deep/@team)` > `2. Workspace ./.boomopen.json` > `3. Active Settings Below` > `4. Default File Rules`.',
-    `- **Active Preset**: \`${s.preset}\` | **Execution Mode (\`execution.mode\`)**: \`${s.execution.mode}\` (\`auto\` = **Proactive Sub-agent First**: Spawn parallel subagents on Turn 1 (your platform's subagent tool; a read-only scout for scouting) whenever scope is unknown, requires scouting/audit/research across > ${t} files, or spans ≥ 2 domains; use Mode A Direct ONLY for known-target micro-edits ≤ ${t} files or simple Q&A; \`mode_a\` = Force Direct Solo Mode unless \`:hard\`/\`:team\`/\`/orchestrate\`; \`mode_b\` = Force Multi-Agent Orchestrator; \`team\` = Force Golden Triangle 3-Agent \`:team\`) | **Swarm Scaling (\`execution.swarmScaling\`)**: \`${s.execution.swarmScaling}\` | **Max Parallel Sub-agents (\`execution.maxParallelSubagents\`)**: \`${s.execution.maxParallelSubagents}\``,
-    `- **Workflows**: \`defaultVariant = ${s.workflows.defaultVariant}\` (\`auto\`|\`fast\`|\`hard\`|\`team\`|\`ask\`) | \`naturalLanguageResearchTrigger = ${s.workflows.naturalLanguageResearchTrigger}\` (\`auto_team\` routes NL research/ideation/review to \`:team\` and NL plan/design/debug/fix/test/cook/docs to \`commands/{cmd}-{variant}.md\` across all 17 languages | \`auto_hard\` → \`:hard\` | \`ask_first\` | \`off\`)`,
-    `- **Intelligence & Research**: \`models.subagentPolicy = ${s.models.subagentPolicy}\` (\`inherit\` = subagents inherit the session model; never downgrade core roles) | \`research.depth = ${s.research.depth}\` | \`clarification.style = ${s.clarification.style}\` | \`teams.maxDebateRounds = ${s.teams.maxDebateRounds}\` | **Cross-Engine Routing (\`engines.*\`)**: \`researcher=${s.engines.researcher}, planner=${s.engines.planner}, coder=${s.engines.coder}, debugger=${s.engines.debugger}, reviewer=${s.engines.reviewer}, council=[${s.engines.councilMembers}]\``,
-    `- **Standards & Verification**: \`codingStandards.preset = ${cs.preset}\` (Soft \`${cs.softFileLines}\` / Hard \`${cs.hardFileLines}\` lines, \`forbidExplicitAny = ${cs.forbidExplicitAny}\`, \`warnConsoleLog = ${cs.warnConsoleLog}\`) | \`verification.level = ${s.verification.level}\``,
-    `- **Deliverables & Language**: \`deliverables.routing = ${s.deliverables.routing}\` (\`brain_artifacts\` = \`<appDataDir>\\brain\\<conversation-id>\\\` on Antigravity, \`./reports/{topic}/\` elsewhere) | \`language.response = ${s.language.response}\``,
-    SETTINGS_MARKER_END,
-  ].join('\n');
-}
 
 const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const markerLinePattern = (marker) => new RegExp(`^[ \\t]*${escapeRegex(marker)}[ \\t]*(?=\\r?$)`, 'gm');
@@ -110,8 +91,8 @@ function findDividerOffset(content) {
  * Pure helper: replaces a well-formed block, inserts one into text that has no markers at all,
  * and returns text with damaged markers unchanged.
  */
-function injectSettingsBlockIntoText(content, settings = DEFAULT_SETTINGS) {
-  const block = matchLineEndings(renderActiveSettingsMarkdown(settings), content);
+function injectSettingsBlockIntoText(content, settings = DEFAULT_SETTINGS, options = {}) {
+  const block = matchLineEndings(renderActiveSettingsMarkdown(settings, options), content);
   const found = findSettingsBlock(content);
   if (found.state === 'ok') return content.slice(0, found.start) + block + content.slice(found.end);
   if (found.state === 'malformed') return content;
@@ -155,6 +136,7 @@ function getSyncTargets(homeDir, options = {}) {
       home('.gemini', 'GEMINI.md'),
       home('.gemini', 'agents', 'AntigravityGlobal.agent.md'),
       home('.antigravity', 'agents', 'AntigravityGlobal.agent.md'),
+      home('.gemini', 'config', 'plugins', KIT_DIR_NAME, 'rules', 'AGENTS.md'),
     ],
     claude: [home('.claude', 'CLAUDE.md'), home('.claude', 'AGENT.md')],
     codex: [home('.codex', 'CODEX.md'), home('.codex', 'AGENTS.md'), home('.codex', 'AGENT.md')],
@@ -165,6 +147,7 @@ function getSyncTargets(homeDir, options = {}) {
       home('.cursor', 'CLAUDE.md'),
     ],
     copilot: [
+      home('.copilot', 'copilot-instructions.md'),
       home('.copilot', 'COPILOT.md'),
       home('.copilot', 'AGENT.md'),
       home('.copilot', 'CLAUDE.md'),
@@ -177,8 +160,7 @@ const errorMessage = (err) => (err instanceof Error ? err.message : String(err))
 
 /**
  * Region of a file the sync may edit. In a shared instruction file (user text plus the kit's
- * `boomopen-workflow-kit` block) only the kit block counts, so the user's own text is never edited
- * even when it mentions or contains settings markers. A whole-file kit copy is edited as a whole.
+ * `boomopen-workflow-kit` block) only the kit block counts, so the user's own text is never edited.
  * @returns {{ start: number, end: number } | null} null when the kit block is damaged
  */
 function editableRange(content) {
@@ -188,59 +170,41 @@ function editableRange(content) {
   return end === -1 ? null : { start, end };
 }
 
-function renderAntigravitySlimBody(settings) {
-  return [
-    `# ⚡ BoomOpen Workflow Kit v5.5 — ${CARBON_SLIM_TAG}`,
-    '',
-    '> **CARBON DRIVES, BOOMOPEN GUARDS**: Native **Antigravity 2.0 / Orchestrator Carbon** drives daily planning, exploration, multi-file edits, `/plan`, `/boost`, `/teamwork`, `run_workflow`, and `swarm` directly. Load `~/.gemini/config/skills/boomopen-workflow-kit/commands/{cmd}.md` **ONLY** when an explicit BoomOpen `/cmd` is typed (`/autopilot`, `/audit`, `/conduct`, `/design:hard`, `/cook:team`, `/review:team`, `/settings`).',
-    '',
-    renderActiveSettingsMarkdown(settings),
-    '',
-    '---',
-    '',
-    '## 📏 PRAGMATIC 2-TIER STANDARDS & VERIFICATION (MANDATORY)',
-    '1. **Tier 1 (Zero Tolerance)**: Single Responsibility; **NO explicit `any`** (`unknown` + Zod/Type Guard or `<T>`); **NO debug `console.log`** in app UI/API/Services; `try/catch` + typed errors at async/API boundaries; `SCREAMING_SNAKE_CASE` constants; DRY (`≥ 3`) & sorted imports.',
-    '2. **Tier 2 (`400` Soft / `500` Hard Lines)**: Cohesive files `~200–350`L (split `> 500`L or multi-domain; tests/types/docs exempt); functions `~20–40`L (logic) / `~40–80`L (UI); nesting `≤ 4`; params `≤ 5`.',
-    '3. **E2E Verification & Silence Guard**: Run build/typecheck/tests end-to-end until `0` errors remain before reporting. After launching background tasks or subagents, output at most 2–3 concise sentences and end the turn with `0` tool calls (never repeat waiting status phrases).',
-    '',
-    '## 🛠️ OPT-IN CLI GATES, VAULT & ROUTING',
-    '- **CLI (`~/.gemini/config/skills/boomopen-workflow-kit/cli/install.js`)**: `check . --strict-phase --no-stubs` | `reconcile` | `audit` | `ledger` | `conduct` | `design` | `plan` | `research` | `cook` | `settings` | `doctor`.',
-    '- **Vault & Routing**: `1,440` library skills in `matrix-skills/compact-index.json`; artifacts → `<appDataDir>\\brain\\<conversation-id>\\`; reply in user\'s language, code/comments in English.',
-  ].join('\n');
+function stripLeadingKitStart(region) {
+  if (!region.startsWith(KIT_BLOCK_START)) return region;
+  return region.slice(KIT_BLOCK_START.length).replace(/^\r?\n/, '');
 }
 
-function loadAntigravityFullTemplate(homeDir) {
-  const candidates = [
-    path.join(__dirname, '..', 'platforms', 'antigravity', 'GEMINI.md'),
-    path.join(__dirname, '..', 'GEMINI.md'),
-    path.join(homeDir, '.gemini', 'config', 'skills', KIT_DIR_NAME, 'GEMINI.md'),
-  ];
-  for (const candidate of candidates) {
-    try {
-      if (fs.existsSync(candidate)) return fs.readFileSync(candidate, 'utf8');
-    } catch {
-      // try next candidate
-    }
-  }
-  return null;
-}
-
-function syncAntigravityGeminiRegion(region, active, homeDir, hasKitBlock) {
+function syncPlatformRegion(platform, filePath, region, active, homeDir, hasKitBlock, prefixHasFrontmatter) {
   const eol = region.includes('\r\n') ? '\r\n' : '\n';
+  const inner = stripLeadingKitStart(region);
+  const { frontmatter } = extractLeadingFrontmatter(inner);
   const wrap = (body) => {
     const normalized = body.replace(/\r?\n/g, eol).trimEnd();
     return hasKitBlock ? `${KIT_BLOCK_START}${eol}${normalized}${eol}` : `${normalized}${eol}`;
   };
-  if (active.preset === 'carbon-guardrails') return wrap(renderAntigravitySlimBody(active));
-  if (region.includes(CARBON_SLIM_TAG)) {
-    const fullTemplate = loadAntigravityFullTemplate(homeDir);
-    if (fullTemplate) return wrap(injectSettingsBlockIntoText(fullTemplate, active));
+
+  if (isSlimGuardrailsPreset(active)) {
+    if (!isSlimRegion(inner)) cacheFullTemplateIfManifested(homeDir, platform, filePath, inner);
+    const slimBody = renderPlatformSlimBody(platform, active, { platform });
+    const withFrontmatter = frontmatter && !prefixHasFrontmatter ? `${frontmatter}\n\n${slimBody}` : slimBody;
+    return wrap(withFrontmatter);
   }
-  return injectSettingsBlockIntoText(region, active);
+  if (isSlimRegion(inner)) {
+    const fullTemplate = loadPlatformFullTemplate(platform, filePath, homeDir);
+    if (fullTemplate) {
+      const cleaned = prefixHasFrontmatter ? extractLeadingFrontmatter(fullTemplate).body : fullTemplate;
+      const restored = !extractLeadingFrontmatter(cleaned).frontmatter && frontmatter && !prefixHasFrontmatter
+        ? `${frontmatter}\n\n${cleaned}`
+        : cleaned;
+      return wrap(injectSettingsBlockIntoText(restored, active, { platform }));
+    }
+  }
+  return injectSettingsBlockIntoText(region, active, { platform });
 }
 
 /** @returns {{ status: 'absent'|'written'|'current'|'skipped'|'failed', reason?: string }} */
-function syncOneFile(filePath, active, homeDir) {
+function syncOneFile(platform, filePath, active, homeDir) {
   let current;
   try {
     const stat = fs.statSync(filePath, { throwIfNoEntry: false });
@@ -257,10 +221,10 @@ function syncOneFile(filePath, active, homeDir) {
   const found = findSettingsBlock(region);
   if (found.state === 'none') return { status: 'skipped', reason: 'no settings block' };
   if (found.state === 'malformed') return { status: 'skipped', reason: `damaged settings markers: ${found.reason}` };
-  const isAntigravityGemini = path.basename(filePath) === 'GEMINI.md' && region.includes(ANTIGRAVITY_EDITION_TAG);
-  const nextRegion = isAntigravityGemini
-    ? syncAntigravityGeminiRegion(region, active, homeDir, current.includes(KIT_BLOCK_START))
-    : injectSettingsBlockIntoText(region, active);
+
+  const hasKitBlock = current.includes(KIT_BLOCK_START);
+  const prefixHasFrontmatter = Boolean(extractLeadingFrontmatter(current.slice(0, range.start).trimStart()).frontmatter);
+  const nextRegion = syncPlatformRegion(platform, filePath, region, active, homeDir, hasKitBlock, prefixHasFrontmatter);
   const updated = current.slice(0, range.start) + nextRegion + current.slice(range.end);
   if (updated === current) return { status: 'current' };
   try {
@@ -304,7 +268,7 @@ function syncSettingsToInstalledPlatforms(settings, options = {}) {
     const fileList = targetsByPlatform[platform] || [];
     let anySynced = false;
     for (const filePath of fileList) {
-      const result = syncOneFile(filePath, active, homeDir);
+      const result = syncOneFile(platform, filePath, active, homeDir);
       if (result.status === 'written' || result.status === 'current') {
         report.updatedFiles.push(filePath);
         if (result.status === 'written') report.writtenFiles.push(filePath);
@@ -323,6 +287,7 @@ function syncSettingsToInstalledPlatforms(settings, options = {}) {
 
 module.exports = {
   renderActiveSettingsMarkdown,
+  renderPlatformSlimBody,
   renderAntigravitySlimBody,
   findSettingsBlock,
   injectSettingsBlockIntoText,

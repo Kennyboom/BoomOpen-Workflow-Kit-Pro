@@ -3,4 +3,4 @@ interface:
   short_description: "⚡ Quick Code Review — Focused Diff Audit with boomopen check, Proof-Backed P0..P3 Severity Matrix & 1-Click Proceed to /fix"
   brand_color: "#10B981"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

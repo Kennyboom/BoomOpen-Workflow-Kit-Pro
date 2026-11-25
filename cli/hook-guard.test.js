@@ -9,9 +9,11 @@ const { spawnSync } = require('node:child_process');
 const { pathToFileURL } = require('node:url');
 
 const HOOK_PATH = path.resolve(__dirname, '..', 'platforms', 'antigravity', 'hooks', 'validate-tool-call.mjs');
+const STOP_HOOK_PATH = path.resolve(__dirname, '..', 'platforms', 'antigravity', 'hooks', 'stop-quality-gate.mjs');
 const EXIT_BLOCK = 2;
 
 const loadHook = () => import(pathToFileURL(HOOK_PATH).href);
+const loadStopHook = () => import(pathToFileURL(STOP_HOOK_PATH).href);
 
 const MUST_BLOCK = [
   'rm -rf /',
@@ -97,10 +99,17 @@ const MUST_BLOCK = [
   'Remove-Item -Path .\\dist,C:\\ -Recurse -Force',
   'sh -c -- "rm -rf /"',
   'rm -rf /c',
+  'rmdir -rf /c',
+  'rd -rf /d',
+  'powershell -Command "Remove-Item -Recurse -Force \\"C:\\\\\\""',
+  '1..3 | ForEach-Object { if ($_) { try { if (1) { if (2) { if (3) { if (4) { Remove-Item C:\\ -Recurse -Force } } } } } catch {} } }',
 ];
 
 const MUST_ALLOW = [
   'npm test',
+  '1..10 | ForEach-Object { if ($_) { try { if (1) { if (2) { if (3) { if (4) { if (5) { Write-Host $_ } } } } } } catch { Write-Error $_ } } }',
+  'python -c "import os; p = \'C:\\\\temp\'; print(\\"rm -rf /\\")"',
+  'cd C:\\repo && node -e "const msg = \\"rm -rf /\\"; console.log(msg)"',
   'rm -rf node_modules',
   'rm -rf ./dist /tmp/build-cache',
   'rm -rf /tmp/boomopen-test',
@@ -207,10 +216,73 @@ test('Antigravity 2.0 PreToolUse protocol outputs JSON decision allow/deny on st
   assert.match(parsedDeny.reason, /BLOCKED by BoomOpen Workflow Kit/);
 });
 
-test('hook fails closed on an oversized payload', () => {
+test('hook fails closed on an oversized payload (Claude exit 2, Antigravity exit 0 JSON deny, Cursor beforeShellExecution)', () => {
   const huge = JSON.stringify({ tool_input: { command: 'echo ' + 'x'.repeat(9 * 1024 * 1024) } });
   const result = runHook(huge);
   assert.equal(result.status, EXIT_BLOCK);
+
+  const agyHuge = JSON.stringify({
+    hookEventName: 'PreToolUse',
+    toolCall: { id: 't_big', name: 'run_command', args: { CommandLine: 'echo ' + 'x'.repeat(9 * 1024 * 1024) } },
+  });
+  const agyResult = runHook(agyHuge);
+  assert.equal(agyResult.status, 0, 'Antigravity oversized payload must follow Antigravity JSON deny protocol');
+  assert.equal(JSON.parse(agyResult.stdout).decision, 'deny');
+
+  const cursorOk = runHook(JSON.stringify({ hook_event_name: 'beforeShellExecution', command: 'npm test' }));
+  assert.equal(cursorOk.status, 0);
+  assert.deepEqual(JSON.parse(cursorOk.stdout), { permission: 'allow' });
+
+  const cursorDeny = runHook(JSON.stringify({ hook_event_name: 'beforeShellExecution', command: 'rm -rf /' }));
+  assert.equal(cursorDeny.status, EXIT_BLOCK);
+  assert.equal(JSON.parse(cursorDeny.stdout).permission, 'deny');
+});
+
+test('stop-quality-gate handles PreCompact snapshots and Stop Tier-1 checks across Antigravity and Claude Code', async () => {
+  const { evaluateStopGate } = await loadStopHook();
+  const repoDir = fs.mkdtempSync(path.join(os.tmpdir(), 'boomopen-stop-gate-'));
+  try {
+    spawnSync('git', ['init', repoDir], { encoding: 'utf8', windowsHide: true });
+    fs.mkdirSync(path.join(repoDir, '.boomopen'), { recursive: true });
+    fs.writeFileSync(path.join(repoDir, '.boomopen', 'project-ledger.json'), JSON.stringify({ currentPhase: 2 }));
+
+    const compactOut = runHook(
+      JSON.stringify({ hook_event_name: 'PreCompact', cwd: repoDir, trigger: 'auto', session_id: 's-1' }),
+      STOP_HOOK_PATH
+    );
+    assert.equal(compactOut.status, 0, compactOut.stderr);
+    assert.deepEqual(JSON.parse(compactOut.stdout), {});
+    const snap = JSON.parse(fs.readFileSync(path.join(repoDir, '.boomopen', 'compact-snapshot.json'), 'utf8'));
+    assert.equal(snap.hasProjectLedger, true);
+    assert.equal(snap.currentPhase, 2);
+
+    // Dirty TypeScript file with explicit `any` violation triggers continue (Antigravity) / block (Claude)
+    fs.mkdirSync(path.join(repoDir, 'src'), { recursive: true });
+    fs.writeFileSync(path.join(repoDir, 'src', 'bad.ts'), 'export const bad = (x: any) => x;\n');
+
+    assert.deepEqual(evaluateStopGate({ hookEventName: 'Stop', cwd: repoDir, continuationActive: true }), {});
+    assert.deepEqual(evaluateStopGate({ hook_event_name: 'Stop', cwd: repoDir, stop_hook_active: true }), {});
+
+    const agyStop = runHook(JSON.stringify({ hookEventName: 'Stop', cwd: repoDir, terminationReason: 'NO_TOOL_CALL' }), STOP_HOOK_PATH);
+    assert.equal(agyStop.status, 0);
+    const agyDecision = JSON.parse(agyStop.stdout);
+    assert.equal(agyDecision.decision, 'continue');
+    assert.match(agyDecision.reason, /explicit 'any'/);
+
+    const claudeStop = runHook(JSON.stringify({ hook_event_name: 'Stop', cwd: repoDir }), STOP_HOOK_PATH);
+    assert.equal(claudeStop.status, 0);
+    const claudeDecision = JSON.parse(claudeStop.stdout);
+    assert.equal(claudeDecision.decision, 'block');
+    assert.match(claudeDecision.reason, /explicit 'any'/);
+
+    // Fix the violation -> gate passes with {}
+    fs.writeFileSync(path.join(repoDir, 'src', 'bad.ts'), 'export const clean = (x: unknown) => String(x);\n');
+    const cleanStop = runHook(JSON.stringify({ hook_event_name: 'Stop', cwd: repoDir }), STOP_HOOK_PATH);
+    assert.equal(cleanStop.status, 0);
+    assert.deepEqual(JSON.parse(cleanStop.stdout), {});
+  } finally {
+    fs.rmSync(repoDir, { recursive: true, force: true });
+  }
 });
 
 test('hook still runs when started through a copy in another folder (installed location)', () => {

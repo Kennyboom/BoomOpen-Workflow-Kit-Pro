@@ -3,4 +3,4 @@ interface:
   short_description: "⚡⚡⚡ Full Review — Turn-1 Parallel Multi-Lens Audit Shards (Architecture, OWASP/LLM Security, Hot-Path Perf), Cross-Engine Council & Proof-Backed Patch Matrix"
   brand_color: "#10B981"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

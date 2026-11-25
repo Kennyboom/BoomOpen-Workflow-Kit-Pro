@@ -43,7 +43,7 @@ version: "6.0.0"
    - Block `500` responses from serializing `err.stack` / `sqlMessage`; forbid `(NEXT_PUBLIC|VITE|EXPO_PUBLIC|NUXT_PUBLIC|PUBLIC)_*` secrets, `"use client"` server-DB imports, `productionBrowserSourceMaps: true`, and auth header/cookie log dumps.
 2. **Checklist 2 — BOLA, Mass Assignment & TOCTOU Writes (`Mutation Input -> DB State`)**:
    - Bind every write/delete/action query to server-verified caller identity + tenant ownership (`WHERE id = $1 AND org_id = $2`) — never trust client-supplied `userId`/`orgId` or `"use server"` hidden form arguments.
-   - Enforce strict allowlist schemas (`z.object(...).strict()`) blocking `role`, `isAdmin`, `plan`, or `balance` mass assignment, and wrap balance/inventory/quota mutations in atomic transactions or conditional `UPDATE ... WHERE` guards against TOCTOU races.
+   - Enforce strict allowlist schemas (`z.strictObject({...})`) blocking `role`, `isAdmin`, `plan`, or `balance` mass assignment, and wrap balance/inventory/quota mutations in atomic transactions or conditional `UPDATE ... WHERE` guards against TOCTOU races.
 3. **Checklist 3 — Injection, Traversal, SSRF, CORS & Webhook HMAC (`Untrusted Input -> OS/Net/DB Sink`)**:
    - Allow parameterized bindings / safe tagged `` sql`...${v}` `` only; ban `$queryRawUnsafe`, `$executeRawUnsafe`, interpolated `sql.raw()`, `eval`, `child_process.exec`, and `spawn(..., { shell: true })`.
    - Enforce `realpath` root-containment on file paths, DNS + IP-range allowlists on outbound `fetch` (blocking RFC 1918, `127.0.0.0/8`, `169.254.169.254`), non-wildcard `cors` when `credentials: true`, verified `jwt.verify()`, TLS verification (`rejectUnauthorized: true`), and raw-body `crypto.timingSafeEqual` HMAC + timestamp replay checks on webhooks.

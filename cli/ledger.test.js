@@ -1,10 +1,12 @@
 'use strict';
 
+const { spawnSync } = require('node:child_process');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
+const { createGitCheckpoint, rollbackToGitCheckpoint } = require('./git-checkpoints.js');
 const {
   initLedger,
   loadLedgerFile,
@@ -254,5 +256,48 @@ test('regressions S1-BUG-06, S1-BUG-08, S1-BUG-09, S1-BUG-13 & S1-IMP-17: UTF-8 
     const dirAudit = auditLedger(verifiedLedger, root);
     assert.equal(dirAudit.passed, false);
     assert.ok(dirAudit.violations.some((v) => /missing file on disk "src"/.test(v)));
+  });
+});
+
+test('git-checkpoints & boomopen ledger rollback --yes handle non-git, unborn HEAD, phase checkpoint_sha, and confirmed rollback', () => {
+  withWorkspace((root) => {
+    // 1. Outside git -> graceful { available: false }
+    assert.equal(createGitCheckpoint(root, 'phase-01').available, false);
+
+    // 2. Unborn HEAD (git init with 0 commits) -> graceful { available: false }
+    spawnSync('git', ['init'], { cwd: root, windowsHide: true });
+    spawnSync('git', ['config', 'user.email', 'test@example.com'], { cwd: root, windowsHide: true });
+    spawnSync('git', ['config', 'user.name', 'Test'], { cwd: root, windowsHide: true });
+    assert.equal(createGitCheckpoint(root, 'phase-01').available, false);
+
+    // 3. Commit baseline -> initLedger & verifyPhaseGate record checkpoint_sha + refs/boomopen/checkpoints/*
+    write(root, 'src/core.ts', 'export const core = 1;\n');
+    write(root, 'src/core.test.ts', 'import test from "node:test";\ntest("core", () => {});\n');
+    spawnSync('git', ['add', '.'], { cwd: root, windowsHide: true });
+    spawnSync('git', ['commit', '-m', 'p1-baseline'], { cwd: root, windowsHide: true });
+    const sha1 = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8', windowsHide: true }).stdout.trim();
+
+    const { ledger, paths } = initLedger({ cwd: root, name: 'RollbackApp', docs: ['documents/SRS.md'] });
+    assert.equal(ledger.active_cursor.checkpoint_sha, sha1);
+    assert.equal(ledger.phases[0].checkpoint_sha, sha1);
+    const refSha = spawnSync('git', ['rev-parse', 'refs/boomopen/checkpoints/phase-01'], { cwd: root, encoding: 'utf8', windowsHide: true }).stdout.trim();
+    assert.equal(refSha, sha1);
+
+    ledger.phases.push({ phase_id: 'phase-02', title: 'Phase 2', status: 'pending', depends_on: ['phase-01'], doc_slices: [] });
+    ledger.features.push({
+      req_id: 'REQ-001', phase_id: 'phase-01', title: 'Core', source_doc: 'documents/SRS.md#L3',
+      acceptance_criteria: ['Core works'], owned_files: ['src/core.ts'], test_files: ['src/core.test.ts'], status: 'pending', passes: false,
+    });
+    saveLedgerFile(paths.ledgerPath, ledger);
+    assert.equal(runLedgerCli(['verify', '--phase', 'phase-01', '--passed-tests', '1'], { cwd: root, silent: true }), 0);
+
+    // 4. Corrupt tracked file in phase-02 -> rollback without --yes is rejected; rollback --yes restores sha1
+    write(root, 'src/core.ts', 'export const core = "corrupted";\n');
+    assert.equal(rollbackToGitCheckpoint(root, 'phase-02', { confirm: false }).ok, false);
+    assert.equal(runLedgerCli(['rollback', '--phase', 'phase-02'], { cwd: root, silent: true }), 2);
+    assert.equal(fs.readFileSync(path.join(root, 'src', 'core.ts'), 'utf8'), 'export const core = "corrupted";\n');
+
+    assert.equal(runLedgerCli(['rollback', '--phase', 'phase-02', '--yes'], { cwd: root, silent: true }), 0);
+    assert.equal(fs.readFileSync(path.join(root, 'src', 'core.ts'), 'utf8'), 'export const core = 1;\n');
   });
 });

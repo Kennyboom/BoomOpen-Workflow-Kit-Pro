@@ -428,7 +428,7 @@ client = MyClient(endpoint, api_key="hardcoded")  # Security risk
 
 ```yaml
 config:
-  model: gpt-4
+  model: gpt-4.1
   max_tokens: 2000
   temperature: 0.3
 

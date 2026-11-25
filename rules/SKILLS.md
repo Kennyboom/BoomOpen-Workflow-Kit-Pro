@@ -74,8 +74,10 @@ node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js plan <validate|compil
 node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js cook <state|packets|verify-wave|preflight>       # Detect prior artifacts, emit 5-Field Packets & verify wave locks
 node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js check <dir> --strict-phase --no-stubs            # Pragmatic 2-Tier limits, 0 `any`, 0 `console.log`, 0 stubs, 0 .skip/.only
 
-# 3. Multi-Session Autopilot Ledger, Cross-Engine Conductor & Kit Health
-node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger <init|from-plan|validate|status|next|verify|audit>
+# 3. Wave 2.5 Reconcile, Multi-Round Audit, Autopilot Ledger, Conductor & Kit Health
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js reconcile <dir> --strict
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js audit <init|slice|record|approve|verify-fix|rollback|status>
+node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js ledger <init|from-plan|validate|status|next|verify|rollback|audit>
 node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js conduct <probe|dispatch|council|status>
 node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js doctor
 ```

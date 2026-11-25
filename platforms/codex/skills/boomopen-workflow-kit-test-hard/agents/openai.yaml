@@ -3,4 +3,4 @@ interface:
   short_description: "⚡⚡⚡ Comprehensive Testing — 2-Wave Elastic Parallel Test Pyramid (Unit/Integration/E2E/A11y), App-Code READ_ONLY Lock & Deterministic CLI Verification"
   brand_color: "#10B981"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

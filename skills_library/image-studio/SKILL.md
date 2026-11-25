@@ -75,7 +75,7 @@ E uma FOTO REALISTA de pessoa/influencer?
 | Foto produto com pessoa | "mulher segurando smartphone" |
 
 **Vantagens:**
-- Gratuito (gemini-2.0-flash-exp)
+- Gratuito (gemini-2.5-flash-image)
 - 5 camadas de humanizacao narrativa (device, lighting, imperfection, authenticity, environment)
 - 20 templates pre-configurados (10 influencer + 10 educacional)
 - Imperfeicoes sutis que tornam a foto credivel

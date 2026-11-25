@@ -128,9 +128,15 @@ SKIPPED_DIRS = {
     'node_modules', '.git', 'dist', 'build', '.next', 'coverage',
     'playwright-report', '.boomopen', '.agent', '__pycache__',
     '.svelte-kit', '.astro', 'out', 'target', '.venv', 'venv',
+    'test', 'tests', '__tests__', 'e2e', 'fixtures', 'cypress', '__mocks__',
 }
 MAX_PRINTED_ISSUES = 10
 MAX_PRINTED_WARNINGS = 15
+
+
+def is_test_filename(name: str) -> bool:
+    low = name.lower()
+    return '.test.' in low or '.spec.' in low or low.endswith(('_test.tsx', '_test.jsx', '_spec.tsx', '_spec.jsx'))
 
 # Order matters: findings are reported in the same order as the original audit.
 CHECKS = (
@@ -170,13 +176,13 @@ class UXAuditor:
         self.passed_count += ctx.passed_count
 
     def audit_directory(self, directory: str) -> None:
-        target_parts = set(Path(directory).resolve().parts)
-        extra_skip = {'skills_library', 'templates', 'examples', 'fixtures'} - target_parts
+        dir_name = Path(directory).resolve().name
+        extra_skip = {'skills_library', 'templates', 'examples'} - {dir_name}
         skip_dirs = SKIPPED_DIRS | extra_skip
         for root, dirs, files in os.walk(directory):
             dirs[:] = [d for d in dirs if d not in skip_dirs]
             for file in files:
-                if Path(file).suffix in AUDITED_EXTENSIONS:
+                if Path(file).suffix in AUDITED_EXTENSIONS and not is_test_filename(file):
                     self.audit_file(os.path.join(root, file))
 
     def get_report(self):

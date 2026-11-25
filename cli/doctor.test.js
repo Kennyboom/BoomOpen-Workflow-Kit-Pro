@@ -164,8 +164,8 @@ test('doctor checks only installed platforms and detects a broken install (H11, 
     assert.ok(findCheck(healthy, 'Claude Code: skills vault'));
     assert.ok(!healthy.checks.some((c) => c.name.startsWith('Cursor')), 'cursor is not installed');
 
-    // Every check is per platform: a missing vault skill, a replaced entry file, lost rules.
-    fs.rmSync(path.join(home, '.claude', 'skills_library', 'lib-two'), { recursive: true });
+    // Every check is per platform: an unlinked vault, a replaced entry file, lost rules.
+    fs.rmSync(path.join(home, '.claude', 'skills_library'), { recursive: true, force: true });
     write(path.join(home, '.gemini', 'GEMINI.md'), 'hello, not the kit\n');
     fs.rmSync(path.join(home, '.claude', 'skills', 'boomopen-workflow-kit', 'rules'), { recursive: true });
     const broken = doctor();
@@ -206,10 +206,10 @@ test('doctor checks only installed platforms and detects a broken install (H11, 
     assert.equal(findCheck(desynced, 'Settings (global + workspace)').passed, false);
     assert.match(findCheck(desynced, 'Settings (global + workspace)').detail, /out of sync.*boomopen settings sync/);
 
-    // A stale committed index is detected (M25).
+    // A stale committed index is detected and hints `boomopen doctor --rebuild-index` (M25).
     write(path.join(kitRoot, 'matrix-skills', 'beta.yaml'), 'skills:\n  - skill_id: lib-two\n  - skill_id: lib-three\n');
     const stale = doctor({ platforms: ['antigravity'] });
-    assert.match(findCheck(stale, 'matrix-skills/compact-index.json').detail, /stale/);
+    assert.match(findCheck(stale, 'matrix-skills/compact-index.json').detail, /stale.*boomopen doctor --rebuild-index/);
   } finally {
     removeDir(home);
     removeDir(kitRoot);

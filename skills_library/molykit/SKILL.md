@@ -196,8 +196,8 @@ impl BotId {
     pub fn provider(&self) -> &str; // provider domain
 }
 
-// Example: BotId::new("gpt-4", "api.openai.com")
-// -> "5;gpt-4@api.openai.com"
+// Example: BotId::new("gpt-4.1", "api.openai.com")
+// -> "5;gpt-4.1@api.openai.com"
 ```
 
 ## Widget Patterns

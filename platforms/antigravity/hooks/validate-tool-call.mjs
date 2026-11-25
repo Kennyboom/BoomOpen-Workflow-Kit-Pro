@@ -12,6 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const MAX_PAYLOAD_BYTES = 8 * 1024 * 1024;
 const MAX_NESTING = 6;
+const MAX_GROUP_DEPTH = 32;
 const EXIT_ALLOW = 0;
 const EXIT_BLOCK = 2;
 
@@ -30,18 +31,14 @@ const HOME_TOKENS = new Set(['~', '$home', '${home}', '$userprofile', '${userpro
 const HOME_HEAD = /^(~|\$home|\$\{home\}|\$userprofile|\$\{userprofile\}|%userprofile%|\$env:userprofile|%homepath%|\$env:homepath)(\/.*)?$/;
 const DRIVE_MOUNT = /^\/(?:mnt\/|cygdrive\/)?([a-z])(\/.*)?$/;
 const WINDOWS_SYNTAX = /[A-Za-z]:\\|(?:^|[\s"'])\.{1,2}\\|\$env:|%[A-Za-z_][A-Za-z0-9_]*%|\b(?:remove-item|set-location|get-childitem|new-item|copy-item|move-item)\b/i;
+const BARE_WINDOWS_PATH = /^(?:[A-Za-z]:|\$env:|%[A-Za-z_]|\.{1,2}\\)[A-Za-z0-9_./\\ %$:()-]*$/i;
 const CWD_COMMANDS = new Set(['cd', 'chdir', 'pushd', 'set-location', 'sl']);
 const CWD_WIDE_TARGET = /^(?:\.\.?\/?)?(?:\*|\.\*)?$/;
 const CMD_SLASH_FLAGS = /^(?:\/[a-z])+$/i;
 const CMD_RECURSIVE_S = /(?:^|\/)s(?:\/|$)/i;
 const PS_VALUE_FLAGS = /^-(?:ex(?:ecutionpolicy)?|ep|w(?:indowstyle)?|in(?:putformat)?|if|o(?:utputformat)?|of|config(?:urationname)?|v(?:ersion)?)$/i;
 
-function asCommandText(value) {
-  if (typeof value === 'string') return value.trim();
-  if (Array.isArray(value) && value.every((part) => typeof part === 'string')) return value.join(' ').trim();
-  return '';
-}
-
+const asCommandText = (v) => (typeof v === 'string' ? v.trim() : Array.isArray(v) && v.every((p) => typeof p === 'string') ? v.join(' ').trim() : '');
 function parseMaybeJson(value) {
   if (typeof value !== 'string') return value;
   try { return JSON.parse(value); } catch { return {}; }
@@ -61,92 +58,68 @@ export function extractCommand(payload) {
   return '';
 }
 
-/** Find matching closing delimiter ('`', ')' or '}') respecting quotes and escapes. */
+function isEscapedInDoubleQuote(text, slashIdx, quoteStart, posixEscapes) {
+  const ch = text[slashIdx];
+  if (posixEscapes) return ch === '\\' && slashIdx + 1 < text.length;
+  if (ch === '`') return slashIdx + 1 < text.length;
+  if (ch !== '\\' || text[slashIdx + 1] !== '"' || text.indexOf('"', slashIdx + 2) === -1) return false;
+  return !BARE_WINDOWS_PATH.test(text.slice(quoteStart, slashIdx));
+}
+
 function findBalancedEnd(text, from, openChar, closeChar, posixEscapes) {
-  let depth = 1;
-  let quote = null;
+  let depth = 1, quote = null, quoteStart = 0;
   for (let i = from; i < text.length; i++) {
     const ch = text[i];
     if (quote === "'") { if (ch === "'") quote = null; continue; }
     if (quote === '"') {
-      if ((posixEscapes && ch === '\\') || (!posixEscapes && ch === '`')) { i++; continue; }
+      if (isEscapedInDoubleQuote(text, i, quoteStart, posixEscapes)) { i++; continue; }
       if (ch === '"') quote = null;
       continue;
     }
     if (posixEscapes && ch === '\\') { i++; continue; }
-    if (ch === "'" || ch === '"') { quote = ch; continue; }
+    if (ch === "'" || ch === '"') { quote = ch; quoteStart = i + 1; continue; }
     if (openChar && ch === openChar) depth++;
     else if (ch === closeChar && --depth === 0) return i;
   }
   return -1;
 }
 
-/** Mask quoted literals and extract only real shell substitutions/subshells/groups. */
 function scanCommand(command, posixEscapes) {
-  let unquoted = '';
+  let unquoted = '', quote = null, quoteStart = 0;
   const subs = [];
-  let quote = null;
   for (let i = 0; i < command.length; i++) {
     const ch = command[i];
-    if (quote === "'") {
-      unquoted += ch === "'" ? ((quote = null), "'") : ' ';
-      continue;
-    }
+    if (quote === "'") { unquoted += ch === "'" ? ((quote = null), "'") : ' '; continue; }
     if (quote === '"') {
-      if ((posixEscapes && ch === '\\') || (!posixEscapes && ch === '`')) { i++; unquoted += '  '; continue; }
+      if (isEscapedInDoubleQuote(command, i, quoteStart, posixEscapes)) { i++; unquoted += '  '; continue; }
       if (ch === '$' && command[i + 1] === '(') {
         const end = findBalancedEnd(command, i + 2, '(', ')', posixEscapes);
-        if (end !== -1) { subs.push(command.slice(i + 2, end)); unquoted += ' '; i = end; continue; }
+        if (end !== -1) { subs.push({ cmd: command.slice(i + 2, end), evalStep: 1 }); unquoted += ' '; i = end; continue; }
       }
       if (posixEscapes && ch === '`') {
         const end = findBalancedEnd(command, i + 1, null, '`', true);
-        if (end !== -1) { subs.push(command.slice(i + 1, end)); unquoted += ' '; i = end; continue; }
+        if (end !== -1) { subs.push({ cmd: command.slice(i + 1, end), evalStep: 1 }); unquoted += ' '; i = end; continue; }
       }
       unquoted += ch === '"' ? ((quote = null), '"') : ' ';
       continue;
     }
     if (posixEscapes && ch === '\\' && i + 1 < command.length && command[i + 1] !== '\n') { unquoted += '_'; i++; continue; }
-    if (ch === "'" || ch === '"') { quote = ch; unquoted += ch; continue; }
+    if (ch === "'" || ch === '"') { quote = ch; quoteStart = i + 1; unquoted += ch; continue; }
     if (ch === '$' && command[i + 1] === '(') {
       const end = findBalancedEnd(command, i + 2, '(', ')', posixEscapes);
-      if (end !== -1) { subs.push(command.slice(i + 2, end)); unquoted += '$()'; i = end; continue; }
+      if (end !== -1) { subs.push({ cmd: command.slice(i + 2, end), evalStep: 1 }); unquoted += '$()'; i = end; continue; }
     }
     if (posixEscapes && ch === '`') {
       const end = findBalancedEnd(command, i + 1, null, '`', true);
-      if (end !== -1) { subs.push(command.slice(i + 1, end)); unquoted += '``'; i = end; continue; }
+      if (end !== -1) { subs.push({ cmd: command.slice(i + 1, end), evalStep: 1 }); unquoted += '``'; i = end; continue; }
     }
     if (ch === '(' && (i === 0 || /[\s;&|]/.test(command[i - 1]))) {
       const end = findBalancedEnd(command, i + 1, '(', ')', posixEscapes);
-      if (end !== -1 && command.slice(i + 1, end).trim()) subs.push(command.slice(i + 1, end));
-    } else if (ch === '{' && /\s/.test(command[i + 1] || '')) {
-      const end = findBalancedEnd(command, i + 1, '{', '}', posixEscapes);
-      if (end !== -1) subs.push(command.slice(i + 1, end).replace(/;\s*$/, ''));
+      if (end !== -1 && command.slice(i + 1, end).trim()) subs.push({ cmd: command.slice(i + 1, end), evalStep: 0 });
     }
     unquoted += ch;
   }
   return { unquoted, subs };
-}
-
-/** Split a command line into simple commands on ; & | && || and newlines (outside quotes). */
-function splitSegments(command, posixEscapes) {
-  const segments = [];
-  let current = '';
-  let quote = null;
-  for (let i = 0; i < command.length; i++) {
-    const ch = command[i];
-    if (quote) {
-      if (posixEscapes && ch === '\\' && quote === '"' && i + 1 < command.length) { current += ch + command[++i]; continue; }
-      if (ch === quote) quote = null;
-      current += ch;
-      continue;
-    }
-    if (posixEscapes && ch === '\\' && i + 1 < command.length && command[i + 1] !== '\n') { current += ch + command[++i]; continue; }
-    if (ch === '"' || ch === "'") quote = ch;
-    if (ch === ';' || ch === '&' || ch === '|' || ch === '\n' || ch === '\r') { segments.push(current); current = ''; continue; }
-    current += ch;
-  }
-  segments.push(current);
-  return segments.map((s) => s.trim()).filter(Boolean);
 }
 
 function parameterExpansionEnd(segment, openIndex) {
@@ -158,29 +131,53 @@ function parameterExpansionEnd(segment, openIndex) {
   return segment.length - 1;
 }
 
-/** Word splitting: quotes removed, backslash escapes resolved, ${VAR} kept whole. */
+function splitSegments(command, posixEscapes) {
+  const segments = [];
+  let current = '', quote = null, quoteStart = 0;
+  for (let i = 0; i < command.length; i++) {
+    const ch = command[i];
+    if (quote) {
+      if (quote === '"' && isEscapedInDoubleQuote(command, i, quoteStart, posixEscapes)) { current += ch + command[++i]; continue; }
+      if (ch === quote) quote = null;
+      current += ch;
+      continue;
+    }
+    if (posixEscapes && ch === '\\' && i + 1 < command.length && command[i + 1] !== '\n') { current += ch + command[++i]; continue; }
+    if (ch === '"' || ch === "'") { quote = ch; quoteStart = i + 1; current += ch; continue; }
+    if (ch === '$' && command[i + 1] === '{') {
+      const end = parameterExpansionEnd(command, i + 1);
+      current += command.slice(i, end + 1);
+      i = end;
+      continue;
+    }
+    if (';&|{}\n\r'.includes(ch)) { segments.push(current); current = ''; continue; }
+    current += ch;
+  }
+  segments.push(current);
+  return segments.map((s) => s.trim()).filter(Boolean);
+}
+
 function tokenize(segment, posixEscapes) {
   const words = [];
-  let word = '';
-  let inWord = false;
-  let quote = null;
+  let word = '', inWord = false, quote = null, quoteStart = 0;
   for (let i = 0; i < segment.length; i++) {
     const ch = segment[i];
     if (quote === "'") { if (ch === "'") quote = null; else word += ch; continue; }
     if (quote === '"') {
       if (ch === '"') quote = null;
       else if (posixEscapes && ch === '\\' && i + 1 < segment.length && '"\\$`'.includes(segment[i + 1])) word += segment[++i];
+      else if (!posixEscapes && isEscapedInDoubleQuote(segment, i, quoteStart, false)) word += segment[++i];
       else word += ch;
       continue;
     }
-    if (ch === "'" || ch === '"') { quote = ch; inWord = true; }
+    if (ch === "'" || ch === '"') { quote = ch; quoteStart = i + 1; inWord = true; }
     else if (posixEscapes && ch === '\\' && i + 1 < segment.length) { word += segment[++i]; inWord = true; }
     else if (ch === '$' && segment[i + 1] === '{') {
       const end = parameterExpansionEnd(segment, i + 1);
       word += segment.slice(i, end + 1);
       i = end;
       inWord = true;
-    } else if (/\s/.test(ch) || ch === '(' || ch === ')' || ch === '{' || ch === '}') {
+    } else if (/\s/.test(ch) || '(){}'.includes(ch)) {
       if (inWord) words.push(word);
       word = '';
       inWord = false;
@@ -200,8 +197,7 @@ function stripWrappers(words) {
     if (!WRAPPER_COMMANDS.has(name)) break;
     i++;
     while (i < words.length && words[i].startsWith('-')) i += /^-(?:u|g|n|c|p|C|h|U|t)$/.test(words[i]) ? 2 : 1;
-    if (name === 'timeout' && i < words.length && /^\d/.test(words[i])) i++;
-    if (name === 'nice' && i < words.length && /^-?\d+$/.test(words[i])) i++;
+    if ((name === 'timeout' && /^\d/.test(words[i] || '')) || (name === 'nice' && /^-?\d+$/.test(words[i] || ''))) i++;
   }
   return words.slice(i);
 }
@@ -210,7 +206,7 @@ function resolveSegments(rest) {
   const stack = [];
   let depth = 0;
   for (const segment of rest.split('/')) {
-    if (segment === '' || segment === '.') continue;
+    if (!segment || segment === '.') continue;
     if (segment === '..') { stack.pop(); depth--; } else { stack.push(segment); depth++; }
   }
   return { stack, depth };
@@ -257,17 +253,15 @@ const positional = (args, stripSlash = false) =>
   args.filter((a) => !a.startsWith('-') && !(stripSlash && CMD_SLASH_FLAGS.test(a)) && !/^-{1,2}$/.test(a));
 
 function checkDelete(name, args, dynamicName, cwdDangerous) {
-  const rawTargets = positional(args, CMD_DELETE.has(name))
+  const hasPosixFlags = unixRecursive(args) || args.some((a) => /^-[A-Za-z-]/.test(a));
+  const rawTargets = positional(args, CMD_DELETE.has(name) && !hasPosixFlags)
     .concat(args.filter((a) => /^-(?:path|literalpath)[:=]/i.test(a)).map((a) => a.split(/[:=]/).slice(1).join(':')));
   const pathFlag = args.findIndex((a) => /^-(?:path|literalpath|lp)$/i.test(a));
   if (pathFlag !== -1 && args[pathFlag + 1]) rawTargets.push(args[pathFlag + 1]);
   const targets = PS_DELETE.has(name) ? rawTargets.flatMap((t) => t.split(',')) : rawTargets;
   if (!targets.some((t) => isDangerousIn(t, cwdDangerous))) return null;
-  if ((name === 'rm' || name === 'rmdir' || name === 'shred' || dynamicName) && (unixRecursive(args) || psRecursive(args))) {
+  if ((UNIX_DELETE.has(name) || PS_DELETE.has(name) || dynamicName) && (unixRecursive(args) || psRecursive(args))) {
     return { rule: 'root-delete', reason: 'recursive deletion of a filesystem root, home folder or system folder' };
-  }
-  if (PS_DELETE.has(name) && psRecursive(args)) {
-    return { rule: 'root-delete', reason: 'recursive deletion of a drive root, home folder or system folder' };
   }
   return null;
 }
@@ -279,7 +273,7 @@ function extractPositionalPsScript(args) {
   return i < args.length ? args.slice(i).join(' ') : null;
 }
 
-function checkSimpleCommand(words, depth, cwdDangerous = false) {
+function checkSimpleCommand(words, depth, groupDepth, cwdDangerous = false) {
   const argv = stripWrappers(words);
   if (argv.length === 0) return null;
   const [rawName, ...args] = argv;
@@ -290,20 +284,18 @@ function checkSimpleCommand(words, depth, cwdDangerous = false) {
     const flagIndex = args.findIndex((a) => /^-[a-z]*c$/i.test(a));
     const scriptIdx = args[flagIndex + 1] === '--' ? flagIndex + 2 : flagIndex + 1;
     const script = name === 'eval' ? args.join(' ') : flagIndex !== -1 ? args[scriptIdx] : null;
-    if (script) return evaluateNested(script, depth + 1);
+    if (script) return evaluateNested(script, depth + 1, groupDepth);
   }
   if (name === 'cmd') {
     const flagIndex = args.findIndex((a) => /^\/[ck]$/i.test(a));
-    if (flagIndex !== -1) return evaluateNested(args.slice(flagIndex + 1).join(' '), depth + 1);
+    if (flagIndex !== -1) return evaluateNested(args.slice(flagIndex + 1).join(' '), depth + 1, groupDepth);
   }
   if (POWERSHELLS.has(name)) {
     const encIndex = args.findIndex((a) => /^-e(?:nc(?:odedcommand)?)?$/i.test(a));
-    if (encIndex !== -1 && args[encIndex + 1]) {
-      return evaluateNested(Buffer.from(args[encIndex + 1], 'base64').toString('utf16le'), depth + 1);
-    }
+    if (encIndex !== -1 && args[encIndex + 1]) return evaluateNested(Buffer.from(args[encIndex + 1], 'base64').toString('utf16le'), depth + 1, groupDepth);
     const cmdIndex = args.findIndex((a) => /^-c(?:ommand)?$/i.test(a));
     const psScript = cmdIndex !== -1 ? args.slice(cmdIndex + 1).join(' ') : extractPositionalPsScript(args);
-    if (psScript) return evaluateNested(psScript, depth + 1);
+    if (psScript) return evaluateNested(psScript, depth + 1, groupDepth);
   }
 
   if (UNIX_DELETE.has(name) || PS_DELETE.has(name) || dynamicName) {
@@ -322,14 +314,14 @@ function checkSimpleCommand(words, depth, cwdDangerous = false) {
   return null;
 }
 
-function evaluateNested(command, depth) {
-  if (depth > MAX_NESTING) return { rule: 'nesting', reason: 'command nesting too deep to verify' };
+function evaluateNested(command, depth, groupDepth = 0) {
+  if (depth > MAX_NESTING || groupDepth > MAX_GROUP_DEPTH) return { rule: 'nesting', reason: 'command nesting too deep to verify' };
   const posixEscapes = !WINDOWS_SYNTAX.test(command);
   const { unquoted, subs } = scanCommand(command, posixEscapes);
   if (FORK_BOMB.test(unquoted)) return { rule: 'fork-bomb', reason: 'fork bomb' };
   if (RAW_REDIRECT.test(unquoted)) return { rule: 'raw-disk-overwrite', reason: 'redirect onto a raw disk device' };
-  for (const inner of subs) {
-    const hit = evaluateNested(inner, depth + 1);
+  for (const sub of subs) {
+    const hit = evaluateNested(sub.cmd, depth + sub.evalStep, groupDepth + (sub.evalStep ? 0 : 1));
     if (hit) return hit;
   }
   let cwdDangerous = false;
@@ -337,24 +329,28 @@ function evaluateNested(command, depth) {
     const words = tokenize(segment, posixEscapes);
     const changed = cwdChange(words);
     if (changed !== null) { cwdDangerous = changed; continue; }
-    const hit = checkSimpleCommand(words, depth, cwdDangerous);
+    const hit = checkSimpleCommand(words, depth, groupDepth, cwdDangerous);
     if (hit) return hit;
   }
   return null;
 }
 
 export function evaluateCommand(command) {
-  const hit = typeof command === 'string' && command.trim() ? evaluateNested(command, 0) : null;
+  const hit = typeof command === 'string' && command.trim() ? evaluateNested(command, 0, 0) : null;
   return hit ? { allowed: false, rule: hit.rule, reason: hit.reason } : { allowed: true, rule: null, reason: 'no destructive command pattern matched' };
 }
 
 function readStdin() {
   return new Promise((resolve, reject) => {
     const chunks = [];
-    let size = 0;
+    let size = 0, head = '';
     process.stdin.on('data', (chunk) => {
-      size += chunk.length;
-      if (size > MAX_PAYLOAD_BYTES) { reject(new Error(`hook payload exceeds ${MAX_PAYLOAD_BYTES} bytes`)); process.stdin.destroy(); return; }
+      if (head.length < 4096) head += chunk.toString('utf8', 0, Math.min(chunk.length, 4096 - head.length));
+      if ((size += chunk.length) > MAX_PAYLOAD_BYTES) {
+        reject(Object.assign(new Error(`hook payload exceeds ${MAX_PAYLOAD_BYTES} bytes`), { antigravity: /"toolCall"|"hookEventName"\s*:\s*"PreToolUse"/.test(head) }));
+        process.stdin.destroy();
+        return;
+      }
       chunks.push(chunk);
     });
     process.stdin.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
@@ -363,9 +359,10 @@ function readStdin() {
 }
 
 const isAntigravityPayload = (p) => Boolean(p && typeof p === 'object' && (p.toolCall || p.hookEventName === 'PreToolUse'));
+const isCursorPayload = (p) => Boolean(p && typeof p === 'object' && p.hook_event_name === 'beforeShellExecution');
 
-function allow(antigravity) {
-  if (antigravity) process.stdout.write('{"decision":"allow"}\n');
+function allow(antigravity, cursor = false) {
+  if (antigravity || cursor) process.stdout.write(antigravity ? '{"decision":"allow"}\n' : '{"permission":"allow"}\n');
   return EXIT_ALLOW;
 }
 
@@ -374,20 +371,21 @@ function block(reason, antigravity = false) {
   process.stderr.write(`${message}\n`);
   if (antigravity) { process.stdout.write(`${JSON.stringify({ decision: 'deny', reason: message })}\n`); return EXIT_ALLOW; }
   const hookSpecificOutput = { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: message };
-  process.stdout.write(`${JSON.stringify({ decision: 'deny', reason: message, permission: 'deny', hookSpecificOutput })}\n`);
+  process.stdout.write(`${JSON.stringify({ decision: 'deny', reason: message, permission: 'deny', user_message: message, agent_message: message, hookSpecificOutput })}\n`);
   return EXIT_BLOCK;
 }
 
 export async function main() {
   let raw;
-  try { raw = await readStdin(); } catch (error) { return block(error instanceof Error ? error.message : String(error)); }
+  try { raw = await readStdin(); } catch (error) { return block(error instanceof Error ? error.message : String(error), Boolean(error && error.antigravity)); }
   let parsed = null;
   try { parsed = JSON.parse(raw || '{}'); } catch { parsed = null; }
   const antigravity = isAntigravityPayload(parsed);
+  const cursor = isCursorPayload(parsed);
   const command = parsed !== null ? extractCommand(parsed) : raw.trim();
-  if (!command) return allow(antigravity);
+  if (!command) return allow(antigravity, cursor);
   const result = evaluateCommand(command);
-  return result.allowed ? allow(antigravity) : block(result.reason, antigravity);
+  return result.allowed ? allow(antigravity, cursor) : block(result.reason, antigravity);
 }
 
 function isEntryPoint() {

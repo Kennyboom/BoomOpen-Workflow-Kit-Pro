@@ -15,7 +15,7 @@ execution-mode: execute
 
 Deliver a deterministic, real-time health board covering workspace metrics, workflow fast-forward artifacts (`cook state`), Autopilot requirement progress (`ledger status` / `ledger next`), sub-agent shards, and preview server status.
 
-1. **0-Turn Sub-agent Scouting Gate (`> 2` Files Deep Audit)**: Standard `/status` runs fast CLI telemetry directly (`run_command`, `read_file`). Only if the user asks for a deep module-level health scan across **`> 2` source files**, dispatch parallel `scouter#1..k` on Turn 1 via `invoke_subagent(TypeName: "self", Model: "inherit")` using Antigravity 2.0 tools ONLY (`read_file`, `write_file`, `edit_file`, `run_command`, `invoke_subagent`, `send_message`, `ask_question`, `search_web`).
+1. **0-Turn Sub-agent Scouting Gate (`> 2` Files Deep Audit)**: Standard `/status` runs fast CLI telemetry directly (`run_command`/`Bash`/shell, `read_file`/`Read`). Only if the user asks for a deep module-level health scan across **`> 2` source files**, dispatch parallel `scouter#1..k` on Turn 1 via your platform's native subagent tool (`invoke_subagent(TypeName: "self", Model: "inherit")` on Antigravity, `Task` on Claude Code, `spawn_agent` on Codex, `runSubagent` on Copilot, or native subagent/TIER 2 on Cursor).
 2. **Cohesive Single-File Brain Artifact (`REPORT-status.md` `<= 500` lines, Clean Git Tree)**: Write the consolidated status snapshot to `<appDataDir>\brain\<conversation-id>\REPORT-status.md` (`<= 500` lines; never split into `{name}/` folders or write to `./reports/` by default) using `write_file` with explicit `ArtifactMetadata`:
    ```json
    {

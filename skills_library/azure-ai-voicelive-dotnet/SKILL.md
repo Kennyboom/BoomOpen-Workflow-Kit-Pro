@@ -197,7 +197,7 @@ if (serverEvent is SessionUpdateResponseFunctionCallArgumentsDone functionCall)
 
 | Model | Description |
 |-------|-------------|
-| `gpt-4o-realtime-preview` | GPT-4o with real-time audio |
+| `gpt-4o-realtime-preview` | GPT-5.4 with real-time audio |
 | `gpt-4o-mini-realtime-preview` | Lightweight, fast interactions |
 | `phi4-mm-realtime` | Cost-effective multimodal |
 

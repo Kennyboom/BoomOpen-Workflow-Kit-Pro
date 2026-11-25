@@ -29,13 +29,13 @@ for _stream in (sys.stdout, sys.stderr):
         pass
 
 EXIT_USAGE = 2
-MAX_FILES = 50
 MAX_TOLERATED_ISSUES = 1  # 0 blocking issues tolerated (< 1)
 AUDITED_SUFFIXES = {".html", ".htm", ".jsx", ".tsx", ".vue", ".svelte"}
 SKIP_DIRS = {
     "node_modules", ".next", "dist", "build", ".git", "coverage",
     "playwright-report", ".boomopen", ".agent", ".svelte-kit",
     ".astro", "out", "target", "__pycache__", ".venv", "venv",
+    "test", "tests", "__tests__", "e2e", "fixtures", "cypress", "__mocks__",
 }
 
 # Match real <html> document root tag only (never TypeScript <HTMLDivElement> generics).
@@ -51,18 +51,21 @@ NON_INTERACTIVE_ONCLICK_RE = re.compile(
 BUTTON_BLOCK_RE = re.compile(r"<button\b((?:=>|[^>])*)>([\s\S]*?)</button>", re.IGNORECASE)
 
 
+def is_test_filename(name: str) -> bool:
+    low = name.lower()
+    return ".test." in low or ".spec." in low or low.endswith(("_test.tsx", "_test.jsx", "_spec.tsx", "_spec.jsx"))
+
+
 def find_markup_files(project_path: Path) -> List[Path]:
-    """Find HTML/JSX/TSX/Vue/Svelte files via pruned os.walk."""
+    """Find all non-test HTML/JSX/TSX/Vue/Svelte files via pruned os.walk (zero file cap)."""
     files: List[Path] = []
-    extra_skip = {"skills_library", "templates", "examples", "fixtures"} - set(project_path.parts)
+    extra_skip = {"skills_library", "templates", "examples"} - {project_path.name}
     skip_dirs = SKIP_DIRS | extra_skip
     for root, dirs, names in os.walk(project_path):
         dirs[:] = sorted(d for d in dirs if d not in skip_dirs)
         for name in sorted(names):
-            if Path(name).suffix.lower() in AUDITED_SUFFIXES:
+            if Path(name).suffix.lower() in AUDITED_SUFFIXES and not is_test_filename(name):
                 files.append(Path(root) / name)
-                if len(files) >= MAX_FILES:
-                    return files
     return files
 
 

@@ -2,8 +2,8 @@
 
 /**
  * Shared strict CLI argument parser and verification command runner for BoomOpen subcommands
- * (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`). Rejects unknown `-*` options and
- * missing or flag-swallowed values with `EXIT_USAGE (2)` so typos never bypass verification gates.
+ * (`research`, `design`, `plan`, `cook`, `ledger`, `conduct`, `audit`, `reconcile`).
+ * Rejects unknown `-*` options and missing or flag-swallowed values with `EXIT_USAGE (2)`.
  */
 
 const { spawnSync } = require('node:child_process');
@@ -13,14 +13,27 @@ const EXIT_FAIL = 1;
 const EXIT_USAGE = 2;
 const DEFAULT_VERIFY_TIMEOUT_MS = 60000;
 
+const REPEATABLE_LIST_FLAGS = new Set([
+  'docs', 'owned-files', 'owned', 'read-only-files', 'read-only', 'engines', 'checks', 'tags',
+  'files', 'targets', 'domains', 'skills', 'specs', 'select', 'exclude', 'defer', 'locked-tests',
+  'changed', 'ignore',
+]);
+
+function toKebabFlagKey(raw) {
+  return String(raw || '').replace(/^-+/, '').replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+}
+
 /**
- * Parse subcommand argv strictly against declared boolean and value flags.
+ * Parse subcommand argv strictly against declared boolean, optional-value, and value flags.
+ * Repeatable list flags comma-join across repeated occurrences; scalar flags use last-value-wins.
  *
  * @param {string[]} argv
  * @param {{
  *   defaults?: Record<string, unknown>,
  *   booleanFlags?: Record<string, { key: string, value?: boolean } | string>,
  *   valueFlags?: Record<string, string>,
+ *   optionalValueFlags?: Record<string, { key: string, value?: boolean } | string>,
+ *   repeatableFlags?: Set<string> | string[],
  *   allowDashValueFlags?: Set<string> | string[],
  * }} [spec]
  * @returns {{ flags: Record<string, unknown>, positional: string[], error: string | null }}
@@ -29,9 +42,13 @@ function parseSubcommandArgs(argv = [], spec = {}) {
   const flags = { ...(spec.defaults || {}) };
   const boolMap = spec.booleanFlags || {};
   const valMap = spec.valueFlags || {};
+  const optValMap = spec.optionalValueFlags || {};
   const allowDash = spec.allowDashValueFlags instanceof Set
     ? spec.allowDashValueFlags
     : new Set(spec.allowDashValueFlags || []);
+  const customRepeatable = spec.repeatableFlags instanceof Set
+    ? spec.repeatableFlags
+    : new Set(spec.repeatableFlags || []);
   const knownFlags = new Set([...Object.keys(boolMap), ...Object.keys(valMap)]);
   const seenValueKeys = new Set();
   const positional = [];
@@ -58,6 +75,15 @@ function parseSubcommandArgs(argv = [], spec = {}) {
     }
 
     if (Object.prototype.hasOwnProperty.call(valMap, flagName)) {
+      if (inlineVal === undefined && Object.prototype.hasOwnProperty.call(optValMap, flagName)) {
+        const nextRaw = argv[i + 1];
+        if (nextRaw === undefined || (String(nextRaw).startsWith('-') && String(nextRaw) !== '-')) {
+          const optTarget = optValMap[flagName];
+          if (typeof optTarget === 'string') flags[optTarget] = true;
+          else flags[optTarget.key] = optTarget.value !== undefined ? optTarget.value : true;
+          continue;
+        }
+      }
       const key = valMap[flagName];
       const val = inlineVal !== undefined ? inlineVal : argv[++i];
       if (val === undefined || String(val).length === 0) {
@@ -69,7 +95,10 @@ function parseSubcommandArgs(argv = [], spec = {}) {
           return { flags, positional, error: `Option "${flagName}" requires a value (got flag "${strVal}").` };
         }
       }
-      flags[key] = seenValueKeys.has(key) && flags[key] ? `${flags[key]},${strVal}` : strVal;
+      const isList = customRepeatable.has(flagName) || customRepeatable.has(key)
+        || REPEATABLE_LIST_FLAGS.has(toKebabFlagKey(flagName))
+        || REPEATABLE_LIST_FLAGS.has(toKebabFlagKey(key));
+      flags[key] = isList && seenValueKeys.has(key) && flags[key] ? `${flags[key]},${strVal}` : strVal;
       seenValueKeys.add(key);
       continue;
     }
@@ -80,23 +109,11 @@ function parseSubcommandArgs(argv = [], spec = {}) {
   return { flags, positional, error: null };
 }
 
-/**
- * Split a comma-separated CLI option string into trimmed non-empty entries.
- * @param {string | null | undefined} raw
- * @returns {string[]}
- */
 function splitCommaOption(raw) {
   if (!raw || typeof raw !== 'string') return [];
   return raw.split(',').map((s) => s.trim()).filter(Boolean);
 }
 
-/**
- * Execute unique shell verification commands synchronously and return failure messages.
- * @param {string[]} commands
- * @param {string} cwd
- * @param {number} [timeoutMs]
- * @returns {string[]}
- */
 function runVerifyCommands(commands, cwd, timeoutMs = DEFAULT_VERIFY_TIMEOUT_MS) {
   const failures = [];
   for (const cmd of commands) {
@@ -117,6 +134,7 @@ module.exports = {
   EXIT_OK,
   EXIT_FAIL,
   EXIT_USAGE,
+  REPEATABLE_LIST_FLAGS,
   parseSubcommandArgs,
   splitCommaOption,
   runVerifyCommands,

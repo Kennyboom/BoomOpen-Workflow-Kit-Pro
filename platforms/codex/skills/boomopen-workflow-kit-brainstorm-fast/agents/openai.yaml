@@ -3,4 +3,4 @@ interface:
   short_description: "⚡ Quick Ideation — 1-Wave Autonomous Codebase Grounding, 3 Orthogonal Options, Pre-Mortem Check & Weighted Decision Matrix"
   brand_color: "#EC4899"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

@@ -19,7 +19,7 @@ pip install azure-ai-projects azure-identity
 
 ```bash
 PROJECT_ENDPOINT="https://<resource>.services.ai.azure.com/api/projects/<project>"
-MODEL_DEPLOYMENT_NAME="gpt-4o-mini"
+MODEL_DEPLOYMENT_NAME="gpt-4.1-mini"
 ```
 
 ## Authentication

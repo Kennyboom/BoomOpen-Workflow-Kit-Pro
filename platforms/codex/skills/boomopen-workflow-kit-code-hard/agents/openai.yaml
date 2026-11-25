@@ -3,4 +3,4 @@ interface:
   short_description: "⚡⚡⚡ Full Code — Turn-1 Fast-Forward, 3-Wave Contract-First Implementation & Parallel Verification"
   brand_color: "#3B82F6"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

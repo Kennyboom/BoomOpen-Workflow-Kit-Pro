@@ -14,7 +14,7 @@ const CODING_STANDARDS_PRESETS = {
 };
 
 const ALLOWED_ENUMS = {
-  preset: ['smart-hybrid', 'carbon-guardrails', 'solo-fast', 'deep-architect', 'adversarial-team', 'custom'],
+  preset: ['frontier-guardrails', 'smart-hybrid', 'carbon-guardrails', 'solo-fast', 'deep-architect', 'adversarial-team', 'custom'],
   'execution.mode': ['auto', 'mode_a', 'mode_b', 'team'],
   'execution.modeAThresholdFiles': [1, 2, 3, 5, 10],
   'execution.swarmScaling': ['elastic', 'hyper_swarm', 'conservative'],
@@ -67,11 +67,11 @@ const ALLOWED_ENUMS = {
 };
 
 const SETTING_DESCRIPTIONS = {
-  preset: 'Named configuration profile (smart-hybrid, carbon-guardrails, solo-fast, deep-architect, adversarial-team, custom)',
+  preset: 'Named configuration profile (frontier-guardrails, smart-hybrid, carbon-guardrails, solo-fast, deep-architect, adversarial-team, custom)',
   'execution.mode': 'Orchestration gate mode (auto Proactive Sub-agent First, mode_a Direct, mode_b Orchestrator, team Golden Triangle)',
   'execution.modeAThresholdFiles': 'Max known-target files allowed in Mode A before spawning parallel sub-agents',
   'execution.swarmScaling': 'Sub-agent swarm scaling strategy (elastic 1->2-3->4-6->8+, hyper_swarm aggressive sharding, conservative 2-3 cap)',
-  'execution.maxParallelSubagents': 'Max parallel sub-agents per wave (3, 6, 8, 12, or 16; default 8 in smart-hybrid)',
+  'execution.maxParallelSubagents': 'Max parallel sub-agents per wave (3, 6, 8, 12, or 16; default 8)',
   'workflows.defaultVariant': 'Default slash-command variant when omitted (auto, fast, hard, team, ask)',
   'workflows.naturalLanguageResearchTrigger': 'Route natural-language intents (plan, design, research, brainstorm, review, debug, fix, test, cook, docs) automatically across all 17 languages (auto_team, auto_hard, ask_first, off)',
   'models.subagentPolicy': 'Sub-agent model selection policy (quality_first, strict_inherit, balanced_speed)',
@@ -96,11 +96,11 @@ const MIN_LINE_LIMIT = 1;
 const MAX_LINE_LIMIT = 100_000;
 const CUSTOM_PRESET = 'custom';
 
-const DEFAULT_SETTINGS = {
+const GUARDRAILS_BASE = {
   version: KIT_VERSION,
-  preset: 'smart-hybrid',
-  execution: { mode: 'auto', modeAThresholdFiles: 2, swarmScaling: 'elastic', maxParallelSubagents: 8 },
-  workflows: { defaultVariant: 'auto', naturalLanguageResearchTrigger: 'auto_team' },
+  preset: 'frontier-guardrails',
+  execution: { mode: 'mode_a', modeAThresholdFiles: 10, swarmScaling: 'elastic', maxParallelSubagents: 8 },
+  workflows: { defaultVariant: 'auto', naturalLanguageResearchTrigger: 'off' },
   models: { subagentPolicy: 'quality_first' },
   research: { depth: '5_lens_deep' },
   clarification: { style: 'autonomous_first' },
@@ -119,29 +119,19 @@ const DEFAULT_SETTINGS = {
   },
 };
 
+const DEFAULT_SETTINGS = structuredClone(GUARDRAILS_BASE);
+
 const PRESETS = {
-  'smart-hybrid': structuredClone(DEFAULT_SETTINGS),
+  'frontier-guardrails': structuredClone(GUARDRAILS_BASE),
+  'smart-hybrid': {
+    ...structuredClone(GUARDRAILS_BASE),
+    preset: 'smart-hybrid',
+    execution: { mode: 'auto', modeAThresholdFiles: 2, swarmScaling: 'elastic', maxParallelSubagents: 8 },
+    workflows: { defaultVariant: 'auto', naturalLanguageResearchTrigger: 'auto_team' },
+  },
   'carbon-guardrails': {
-    version: KIT_VERSION,
+    ...structuredClone(GUARDRAILS_BASE),
     preset: 'carbon-guardrails',
-    execution: { mode: 'mode_a', modeAThresholdFiles: 10, swarmScaling: 'elastic', maxParallelSubagents: 8 },
-    workflows: { defaultVariant: 'auto', naturalLanguageResearchTrigger: 'off' },
-    models: { subagentPolicy: 'quality_first' },
-    research: { depth: '5_lens_deep' },
-    clarification: { style: 'autonomous_first' },
-    teams: { maxDebateRounds: 3 },
-    codingStandards: { ...CODING_STANDARDS_PRESETS.pragmatic, preset: 'pragmatic' },
-    verification: { level: 'strict_e2e' },
-    deliverables: { routing: 'brain_artifacts' },
-    language: { response: 'auto' },
-    engines: {
-      researcher: 'current',
-      planner: 'current',
-      coder: 'current',
-      debugger: 'current',
-      reviewer: 'current',
-      councilMembers: 'claude,codex,antigravity',
-    },
   },
   'solo-fast': {
     version: KIT_VERSION,

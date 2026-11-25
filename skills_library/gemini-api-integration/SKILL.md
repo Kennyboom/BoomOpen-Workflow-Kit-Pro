@@ -47,7 +47,7 @@ export GEMINI_API_KEY="your-api-key-here"
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 const result = await model.generateContent("Explain async/await in JavaScript");
 console.log(result.response.text());
@@ -59,7 +59,7 @@ import google.generativeai as genai
 import os
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 response = model.generate_content("Explain async/await in JavaScript")
 print(response.text)
@@ -109,7 +109,7 @@ const tools = [{
   }],
 }];
 
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro", tools });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro", tools });
 const result = await model.generateContent("What's the weather in Mumbai?");
 
 const call = result.response.functionCalls()?.[0];
@@ -138,19 +138,18 @@ console.log(response.response.text());
 
 | Model | Best For | Speed | Cost |
 |-------|----------|-------|------|
-| `gemini-1.5-flash` | High-throughput, cost-sensitive tasks | Fast | Low |
-| `gemini-1.5-pro` | Complex reasoning, long context | Medium | Medium |
-| `gemini-2.0-flash` | Latest fast model, multimodal | Very Fast | Low |
-| `gemini-2.0-pro` | Most capable, advanced tasks | Slow | High |
+| `gemini-2.5-flash-lite` | High-throughput, cost-sensitive tasks | Very Fast | Lowest |
+| `gemini-2.5-flash` | Default fast multimodal & tool-use tasks | Fast | Low |
+| `gemini-2.5-pro` | Complex reasoning, coding & long context | Medium | Medium |
 
 ## Best Practices
 
-- ✅ **Do:** Use `gemini-1.5-flash` for most tasks — it's fast and cost-effective
+- ✅ **Do:** Use `gemini-2.5-flash` for most tasks — it's fast and cost-effective
 - ✅ **Do:** Always stream responses for user-facing chat UIs to reduce perceived latency
 - ✅ **Do:** Store API keys in environment variables, never hard-code them
 - ✅ **Do:** Implement exponential backoff for rate limit (429) errors
 - ✅ **Do:** Use `systemInstruction` to set persistent model behavior
-- ❌ **Don't:** Use `gemini-pro` for simple tasks — Flash is cheaper and faster
+- ❌ **Don't:** Use `gemini-2.5-pro` for simple classification tasks — `gemini-2.5-flash` is cheaper and faster
 - ❌ **Don't:** Send large base64 images inline for files > 20MB — use File API instead
 - ❌ **Don't:** Ignore safety ratings in responses for production apps
 
@@ -182,7 +181,7 @@ try {
 **Solution:** Check `result.response.promptFeedback.blockReason` and adjust your prompt or safety settings.
 
 **Problem:** Slow response times
-**Solution:** Switch to `gemini-1.5-flash` and enable streaming. Consider caching repeated prompts.
+**Solution:** Switch to `gemini-2.5-flash` and enable streaming. Consider caching repeated prompts.
 
 **Problem:** `RESOURCE_EXHAUSTED` (quota exceeded)
 **Solution:** Check your quota in Google Cloud Console. Implement request queuing and exponential backoff.
