@@ -302,6 +302,17 @@ function verifyWorkspaceDigest(cwd, digest, options = {}) {
 
 const isQuotaOrRateLimitError = (text = '', exitCode = 0) => exitCode !== 0 && QUOTA_ERROR_PATTERN.test(String(text));
 
+function killSubprocessTree(child) {
+  if (!child) return;
+  if (process.platform === 'win32' && child.pid) {
+    try { spawnSync('taskkill', ['/T', '/F', '/PID', String(child.pid)], { stdio: 'ignore', windowsHide: true }); } catch { /* ignore */ }
+  } else if (child.pid) {
+    try { process.kill(-child.pid, 'SIGKILL'); } catch { /* ignore */ }
+  }
+  try { child.kill('SIGKILL'); } catch { /* ignore */ }
+  try { child.stdout?.destroy(); child.stderr?.destroy(); } catch { /* ignore */ }
+}
+
 async function executeEngineSubprocess(engine, invocation, options = {}) {
   const start = Date.now();
   if (invocation.mode === 'queue') {
@@ -324,29 +335,26 @@ async function executeEngineSubprocess(engine, invocation, options = {}) {
   return new Promise((resolve) => {
     let child;
     try {
-      child = spawn(target.command, target.args, { cwd: options.cwd || process.cwd(), stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, shell: target.shell, windowsVerbatimArguments: Boolean(target.windowsVerbatimArguments), env });
+      child = spawn(target.command, target.args, { cwd: options.cwd || process.cwd(), stdio: ['ignore', 'pipe', 'pipe'], detached: process.platform !== 'win32', windowsHide: true, shell: target.shell, windowsVerbatimArguments: Boolean(target.windowsVerbatimArguments), env });
     } catch (err) {
       const errText = err instanceof Error ? err.message : String(err);
       resolve({ ok: false, queued: false, engine, exitCode: 127, stdout: '', rawStdout: '', stderr: errText, isQuotaError: isQuotaOrRateLimitError(errText, 127), durationMs: Date.now() - start });
       return;
     }
-    let [rawStdout, stderr, timedOut] = ['', '', false];
-    const timer = setTimeout(() => {
-      timedOut = true;
-      if (runPlatform === 'win32' && child.pid) { try { spawnSync('taskkill', ['/T', '/F', '/PID', String(child.pid)], { stdio: 'ignore', windowsHide: true }); } catch { /* ignore */ } }
-      try { child.kill('SIGTERM'); } catch { /* ignore */ }
-    }, timeoutMs);
+    let [rawStdout, stderr, timedOut, settled] = ['', '', false, false];
+    const finish = (payload) => { if (!settled) { settled = true; resolve(payload); } };
+    const timer = setTimeout(() => { timedOut = true; killSubprocessTree(child); }, timeoutMs);
     child.stdout.on('data', (chunk) => (rawStdout += chunk.toString('utf8')));
     child.stderr.on('data', (chunk) => (stderr += chunk.toString('utf8')));
     child.on('error', (err) => {
       clearTimeout(timer);
       const errText = err instanceof Error ? err.message : String(err);
-      resolve({ ok: false, queued: false, engine, exitCode: 127, stdout: unwrapEngineStdout(engine, rawStdout), rawStdout, stderr: `${stderr}\n${errText}`.trim(), isQuotaError: isQuotaOrRateLimitError(errText, 127), durationMs: Date.now() - start });
+      finish({ ok: false, queued: false, engine, exitCode: 127, stdout: unwrapEngineStdout(engine, rawStdout), rawStdout, stderr: `${stderr}\n${errText}`.trim(), isQuotaError: isQuotaOrRateLimitError(errText, 127), durationMs: Date.now() - start });
     });
     child.on('close', (code) => {
       clearTimeout(timer);
       const exitCode = timedOut ? 124 : (code ?? 1);
-      resolve({
+      finish({
         ok: exitCode === 0 && !timedOut, queued: false, engine, exitCode, stdout: unwrapEngineStdout(engine, rawStdout), rawStdout,
         stderr: timedOut ? `${stderr}\nTimed out after ${timeoutMs}ms`.trim() : stderr,
         isQuotaError: isQuotaOrRateLimitError(`${rawStdout}\n${stderr}`, exitCode), durationMs: Date.now() - start,
