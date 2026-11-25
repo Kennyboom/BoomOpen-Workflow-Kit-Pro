@@ -7,7 +7,6 @@ import { HomeTerminalPreview } from '../components/home/HomeTerminalPreview'
 import { TrailerPlayer } from '../components/home/TrailerPlayer'
 import { SEO } from '../components/seo/SEO'
 import { ActionLink, CopyCommandBar } from '../components/ui/Primitives'
-import { CLI_COMMANDS } from '../data/cliSuite'
 import { KIT_STATS, formatCount } from '../data/kitStats'
 import { INSTALL_ALL_COMMAND, PLATFORMS } from '../data/platforms'
 import { useLanguage } from '../i18n/context'
@@ -15,11 +14,11 @@ import type { Dictionary } from '../i18n/types'
 import type { Locale, PlatformId } from '../types/ui-contract'
 
 /**
- * Calm, monumental 4-section homepage (1440px stage):
- * 1. Hero + widescreen 1080p cinema stage + sleek ecosystem & 4-stat bar
- * 2. 3 sculptural VIP architectural pillars
- * 3. 4-tab live local CLI terminal preview
- * 4. Minimalist 30-second closing stage
+ * Visionary 4-section widescreen homepage (1440px stage):
+ * 1. Hero + widescreen 1080p cinema stage + 5-IDE ecosystem & 4 flagship stats
+ * 2. Asymmetric 2x2 Bento of BoomOpen's 4 unique superpowers
+ * 3. Interactive 5-stage end-to-end project lifecycle showcase
+ * 4. Clean 5-IDE unified closing stage
  */
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
@@ -30,16 +29,17 @@ const CLOSING_SPOTLIGHT =
   'radial-gradient(ellipse 70% 58% at 50% 0%, oklch(0.74 0.14 160 / 0.14), oklch(1 0 0 / 0.05) 45%, transparent 75%)'
 
 interface HomeSectionCopy {
+  readonly topPillText: string
   readonly worksWithLabel: string
   readonly statWorkflows: string
-  readonly statSubagents: string
-  readonly statCliGates: string
+  readonly statAgents: string
+  readonly statTeams: string
   readonly statSkills: string
   readonly bentoEyebrow: string
   readonly bentoTitle: string
-  readonly cliEyebrow: string
-  readonly cliTitle: string
-  readonly cliLinkLabel: string
+  readonly lifecycleEyebrow: string
+  readonly lifecycleTitle: string
+  readonly lifecycleLinkLabel: string
   readonly closingHeadline: string
   readonly closingSubline: string
   readonly closingPrimaryCta: string
@@ -48,36 +48,38 @@ interface HomeSectionCopy {
 
 const HOME_COPY: Record<Locale, HomeSectionCopy> = {
   en: {
+    topPillText: 'BoomOpen v5.5 · Antigravity · Claude Code · Codex · Cursor · Copilot',
     worksWithLabel: 'Works natively with',
-    statWorkflows: 'Slash Workflows',
-    statSubagents: 'Sub-Agents',
-    statCliGates: 'CLI Gates',
-    statSkills: 'Indexed Skills',
-    bentoEyebrow: 'CORE ARCHITECTURE',
-    bentoTitle: 'Light on daily edits. Strict at scale.',
-    cliEyebrow: 'CLI GATES',
-    cliTitle: 'Verified locally before every merge.',
-    cliLinkLabel: 'Explore all 14 CLI gates',
-    closingHeadline: 'Ready in 30 seconds.',
-    closingSubline: 'Open source MIT · Zero runtime dependencies · Clean uninstall via SHA-256 manifest.',
+    statWorkflows: 'Workflows',
+    statAgents: 'Specialist Agents',
+    statTeams: 'Review Teams',
+    statSkills: 'Domain Skills',
+    bentoEyebrow: 'UNIQUE CAPABILITIES',
+    bentoTitle: 'Capabilities no standalone AI IDE ships with.',
+    lifecycleEyebrow: '36 END-TO-END WORKFLOWS',
+    lifecycleTitle: 'Every workflow from idea to release.',
+    lifecycleLinkLabel: 'Browse all 36 workflows',
+    closingHeadline: 'Install once. Supercharge all 5 AI IDEs.',
+    closingSubline: 'Works seamlessly across Antigravity, Claude Code, OpenAI Codex, Cursor, and GitHub Copilot. Open source MIT.',
     closingPrimaryCta: 'Install Now',
-    closingSecondaryCta: 'Explore 36 Commands',
+    closingSecondaryCta: 'View Architecture',
   },
   vi: {
+    topPillText: 'BoomOpen v5.5 · Antigravity · Claude Code · Codex · Cursor · Copilot',
     worksWithLabel: 'Tương thích gốc với',
     statWorkflows: 'Lệnh quy trình',
-    statSubagents: 'Sub-Agents',
-    statCliGates: 'Cổng CLI',
-    statSkills: 'Kỹ năng',
-    bentoEyebrow: 'KIẾN TRÚC LÕI',
-    bentoTitle: 'Nhẹ khi code nhanh. Chặt khi làm lớn.',
-    cliEyebrow: 'CLI GATES',
-    cliTitle: 'Kiểm chứng tự động trên máy.',
-    cliLinkLabel: 'Xem kiến trúc & 14 lệnh CLI',
-    closingHeadline: 'Sẵn sàng trong 30 giây.',
-    closingSubline: 'Mã nguồn mở MIT · 0 gói phụ thuộc ngoài · Gỡ cài đặt an toàn qua manifest SHA-256.',
+    statAgents: 'Chuyên gia AI',
+    statTeams: 'Đội phản biện',
+    statSkills: 'Kỹ năng chuyên sâu',
+    bentoEyebrow: 'SỨC MẠNH KHÁC BIỆT',
+    bentoTitle: 'Những khả năng không AI IDE đơn lẻ nào có sẵn.',
+    lifecycleEyebrow: '36 QUY TRÌNH THỰC CHIẾN',
+    lifecycleTitle: 'Trọn vòng đời từ ý tưởng đến phát hành.',
+    lifecycleLinkLabel: 'Xem toàn bộ 36 lệnh',
+    closingHeadline: 'Cài một lần. Nâng tầm cả 5 AI IDE.',
+    closingSubline: 'Hoạt động đồng bộ trên Antigravity, Claude Code, OpenAI Codex, Cursor và GitHub Copilot. Mã nguồn mở MIT.',
     closingPrimaryCta: 'Cài đặt ngay',
-    closingSecondaryCta: 'Xem 36 lệnh',
+    closingSecondaryCta: 'Xem kiến trúc',
   },
 }
 
@@ -104,8 +106,8 @@ function EcosystemMetricsStrip({
 }) {
   const stats = [
     { value: formatCount(KIT_STATS.commands.length), label: copy.statWorkflows },
-    { value: formatCount(KIT_STATS.agents), label: copy.statSubagents },
-    { value: formatCount(CLI_COMMANDS.length), label: copy.statCliGates },
+    { value: formatCount(KIT_STATS.agents), label: copy.statAgents },
+    { value: formatCount(KIT_STATS.teams), label: copy.statTeams },
     { value: formatCount(KIT_STATS.skills), label: copy.statSkills },
   ] as const
 
@@ -178,30 +180,28 @@ function HeroStage({
           className="flex flex-col items-center text-center"
         >
           <Link
-            to="/architecture"
+            to={installHref}
             className={clsx(
-              'inline-flex min-h-11 items-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.04] px-4 py-1.5 text-sm font-medium text-ink backdrop-blur-md transition-colors duration-150 motion-reduce:transition-none hover:border-white/[0.24] hover:bg-white/[0.08] no-underline',
+              'inline-flex min-h-11 max-w-full items-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.04] px-4 py-1.5 text-xs sm:text-sm font-medium text-ink backdrop-blur-md transition-colors duration-150 motion-reduce:transition-none hover:border-white/[0.24] hover:bg-white/[0.08] no-underline',
               FOCUS_RING,
             )}
           >
-            <span className="relative flex size-2" aria-hidden="true">
+            <span className="relative flex size-2 shrink-0" aria-hidden="true">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-75 motion-reduce:animate-none" />
               <span className="relative inline-flex size-2 rounded-full bg-accent" />
             </span>
-            <span className="font-mono text-xs font-semibold text-accent">{`v${KIT_STATS.version}`}</span>
-            <span aria-hidden="true" className="text-white/25">·</span>
-            <span className="font-mono text-xs text-ink/90">frontier-guardrails</span>
-            <ArrowRight aria-hidden="true" className="size-3.5 text-muted" />
+            <span className="truncate font-mono text-xs text-ink/95">{copy.topPillText}</span>
+            <ArrowRight aria-hidden="true" className="size-3.5 shrink-0 text-accent" />
           </Link>
 
           <h1
             id="home-hero-heading"
-            className="hero-display-gradient mx-auto mt-7 max-w-[16ch] text-center font-display text-[clamp(3rem,5.5vw,5.25rem)] leading-[1.04] font-bold tracking-[-0.04em]"
+            className="hero-display-gradient mx-auto mt-7 max-w-[18ch] text-center font-display text-[clamp(2.75rem,5.2vw,5.1rem)] leading-[1.05] font-bold tracking-[-0.04em]"
           >
             {t.hero.headline}
           </h1>
 
-          <p className="mx-auto mt-5 max-w-[50ch] text-center text-lg leading-relaxed text-muted sm:text-xl">
+          <p className="mx-auto mt-5 max-w-[58ch] text-center text-lg leading-relaxed text-muted sm:text-xl">
             {t.hero.subheadline}
           </p>
 
@@ -269,7 +269,7 @@ export function HomePage() {
           <EyebrowPill index="01" label={copy.bentoEyebrow} />
           <h2
             id="home-bento-heading"
-            className="max-w-[20ch] font-display text-[clamp(2.25rem,3.6vw,3.25rem)] leading-[1.08] font-bold tracking-[-0.035em] text-ink"
+            className="max-w-[22ch] font-display text-[clamp(2.25rem,3.6vw,3.25rem)] leading-[1.08] font-bold tracking-[-0.035em] text-ink"
           >
             {copy.bentoTitle}
           </h2>
@@ -279,27 +279,27 @@ export function HomePage() {
         </div>
       </section>
 
-      <section aria-labelledby="home-cli-heading" className="border-t border-white/[0.08]">
+      <section aria-labelledby="home-lifecycle-heading" className="border-t border-white/[0.08]">
         <div className="mx-auto max-w-[90rem] px-4 py-24 sm:px-6 lg:px-10 lg:py-32">
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div className="space-y-4">
-              <EyebrowPill index="02" label={copy.cliEyebrow} />
+              <EyebrowPill index="02" label={copy.lifecycleEyebrow} />
               <h2
-                id="home-cli-heading"
-                className="max-w-[20ch] font-display text-[clamp(2.25rem,3.6vw,3.25rem)] leading-[1.08] font-bold tracking-[-0.035em] text-ink"
+                id="home-lifecycle-heading"
+                className="max-w-[22ch] font-display text-[clamp(2.25rem,3.6vw,3.25rem)] leading-[1.08] font-bold tracking-[-0.035em] text-ink"
               >
-                {copy.cliTitle}
+                {copy.lifecycleTitle}
               </h2>
             </div>
 
             <Link
-              to="/architecture"
+              to="/commands"
               className={clsx(
                 'inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-ink transition-colors duration-150 motion-reduce:transition-none hover:border-white/[0.24] hover:bg-white/[0.08] no-underline self-start sm:self-auto',
                 FOCUS_RING,
               )}
             >
-              <span>{copy.cliLinkLabel}</span>
+              <span>{copy.lifecycleLinkLabel}</span>
               <ArrowRight aria-hidden="true" className="size-4 text-accent" />
             </Link>
           </div>
@@ -318,7 +318,7 @@ export function HomePage() {
           >
             <h2
               id="home-closing-heading"
-              className="hero-display-gradient mx-auto max-w-[18ch] font-display text-[clamp(2.5rem,4.2vw,3.375rem)] leading-[1.06] font-bold tracking-[-0.035em]"
+              className="hero-display-gradient mx-auto max-w-[20ch] font-display text-[clamp(2.35rem,4vw,3.35rem)] leading-[1.06] font-bold tracking-[-0.035em]"
             >
               {copy.closingHeadline}
             </h2>
@@ -335,7 +335,7 @@ export function HomePage() {
                 {copy.closingPrimaryCta}
               </ActionLink>
               <ActionLink
-                to="/commands"
+                to="/architecture"
                 variant="secondary"
                 className="min-h-13 rounded-2xl border-white/[0.14] bg-white/[0.04] px-8 text-base font-medium hover:bg-white/[0.08]"
               >

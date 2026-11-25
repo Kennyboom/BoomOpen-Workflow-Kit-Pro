@@ -10,12 +10,12 @@ export const en: Dictionary = {
     mobileMenuCloseAria: 'Close navigation menu', localeEnShort: 'EN', localeViShort: 'VI',
   },
   hero: {
-    badge: 'v5.5.0 · frontier-guardrails',
-    eyebrow: 'Guardrails & Workflows',
-    headline: 'Quality guardrails for AI coding.',
-    subheadline: 'Ultra-light 2.2 KB rules, 36 slash workflows, and 14 local CLI checks across 5 AI IDEs.',
-    primaryCta: 'Install from Git',
-    secondaryCta: 'Explore 36 Commands',
+    badge: 'BoomOpen v5.5 · Antigravity · Claude Code · Codex · Cursor · Copilot',
+    eyebrow: 'Autonomous Engineering Workflows',
+    headline: 'Turn AI coding into an autonomous engineering team.',
+    subheadline: 'Build multi-phase projects from specs, auto-reconcile missing features, run cross-model councils, and ship through multi-round security audits.',
+    primaryCta: 'Install Free',
+    secondaryCta: 'Explore 36 Workflows',
     quickInstallLabel: 'Clone & Install',
     quickInstallCaption: 'SHA-256 manifest installer: syncs 14 entry files across 5 IDEs while preserving your existing rules.',
     metrics: {
