@@ -223,7 +223,7 @@ function HeroStage({
             </ActionLink>
           </div>
 
-          <div className="mx-auto mt-7 w-full max-w-2xl text-left">
+          <div className="mx-auto mt-7 w-full max-w-4xl text-left">
             <CopyCommandBar
               command={INSTALL_ALL_COMMAND}
               copyLabel={t.common.copy}

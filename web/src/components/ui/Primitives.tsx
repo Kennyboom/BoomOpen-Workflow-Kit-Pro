@@ -251,7 +251,7 @@ export function CopyCommandBar({
           compact ? 'py-2.5' : 'py-3',
         )}
       >
-        <div className="flex min-w-0 items-center gap-3 overflow-x-auto py-0.5">
+        <div className="scrollbar-none flex min-w-0 items-center gap-3 overflow-x-auto py-0.5">
           <span aria-hidden="true" className="select-none font-mono text-sm font-semibold text-accent">$</span>
           <code
             ref={codeRef}
