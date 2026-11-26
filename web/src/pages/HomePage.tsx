@@ -171,22 +171,18 @@ function HeroStage({
       className="relative overflow-hidden border-b border-indigo-200/[0.10]"
       style={{ backgroundImage: HERO_COSMIC_GLOW }}
     >
-      {/* Celestial Aurora Crown & Planetary Horizon Rim Behind Hero */}
+      {/* Celestial Aurora Crown Behind Hero */}
       <div
         aria-hidden="true"
-        className="cosmic-core-pulse pointer-events-none absolute top-10 left-1/2 h-[320px] w-[760px] -translate-x-1/2 rounded-full bg-gradient-to-r from-sky-500/20 via-indigo-500/22 to-purple-500/20 blur-[95px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-[390px] left-1/2 h-[520px] w-[1380px] -translate-x-1/2 rounded-[100%] border-t border-sky-300/25 bg-[radial-gradient(ellipse_at_top,rgba(56,189,248,0.16),rgba(139,92,246,0.08)_38%,transparent_68%)] shadow-[0_-24px_80px_-12px_rgba(56,189,248,0.22)]"
+        className="cosmic-core-pulse pointer-events-none absolute top-6 left-1/2 h-[300px] w-[760px] -translate-x-1/2 rounded-full bg-gradient-to-r from-sky-500/20 via-indigo-500/22 to-purple-500/20 blur-[95px]"
       />
 
-      <div className="relative mx-auto max-w-[90rem] px-4 pt-12 pb-18 sm:px-6 lg:px-10 lg:pt-20 lg:pb-26">
+      <div className="relative mx-auto max-w-[90rem] px-4 pt-8 pb-18 sm:px-6 sm:pt-10 lg:px-10 lg:pt-12 lg:pb-26">
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.22, ease: 'easeOut' }}
-          className="flex flex-col items-center text-center"
+          className="relative z-10 flex flex-col items-center text-center"
         >
           <Link
             to={installHref}
@@ -204,16 +200,16 @@ function HeroStage({
 
           <h1
             id="home-hero-heading"
-            className="hero-display-gradient mx-auto mt-7 max-w-[16ch] pb-1 text-center font-display text-[clamp(2.9rem,5.4vw,5.25rem)] leading-[1.15] font-bold tracking-[-0.04em]"
+            className="hero-display-gradient mx-auto mt-5 max-w-[16ch] pb-1 text-center font-display text-[clamp(2.9rem,5.4vw,5.25rem)] leading-[1.15] font-bold tracking-[-0.04em]"
           >
             {t.hero.headline}
           </h1>
 
-          <p className="mx-auto mt-5 max-w-[52ch] text-center text-lg leading-relaxed text-slate-300 sm:text-xl">
+          <p className="mx-auto mt-3.5 max-w-[52ch] text-center text-lg leading-relaxed text-slate-300 sm:text-xl">
             {t.hero.subheadline}
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3.5">
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-3.5">
             <ActionLink
               to={installHref}
               variant="primary"
@@ -236,7 +232,7 @@ function HeroStage({
             </button>
           </div>
 
-          <div className="mx-auto mt-7 w-full max-w-4xl text-left">
+          <div className="mx-auto mt-6 w-full max-w-4xl text-left">
             <CopyCommandBar
               compact
               command={INSTALL_ALL_COMMAND}
@@ -247,8 +243,14 @@ function HeroStage({
           </div>
         </motion.div>
 
-        <div className="mt-14">
-          <StudioHeroShowcase selectedPlatformId={selectedPlatformId} />
+        <div className="relative mt-20 sm:mt-24">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-11 sm:-top-13 left-1/2 h-[520px] w-[1380px] -translate-x-1/2 rounded-[100%] border-t border-sky-300/25 bg-[radial-gradient(ellipse_at_top,rgba(56,189,248,0.16),rgba(139,92,246,0.08)_38%,transparent_68%)] shadow-[0_-24px_80px_-12px_rgba(56,189,248,0.22)]"
+          />
+          <div className="relative z-10">
+            <StudioHeroShowcase selectedPlatformId={selectedPlatformId} />
+          </div>
         </div>
       </div>
     </section>
