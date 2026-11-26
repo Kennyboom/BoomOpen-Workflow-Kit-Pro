@@ -44,10 +44,11 @@
 
 ## 🌟 ما هو BoomOpen Workflow Kit v5.5؟
 
-**BoomOpen Workflow Kit v5.5 (الإصدار الموحد متعدد المنصات والهجين الذكي)** هو نظام تشغيل مفتوح المصدر متعدد الوكلاء يحوّل مساعد البرمجة الفردي بالذكاء الاصطناعي إلى منظمة هندسية متكاملة تضم **22 وكيلاً متخصصاً**، و**18 فريق المثلث الذهبي (`72` ملف فريق)**، و**36 أمر سلاش (`93` ملف أوامر: `87` مسار عمل + `6` في `_ref/`)**، و**14 أمر CLI**، و**22 مهارة أساسية**، و**1,440 مهارة مكتبية متخصصة (`1,462` مهارة موحدة دون تكرار عبر `~/.agents/skills_library`)**.
+**BoomOpen Workflow Kit v5.5 (إصدار Frontier-Guardrails والهجين الذكي متعدد المنصات)** هو نظام تشغيل مفتوح المصدر متعدد الوكلاء يحوّل مساعد البرمجة الفردي بالذكاء الاصطناعي إلى منظمة هندسية متكاملة تضم **22 وكيلاً متخصصاً**، و**18 فريق المثلث الذهبي (`72` ملف فريق)**، و**36 أمر سلاش (`93` ملف أوامر: `87` مسار عمل + `6` في `_ref/`)**، و**14 أمر CLI**، و**22 مهارة أساسية**، و**1,440 مهارة مكتبية متخصصة (`1,462` مهارة موحدة دون تكرار عبر `~/.agents/skills_library`)**.
 
-على عكس القوالب الجامدة التي تسبب تضخماً في السياق، يجمع BoomOpen v5.5 بين الضوابط الرشيقة (`< 2.5 KB`) للنمط الافتراضي الموصى به **`frontier-guardrails`**، و**تقسيم الأسراب المرن رباعي المستويات (`role#shard`)**، و**فهم المشاريع القائمة خلال 60 ثانية (`/onboard`)**، و**بوابات طلبات السحب والإصدارات (`/pr` و`/pr:review` و`/release`)**، و**المطابقة التلقائية بين المواصفات والكود في الموجة Wave 2.5 (`boomopen reconcile`)**، و**التدقيق متعدد الجولات بعد الإكمال (`/audit` و`boomopen audit`)**، و**التشغيل الذاتي متعدد الجلسات (`/autopilot`)**، و**موجه المحركات المتعددة (`/conduct`)**:
-- **🛡️ ضوابط Frontier الرشيقة (`< 2.5 KB`) وتنسيق الوضع B عند الطلب**: مع الملف الافتراضي **`frontier-guardrails`** يقود النموذج الرائد في بيئتك المهام اليومية مباشرة حتى `≤ 10` ملفات (`mode_a` دون استحواذ على اللغة الطبيعية)، بينما تطلق أوامر `/cmd` الصريحة أو ملف `smart-hybrid` شظايا متوازية منذ الجولة الأولى (`role#shard`، بحد أقصى `3–4 OWNED_FILES`) مع **تفريع DAG**، و**إرسال مباشر من الخطة للمنفذ**، و**أقفال العقود (`SHARED_CONTRACT` + `OWNED_FILES`)**، و**المطابقة التلقائية Wave 2.5 (`boomopen reconcile` + `spec-reconciler` + `/cook amend-plan`)**، و**إعادة الاستخدام الدافئ (`send_message`)**.
+على عكس القوالب الجامدة التي تسبب تضخماً في السياق، يأتي BoomOpen v5.5 عند التثبيت الجديد مزوداً افتراضياً بنمط **`⚡ smart-hybrid`** (السرب المرن الاستباقي منذ الجولة الأولى + التوجيه باللغة الطبيعية عبر 17 لغة على جميع المنصات الخمس؛ ويُستعاد عبر `boomopen settings reset`)، مع توفير النمط الرشيق الاختياري للوضع A **`🛡️ frontier-guardrails`** (`< 2.5 KB` / `~600 tokens`، `mode_a <= 10 files`، `naturalLanguageResearchTrigger = off`)، مما يتيح **تقسيم الأسراب المرن رباعي المستويات (`role#shard`)**، و**فهم المشاريع القائمة خلال 60 ثانية (`/onboard`)**، و**بوابات طلبات السحب والإصدارات (`/pr` و`/pr:review` و`/release`)**، و**المطابقة التلقائية بين المواصفات والكود في الموجة Wave 2.5 (`boomopen reconcile`)**، و**التدقيق متعدد الجولات بعد الإكمال (`/audit` و`boomopen audit`)**، و**التشغيل الذاتي متعدد الجلسات (`/autopilot`)**، و**موجه المحركات المتعددة (`/conduct`)**:
+- **⚡ النمط الافتراضي `smart-hybrid` — سرب استباقي منذ الجولة الأولى وتوجيه ذكي بـ 17 لغة**: عند التثبيت الجديد تُنفَّذ التعديلات المحدودة (`≤ 2` ملفات) مباشرة في الوضع A، بينما تطلق المهام متعددة الملفات والبحث العميق وتوليد الأفكار والتخطيط وأوامر `/cmd` الصريحة (**`/onboard`** و**`/pr` + `/pr:review`** و**`/release`** وغيرها) شظايا متوازية منذ الجولة الأولى (`role#shard`، بحد أقصى `3–4 OWNED_FILES`) مع **تفريع DAG**، و**إرسال مباشر من الخطة للمنفذ**، و**أقفال العقود (`SHARED_CONTRACT` + `OWNED_FILES`)**، و**المطابقة التلقائية Wave 2.5 (`boomopen reconcile` + `spec-reconciler` + `/cook amend-plan`)**، و**إعادة الاستخدام الدافئ (`send_message`)**.
+- **🛡️ النمط الرشيق الاختياري `frontier-guardrails` (`< 2.5 KB` / `~600 tokens` — Slim Mode A)**: هل تفضّل التنفيذ المباشر في الوضع A حتى `≤ 10` ملفات (`mode_a <= 10 files`) دون تفعيل تلقائي للغة الطبيعية (`naturalLanguageResearchTrigger = off`)؟ بدّل خلال `< 10ms` عبر `boomopen settings preset frontier-guardrails` (مع الحفاظ على الاسم البديل `carbon-guardrails` للتوافق العكسي).
 - **🏛️ التشغيل الذاتي (`/autopilot`)، التدقيق متعدد الجولات (`/audit`) ومجلس المحركات (`/conduct`)**: استيعاب المواصفات في سجل `.boomopen/project-ledger.json` بحماية SHA-256 وبوابة 4 طبقات (`boomopen check --strict-phase --no-stubs`) مع استرجاع آمن عبر `boomopen ledger rollback`؛ وتنفيذ تدقيق شامل بعد الإكمال (`/audit` و`boomopen audit rollback`) عبر `.boomopen/audit-ledger.json` لتغطية RTM وتدفق UI→API→DB ومحرك الحماية من التسريب ثنائي الطبقات (`security_scan.py` v6).
 - **🗺️ دورة هندسية متكاملة (`/onboard` ← `/cook` ← `/pr` ← `/release`)**: استكشف بنية أي مستودع قائم خلال 60 ثانية عبر `/onboard` (`ARCHITECTURE-MAP.md`)، وافحص وأنشئ طلبات السحب عبر `/pr` و`/pr:review`، وجهّز إصدارات SemVer الموثقة عبر `/release`.
 - **📚 خزينة موحدة تضم 1,462 مهارة بدون تضخم السياق**: تجمع **22 مهارة أساسية (`skills/`)** و**1,440 مهارة مكتبية** مشتركة دون تكرار في `~/.agents/skills_library` (شاملة قوالب `mcp-server` و`ai-agent-worker`) ومفهرسة في `matrix-skills/compact-index.json` لبحث `O(1)` من خطوتين.
@@ -58,9 +59,9 @@
 
 ```mermaid
 flowchart TD
-    User["👤 طلب المستخدم / أمر Slash"] --> Gate{"🚦 البوابة الذكية (frontier-guardrails / smart-hybrid)"}
-    Gate -->|"تنفيذ مباشر (≤ 10 ملفات في frontier-guardrails | ≤ 2 في smart-hybrid)"| ModeA["⚡ الوضع A: تنفيذ مباشر (Tier 0)<br/>ضوابط < 2.5 KB + معايير البرمجة ذات المستويين"]
-    Gate -->|"أمر /cmd صريح، ≥ مجالين أو الوضع B"| ModeB["🎻 الوضع B: منسق الوكلاء المتعددين (Tier 1)<br/>Model: inherit"]
+    User["👤 طلب المستخدم / أمر Slash"] --> Gate{"🚦 بوابة النمط والتعقيد (smart-hybrid / frontier-guardrails)"}
+    Gate -->|"تنفيذ مباشر (≤ 2 ملفات في smart-hybrid | ≤ 10 في frontier-guardrails)"| ModeA["⚡ الوضع A: تنفيذ مباشر (Tier 0)<br/>ضوابط ~600 توكن (< 2.5 KB) + معايير البرمجة ذات المستويين"]
+    Gate -->|"أمر /cmd صريح، فوق حد الملفات أو الوضع B"| ModeB["🎻 الوضع B: منسق الوكلاء المتعددين (Tier 1)<br/>Model: inherit"]
 
     ModeB --> FanOut["🔀 المرحلة 1: تفريع متوازٍ DAG<br/>(researcher + scouter | /onboard بـ 3 شظايا)"]
     FanOut --> Plan["📋 المرحلة 2: تخطيط قائم على العقود (planner)<br/>يقفل SHARED_CONTRACT + OWNED_FILES"]
@@ -80,7 +81,7 @@ flowchart TD
 ## 🧠 الركائز الست الأساسية للإصدار v5.5
 
 1. **🌐 تكافؤ موحد عبر 5 منصات (`platforms/*`)**:
-   - تثبيت أصلي لكل من **Antigravity (Gemini)** و**Claude Code** و**OpenAI Codex** و**Cursor** و**GitHub Copilot** مع ملفات دخول رشيقة (`< 2.5 KB`) وخزينة مشتركة موحدة في `~/.agents/skills_library`.
+   - تثبيت أصلي لكل من **Antigravity (Gemini)** و**Claude Code** و**OpenAI Codex** و**Cursor** و**GitHub Copilot** مع نقاط دخول عديمة التأخير (`smart-hybrid` افتراضياً + النمط الرشيق الاختياري `< 2.5 KB` / `~600 tokens` `frontier-guardrails`) وخزينة مشتركة موحدة في `~/.agents/skills_library`.
 2. **📏 معايير البرمجة العملية ذات المستويين (منع التجزئة الميكانيكية)**:
    - **المستوى 1 — عدم تسامح**: المسؤولية الواحدة، **منع `any` الصريح**، **منع ترك `console.log` للتصحيح**، إلزامية `try/catch` عند حدود async/API، ثوابت `SCREAMING_SNAKE_CASE`، مبدأ DRY (`≥ 3`)، وترتيب الاستيراد.
    - **المستوى 2 — إرشادات مرنة**: يستهدف الملف المترابط `~200–350 سطراً` بسقف مرن `400` وتقسيم إلزامي فقط عند `>500 سطر` (تُستثنى الاختبارات والأنواع والوثائق). الدوال المنطقية `~20–40 سطراً` (`~40–80` لواجهة المستخدم/المعالجات).
@@ -143,12 +144,12 @@ boomopen conduct probe
 
 ## 🎛️ الإعدادات الموحدة والملفات الجاهزة الخمسة (`/settings`)
 
-يدير BoomOpen v5.5 **20 مفتاح إعداد + حدَّين للأسطر** عبر **المنصات الخمس** في أقل من `< 10ms` (**بزمن تأخير 0ms في الجولة الأولى**)، مع اعتماد **`🛡️ frontier-guardrails`** كوضع افتراضي موصى به:
+يدير BoomOpen v5.5 **20 مفتاح إعداد + حدَّين للأسطر** عبر **المنصات الخمس** في أقل من `< 10ms` (**بزمن تأخير 0ms في الجولة الأولى**). عند التثبيت الجديد يكون **`⚡ smart-hybrid`** هو الملف الافتراضي الموصى به (ويُستعاد عبر `boomopen settings reset`)، بينما يتوفر **`🛡️ frontier-guardrails`** (`< 2.5 KB` / `~600 tokens`، `mode_a <= 10 files`، `naturalLanguageResearchTrigger = off`، مع الاسم البديل المتوافق `carbon-guardrails`) كملف رشيق اختياري للوضع A (`boomopen settings preset frontier-guardrails`):
 
 | الملف الجاهز (`Preset`) | الوضع (`execution.mode`) | النمط الافتراضي | مشغل اللغة الطبيعية (`naturalLanguageResearchTrigger`) | معايير الكود | الاستخدام الأمثل |
 |:---|:---|:---:|:---:|:---:|:---|
-| **🛡️ `frontier-guardrails`** *(الافتراضي الموصى به)* | **`mode_a`** *(تنفيذ مباشر حتى `≤ 10 ملفات`؛ ضوابط رشيقة `< 2.5 KB` عبر المنصات الخمس؛ يدعم الاسم البديل `carbon-guardrails`)* | `auto` | `off` *(بلا استحواذ على اللغة الطبيعية؛ المسارات بأمر `/cmd` صريح فقط)* | `pragmatic` (`400/500`) | العمل اليومي على جميع المنصات الخمس — يقود النموذج الرائد التعديلات حتى 10 ملفات مع فرض حدود `400/500` سطر وتحقق `strict_e2e` |
-| **⚡ `smart-hybrid`** | **`auto`** (`≤ 2 ملفات` ← Mode A؛ `> 2` أو `/cmd` ← Mode B) | `auto` | **`auto_team`** *(توجيه البحث والأفكار تلقائياً إلى `/research:team` / `/brainstorm:team`)* | `pragmatic` (`400/500`) | التنسيق الاستباقي بـ 17 لغة: سريع في المهام الصغيرة وسرب تلقائي في الميزات الكبرى |
+| **⚡ `smart-hybrid`** *(الافتراضي الموصى به)* | **`auto`** (`≤ 2 ملفات` ← Mode A؛ `> 2` أو `/cmd` ← Mode B) | `auto` | **`auto_team`** *(توجيه البحث والأفكار تلقائياً إلى `/research:team` / `/brainstorm:team`)* | `pragmatic` (`400/500`) | افتراضي عند التثبيت الجديد (`boomopen settings reset`) — توجيه استباقي بـ 17 لغة وسرب تلقائي منذ الجولة الأولى فوق ملفين عبر المنصات الخمس |
+| **🛡️ `frontier-guardrails`** *(الوضع A الرشيق الاختياري)* | **`mode_a`** *(تنفيذ مباشر حتى `≤ 10 ملفات`؛ ضوابط رشيقة `< 2.5 KB` / `~600 tokens`؛ يدعم الاسم البديل `carbon-guardrails`)* | `auto` | **`off`** *(بلا استحواذ على اللغة الطبيعية؛ المسارات بأمر `/cmd` صريح فقط)* | `pragmatic` (`400/500`) | وضع A رشيق اختياري (`< 2.5 KB` / `~600 tokens`) حتى 10 ملفات مع فرض حدود `400/500` سطر وتحقق `strict_e2e` |
 | **🚀 `solo-fast`** | **`mode_a`** *(تنفيذ فردي مباشر بدون وكلاء فرعيين)* | `fast` | `off` *(رد مباشر ما لم يُكتب `/brainstorm`)* | `relaxed` (`600/800`) | الإصلاحات العاجلة، النماذج الأولية السريعة، وتوفير التوكنات |
 | **🧠 `deep-architect`** | **`mode_b`** *(منسق الوكلاء المتعددين في كل مهمة)* | `hard` | `auto_hard` *(تشغيل `/research:hard` / `/brainstorm:hard` خماسي العدسات)* | `strict` (`300/400`) | تصميم الأنظمة المعقدة والمشاريع الجديدة وإعادة الهيكلة |
 | **🔺 `adversarial-team`** | **`team`** *(فريق المثلث الذهبي من 3 وكلاء `:team` دائماً)* | `team` | **`auto_team`** *(مراجعة تنافسية بين 3 وكلاء عبر `MAILBOX`)* | `strict` (`300/400`) | الإنتاج الحرج، التدقيق الأمني، والإصدارات الخالية من العيوب |
@@ -156,11 +157,13 @@ boomopen conduct probe
 ```bash
 # في المحادثة (/settings) | لوحة الويب (boomopen settings --ui) | طرفية CLI
 /settings                                     # القائمة التفاعلية (ask_question UI)
-/settings preset frontier-guardrails          # الوضع الافتراضي الموصى به (< 2.5 KB؛ البديل: carbon-guardrails)
-/settings preset smart-hybrid                 # التنسيق الاستباقي Smart-Hybrid
+/settings preset smart-hybrid                 # الوضع الافتراضي الموصى به (Auto Mode A/B + توجيه بـ 17 لغة)
+/settings preset frontier-guardrails          # الوضع A الرشيق الاختياري (< 2.5 KB / ~600 tokens؛ البديل: carbon-guardrails)
 /settings mode auto | mode_a | mode_b | team  # تغيير وضع التنفيذ مباشرة
-boomopen settings preset frontier-guardrails  # تطبيق عام ومزامنة المنصات الخمس
+boomopen settings preset smart-hybrid         # تطبيق الملف الافتراضي ومزامنة المنصات الخمس
+boomopen settings preset frontier-guardrails  # تفعيل الوضع A الرشيق الاختياري (≤ 10 ملفات)
 boomopen settings set execution.mode mode_a --project   # كتابة ./.boomopen.json في المشروع الحالي فقط
+boomopen settings reset                       # استعادة إعدادات smart-hybrid الافتراضية الموصى بها
 ```
 
 ---
@@ -213,7 +216,7 @@ boomopen settings set execution.mode mode_a --project   # كتابة ./.boomopen
 | **`/autopilot`** | `:init`, `:run`, `:audit` | منسق المشاريع المستقل متعدد الجلسات عبر `.boomopen/project-ledger.json` وبوابة 4 طبقات و`ledger rollback` |
 | **`/conduct`** | `:council`, `:pipeline` | المنسق عبر المحركات ومجلس النماذج المتوازي (`boomopen conduct`) مع التوافق الرباعي |
 | **`/orchestrate`** | — | تنسيق خطوط أنابيب مخصصة متعددة الوكلاء عبر عدة مجالات وشظايا |
-| **`/settings`** | `preset`, `mode`, `set`, `ui` | مركز التحكم الموحد: 20 مفتاحاً + حدان للأسطر، **5 ملفات جاهزة** (`frontier-guardrails` افتراضياً) أو واجهة الويب (`--ui`) |
+| **`/settings`** | `preset`, `mode`, `set`, `ui` | مركز التحكم الموحد: 20 مفتاحاً + حدان للأسطر، **5 ملفات جاهزة** (`smart-hybrid` افتراضياً، و`frontier-guardrails` اختيارياً) أو واجهة الويب (`--ui`) |
 | **`/save` / `/recap`** | — | حفظ حالة الجلسة (`SESSION-HANDOVER.md`) واستعادة السياق في `< 5 ثوانٍ` |
 
 ---

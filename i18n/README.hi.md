@@ -44,10 +44,11 @@
 
 ## 🌟 BoomOpen Workflow Kit v5.5 क्या है?
 
-**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** एक ओपन-सोर्स मल्टी-एजेंट ऑपरेटिंग सिस्टम है जो एक सिंगल AI कोडिंग असिस्टेंट को **22 विशेषज्ञ एजेंटों**, **18 गोल्डन ट्रायंगल टीमों (`72` टीम फ़ाइलें)**, **36 स्लैश कमांड (`93` कमांड फ़ाइलें: `87` वर्कफ़्लो + `6` `_ref/`)**, **14 CLI कमांड**, **22 कोर स्किल्स** और **1,440 लाइब्रेरी स्किल्स (`~/.agents/skills_library` द्वारा डी-डुप्लिकेट किए गए कुल `1,462` स्किल्स)** के समन्वित इंजीनियरिंग संगठन में बदल देता है।
+**BoomOpen Workflow Kit v5.5 (Frontier-Guardrails & Multi-Platform Smart-Hybrid Edition)** एक ओपन-सोर्स मल्टी-एजेंट ऑपरेटिंग सिस्टम है जो एक सिंगल AI कोडिंग असिस्टेंट को **22 विशेषज्ञ एजेंटों**, **18 गोल्डन ट्रायंगल टीमों (`72` टीम फ़ाइलें)**, **36 स्लैश कमांड (`93` कमांड फ़ाइलें: `87` वर्कफ़्लो + `6` `_ref/`)**, **14 CLI कमांड**, **22 कोर स्किल्स** और **1,440 लाइब्रेरी स्किल्स (`~/.agents/skills_library` द्वारा डी-डुप्लिकेट किए गए कुल `1,462` स्किल्स)** के समन्वित इंजीनियरिंग संगठन में बदल देता है।
 
-भारी रैपर्स के विपरीत, BoomOpen v5.5 डिफ़ॉल्ट **`frontier-guardrails`** प्रीसेट के हल्के सुरक्षा नियमों (`< 2.5 KB`), **4-स्तरीय इलास्टिक स्वार्म शार्डिंग (`role#shard`)**, **60-सेकंड ब्राउनफ़ील्ड ऑनबोर्डिंग (`/onboard`)**, **PR और रिलीज़ गेट्स (`/pr`, `/pr:review`, `/release`)**, **Wave 2.5 Spec-to-Code ऑटो-रिकॉन्सिलिएशन (`boomopen reconcile`)**, **मल्टी-राउंड पोस्ट-कम्प्लीशन ऑडिट (`/audit` व `boomopen audit`)**, **मल्टी-सेशन प्रोजेक्ट ऑटोपायलट (`/autopilot`)** और **क्रॉस-इंजन कंडक्टर (`/conduct`)** को एक साथ लाता है:
-- **🛡️ स्लिम फ़्रंटियर गार्डरेल्स (`< 2.5 KB`) व ऑन-डिमांड Mode B ऑर्केस्ट्रेशन**: अनुशंसित डिफ़ॉल्ट **`frontier-guardrails`** प्रीसेट के साथ आपके IDE का नेटिव फ़्रंटियर मॉडल `≤ 10` फ़ाइलों तक के दैनिक कार्यों को सीधे संभालता है (`mode_a`, कोई प्राकृतिक-भाषा हाइजैकिंग नहीं), जबकि स्पष्ट `/cmd` कमांड या `smart-hybrid` प्रीसेट तुरंत समानांतर शार्ड्स (`role#shard`, `<= 3–4 OWNED_FILES`) लॉन्च करते हैं — **DAG फैन-आउट**, **सीधे प्लान-टू-एग्जीक्यूटर डिस्पैच**, **अनुबंध लॉक (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Wave 2.5 ऑटो-रिकॉन्सिलिएशन (`boomopen reconcile` + `spec-reconciler` + `/cook amend-plan`)** और **वॉर्म रीयूज़ (`send_message`)** के साथ।
+भारी रैपर्स के विपरीत, नए इंस्टॉलेशन पर BoomOpen v5.5 डिफ़ॉल्ट रूप से **`⚡ smart-hybrid`** प्रीसेट (टर्न-1 प्रोएक्टिव इलास्टिक स्वार्म + सभी 5 IDE में 17-भाषा प्राकृतिक-भाषा राउटिंग; `boomopen settings reset` द्वारा बहाल) के साथ आता है — और साथ ही वैकल्पिक स्लिम Mode A प्रीसेट **`🛡️ frontier-guardrails`** (`< 2.5 KB` / `~600 tokens`, `mode_a <= 10 files`, `naturalLanguageResearchTrigger = off`) प्रदान करता है — जो **4-स्तरीय इलास्टिक स्वार्म शार्डिंग (`role#shard`)**, **60-सेकंड ब्राउनफ़ील्ड ऑनबोर्डिंग (`/onboard`)**, **PR और रिलीज़ गेट्स (`/pr`, `/pr:review`, `/release`)**, **Wave 2.5 Spec-to-Code ऑटो-रिकॉन्सिलिएशन (`boomopen reconcile`)**, **मल्टी-राउंड पोस्ट-कम्प्लीशन ऑडिट (`/audit` व `boomopen audit`)**, **मल्टी-सेशन प्रोजेक्ट ऑटोपायलट (`/autopilot`)** और **क्रॉस-इंजन कंडक्टर (`/conduct`)** को एक साथ लाता है:
+- **⚡ डिफ़ॉल्ट `smart-hybrid` प्रोएक्टिव स्वार्म + 17-भाषा इंटेंट राउटिंग**: नए इंस्टॉल पर ज्ञात छोटे बदलाव (`≤ 2` फ़ाइलें) सीधे Mode A में चलते हैं, जबकि मल्टी-फ़ाइल कार्य, गहन रिसर्च, विचार मंथन, प्लानिंग और स्पष्ट `/cmd` कमांड (**`/onboard`**, **`/pr` + `/pr:review`**, **`/release`** आदि) टर्न-1 पर स्वतः समानांतर शार्ड्स (`role#shard`, `<= 3–4 OWNED_FILES`/शार्ड) लॉन्च करते हैं — **DAG फैन-आउट**, **सीधे प्लान-टू-एग्जीक्यूटर डिस्पैच**, **अनुबंध लॉक (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Wave 2.5 ऑटो-रिकॉन्सिलिएशन (`boomopen reconcile` + `spec-reconciler` + `/cook amend-plan`)** और **वॉर्म रीयूज़ (`send_message`)** के साथ।
+- **🛡️ वैकल्पिक स्लिम `frontier-guardrails` (`< 2.5 KB` / `~600 tokens`, ऑप्ट-इन Slim Mode A)**: बिना प्राकृतिक-भाषा ट्रिगर (`naturalLanguageResearchTrigger = off`) के `≤ 10` फ़ाइलों तक सीधा नेटिव Mode A (`mode_a <= 10 files`) पसंद करते हैं? `boomopen settings preset frontier-guardrails` द्वारा `< 10ms` में स्विच करें (`carbon-guardrails` बैकवर्ड-कम्पैटिबल उपनाम के रूप में सुरक्षित है)।
 - **🏛️ मल्टी-सेशन ऑटोपायलट (`/autopilot`), मल्टी-राउंड ऑडिट (`/audit`) और काउंसिल (`/conduct`)**: SHA-256 सुरक्षा व `boomopen ledger rollback` के साथ `.boomopen/project-ledger.json` और 4-स्तरीय गेट (`boomopen check --strict-phase --no-stubs`); तथा प्रोजेक्ट पूरा होने पर मल्टी-राउंड ऑडिट (`/audit`, `boomopen audit rollback`) जो `.boomopen/audit-ledger.json` में RTM कवरेज, UI→API→DB फ्लो और **2-स्तरीय एंटी-लीकेज सुरक्षा इंजन (`security_scan.py` v6)** की जांच करता है।
 - **🗺️ पूर्ण इंजीनियरिंग जीवनचक्र (`/onboard` → `/cook` → `/pr` → `/release`)**: `/onboard` से 60 सेकंड में किसी भी मौजूदा कोडबेस का `ARCHITECTURE-MAP.md` बनाएं, `/pr` व `/pr:review` से उच्च-गुणवत्ता वाले Pull Request तैयार और समीक्षित करें, और `/release` से सत्यापित SemVer रिलीज़ प्रकाशित करें।
 - **📚 ज़ीरो कॉन्टेक्स्ट ब्लोट के साथ 1,462 डी-डुप्लिकेटेड स्किल्स वॉल्ट**: **22 कोर स्किल्स (`skills/`)** और `~/.agents/skills_library` में साझा **1,440 लाइब्रेरी स्किल्स** (`mcp-server` व `ai-agent-worker` टेम्पलेट्स सहित) `matrix-skills/compact-index.json` द्वारा `O(1)` 2-चरणीय लुकअप में उपलब्ध हैं।
@@ -58,9 +59,9 @@
 
 ```mermaid
 flowchart TD
-    User["👤 उपयोगकर्ता अनुरोध / स्लैश कमांड"] --> Gate{"🚦 स्मार्ट गेट (frontier-guardrails / smart-hybrid)"}
-    Gate -->|"प्रत्यक्ष मोड (frontier-guardrails में ≤ 10 | smart-hybrid में ≤ 2 फ़ाइलें)"| ModeA["⚡ Mode A: प्रत्यक्ष निष्पादन (Tier 0)<br/>< 2.5 KB गार्डरेल्स + 2-स्तरीय कोडिंग मानक"]
-    Gate -->|"स्पष्ट /cmd, ≥ 2 डोमेन या Mode B"| ModeB["🎻 Mode B: मल्टी-एजेंट ऑर्केस्ट्रेटर (Tier 1)<br/>Model: inherit"]
+    User["👤 उपयोगकर्ता अनुरोध / स्लैश कमांड"] --> Gate{"🚦 प्रीसेट व जटिलता गेट (smart-hybrid / frontier-guardrails)"}
+    Gate -->|"प्रत्यक्ष मोड (smart-hybrid में ≤ 2 | frontier-guardrails में ≤ 10 फ़ाइलें)"| ModeA["⚡ Mode A: प्रत्यक्ष निष्पादन (Tier 0)<br/>~600 टोकन (< 2.5 KB) गार्डरेल्स + 2-स्तरीय कोडिंग मानक"]
+    Gate -->|"स्पष्ट /cmd, > फ़ाइल सीमा या NL Mode B"| ModeB["🎻 Mode B: मल्टी-एजेंट ऑर्केस्ट्रेटर (Tier 1)<br/>Model: inherit"]
 
     ModeB --> FanOut["🔀 चरण 1: DAG समानांतर फैन-आउट<br/>(researcher + scouter | /onboard 3 शार्ड्स)"]
     FanOut --> Plan["📋 चरण 2: अनुबंध-प्रथम योजना (planner)<br/>SHARED_CONTRACT + OWNED_FILES लॉक करता है"]
@@ -80,7 +81,7 @@ flowchart TD
 ## 🧠 v5.5 के 6 मुख्य स्तंभ
 
 1. **🌐 5 प्लेटफ़ॉर्म पर एकीकृत समानता (`platforms/*`)**:
-   - **Antigravity (Gemini)**, **Claude Code**, **OpenAI Codex**, **Cursor**, और **GitHub Copilot** के लिए `< 2.5 KB` स्लिम गार्डरेल्स और साझा `~/.agents/skills_library` वॉल्ट के साथ नेटिव इंस्टॉलेशन।
+   - **Antigravity (Gemini)**, **Claude Code**, **OpenAI Codex**, **Cursor**, और **GitHub Copilot** के लिए ज़ीरो-लेटेंसी एंट्रीपॉइंट्स (डिफ़ॉल्ट `smart-hybrid` + वैकल्पिक `< 2.5 KB` / `~600 tokens` स्लिम `frontier-guardrails`) और साझा `~/.agents/skills_library` वॉल्ट के साथ नेटिव इंस्टॉलेशन।
 2. **📏 व्यावहारिक 2-स्तरीय कोडिंग मानक (एंटी-फ्रैगमेंटेशन)**:
    - **स्तर 1 — शून्य सहनशीलता**: Single Responsibility, **स्पष्ट `any` वर्जित**, **डीबग `console.log` छोड़ना वर्जित**, async/API सीमाओं पर `try/catch` + टाइप्ड एरर, `SCREAMING_SNAKE_CASE` स्थिरांक, DRY (`≥ 3`) और क्रमबद्ध इम्पोर्ट्स।
    - **स्तर 2 — लचीले संरचनात्मक दिशानिर्देश**: एकल उद्देश्य फ़ाइलें `~200–350 पंक्तियाँ`, सॉफ्ट सीमा `400` और हार्ड स्प्लिट `>500 पंक्तियाँ` (टेस्ट, टाइप्स व डॉक्स मुक्त)। लॉजिक फ़ंक्शन `~20–40 पंक्तियाँ` (UI/हैंडलर `~40–80 पंक्तियाँ`)।
@@ -143,12 +144,12 @@ boomopen conduct probe
 
 ## 🎛️ एकीकृत सेटिंग्स और 5 प्रीसेट प्रोफ़ाइल (`/settings`)
 
-BoomOpen v5.5 सभी **5 प्लेटफ़ॉर्म** पर `< 10ms` (**0ms टर्न-1 लेटेंसी**) में **20 enum कुंजियाँ + 2 लाइन सीमाएँ** प्रबंधित करता है, जहाँ **`🛡️ frontier-guardrails`** डिफ़ॉल्ट अनुशंसित प्रोफ़ाइल है:
+BoomOpen v5.5 सभी **5 प्लेटफ़ॉर्म** पर `< 10ms` (**0ms टर्न-1 लेटेंसी**) में **20 enum कुंजियाँ + 2 लाइन सीमाएँ** प्रबंधित करता है। नए इंस्टॉलेशन पर **`⚡ smart-hybrid`** डिफ़ॉल्ट अनुशंसित प्रोफ़ाइल है (`boomopen settings reset` द्वारा बहाल), जबकि **`🛡️ frontier-guardrails`** (`< 2.5 KB` / `~600 tokens`, `mode_a <= 10 files`, `naturalLanguageResearchTrigger = off`, `carbon-guardrails` बैकवर्ड-कम्पैटिबल उपनाम सहित) वैकल्पिक (ऑप्ट-इन) Slim Mode A प्रीसेट है (`boomopen settings preset frontier-guardrails`):
 
 | प्रीसेट (`Preset`) | मोड (`execution.mode`) | डिफ़ॉल्ट वेरिएंट | NL ट्रिगर (`naturalLanguageResearchTrigger`) | कोडिंग मानक | सर्वोत्तम उपयोग |
 |:---|:---|:---:|:---:|:---:|:---|
-| **🛡️ `frontier-guardrails`** *(डिफ़ॉल्ट अनुशंसित)* | **`mode_a`** *(`≤ 10 फ़ाइलें` तक सीधा निष्पादन; सभी 5 IDE में `< 2.5 KB` स्लिम गार्डरेल्स; `carbon-guardrails` उपनाम समर्थित)* | `auto` | `off` *(कोई NL हाइजैकिंग नहीं; केवल स्पष्ट `/cmd` पर वर्कफ़्लो)* | `pragmatic` (`400/500`) | सभी 5 IDE में दैनिक कोडिंग — फ़्रंटियर मॉडल सीधे कार्य संभाले, और BoomOpen `400/500` लाइन व `strict_e2e` गुणवत्ता लागू रखे |
-| **⚡ `smart-hybrid`** | **`auto`** (`≤ 2 फ़ाइलें` → Mode A; `> 2` या `/cmd` → Mode B) | `auto` | **`auto_team`** *(NL रिसर्च/आइडिया को स्वतः `/research:team` / `/brainstorm:team` पर भेजता है)* | `pragmatic` (`400/500`) | 17 भाषाओं में प्रोएक्टिव ऑर्केस्ट्रेशन — छोटे कार्यों में तेज़, बड़े फ़ीचर्स पर स्वतः स्वार्म |
+| **⚡ `smart-hybrid`** *(डिफ़ॉल्ट अनुशंसित)* | **`auto`** (`≤ 2 फ़ाइलें` → Mode A; `> 2` या `/cmd` → Mode B) | `auto` | **`auto_team`** *(NL रिसर्च/आइडिया को स्वतः `/research:team` / `/brainstorm:team` पर भेजता है)* | `pragmatic` (`400/500`) | नए इंस्टॉल पर डिफ़ॉल्ट (`boomopen settings reset`) — सभी 5 IDE में 17-भाषा NL राउटिंग + 2 फ़ाइलों से ऊपर स्वतः टर्न-1 स्वार्म |
+| **🛡️ `frontier-guardrails`** *(वैकल्पिक Slim Mode A)* | **`mode_a`** *(`≤ 10 फ़ाइलें` तक सीधा निष्पादन; `< 2.5 KB` / `~600 tokens` स्लिम गार्डरेल्स; `carbon-guardrails` उपनाम समर्थित)* | `auto` | **`off`** *(कोई NL हाइजैकिंग नहीं; केवल स्पष्ट `/cmd` पर वर्कफ़्लो)* | `pragmatic` (`400/500`) | ऑप्ट-इन स्लिम `< 2.5 KB` (`~600 tokens`) सीधा Mode A निष्पादन — `400/500` लाइन व `strict_e2e` गुणवत्ता गेट्स के साथ |
 | **🚀 `solo-fast`** | **`mode_a`** *(प्रत्यक्ष सोलो निष्पादन, 0s सब-एजेंट)* | `fast` | `off` *(सीधा चैट उत्तर जब तक `/brainstorm` न हो)* | `relaxed` (`600/800`) | तत्काल हॉटफ़िक्स, तेज़ प्रोटोटाइप और न्यूनतम टोकन खर्च |
 | **🧠 `deep-architect`** | **`mode_b`** *(हर कार्य पर मल्टी-एजेंट ऑर्केस्ट्रेटर)* | `hard` | `auto_hard` *(स्वतः 5-लेंस `/research:hard` / `/brainstorm:hard`)* | `strict` (`300/400`) | जटिल सिस्टम आर्किटेक्चर, नए प्रोजेक्ट और मल्टी-डोमेन रिफैक्टरिंग |
 | **🔺 `adversarial-team`** | **`team`** *(3-एजेंट गोल्डन ट्रायंगल `:team` अनिवार्य)* | `team` | **`auto_team`** *(`MAILBOX` के माध्यम से 3-एजेंट क्रॉस-रिव्यू)* | `strict` (`300/400`) | मिशन-क्रिटिकल प्रोडक्शन कोड, सुरक्षा ऑडिट और ज़ीरो-डिफेक्ट रिलीज़ |
@@ -156,11 +157,13 @@ BoomOpen v5.5 सभी **5 प्लेटफ़ॉर्म** पर `< 10ms` 
 ```bash
 # चैट (/settings) | वेब डैशबोर्ड (boomopen settings --ui) | टर्मिनल CLI
 /settings                                     # इंटरैक्टिव मेनू खोलें (ask_question UI)
-/settings preset frontier-guardrails          # डिफ़ॉल्ट अनुशंसित (< 2.5 KB गार्डरेल्स; उपनाम: carbon-guardrails)
-/settings preset smart-hybrid                 # प्रोएक्टिव Smart-Hybrid मोड चुनें
+/settings preset smart-hybrid                 # डिफ़ॉल्ट अनुशंसित (Auto Mode A/B + 17-भाषा NL राउटिंग)
+/settings preset frontier-guardrails          # वैकल्पिक Slim Mode A (< 2.5 KB / ~600 tokens; उपनाम: carbon-guardrails)
 /settings mode auto | mode_a | mode_b | team  # निष्पादन मोड सीधे बदलें
-boomopen settings preset frontier-guardrails  # ग्लोबल स्तर पर लागू कर 5 प्लेटफ़ॉर्म सिंक करें
+boomopen settings preset smart-hybrid         # डिफ़ॉल्ट प्रीसेट ग्लोबल स्तर पर लागू कर 5 प्लेटफ़ॉर्म सिंक करें
+boomopen settings preset frontier-guardrails  # ऑप्ट-इन Slim Mode A (≤ 10 फ़ाइलें) सक्षम करें
 boomopen settings set execution.mode mode_a --project   # केवल वर्तमान प्रोजेक्ट ./.boomopen.json में लिखें
+boomopen settings reset                       # अनुशंसित डिफ़ॉल्ट smart-hybrid सेटिंग्स बहाल करें
 ```
 
 ---
@@ -213,7 +216,7 @@ boomopen settings set execution.mode mode_a --project   # केवल वर्
 | **`/autopilot`** | `:init`, `:run`, `:audit` | `.boomopen/project-ledger.json`, 4-स्तरीय गेट व `ledger rollback` के साथ मल्टी-सेशन ऑर्केस्ट्रेटर |
 | **`/conduct`** | `:council`, `:pipeline` | क्रॉस-इंजन कंडक्टर और मल्टी-इंजन काउंसिल (`boomopen conduct`) 4-भाग संश्लेषण के साथ |
 | **`/orchestrate`** | — | कई डोमेन और शार्ड्स में कस्टम मल्टी-एजेंट पाइपलाइन ऑर्केस्ट्रेशन |
-| **`/settings`** | `preset`, `mode`, `set`, `ui` | यूनिफाइड कंट्रोल सेंटर: 20 कुंजियाँ + 2 सीमाएँ, **5 प्रीसेट** (`frontier-guardrails` डिफ़ॉल्ट) या वेब UI (`--ui`) |
+| **`/settings`** | `preset`, `mode`, `set`, `ui` | यूनिफाइड कंट्रोल सेंटर: 20 कुंजियाँ + 2 सीमाएँ, **5 प्रीसेट** (`smart-hybrid` डिफ़ॉल्ट, वैकल्पिक `frontier-guardrails`) या वेब UI (`--ui`) |
 | **`/save` / `/recap`** | — | सेशन स्थिति (`SESSION-HANDOVER.md`) सहेजें और `< 5s` में संदर्भ बहाल करें |
 
 ---

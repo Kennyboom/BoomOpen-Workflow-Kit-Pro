@@ -45,9 +45,9 @@
 
 **BoomOpen Workflow Kit v5.5（前沿護欄 Frontier-Guardrails 與跨平台智慧混合版）** 是一套開源的多代理人（Multi-Agent）研發作業系統，能將單一 AI 程式設計助手升級為由 **22 位依 IDE 原生編譯的專家級代理人**、**18 支黃金三角對抗團隊（`72` 個檔案）**、**36 個斜線指令（`93` 個指令與協定檔案：`87` 個工作流 + `6` 個 `_ref/`）**、**14 個確定性 CLI 子指令**、**22 項核心技能** 以及 **1,440 項專業領域技能庫（共 `1,462` 項技能，單次去重安裝至 `~/.agents/skills_library`）** 組成的協同工程團隊。
 
-不同於每輪對話都會造成上下文膨脹的笨重代理封裝，BoomOpen v5.5 預設啟用跨五大 IDE 的 **`🛡️ frontier-guardrails`（`< 2.5 KB` / `~600 tokens` 超輕量日常護欄）**，並按需釋放 **4 層動態彈性蜂群分片（`role#shard`）**、**Wave 2.5 規格到程式碼自動對帳（`boomopen reconcile`）**、**多輪次全專案審計（`/audit` & `boomopen audit`）**、**多工作階段專案自動駕駛（`/autopilot`）** 與 **跨引擎指揮官（`/conduct`）**：
-- **🛡️ `frontier-guardrails` 超輕量日常極速直連 + ⚡ Mode A**：開箱即由五大 IDE 的前沿大模型直接驅動 **`≤ 10` 個檔案**以內的日常研發，僅占 `< 2.5 KB`（`~600 tokens`）預算，零自然語言劫持，同時強制執行 **務實雙層編碼規範** 與 **端對端持續驗證**（保留 `carbon-guardrails` 作為向後相容別名）。
-- **🚀 Turn-1 平行子代理人分片、Wave 2.5 對帳與 Mode B 多代理人編排**：明確呼叫 **36 個 `/cmd` 指令**（新增 **`/onboard`**、**`/pr` + `/pr:review`**、**`/release`**）——或在啟用 `smart-hybrid` / `deep-architect` / `adversarial-team` 時觸發 17 語言自然語言路由——均在 Turn 1 平行啟動子代理人分片（`role#shard`，每分片 `<= 3–4` 個 `OWNED_FILES`），結合 **DAG 平行扇出**、**計畫直達執行者派發**、**契約優先檔案鎖（`SHARED_CONTRACT` + `OWNED_FILES`）**、**Wave 2.5 規格對帳（`boomopen reconcile` + `cook amend-plan`）** 與 **熱會話重用（`send_message`）**。
+不同於每輪對話都會造成上下文膨脹的笨重代理封裝，BoomOpen v5.5 全新安裝預設啟用跨五大 IDE 的 **`⚡ smart-hybrid`（Turn-1 主動彈性蜂群 + 17 種語言自然語言意圖路由）**，同時提供可選的 **`🛡️ frontier-guardrails`（`< 2.5 KB` / `~600 tokens` 超輕量 Mode A 預設）**，開箱即釋放 **4 層動態彈性蜂群分片（`role#shard`）**、**Wave 2.5 規格到程式碼自動對帳（`boomopen reconcile`）**、**多輪次全專案審計（`/audit` & `boomopen audit`）**、**多工作階段專案自動駕駛（`/autopilot`）** 與 **跨引擎指揮官（`/conduct`）**：
+- **⚡ 預設 `smart-hybrid` 主動彈性蜂群 + 17 語言意圖路由**：開箱即用，已知目標微幅修改（`≤ 2` 個檔案）直接走 Mode A 極速執行；而跨多檔案任務、深度調研、腦力激盪、架構規劃以及明確呼叫 **36 個 `/cmd` 指令**（含 **`/onboard`**、**`/pr` + `/pr:review`**、**`/release`** 等）會自動在 Turn 1 平行啟動子代理人分片（`role#shard`，每分片 `<= 3–4` 個 `OWNED_FILES`），結合 **契約優先檔案鎖（`SHARED_CONTRACT` + `OWNED_FILES`）**、**Wave 2.5 規格對帳（`boomopen reconcile` + `cook amend-plan`）** 與 **熱會話重用（`send_message`）**。
+- **🛡️ 可選超輕量 `frontier-guardrails`（`< 2.5 KB` Slim Mode A）**：偏好在 `≤ 10` 個檔案以內維持原生直接 Mode A（`mode_a <= 10 files`）並關閉自然語言自動觸發（`naturalLanguageResearchTrigger = off`）？只需執行 `boomopen settings preset frontier-guardrails` 即可在 `< 10ms` 內切換（保留 `carbon-guardrails` 作為向後相容別名）。
 - **🏛️ 多工作階段自動駕駛 (`/autopilot`)、多輪全專案審計 (`/audit`) 與跨引擎委員會 (`/conduct`)**：將需求文件編譯為含 SHA-256 防漂移校驗的 `.boomopen/project-ledger.json` 帳本，支援安全回滾（`boomopen ledger rollback --yes`）與 4 層階段門禁（`boomopen check --strict-phase --no-stubs`）；透過 `/audit` 與 `boomopen audit`（支援 `boomopen audit rollback --yes`）執行 RTM 需求覆蓋、UI->API->DB 垂直鏈路與 **2 層安全防洩漏掃描（`security_scan.py` v6）**；或透過 `boomopen conduct`（含 `--dry-run` 預演）調度五大引擎平行委員會。
 - **📚 1,462 去重共享技能庫與 15 套 `app-builder` 範本（零上下文膨脹）**：單次安裝至 `~/.agents/skills_library` 供全部 5 大 IDE 共享，經由 `matrix-skills/compact-index.json` 實現 `O(1)` 兩步按需檢索（`22` 核心 + `1,440` 領域技能，含 **`mcp-server`** 與 **`ai-agent-worker`** 在內的 **15 套 `app-builder` 專案範本**）。
 
@@ -148,14 +148,14 @@ boomopen conduct council plan "認證架構重構" --dry-run            # 預演
 
 ## 🎛️ 統一設定與執行模式選擇 (`/settings` 控制中心)
 
-BoomOpen v5.5 內建**零延遲統一控制中心**，支援在 `< 10ms` 內跨全部 **5 大平台**同步 20 項枚舉設定 + 2 項行數上限（首輪對話延遲 **0ms**）：
+BoomOpen v5.5 內建**零延遲統一控制中心**（全新安裝預設啟用 **`⚡ smart-hybrid`**），支援在 `< 10ms` 內跨全部 **5 大平台**同步 20 項枚舉設定 + 2 項行數上限（首輪對話延遲 **0ms**）：
 
-### 1️⃣ 5 套一鍵預設配置（預設推薦 `frontier-guardrails`）
+### 1️⃣ 5 套一鍵預設配置（預設推薦 `smart-hybrid`）
 
 | 預設配置 (`Preset`) | 執行模式 (`execution.mode`) | 預設變體 | 自然語言工作流路由 (`naturalLanguageResearchTrigger`) | 程式碼規範 (`codingStandards`) | 適用場景 |
 |:---|:---|:---:|:---:|:---:|:---|
-| **🛡️ `frontier-guardrails`** *(預設推薦)* | **`mode_a`** *（`≤ 10 個檔案` 直接執行；`< 2.5 KB` / `~600 tokens` 超輕量護欄）* | `auto` | **`off`** *（零自然語言劫持；僅回應明確 `/cmd`）* | `pragmatic` (`400/500` 行) | 跨全部 5 大 IDE（Antigravity、Claude Code、Codex、Cursor、Copilot）的日常首選：前沿模型全速主導 + 嚴格編碼與 E2E 門禁 *（保留 `carbon-guardrails` 作為相容別名）* |
-| **⚡ `smart-hybrid`** | **`auto`**（`≤ 2 個檔案` 走 Mode A；`> 2 個檔案` 或 `/cmd` 走 Mode B 多代理） | `auto` | **`auto_team`** *(自動路由自然語言調研/構思至 `:team` 黃金三角)* | `pragmatic` (`400/500` 行) | 需要 17 語言自然語言自動工作流識別 + 超過 2 個檔案自動分片協同 |
+| **⚡ `smart-hybrid`** *(預設推薦)* | **`auto`**（`≤ 2 個檔案` 走 Mode A 直接執行；`> 2 個檔案` 或 `/cmd` 走 Mode B 多代理） | `auto` | **`auto_team`** *(自動路由自然語言調研/構思至 `:team` 黃金三角)* | `pragmatic` (`400/500` 行) | 全新安裝預設設定：跨全部 5 大 IDE 支援 17 語言自然語言工作流路由 + 超過 2 個檔案自動 Turn-1 蜂群分片 |
+| **🛡️ `frontier-guardrails`** *(可選輕量 Mode A)* | **`mode_a`** *（`≤ 10 個檔案` 直接執行；`< 2.5 KB` / `~600 tokens` 超輕量護欄）* | `auto` | **`off`** *（零自然語言劫持；僅回應明確 `/cmd`）* | `pragmatic` (`400/500` 行) | 可選 `< 2.5 KB` 極速直連 Mode A 預設（`boomopen settings preset frontier-guardrails`），兼顧嚴格編碼與 E2E 門禁 *（保留 `carbon-guardrails` 作為向後相容別名）* |
 | **🚀 `solo-fast`** | **`mode_a`** *(強制單一代理直接執行，0 秒子代理開銷)* | `fast` | `off` *(直接回覆，除非明確輸入 `/brainstorm`)* | `relaxed` (`600/800` 行) | 緊急熱修復、快速原型驗證、小型腳本與極致節省 Token |
 | **🧠 `deep-architect`** | **`mode_b`** *(所有任務強制啟用 Mode B 多代理編排)* | `hard` | `auto_hard` *(自動執行 `/research:hard` / `/brainstorm:hard`)* | `strict` (`300/400` 行) | 複雜系統架構設計、從零新建專案與跨領域重構 |
 | **🔺 `adversarial-team`** | **`team`** *(所有工作流強制啟用 3 代理黃金三角 `:team`)* | `team` | **`auto_team`** *(3 代理經由 `MAILBOX` 交叉對抗評審)* | `strict` (`300/400` 行) | 核心正式環境系統、金融級安全審計與零缺陷交付 |
@@ -165,8 +165,8 @@ BoomOpen v5.5 內建**零延遲統一控制中心**，支援在 `< 10ms` 內跨�
 ```bash
 # 1. 聊天框內直接輸入斜線指令（彈出互動式選單或單行速設）
 /settings                                     # 開啟互動式選單 (ask_question UI)
-/settings preset frontier-guardrails          # 切換為預設推薦模式（相容別名：carbon-guardrails）
-/settings preset smart-hybrid                 # 切換為 Smart-Hybrid（Auto Mode A/B + 17 語言自動路由）
+/settings preset smart-hybrid                 # 切換為預設推薦模式（Auto Mode A/B + 17 語言自動路由）
+/settings preset frontier-guardrails          # 切換為可選輕量 <2.5KB Mode A 模式（相容別名：carbon-guardrails）
 /settings preset solo-fast                    # 切換為 Mode A 極速單一代理直接執行
 /settings preset deep-architect               # 切換為 Mode B 多代理深度編排
 /settings preset adversarial-team             # 切換為黃金三角 3 代理對抗團隊 (:team)
@@ -177,9 +177,10 @@ boomopen settings --ui
 
 # 3. 終端機 CLI 指令（支援全域 ~/.boomopen/settings.json 與專案級 ./.boomopen.json）
 boomopen settings status
-boomopen settings preset smart-hybrid
+boomopen settings preset smart-hybrid         # 全域套用預設推薦 smart-hybrid 並同步五大 IDE
+boomopen settings preset frontier-guardrails  # 切換為可選超輕量 <2.5KB Mode A 預設（別名：carbon-guardrails）
 cd path/to/your/project && boomopen settings set execution.mode mode_a --project
-boomopen settings reset                       # 恢復為預設推薦設定 (frontier-guardrails)
+boomopen settings reset                       # 恢復為預設推薦設定 (smart-hybrid)
 ```
 
 > `--project` 會在目前執行的專案目錄寫入 `./.boomopen.json`。未執行 `npm link` 時，請將 `boomopen` 換成 `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`。

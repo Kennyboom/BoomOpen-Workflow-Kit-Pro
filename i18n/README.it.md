@@ -44,10 +44,11 @@
 
 ## 🌟 Cos’è BoomOpen Workflow Kit v5.5?
 
-**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Frontier-Guardrails Edition)** è un sistema operativo multi-agente open-source che trasforma un singolo assistente di programmazione AI in un’organizzazione di ingegneria del software coordinata composta da **22 agenti specialisti** (incluso `spec-reconciler`), **18 team avversari Golden Triangle (`72` file di team)**, **36 comandi slash (`93` file di comando = `87` workflow + `6` protocolli `_ref/`)**, **14 comandi CLI**, **22 competenze chiave (`skills/`)** e **1.440 competenze specialistiche (`skills_library/`)** (**1.462** competenze indicizzate `1,462`, deduplicate tramite `~/.agents/skills_library` su **5 piattaforme**).
+**BoomOpen Workflow Kit v5.5 (Frontier-Guardrails & Multi-Platform Smart-Hybrid Edition)** è un sistema operativo multi-agente open-source che trasforma un singolo assistente di programmazione AI in un’organizzazione di ingegneria del software coordinata composta da **22 agenti specialisti** (incluso `spec-reconciler`), **18 team avversari Golden Triangle (`72` file di team)**, **36 comandi slash (`93` file di comando = `87` workflow + `6` protocolli `_ref/`)**, **14 comandi CLI**, **22 competenze chiave (`skills/`)** e **1.440 competenze specialistiche (`skills_library/`)** (**1.462** competenze indicizzate `1,462`, deduplicate tramite `~/.agents/skills_library` su **5 piattaforme**).
 
-A differenza dei template rigidi o dei wrapper pesanti che gonfiano il contesto a ogni turno, BoomOpen v5.5 combina **Guardrail Snelli `< 2.5 KB` (`frontier-guardrails`)**, **Sharding Elastico dello Sciame a 4 Livelli (`role#shard`)**, **Mappatura Architetturale Brownfield in 60s (`/onboard`)**, **Gate Pre-PR e Preparazione Rilasci (`/pr`, `/release`)**, **Auto-Riconciliazione Spec-to-Code Wave 2.5 (`boomopen reconcile`)**, **Audit Multi-Round Post-Completamento (`/audit`)**, **Autopilota Progetto Multi-Sessione (`/autopilot`)** e **Conduttore Multi-Motore (`/conduct`)**:
-- **🛡️ Frontier-Guardrails (`mode_a` ≤ 10 file) e Orchestrazione Parallela Modalità B**: Il profilo predefinito consigliato **`frontier-guardrails`** lascia guidare l’agente nativo fino a `≤ 10` file diretti con guardrail `< 2.5 KB` e verifica `strict_e2e` su tutti i 5 IDE; sui workflow `/cmd` o in Modalità B/Smart-Hybrid avvia shard paralleli (`role#shard`, `<= 3–4 OWNED_FILES`/shard) con **DAG Parallel Fan-Out**, **Blocchi File per Contratto (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Auto-Riconciliazione Wave 2.5 (`boomopen reconcile` + `/cook amend-plan`)** e **Riutilizzo a Caldo (`send_message`)**.
+A differenza dei template rigidi o dei wrapper pesanti che gonfiano il contesto a ogni turno, sulle nuove installazioni BoomOpen v5.5 adotta come predefinito il preset **`⚡ smart-hybrid`** (sciame elastico proattivo al Turno 1 + routing in linguaggio naturale in 17 lingue su tutti i 5 IDE; ripristinabile con `boomopen settings reset`), offrendo al contempo il preset opzionale Slim Modalità A **`🛡️ frontier-guardrails`** (`< 2.5 KB` / `~600 tokens`, `mode_a <= 10 files`, `naturalLanguageResearchTrigger = off`) e abilitando **Sharding Elastico dello Sciame a 4 Livelli (`role#shard`)**, **Mappatura Architetturale Brownfield in 60s (`/onboard`)**, **Gate Pre-PR e Preparazione Rilasci (`/pr`, `/release`)**, **Auto-Riconciliazione Spec-to-Code Wave 2.5 (`boomopen reconcile`)**, **Audit Multi-Round Post-Completamento (`/audit`)**, **Autopilota Progetto Multi-Sessione (`/autopilot`)** e **Conduttore Multi-Motore (`/conduct`)**:
+- **⚡ Preset Predefinito `smart-hybrid` — Sciame Proattivo al Turno 1 e Routing in 17 Lingue**: Nelle nuove installazioni le micro-modifiche note (`≤ 2` file) vengono eseguite direttamente in Modalità A, mentre task multi-file, ricerca approfondita, ideazione, pianificazione e workflow `/cmd` espliciti (**`/onboard`**, **`/pr` + `/pr:review`**, **`/release`**, ecc.) avviano automaticamente shard paralleli al Turno 1 (`role#shard`, `<= 3–4 OWNED_FILES`/shard) con **DAG Parallel Fan-Out**, **Blocchi File per Contratto (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Auto-Riconciliazione Wave 2.5 (`boomopen reconcile` + `/cook amend-plan`)** e **Riutilizzo a Caldo (`send_message`)**.
+- **🛡️ Preset Snello Opzionale `frontier-guardrails` (`< 2.5 KB` / `~600 tokens` Slim Modalità A)**: Preferisci la Modalità A diretta nativa fino a `≤ 10` file (`mode_a <= 10 files`) con verifica `strict_e2e` e zero attivazione in linguaggio naturale (`naturalLanguageResearchTrigger = off`)? Passa in `< 10ms` tramite `boomopen settings preset frontier-guardrails` (l’alias retrocompatibile `carbon-guardrails` è preservato).
 - **🗺️ Ciclo di Vita Ingegneristico Completo (`/onboard`, `/pr`, `/release`, `/autopilot`, `/audit`, `/conduct`)**: Genera in 60 secondi `ARCHITECTURE-MAP.md` su repository esistenti con **`/onboard`** (zero collisioni con `/init` e zero clutter nel repo); applica gate pre-PR e review strutturate con **`/pr`** (`/pr:review`); prepara rilasci semantici e `CHANGELOG.md` con **`/release`**; governa progetti multi-fase con `.boomopen/project-ledger.json` (`ledger rollback`), `.boomopen/audit-ledger.json` (`audit rollback` + `security_scan.py` v6) e consigli multi-motore `/conduct`.
 - **📚 Caveau di 1.462 Competenze Deduplicate + Template Pronti**: Precompilato in `matrix-skills/compact-index.json` per ricerca `O(1)` in 2 passaggi e condiviso via `~/.agents/skills_library` senza duplicazioni su disco, inclusi i template **`mcp-server`** e **`ai-agent-worker`**.
 
@@ -57,9 +58,9 @@ A differenza dei template rigidi o dei wrapper pesanti che gonfiano il contesto 
 
 ```mermaid
 flowchart TD
-    User["👤 Richiesta Utente / 36 Comandi Slash"] --> Gate{"🚦 Gate di Modalità (frontier-guardrails / smart-hybrid)"}
-    Gate -->|"Modalità A (≤ 10 file in frontier-guardrails / ≤ 2 file in smart-hybrid)"| ModeA["⚡ Modalità A: Esecuzione Diretta (Tier 0)<br/>Guardrail < 2.5 KB + Standard a 2 Livelli + strict_e2e"]
-    Gate -->|"Workflow /cmd esplicito o ambito multi-dominio"| ModeB["🎻 Modalità B: Orchestratore Multi-Agente (Tier 1)<br/>Model: inherit"]
+    User["👤 Richiesta Utente / 36 Comandi Slash"] --> Gate{"🚦 Gate di Preset e Complessità (smart-hybrid / frontier-guardrails)"}
+    Gate -->|"Modalità A (≤ 2 file in smart-hybrid | ≤ 10 file in frontier-guardrails)"| ModeA["⚡ Modalità A: Esecuzione Diretta (Tier 0)<br/>Guardrail ~600 token (< 2.5 KB) + Standard a 2 Livelli + strict_e2e"]
+    Gate -->|"Workflow /cmd esplicito, oltre soglia file o NL Modalità B"| ModeB["🎻 Modalità B: Orchestratore Multi-Agente (Tier 1)<br/>Model: inherit"]
 
     ModeB --> FanOut["🔀 Fase 1: DAG Parallel Fan-Out<br/>(/onboard scouter | researcher + debugger)"]
     FanOut --> Plan["📋 Fase 2: Pianificazione basata su Contratto (planner)<br/>Blocca SHARED_CONTRACT + OWNED_FILES"]
@@ -99,7 +100,7 @@ flowchart TD
 
 ## 💻 Piattaforme AI Supportate & Funzionalità Native 2026
 
-| Piattaforma | Livello di Supporto | Entrypoint Globale (`< 2.5 KB`) | Percorso Framework & Capacità Native 2026 |
+| Piattaforma | Livello di Supporto | Entrypoint Globale | Percorso Framework & Capacità Native 2026 |
 |----------|:-------------:|-------------------|------------------------|
 | **Antigravity (Gemini)** | ✅ Nativo v5.5 | `~/.gemini/GEMINI.md` | `~/.gemini/config/skills/boomopen-workflow-kit/` • Bundle plugin `--as-plugin`, orchestrazione Python `run_workflow` & ciclo esterno `/goal` |
 | **Claude Code** | ✅ Nativo v5.5 | `~/.claude/CLAUDE.md` | `~/.claude/skills/boomopen-workflow-kit/` • `/plan:hard`, hook di qualità `PreCompact`/`Stop` & guardia `Bash\|PowerShell` (`--with-hooks`) |
@@ -147,12 +148,12 @@ boomopen conduct probe
 
 ## 🎛️ Impostazioni Unificate e Selezione Modalità (`/settings` Control Center)
 
-BoomOpen v5.5 include un **Centro di Controllo Unificato a Latenza Zero** per gestire modalità di esecuzione, **5 profili predefiniti (Preset)** e 20 impostazioni (+ 2 limiti di righe) su tutte le **5 piattaforme** in `< 10ms` (**0ms di latenza al Turno 1**):
+BoomOpen v5.5 include un **Centro di Controllo Unificato a Latenza Zero** per gestire modalità di esecuzione, **5 profili predefiniti (Preset)** e 20 impostazioni (+ 2 limiti di righe) su tutte le **5 piattaforme** in `< 10ms` (**0ms di latenza al Turno 1**). Sulle nuove installazioni **`⚡ smart-hybrid`** è il **preset predefinito consigliato** (ripristinato da `boomopen settings reset`), mentre **`🛡️ frontier-guardrails`** (`< 2.5 KB` / `~600 tokens`, `mode_a <= 10 files`, `naturalLanguageResearchTrigger = off`, con alias retrocompatibile `carbon-guardrails`) è il **preset opzionale Slim Modalità A** (`boomopen settings preset frontier-guardrails`):
 
 | Profilo (`Preset`) | Modalità di Esecuzione (`execution.mode`) | Variante Predefinita | Ricerca in Linguaggio Naturale (`naturalLanguageResearchTrigger`) | Standard di Codice (`codingStandards`) | Utilizzo Ideale |
 |:---|:---|:---:|:---:|:---:|:---|
-| **🛡️ `frontier-guardrails`** *(Consigliato Predefinito)* | **`mode_a`** *(Fino a `≤ 10 file` diretti; guardrail snelli `< 2.5 KB` su tutti i 5 IDE + `strict_e2e`; alias `carbon-guardrails` supportato)* | `auto` | `off` *(Solo `/cmd` espliciti — zero intercettazioni in linguaggio naturale)* | `pragmatic` (`400/500` righe) | Predefinito per tutti i 5 IDE: l’agente nativo guida i task quotidiani con gate di qualità BoomOpen `strict_e2e` |
-| **⚡ `smart-hybrid`** | **`auto`** (`≤ 2 file` → Mode A; `> 2 file` o `/cmd` → Mode B) | `auto` | **`auto_team`** *(Indirizza ricerca/ideazione a `/research:team` / `/brainstorm:team`)* | `pragmatic` (`400/500` righe) | Ingegneria full-stack con orchestrazione proattiva al Turno 1 e routing automatico in 17 lingue |
+| **⚡ `smart-hybrid`** *(Consigliato Predefinito)* | **`auto`** (`≤ 2 file` → Mode A; `> 2 file` o `/cmd` → Mode B) | `auto` | **`auto_team`** *(Indirizza ricerca/ideazione a `/research:team` / `/brainstorm:team`)* | `pragmatic` (`400/500` righe) | Predefinito sulle nuove installazioni (`boomopen settings reset`) — routing NL proattivo in 17 lingue e sharding automatico al Turno 1 oltre 2 file su tutti i 5 IDE |
+| **🛡️ `frontier-guardrails`** *(Slim Modalità A Opzionale)* | **`mode_a`** *(Fino a `≤ 10 file` diretti; guardrail snelli `< 2.5 KB` / `~600 tokens` + `strict_e2e`; alias `carbon-guardrails` supportato)* | `auto` | **`off`** *(Solo `/cmd` espliciti — zero intercettazioni in linguaggio naturale)* | `pragmatic` (`400/500` righe) | Velocità diretta Modalità A opzionale (`< 2.5 KB` / `~600 tokens`) con gate di qualità rigorosi `strict_e2e` |
 | **🚀 `solo-fast`** | **`mode_a`** *(Forza l’esecuzione diretta in solitaria, 0s di latenza sub-agent)* | `fast` | `off` *(Risposta diretta in chat salvo digitazione di `/brainstorm`)* | `relaxed` (`600/800` righe) | Hotfix urgenti, prototipazione rapida, script e massimo risparmio di token |
 | **🧠 `deep-architect`** | **`mode_b`** *(Forza l’Orchestratore Multi-Agente Mode B su ogni attività)* | `hard` | `auto_hard` *(Avvia automaticamente `/research:hard` / `/brainstorm:hard`)* | `strict` (`300/400` righe) | Architettura di sistemi complessi, progetti greenfield e refactoring multi-dominio |
 | **🔺 `adversarial-team`** | **`team`** *(Forza il team avversario a 3 agenti Golden Triangle `:team`)* | `team` | **`auto_team`** *(Dibattito e revisione incrociata a 3 agenti via `MAILBOX`)* | `strict` (`300/400` righe) | Codice di produzione mission-critical, audit di sicurezza e rilasci zero-defect |
@@ -162,8 +163,8 @@ BoomOpen v5.5 include un **Centro di Controllo Unificato a Latenza Zero** per ge
 ```bash
 # 1. Comando Slash in Chat (Menu interattivo o comando rapido)
 /settings                                     # Apri il menu interattivo (ask_question UI)
-/settings preset frontier-guardrails          # Predefinito consigliato (Mode A ≤10 file, <2.5 KB; alias carbon-guardrails)
-/settings preset smart-hybrid                 # Passa a Smart-Hybrid (Auto Mode A/B + auto_team)
+/settings preset smart-hybrid                 # Predefinito consigliato (Auto Mode A/B + routing NL in 17 lingue)
+/settings preset frontier-guardrails          # Slim Modalità A opzionale (≤10 file, <2.5 KB / ~600 tokens; alias carbon-guardrails)
 /settings preset solo-fast                    # Passa all’esecuzione diretta veloce (Mode A)
 /settings preset deep-architect               # Passa all’Orchestratore Multi-Agente (Mode B)
 /settings preset adversarial-team             # Passa al team Golden Triangle a 3 agenti (:team)
@@ -174,10 +175,11 @@ boomopen settings --ui
 
 # 3. Terminale CLI (Globale ~/.boomopen/settings.json e Progetto ./.boomopen.json)
 boomopen settings status
-boomopen settings preset frontier-guardrails
+boomopen settings preset smart-hybrid                     # Applica il preset predefinito e sincronizza i 5 IDE
+boomopen settings preset frontier-guardrails              # Passa al preset opzionale Slim Modalità A (< 2.5 KB)
 cd path/to/your/project
 boomopen settings set execution.mode mode_a --project
-boomopen settings reset
+boomopen settings reset                                   # Ripristina le impostazioni predefinite smart-hybrid
 ```
 
 > `--project` scrive sempre `./.boomopen.json` nella cartella da cui lo esegui: eseguilo nel tuo progetto, non nel clone del kit. Senza `npm link`, sostituisci `boomopen` con `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`.
@@ -231,7 +233,7 @@ boomopen settings reset
 | **`/autopilot`** | `:init`, `:run`, `:audit` | Orchestratore autonomo multi-sessione con `.boomopen/project-ledger.json`, ratchet a 4 livelli e `ledger rollback` |
 | **`/conduct`** | `:council`, `:pipeline` | Conduttore multi-motore e consiglio parallelo (`boomopen conduct`) con sintesi di consenso in 4 parti |
 | **`/orchestrate`** | — | Orchestrazione personalizzata di pipeline multi-agente attraverso più domini |
-| **`/settings`** | `preset`, `mode`, `set`, `ui` | Centro di Controllo Unificato: cambia modalità, scegli tra **5 preset** (`frontier-guardrails` ecc.) o apri Web UI (`--ui`) |
+| **`/settings`** | `preset`, `mode`, `set`, `ui` | Centro di Controllo Unificato: cambia modalità, scegli tra **5 preset** (`smart-hybrid` predefinito, `frontier-guardrails` opzionale) o apri Web UI (`--ui`) |
 | **`/save` / `/recap`** | — | Salva lo stato della sessione (`SESSION-HANDOVER.md`) e ripristina l’intero contesto in `< 5s` |
 
 ---

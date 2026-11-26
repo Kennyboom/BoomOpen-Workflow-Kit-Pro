@@ -44,10 +44,11 @@
 
 ## 🌟 BoomOpen Workflow Kit v5.5 Nedir?
 
-**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Frontier-Guardrails Edition)**, tek bir yapay zeka kodlama asistanını **22 uzman ajan** (`spec-reconciler` dahil), **18 çapraz denetimli Altın Üçgen ekibi (`72` ekip dosyası)**, **36 slash komutu (`93` komut dosyası = `87` iş akışı + `6` `_ref/` protokolü)**, **14 CLI komutu**, **22 temel yetenek (`skills/`)** ve **1.440 niş kütüphane yeteneğinden (`skills_library/`)** oluşan koordine bir mühendislik organizasyonuna dönüştüren açık kaynaklı bir çoklu ajan işletim sistemidir (`~/.agents/skills_library` üzerinden tekilleştirilmiş toplam **1.462** yetenek, `1,462` indeks kaydı, **5 platform**).
+**BoomOpen Workflow Kit v5.5 (Frontier-Guardrails & Multi-Platform Smart-Hybrid Edition)**, tek bir yapay zeka kodlama asistanını **22 uzman ajan** (`spec-reconciler` dahil), **18 çapraz denetimli Altın Üçgen ekibi (`72` ekip dosyası)**, **36 slash komutu (`93` komut dosyası = `87` iş akışı + `6` `_ref/` protokolü)**, **14 CLI komutu**, **22 temel yetenek (`skills/`)** ve **1.440 niş kütüphane yeteneğinden (`skills_library/`)** oluşan koordine bir mühendislik organizasyonuna dönüştüren açık kaynaklı bir çoklu ajan işletim sistemidir (`~/.agents/skills_library` üzerinden tekilleştirilmiş toplam **1.462** yetenek, `1,462` indeks kaydı, **5 platform**).
 
-Her turda soğuk başlatma gecikmesine ve bağlam şişkinliğine yol açan hantal sarmalayıcıların aksine BoomOpen v5.5; **`< 2.5 KB` İnce Koruma Rayları (`frontier-guardrails`)**, **4 Katmanlı Dinamik Elastik Sürü Parçalama (`role#shard`)**, **60 Saniyede Mevcut Kod Tabanı Mimari Haritalama (`/onboard`)**, **PR Öncesi Kalite Kapıları ve Sürüm Hazırlığı (`/pr`, `/release`)**, **Dalga 2.5 Spec-to-Code Otomatik Mutabakatı (`boomopen reconcile`)**, **Çok Turlu Proje Denetimi (`/audit`)**, **Çok Oturumlu Proje Otopilotu (`/autopilot`)** ve **Çapraz Motor Orkestra Şefini (`/conduct`)** birleştirir:
-- **🛡️ Frontier-Guardrails (`mode_a` ≤ 10 dosya) ve Mod B Paralel Orkestrasyon**: Varsayılan önerilen **`frontier-guardrails`** profili, 5 IDE'nin tamamında yerel ajanın günlük görevleri `≤ 10` dosyaya kadar doğrudan yürütmesine izin verirken `< 2.5 KB` ince koruma kurallarını ve `strict_e2e` doğrulamasını uygular; açık `/cmd` iş akışlarında veya Mod B/Smart-Hybrid modunda **DAG Paralel Dağıtım**, **Sözleşme Kilitleri (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Dalga 2.5 Otomatik Mutabakat (`boomopen reconcile` + `/cook amend-plan`)** ve **Sıcak Oturum Yeniden Kullanımı (`send_message`)** ile paralel alt ajan parçaları (`role#shard`, parça başına `<= 3–4 OWNED_FILES`) başlatır.
+Her turda soğuk başlatma gecikmesine ve bağlam şişkinliğine yol açan hantal sarmalayıcıların aksine BoomOpen v5.5, temiz kurulumlarda varsayılan olarak **`⚡ smart-hybrid`** profiliyle (5 IDE genelinde 1. tur proaktif elastik sürü + 17 dilde doğal dil yönlendirmesi; `boomopen settings reset` ile geri yüklenir) gelir ve aynı zamanda isteğe bağlı İnce Mod A profili **`🛡️ frontier-guardrails`** (`< 2.5 KB` / `~600 tokens`, `mode_a <= 10 files`, `naturalLanguageResearchTrigger = off`) sunarak **4 Katmanlı Dinamik Elastik Sürü Parçalama (`role#shard`)**, **60 Saniyede Mevcut Kod Tabanı Mimari Haritalama (`/onboard`)**, **PR Öncesi Kalite Kapıları ve Sürüm Hazırlığı (`/pr`, `/release`)**, **Dalga 2.5 Spec-to-Code Otomatik Mutabakatı (`boomopen reconcile`)**, **Çok Turlu Proje Denetimi (`/audit`)**, **Çok Oturumlu Proje Otopilotu (`/autopilot`)** ve **Çapraz Motor Orkestra Şefini (`/conduct`)** birleştirir:
+- **⚡ Varsayılan `smart-hybrid` Proaktif Sürü + 17 Dilde Doğal Dil Yönlendirmesi**: Temiz kurulumlarda bilinen mikro düzenlemeler (`≤ 2` dosya) doğrudan Mod A'da yürütülürken; çok dosyalı görevler, derin araştırma, fikir üretimi, planlama ve açık `/cmd` iş akışları (**`/onboard`**, **`/pr` + `/pr:review`**, **`/release`** vb.) 1. turda **DAG Paralel Dağıtım**, **Sözleşme Kilitleri (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Dalga 2.5 Otomatik Mutabakat (`boomopen reconcile` + `/cook amend-plan`)** ve **Sıcak Oturum Yeniden Kullanımı (`send_message`)** ile paralel alt ajan parçaları (`role#shard`, parça başına `<= 3–4 OWNED_FILES`) başlatır.
+- **🛡️ İsteğe Bağlı İnce `frontier-guardrails` (`< 2.5 KB` / `~600 tokens` Slim Mod A)**: Doğal dil tetiklemesi olmadan (`naturalLanguageResearchTrigger = off`) `≤ 10` dosyaya kadar doğrudan yerel Mod A (`mode_a <= 10 files`) ve `strict_e2e` doğrulaması mı tercih ediyorsunuz? `boomopen settings preset frontier-guardrails` ile `< 10ms` içinde geçiş yapın (`carbon-guardrails` geriye dönük uyumlu takma ad olarak korunur).
 - **🗺️ Uçtan Uca Mühendislik Yaşam Döngüsü (`/onboard`, `/pr`, `/release`, `/autopilot`, `/audit`, `/conduct`)**: **`/onboard`** ile mevcut projeler için 60 saniyede `ARCHITECTURE-MAP.md` üretir (`/init` çakışması yok, depo kirliliği sıfır); **`/pr`** (`/pr:review`) ile PR öncesi kapıları ve incelemeleri çalıştırır; **`/release`** ile semantik sürüm ve `CHANGELOG.md` hazırlar; `.boomopen/project-ledger.json` (`ledger rollback`), `.boomopen/audit-ledger.json` (`audit rollback` + `security_scan.py` v6) ve `/conduct` ile büyük projeleri güvenle yönetir.
 - **📚 Sıfır Bağlam Şişkinliği ile 1.462 Yetenek Kasası ve Hazır Şablonlar**: `matrix-skills/compact-index.json` ile 2 adımlı `O(1)` arama sunar ve tüm IDE'ler arasında `~/.agents/skills_library` üzerinden tekilleştirilir; üretime hazır **`mcp-server`** ve **`ai-agent-worker`** şablonlarını içerir.
 
@@ -57,9 +58,9 @@ Her turda soğuk başlatma gecikmesine ve bağlam şişkinliğine yol açan hant
 
 ```mermaid
 flowchart TD
-    User["👤 Kullanıcı İsteği / 36 Slash Komutu"] --> Gate{"🚦 Çalışma Modu Kapısı (frontier-guardrails / smart-hybrid)"}
-    Gate -->|"Mod A (frontier-guardrails ≤ 10 dosya / smart-hybrid ≤ 2 dosya)"| ModeA["⚡ Mod A: Doğrudan Yürütme (Tier 0)<br/>< 2.5 KB Koruma Rayları + 2 Katmanlı Standartlar + strict_e2e"]
-    Gate -->|"Açık /cmd iş akışı veya çok alanlı kapsam"| ModeB["🎻 Mod B: Çoklu Ajan Orkestratörü (Tier 1)<br/>Model: inherit"]
+    User["👤 Kullanıcı İsteği / 36 Slash Komutu"] --> Gate{"🚦 Profil & Karmaşıklık Kapısı (smart-hybrid / frontier-guardrails)"}
+    Gate -->|"Mod A (smart-hybrid ≤ 2 dosya | frontier-guardrails ≤ 10 dosya)"| ModeA["⚡ Mod A: Doğrudan Yürütme (Tier 0)<br/>~600 token (< 2.5 KB) Koruma Rayları + 2 Katmanlı Standartlar + strict_e2e"]
+    Gate -->|"Açık /cmd, dosya eşiği üstü veya NL Mod B"| ModeB["🎻 Mod B: Çoklu Ajan Orkestratörü (Tier 1)<br/>Model: inherit"]
 
     ModeB --> FanOut["🔀 Faz 1: DAG Paralel Dağıtım<br/>(/onboard scouter | researcher + debugger)"]
     FanOut --> Plan["📋 Faz 2: Sözleşme Öncelikli Planlama (planner)<br/>SHARED_CONTRACT + OWNED_FILES Kilitler"]
@@ -99,7 +100,7 @@ flowchart TD
 
 ## 💻 Desteklenen Yapay Zeka Platformları & 2026 Yerel Özellikleri
 
-| Platform | Destek Düzeyi | Küresel Giriş (`< 2.5 KB`) | Framework Kurulum Yolu & 2026 Yerel Yetenekleri |
+| Platform | Destek Düzeyi | Küresel Giriş Noktası | Framework Kurulum Yolu & 2026 Yerel Yetenekleri |
 |----------|:-------------:|-------------------|------------------------|
 | **Antigravity (Gemini)** | ✅ Yerel v5.5 | `~/.gemini/GEMINI.md` | `~/.gemini/config/skills/boomopen-workflow-kit/` • `--as-plugin` paketleme, Python `run_workflow` orkestrasyonu & yerel `/goal` döngüsü |
 | **Claude Code** | ✅ Yerel v5.5 | `~/.claude/CLAUDE.md` | `~/.claude/skills/boomopen-workflow-kit/` • `/plan:hard`, `PreCompact`/`Stop` kalite kancaları & `Bash\|PowerShell` koruması (`--with-hooks`) |
@@ -147,12 +148,12 @@ boomopen conduct probe
 
 ## 🎛️ Birleşik Ayarlar ve Mod Seçimi (`/settings` Kontrol Merkezi)
 
-BoomOpen v5.5, çalışma modlarını, **5 hazır profili (Preset)** ve 20 sistem ayarını (+ 2 satır sınırı) **5 platformun** tamamında `< 10ms` içinde (**Turn-1 gecikmesi 0ms**) değiştirmenizi sağlayan **Sıfır Gecikmeli Birleşik Kontrol Merkezi** içerir:
+BoomOpen v5.5, çalışma modlarını, **5 hazır profili (Preset)** ve 20 sistem ayarını (+ 2 satır sınırı) **5 platformun** tamamında `< 10ms` içinde (**Turn-1 gecikmesi 0ms**) yöneten **Sıfır Gecikmeli Birleşik Kontrol Merkezi** içerir. Temiz kurulumlarda **`⚡ smart-hybrid`** **varsayılan önerilen profildir** (`boomopen settings reset` ile geri yüklenir); **`🛡️ frontier-guardrails`** (`< 2.5 KB` / `~600 tokens`, `mode_a <= 10 files`, `naturalLanguageResearchTrigger = off`, geriye dönük uyumlu `carbon-guardrails` takma adıyla) ise **isteğe bağlı İnce Mod A profilidir** (`boomopen settings preset frontier-guardrails`):
 
 | Hazır Profil (`Preset`) | Çalışma Modu (`execution.mode`) | Varsayılan Varyant | Doğal Dil Araştırması (`naturalLanguageResearchTrigger`) | Kod Standartları (`codingStandards`) | En Uygun Kullanım |
 |:---|:---|:---:|:---:|:---:|:---|
-| **🛡️ `frontier-guardrails`** *(Varsayılan Önerilen)* | **`mode_a`** *(`≤ 10 dosya` doğrudan; 5 IDE genelinde `< 2.5 KB` ince koruma rayları + `strict_e2e`; `carbon-guardrails` takma adı desteklenir)* | `auto` | `off` *(Yalnızca açık `/cmd` ile tetiklenir — doğal dil müdahalesi sıfır)* | `pragmatic` (`400/500` satır) | 5 IDE'nin tamamı için önerilen varsayılan: günlük işleri yerel ajan hızla yürütür, BoomOpen `strict_e2e` kapılarını korur |
-| **⚡ `smart-hybrid`** | **`auto`** (`≤ 2 dosya` → Mode A; `> 2 dosya` veya `/cmd` → Mode B) | `auto` | **`auto_team`** *(Araştırma/fikirleri otomatik `/research:team` / `/brainstorm:team` ekibine yönlendirir)* | `pragmatic` (`400/500` satır) | 1. tur proaktif alt ajan orkestrasyonu ve 17 dilde doğal dil yönlendirmesi isteyen full-stack mühendislik |
+| **⚡ `smart-hybrid`** *(Varsayılan Önerilen)* | **`auto`** (`≤ 2 dosya` → Mode A; `> 2 dosya` veya `/cmd` → Mode B) | `auto` | **`auto_team`** *(Araştırma/fikirleri otomatik `/research:team` / `/brainstorm:team` ekibine yönlendirir)* | `pragmatic` (`400/500` satır) | Temiz kurulumlarda varsayılan (`boomopen settings reset`) — 5 IDE genelinde 17 dilde NL yönlendirmesi ve 2 dosya üzerinde otomatik 1. tur sürü parçalama |
+| **🛡️ `frontier-guardrails`** *(İsteğe Bağlı İnce Mod A)* | **`mode_a`** *(`≤ 10 dosya` doğrudan; `< 2.5 KB` / `~600 tokens` ince koruma rayları + `strict_e2e`; `carbon-guardrails` takma adı desteklenir)* | `auto` | **`off`** *(Yalnızca açık `/cmd` ile tetiklenir — doğal dil müdahalesi sıfır)* | `pragmatic` (`400/500` satır) | İsteğe bağlı `< 2.5 KB` (`~600 tokens`) doğrudan Mod A hızı ve sıkı `strict_e2e` kalite kapıları |
 | **🚀 `solo-fast`** | **`mode_a`** *(Doğrudan tekli çalışmayı zorlar, 0 sn alt-ajan gecikmesi)* | `fast` | `off` *(`/brainstorm` yazılmadıkça sohbette doğrudan yanıt verir)* | `relaxed` (`600/800` satır) | Acil hotfix'ler, hızlı prototipleme, betikler ve maksimum token tasarrufu |
 | **🧠 `deep-architect`** | **`mode_b`** *(Her görevde Mode B Çoklu-Ajan Orkestrasyonunu zorlar)* | `hard` | `auto_hard` *(Otomatik `/research:hard` / `/brainstorm:hard` araştırması çalıştırır)* | `strict` (`300/400` satır) | Karmaşık sistem mimarisi, sıfırdan tasarım ve çoklu-alan refaktör |
 | **🔺 `adversarial-team`** | **`team`** *(Tüm iş akışlarında 3-Ajanlı Golden Triangle `:team` modunu zorlar)* | `team` | **`auto_team`** *(`MAILBOX` üzerinden 3-Ajanlı çapraz inceleme ve tartışma)* | `strict` (`300/400` satır) | Kritik prodüksiyon kodu, güvenlik denetimleri ve sıfır hatalı sürümler |
@@ -162,8 +163,8 @@ BoomOpen v5.5, çalışma modlarını, **5 hazır profili (Preset)** ve 20 siste
 ```bash
 # 1. Sohbet İçi Slash Komutu (Etkileşimli menü veya tek satır komut)
 /settings                                     # Etkileşimli seçim menüsünü aç (ask_question UI)
-/settings preset frontier-guardrails          # Varsayılan önerilen mod (Mode A ≤10 dosya, <2.5 KB; carbon-guardrails alias)
-/settings preset smart-hybrid                 # Smart-Hybrid moduna geç (Auto Mode A/B + auto_team)
+/settings preset smart-hybrid                 # Varsayılan önerilen mod (Auto Mode A/B + 17 dilde NL yönlendirmesi)
+/settings preset frontier-guardrails          # İsteğe bağlı İnce Mod A (≤10 dosya, <2.5 KB / ~600 tokens; carbon-guardrails alias)
 /settings preset solo-fast                    # Mode A Doğrudan Hızlı Çalıştırma moduna geç
 /settings preset deep-architect               # Mode B Çoklu-Ajan Orkestratör moduna geç
 /settings preset adversarial-team             # Golden Triangle 3-Ajanlı Ekip (:team) moduna geç
@@ -174,10 +175,11 @@ boomopen settings --ui
 
 # 3. Terminal CLI (Global ~/.boomopen/settings.json ve Proje ./.boomopen.json)
 boomopen settings status
-boomopen settings preset frontier-guardrails
+boomopen settings preset smart-hybrid                     # Varsayılan profili global olarak uygula ve 5 IDE'yi senkronize et
+boomopen settings preset frontier-guardrails              # İsteğe bağlı İnce Mod A (< 2.5 KB) profiline geç
 cd path/to/your/project
 boomopen settings set execution.mode mode_a --project
-boomopen settings reset
+boomopen settings reset                                   # Önerilen smart-hybrid varsayılanlarını geri yükle
 ```
 
 > `--project`, `./.boomopen.json` dosyasını her zaman komutu çalıştırdığınız klasöre yazar; bu yüzden onu kit klonunda değil, kendi projenizde çalıştırın. `npm link` kullanmıyorsanız `boomopen` yerine `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js` yazın.
@@ -231,7 +233,7 @@ boomopen settings reset
 | **`/autopilot`** | `:init`, `:run`, `:audit` | `.boomopen/project-ledger.json`, 4 katmanlı kalite kilidi ve `ledger rollback` ile çok oturumlu otonom proje orkestratörü |
 | **`/conduct`** | `:council`, `:pipeline` | Motorlar arası orkestratör ve paralel çoklu motor konseyi (`boomopen conduct`) ile 4 bölümlü uzlaşı sentezi |
 | **`/orchestrate`** | — | Birden fazla alanda özel çoklu ajan iş hattı orkestrasyonu |
-| **`/settings`** | `preset`, `mode`, `set`, `ui` | Birleşik Kontrol Merkezi: mod geçişi, **5 hazır profil** (`frontier-guardrails` vb.) veya Web UI (`--ui`) |
+| **`/settings`** | `preset`, `mode`, `set`, `ui` | Birleşik Kontrol Merkezi: mod geçişi, **5 hazır profil** (`smart-hybrid` varsayılan, isteğe bağlı `frontier-guardrails`) veya Web UI (`--ui`) |
 | **`/save` / `/recap`** | — | Oturum durumunu (`SESSION-HANDOVER.md`) kaydetme ve `< 5 sn` içinde tüm bağlamı geri yükleme |
 
 ---

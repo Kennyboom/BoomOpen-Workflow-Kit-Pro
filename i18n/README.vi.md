@@ -64,9 +64,9 @@
 
 **BoomOpen Workflow Kit v5.5 (Frontier-Guardrails & Multi-Platform Smart-Hybrid Edition)** là hệ điều hành đa tác tử (Multi-Agent) mã nguồn mở biến một AI Coding Assistant đơn lẻ thành một tổ chức kỹ thuật hoàn chỉnh gồm **22 Đặc vụ Chuyên gia biên dịch riêng cho từng IDE**, **18 Đội hình Tam Giác Vàng (`72` files)**, **36 lệnh Slash (`93` file quy trình & tham chiếu: `87` workflows + `6` `_ref/`)**, **14 lệnh CLI tiền định**, **22 Kỹ năng Lõi (`skills/`)** và **Kho 1.440 Kỹ Năng Chuyên Sâu (`1.462` kỹ năng hợp nhất một lần vào `~/.agents/skills_library`)**.
 
-Khác với các bộ prompt cứng nhắc hay wrapper nặng nề làm phình ngữ cảnh ở mọi lượt hội thoại, BoomOpen v5.5 mặc định kích hoạt **`🛡️ frontier-guardrails` (`< 2.5 KB` / `~600 tokens` rào chắn siêu gọn trên cả 5 IDE)** đồng thời sẵn sàng bung sức mạnh **Phân Mảnh Bầy Đàn Đàn Hồi 4 Tầng (`role#shard`)**, **Đối Soát Spec-to-Code Wave 2.5 (`boomopen reconcile`)**, **Kiểm Toán Toàn Diện Dự Án Nhiều Vòng (`/audit` & `boomopen audit`)**, **Điều Hành Dự Án Tự Hành Nhiều Phiên (`/autopilot`)**, và **Nhạc Trưởng Đa Mô Hình (`/conduct`)**:
-- **🛡️ Tốc Độ Thường Ngày Siêu Gọn Với `frontier-guardrails` + ⚡ Mode A Trực Tiếp**: Mặc định để mô hình Frontier trên cả 5 IDE tự chủ xử lý trực tiếp tới **`≤ 10` files** với chi phí ngữ cảnh `< 2.5 KB` (`~600 tokens`), không tự ý cướp luồng ngôn ngữ tự nhiên, nhưng vẫn gác cổng nghiêm ngặt theo **Chuẩn Code Thực Dụng 2 Tầng** & **Kiểm Thử E2E Bền Bỉ** (`carbon-guardrails` được giữ làm bí danh tương thích ngược).
-- **🚀 Phân Mảnh Sub-agent Song Song Ngay Turn 1, Đối Soát Wave 2.5 & Điều Phối Mode B**: Khi gọi tường minh một trong **36 lệnh `/cmd`** (bổ sung mới **`/onboard`**, **`/pr` + `/pr:review`**, **`/release`**) — hoặc định tuyến ngôn ngữ tự nhiên 17 thứ tiếng khi bật `smart-hybrid` / `deep-architect` / `adversarial-team` — hệ thống lập tức chia mảnh sub-agent song song ở Turn 1 (`role#shard`, tối đa `3–4 OWNED_FILES`/shard) kết hợp **DAG Parallel Fan-Out**, **Direct Plan-to-Executor Dispatch**, **Khóa Hợp Đồng (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Đối Soát Wave 2.5 (`boomopen reconcile` + `cook amend-plan`)**, và **Tái Sử Dụng Phiên Nóng (`send_message`)**.
+Khác với các bộ prompt cứng nhắc hay wrapper nặng nề làm phình ngữ cảnh ở mọi lượt hội thoại, ngay khi cài mới BoomOpen v5.5 mặc định kích hoạt **`⚡ smart-hybrid` (Bầy Đàn Đàn Hồi Chủ Động Turn 1 + Định Tuyến Ngôn Ngữ Tự Nhiên 17 Thứ Tiếng trên cả 5 IDE)** — đồng thời cung cấp chế độ tùy chọn siêu gọn **`🛡️ frontier-guardrails` (`< 2.5 KB` / `~600 tokens` cho Mode A)** — mở khóa trọn vẹn **Phân Mảnh Bầy Đàn Đàn Hồi 4 Tầng (`role#shard`)**, **Đối Soát Spec-to-Code Wave 2.5 (`boomopen reconcile`)**, **Kiểm Toán Toàn Diện Dự Án Nhiều Vòng (`/audit` & `boomopen audit`)**, **Điều Hành Dự Án Tự Hành Nhiều Phiên (`/autopilot`)**, và **Nhạc Trưởng Đa Mô Hình (`/conduct`)**:
+- **⚡ Mặc Định `smart-hybrid` — Bầy Đàn Chủ Động Turn 1 + Định Tuyến 17 Ngôn Ngữ**: Ngay sau khi cài đặt, các chỉnh sửa nhỏ đã rõ đích (`≤ 2` files) chạy trực tiếp qua Mode A, trong khi tác vụ đa file, nghiên cứu sâu, lên ý tưởng, lập kế hoạch hoặc gọi tường minh một trong **36 lệnh `/cmd`** (**`/onboard`**, **`/pr` + `/pr:review`**, **`/release`**, v.v.) tự động chia mảnh sub-agent song song ngay Turn 1 (`role#shard`, tối đa `3–4 OWNED_FILES`/shard) kết hợp **Khóa Hợp Đồng (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Đối Soát Spec-to-Code Wave 2.5 (`boomopen reconcile` + `cook amend-plan`)**, và **Tái Sử Dụng Phiên Nóng (`send_message`)**.
+- **🛡️ Tùy Chọn Siêu Gọn `frontier-guardrails` (`< 2.5 KB` — Slim Mode A)**: Muốn mô hình gốc xử lý trực tiếp tối đa `≤ 10` files (`mode_a <= 10 files`) và tắt hoàn toàn tự động bắt luồng ngôn ngữ tự nhiên (`naturalLanguageResearchTrigger = off`)? Chuyển ngay trong `< 10ms` bằng `boomopen settings preset frontier-guardrails` (`carbon-guardrails` được giữ làm bí danh tương thích ngược).
 - **🏛️ Tự Hành Đa Phiên (`/autopilot`), Kiểm Toán Toàn Dự Án (`/audit`) & Hội Đồng Đa Mô Hình (`/conduct`)**: Biên dịch tài liệu đặc tả thành sổ cái `.boomopen/project-ledger.json` kèm khóa SHA-256, khôi phục mốc an toàn (`boomopen ledger rollback --yes`) và Cổng 4 Lớp (`boomopen check --strict-phase --no-stubs`); chạy kiểm toán nhiều vòng có duyệt người dùng (`/audit` & `boomopen audit`, hỗ trợ `boomopen audit rollback --yes`) trên độ phủ RTM, luồng dọc UI->API->DB & **Bảo mật 2 lớp (`security_scan.py` v6)**; hoặc điều phối Claude Code, OpenAI Codex, Antigravity, Cursor và Copilot qua `boomopen conduct` (có `--dry-run`).
 - **📚 Kho 1.462 Kỹ Năng Chống Trùng Lặp & 15 Mẫu `app-builder` (0% Phình Ngữ Cảnh)**: Lưu trữ duy nhất một bản tại `~/.agents/skills_library` dùng chung cho cả 5 IDE, tra cứu `O(1)` qua `matrix-skills/compact-index.json` (`22` Core + `1.440` Library, tích hợp **15 mẫu dự án `app-builder`** gồm cả **`mcp-server`** & **`ai-agent-worker`**).
 
@@ -167,14 +167,14 @@ boomopen conduct council plan "Thiết kế Auth" --dry-run         # Xem trư�
 
 ## 🎛️ Hướng Dẫn Lựa Chọn Chế Độ & Bảng Cài Đặt (`/settings` Control Center)
 
-Mặc định ngay sau khi cài đặt, BoomOpen v5.5 kích hoạt cấu hình **Mặc định Khuyên dùng (`🛡️ frontier-guardrails`)** lưu tại `~/.boomopen/settings.json` và nhúng trực tiếp vào cả **5 nền tảng** trong `< 10ms` (**độ trễ Turn 1 = 0ms**). Bạn có thể chuyển đổi giữa **5 Chế Độ Vận Hành (Presets)** hoặc tinh chỉnh **20 thông số enum + 2 giới hạn dòng** qua 3 cách:
+Mặc định ngay khi cài đặt mới, BoomOpen v5.5 kích hoạt cấu hình **Mặc định Khuyên dùng (`⚡ smart-hybrid`)** lưu tại `~/.boomopen/settings.json` và đồng bộ trực tiếp vào cả **5 nền tảng** trong `< 10ms` (**độ trễ Turn 1 = 0ms**). Bạn có thể chuyển đổi giữa **5 Chế Độ Vận Hành (Presets)** hoặc tinh chỉnh **20 thông số enum + 2 giới hạn dòng** qua 3 cách:
 
-### 1️⃣ Bảng 5 Chế Độ Vận Hành (`frontier-guardrails` Mặc Định Khuyên Dùng)
+### 1️⃣ Bảng 5 Chế Độ Vận Hành (`smart-hybrid` Mặc Định Khuyên Dùng)
 
 | Bộ Cấu Hình (`Preset`) | Chế Độ Thực Thi (`execution.mode`) | Biến Thể Mặc Định | Định Tuyến Tự Nhiên (`naturalLanguageResearchTrigger`) | Chuẩn Code (`codingStandards`) | Khi Nào Nên Dùng? |
 |:-----------------------|:-----------------------------------|:-----------------:|:------------------------------------------------------:|:------------------------------:|:------------------|
-| **🛡️ `frontier-guardrails`** *(Mặc định Khuyên dùng)* | **`mode_a`** *(Trực tiếp tối đa `≤ 10 files`; rào chắn siêu gọn `< 2.5 KB` / `~600 tokens`)* | `auto` | **`off`** *(Không tự cướp luồng NL; chỉ kích hoạt khi gõ `/cmd`)* | `pragmatic` (`400/500` dòng) | Khuyên dùng mặc định cho mọi mô hình Frontier trên cả 5 IDE (Antigravity, Claude Code, Codex, Cursor, Copilot) — mượt mà hàng ngày, giữ chặt chuẩn code & E2E *(`carbon-guardrails` được giữ làm bí danh tương thích ngược)* |
-| **⚡ `smart-hybrid`** | **`auto`** (`≤ 2 files` chạy **Mode A**; `> 2 files` hoặc `/cmd` chạy **Mode B Multi-Agent**) | `auto` | **`auto_team`** *(Tự động kích hoạt hội đồng 3-Agent `:team` Golden Triangle)* | `pragmatic` (`400/500` dòng) | Khi muốn tự động định tuyến ngôn ngữ tự nhiên 17 thứ tiếng & tự chia bầy đàn sub-agent ngay khi vượt 2 files |
+| **⚡ `smart-hybrid`** *(Mặc định Khuyên dùng)* | **`auto`** (`≤ 2 files` chạy **Mode A**; `> 2 files` hoặc `/cmd` chạy **Mode B Multi-Agent**) | `auto` | **`auto_team`** *(Tự động định tuyến nghiên cứu/ý tưởng NL sang hội đồng `:team` Golden Triangle)* | `pragmatic` (`400/500` dòng) | Mặc định khi cài mới trên cả 5 IDE: định tuyến ngôn ngữ tự nhiên 17 thứ tiếng + tự chia bầy đàn sub-agent ở Turn 1 khi vượt 2 files |
+| **🛡️ `frontier-guardrails`** *(Tùy chọn Slim Mode A)* | **`mode_a`** *(Trực tiếp tối đa `≤ 10 files`; rào chắn siêu gọn `< 2.5 KB` / `~600 tokens`)* | `auto` | **`off`** *(Không tự bắt luồng NL; chỉ kích hoạt khi gõ `/cmd`)* | `pragmatic` (`400/500` dòng) | Tùy chọn Mode A siêu gọn `< 2.5 KB` (`boomopen settings preset frontier-guardrails`) giữ chặt chuẩn code & kiểm thử E2E *(`carbon-guardrails` được giữ làm bí danh tương thích ngược)* |
 | **🚀 `solo-fast`** | **`mode_a`** *(Ép chạy trực tiếp 1 Agent, tắt gọi sub-agent)* | `fast` | `off` *(Trả lời trực tiếp trừ khi gõ `/brainstorm`)* | `relaxed` (`600/800` dòng) | Sửa gấp hotfix, làm prototype nhanh, viết script nhỏ & tiết kiệm tối đa token |
 | **🧠 `deep-architect`** | **`mode_b`** *(Luôn bật điều phối Đa Tác Tử Mode B cho mọi tác vụ)* | `hard` | `auto_hard` *(Tự động chạy `/research:hard` / `/brainstorm:hard`)* | `strict` (`300/400` dòng) | Thiết kế kiến trúc hệ thống phức tạp, dự án mới hoặc refactor đa tầng |
 | **🔺 `adversarial-team`** | **`team`** *(Luôn bật hội đồng 3-Agent đối kháng Golden Triangle `:team`)* | `team` | **`auto_team`** *(Hội đồng 3-Agent phản biện chéo qua `MAILBOX`)* | `strict` (`300/400` dòng) | Dự án trọng điểm đòi hỏi kiểm duyệt chéo, bảo mật & chất lượng tuyệt đối |
@@ -184,8 +184,8 @@ Mặc định ngay sau khi cài đặt, BoomOpen v5.5 kích hoạt cấu hình *
 1. **💬 Cách 1 — Gõ trực tiếp `/settings` ngay trong khung Chat**:
    ```text
    /settings                                     # Mở bảng trạng thái + Menu chọn tương tác (ask_question UI)
-   /settings preset frontier-guardrails          # Chuyển về Mặc định Khuyên dùng (bí danh tương thích: carbon-guardrails)
-   /settings preset smart-hybrid                 # Chuyển sang Smart-Hybrid (Auto Mode A/B + định tuyến NL 17 ngôn ngữ)
+   /settings preset smart-hybrid                 # Chuyển về Mặc định Khuyên dùng (Auto Mode A/B + định tuyến NL 17 ngôn ngữ)
+   /settings preset frontier-guardrails          # Bật tùy chọn Slim <2.5KB Mode A (bí danh tương thích: carbon-guardrails)
    /settings preset solo-fast                    # Chuyển sang Mode A (Chạy trực tiếp siêu nhanh)
    /settings preset deep-architect               # Chuyển sang Mode B (Chuyên sâu Multi-Agent)
    /settings preset adversarial-team             # Chuyển sang Golden Triangle 3-Agent (:team)
@@ -199,9 +199,10 @@ Mặc định ngay sau khi cài đặt, BoomOpen v5.5 kích hoạt cấu hình *
 3. **⌨️ Cách 3 — Chạy lệnh Terminal CLI (Global `~/.boomopen/settings.json` & Project `./.boomopen.json`)**:
    ```bash
    boomopen settings status                                  # Xem bảng cấu hình & trạng thái đồng bộ 5 IDE
-   boomopen settings preset smart-hybrid                     # Đổi preset toàn cục & đồng bộ mọi công cụ đã cài
+   boomopen settings preset smart-hybrid                     # Áp dụng preset mặc định smart-hybrid toàn cục & đồng bộ 5 IDE
+   boomopen settings preset frontier-guardrails              # Chuyển sang tùy chọn Slim <2.5KB Mode A (bí danh: carbon-guardrails)
    cd path/to/your/project && boomopen settings set execution.mode mode_a --project
-   boomopen settings reset                                   # Khôi phục mặc định khuyên dùng (frontier-guardrails)
+   boomopen settings reset                                   # Khôi phục mặc định khuyên dùng (smart-hybrid)
    ```
    `--project` ghi `./.boomopen.json` vào đúng thư mục dự án bạn đang đứng. Nếu chưa `npm link`, thay `boomopen` bằng `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`.
 

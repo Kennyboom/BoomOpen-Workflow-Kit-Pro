@@ -44,10 +44,11 @@
 
 ## 🌟 BoomOpen Workflow Kit v5.5 คืออะไร?
 
-**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Frontier-Guardrails Edition)** คือระบบปฏิบัติการแบบหลายเอเจนต์ (Multi-Agent) โอเพนซอร์สที่เปลี่ยนผู้ช่วยเขียนโค้ด AI เดี่ยวๆ ให้กลายเป็นองค์กรวิศวกรรมซอฟต์แวร์ที่ทำงานประสานกันประกอบด้วย **22 เอเจนต์ผู้เชี่ยวชาญ** (รวมถึง `spec-reconciler`), **18 ทีมสามเหลี่ยมทองคำ (`72` ไฟล์ทีม)**, **36 คำสั่ง Slash (`93` ไฟล์คำสั่ง = `87` เวิร์กโฟลว์ + `6` โปรโตคอล `_ref/`)**, **14 คำสั่ง CLI**, **22 ทักษะหลัก (Core Skills)** และ **1,440 ทักษะไลบรารีเฉพาะทาง (`skills_library/`)** (ดัชนีรวม **1,462 ทักษะ** ลดความซ้ำซ้อนร่วมกันผ่าน `~/.agents/skills_library` บน **5 แพลตฟอร์ม**)
+**BoomOpen Workflow Kit v5.5 (Frontier-Guardrails & Multi-Platform Smart-Hybrid Edition)** คือระบบปฏิบัติการแบบหลายเอเจนต์ (Multi-Agent) โอเพนซอร์สที่เปลี่ยนผู้ช่วยเขียนโค้ด AI เดี่ยวๆ ให้กลายเป็นองค์กรวิศวกรรมซอฟต์แวร์ที่ทำงานประสานกันประกอบด้วย **22 เอเจนต์ผู้เชี่ยวชาญ** (รวมถึง `spec-reconciler`), **18 ทีมสามเหลี่ยมทองคำ (`72` ไฟล์ทีม)**, **36 คำสั่ง Slash (`93` ไฟล์คำสั่ง = `87` เวิร์กโฟลว์ + `6` โปรโตคอล `_ref/`)**, **14 คำสั่ง CLI**, **22 ทักษะหลัก (Core Skills)** และ **1,440 ทักษะไลบรารีเฉพาะทาง (`skills_library/`)** (ดัชนีรวม **1,462 ทักษะ** ลดความซ้ำซ้อนร่วมกันผ่าน `~/.agents/skills_library` บน **5 แพลตฟอร์ม**)
 
-แตกต่างจากเทมเพลตแบบตายตัวหรือเฟรมเวิร์กขนาดใหญ่ที่สร้างความหน่วงและกินบริบทในทุกรอบ BoomOpen v5.5 ผสาน **การ์ดเรลขนาดกะทัดรัด `< 2.5 KB` (`frontier-guardrails`)**, **การแบ่งส่วนฝูงเอเจนต์แบบยืดหยุ่น 4 ระดับ (`role#shard`)**, **การสำรวจสถาปัตยกรรมโค้ดเดิมภายใน 60 วินาที (`/onboard`)**, **เกตตรวจคุณภาพก่อนเปิด PR & เตรียมรีลีส (`/pr`, `/release`)**, **การปรับเทียบสเปกกับโค้ดอัตโนมัติ Wave 2.5 (`boomopen reconcile`)**, **การตรวจสอบโครงการหลายรอบหลังพัฒนาเสร็จ (`/audit`)**, **ระบบขับเคลื่อนโปรเจกต์อัตโนมัติหลายเซสชัน (`/autopilot`)** และ **ตัวควบคุมข้ามเอนจิน (`/conduct`)**:
-- **🛡️ Frontier-Guardrails (`mode_a` ≤ 10 ไฟล์) & ซับเอเจนต์ขนานโหมด B**: ค่าเริ่มต้นแนะนำ **`frontier-guardrails`** ปล่อยให้เอเจนต์หลักของทั้ง 5 IDE ขับเคลื่อนงานประจำวันโดยตรงสูงสุด `≤ 10` ไฟล์ภายใต้การ์ดเรล `< 2.5 KB` และเกต `strict_e2e`; เมื่อเรียกใช้เวิร์กโฟลว์ `/cmd` หรือโหมด B/Smart-Hybrid ระบบจะแยกชาร์ดซับเอเจนต์ขนานทันที (`role#shard`, ไม่เกิน `3–4 OWNED_FILES`/shard) พร้อม **DAG Parallel Fan-Out**, **การล็อกสัญญา (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Wave 2.5 Spec-to-Code Auto-Reconciliation (`boomopen reconcile` + `/cook amend-plan`)** และ **การใช้เซสชันอุ่นซ้ำ (`send_message`)**
+แตกต่างจากเทมเพลตแบบตายตัวหรือเฟรมเวิร์กขนาดใหญ่ที่สร้างความหน่วงและกินบริบทในทุกรอบ BoomOpen v5.5 มาพร้อมค่าเริ่มต้น **`⚡ smart-hybrid`** (การแยกชาร์ดฝูงเอเจนต์เชิงรุกตั้งแต่เทิร์น 1 + ระบบนำทางภาษาธรรมชาติ 17 ภาษาครบทั้ง 5 IDE) ทันทีเมื่อติดตั้งใหม่ — พร้อมโปรไฟล์ทางเลือกโหมดสลิม **`🛡️ frontier-guardrails`** (`< 2.5 KB` / `~600 tokens` Mode A) — ปลดล็อก **การแบ่งส่วนฝูงเอเจนต์แบบยืดหยุ่น 4 ระดับ (`role#shard`)**, **การสำรวจสถาปัตยกรรมโค้ดเดิมภายใน 60 วินาที (`/onboard`)**, **เกตตรวจคุณภาพก่อนเปิด PR & เตรียมรีลีส (`/pr`, `/release`)**, **การปรับเทียบสเปกกับโค้ดอัตโนมัติ Wave 2.5 (`boomopen reconcile`)**, **การตรวจสอบโครงการหลายรอบหลังพัฒนาเสร็จ (`/audit`)**, **ระบบขับเคลื่อนโปรเจกต์อัตโนมัติหลายเซสชัน (`/autopilot`)** และ **ตัวควบคุมข้ามเอนจิน (`/conduct`)**:
+- **⚡ ค่าเริ่มต้น `smart-hybrid` — ฝูงเอเจนต์เชิงรุกเทิร์น 1 + การนำทาง 17 ภาษา**: ทันทีที่ติดตั้งใหม่ (และคืนค่าได้ด้วย `boomopen settings reset`) งานแก้ไขขนาดเล็กที่รู้ไฟล์ชัดเจน (`≤ 2` ไฟล์) จะรันตรงในโหมด A ทันที ส่วนงานหลายไฟล์ งานวิจัยเชิงลึก การระดมสมอง การวางแผน และการเรียกเวิร์กโฟลว์ `/cmd` (**`/onboard`**, **`/pr` + `/pr:review`**, **`/release`** ฯลฯ) จะแยกชาร์ดซับเอเจนต์ขนานในเทิร์น 1 อัตโนมัติ (`role#shard`, ไม่เกิน `3–4 OWNED_FILES`/shard) พร้อม **DAG Parallel Fan-Out**, **การล็อกสัญญา (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Wave 2.5 Spec-to-Code Auto-Reconciliation (`boomopen reconcile` + `/cook amend-plan`)** และ **การใช้เซสชันอุ่นซ้ำ (`send_message`)**
+- **🛡️ โปรไฟล์ทางเลือกโหมดสลิม `frontier-guardrails` (`< 2.5 KB` / `~600 tokens` Mode A)**: หากต้องการให้เอเจนต์หลักของ IDE ลุยงานประจำวันโดยตรงสูงสุด `≤ 10` ไฟล์ (`mode_a`) โดยปิดการดักจับภาษาธรรมชาติ (`naturalLanguageResearchTrigger = off`) สามารถสลับได้ภายใน `< 10ms` ด้วย `boomopen settings preset frontier-guardrails` (รองรับชื่อพ้อง `carbon-guardrails` เพื่อความเข้ากันได้ย้อนหลัง) พร้อมคงมาตรฐานโค้ด 2 ระดับและเกต `strict_e2e`
 - **🗺️ วงจรวิศวกรรมครบวงจร (`/onboard`, `/pr`, `/release`, `/autopilot`, `/audit`, `/conduct`)**: สร้างแผนที่สถาปัตยกรรมโค้ดเบสเดิม `ARCHITECTURE-MAP.md` ใน 60 วินาทีด้วย **`/onboard`** (ไม่ชนกับ `/init` และไม่สร้างไฟล์รกในรีโพ); บังคับเกตก่อนส่งโค้ดและรีวิว PR ด้วย **`/pr`** (`/pr:review`); เตรียม Semantic Release และ `CHANGELOG.md` ด้วย **`/release`**; ขับเคลื่อนโปรเจกต์หลายเฟสด้วย `.boomopen/project-ledger.json` (`ledger rollback`), ตรวจสอบหลายรอบด้วย `.boomopen/audit-ledger.json` (`audit rollback` + `security_scan.py` v6) และประชุมสภาหลายเอนจินผ่าน `/conduct`
 - **📚 คลังทักษะ 1,462 รายการไร้ภาระบริบท + เทมเพลตพร้อมใช้งาน**: คอมไพล์ล่วงหน้าใน `matrix-skills/compact-index.json` เพื่อค้นหาแบบ `O(1)` 2 ขั้นตอน และแชร์คลังเดียวที่ `~/.agents/skills_library` โดยไม่คัดลอกซ้ำข้าม IDE พร้อมเทมเพลตตั้งต้นระดับโปรดักชันอย่าง **`mcp-server`** และ **`ai-agent-worker`**
 
@@ -57,9 +58,9 @@
 
 ```mermaid
 flowchart TD
-    User["👤 คำขอของผู้ใช้ / 36 คำสั่ง Slash"] --> Gate{"🚦 ประตูคัดกรองโหมด (frontier-guardrails / smart-hybrid)"}
-    Gate -->|"Mode A (≤ 10 ไฟล์ใน frontier-guardrails / ≤ 2 ไฟล์ใน smart-hybrid)"| ModeA["⚡ โหมด A: ประมวลผลโดยตรง (Tier 0)<br/>การ์ดเรล < 2.5 KB + มาตรฐานโค้ด 2 ระดับ + strict_e2e"]
-    Gate -->|"เวิร์กโฟลว์ /cmd หรือขอบเขตหลายโดเมน (> เกณฑ์ไฟล์)"| ModeB["🎻 โหมด B: Multi-Agent Orchestrator (Tier 1)<br/>Model: inherit"]
+    User["👤 คำขอของผู้ใช้ / 36 คำสั่ง Slash"] --> Gate{"🚦 ประตูคัดกรองโปรไฟล์ & ความซับซ้อน (smart-hybrid / frontier-guardrails)"}
+    Gate -->|"Mode A (≤ 2 ไฟล์ใน smart-hybrid / ≤ 10 ไฟล์ใน frontier-guardrails)"| ModeA["⚡ โหมด A: ประมวลผลโดยตรง (Tier 0)<br/>การ์ดเรล ~600 tokens (< 2.5 KB) + มาตรฐานโค้ด 2 ระดับ + strict_e2e"]
+    Gate -->|"เวิร์กโฟลว์ /cmd, > เกณฑ์ไฟล์ หรือ NL 17 ภาษา โหมด B"| ModeB["🎻 โหมด B: Multi-Agent Orchestrator (Tier 1)<br/>Model: inherit"]
 
     ModeB --> FanOut["🔀 เฟส 1: DAG Parallel Fan-Out<br/>(/onboard scouter | researcher + debugger)"]
     FanOut --> Plan["📋 เฟส 2: วางแผนโดยยึดสัญญา (planner)<br/>ล็อก SHARED_CONTRACT + OWNED_FILES"]
@@ -99,7 +100,7 @@ flowchart TD
 
 ## 💻 แพลตฟอร์ม AI ที่รองรับ & จุดเด่น Native ปี 2026
 
-| แพลตฟอร์ม | ระดับการรองรับ | ไฟล์เริ่มต้นระดับ Global (`< 2.5 KB`) | พาธติดตั้งเฟรมเวิร์ก & ฟีเจอร์เด่นปี 2026 |
+| แพลตฟอร์ม | ระดับการรองรับ | ไฟล์เริ่มต้นระดับ Global | พาธติดตั้งเฟรมเวิร์ก & ฟีเจอร์เด่นปี 2026 |
 |----------|:-------------:|-------------------|------------------------|
 | **Antigravity (Gemini)** | ✅ Native v5.5 | `~/.gemini/GEMINI.md` | `~/.gemini/config/skills/boomopen-workflow-kit/` • โหมดปลั๊กอิน `--as-plugin`, ออร์เคสเตรชัน Python `run_workflow` & ลูป `/goal` |
 | **Claude Code** | ✅ Native v5.5 | `~/.claude/CLAUDE.md` | `~/.claude/skills/boomopen-workflow-kit/` • `/plan:hard`, ฮุกคุณภาพ `PreCompact`/`Stop` & การ์ดป้องกัน `Bash\|PowerShell` (`--with-hooks`) |
@@ -147,12 +148,12 @@ boomopen conduct probe
 
 ## 🎛️ ศูนย์ควบคุมการตั้งค่าและการเลือกโหมด (`/settings` Control Center)
 
-BoomOpen v5.5 มาพร้อม **ศูนย์ควบคุมแบบรวมศูนย์ไร้ความหน่วง (Zero-Latency Control Center)** ให้คุณสลับโหมดการทำงาน, **5 โปรไฟล์สำเร็จรูป (Presets)** และ 20 การตั้งค่า (+ 2 ค่าจำกัดบรรทัด) ครบทั้ง **5 แพลตฟอร์ม** ภายใน `< 10ms` (**ความหน่วงเทิร์นแรก 0ms**):
+BoomOpen v5.5 มาพร้อม **ศูนย์ควบคุมแบบรวมศูนย์ไร้ความหน่วง (Zero-Latency Control Center)** ให้คุณสลับโหมดการทำงาน, **5 โปรไฟล์สำเร็จรูป (Presets)** (โดยมี **`⚡ smart-hybrid`** เป็นค่าเริ่มต้นเมื่อติดตั้งใหม่ และคืนค่าได้ด้วย `boomopen settings reset`) และ 20 การตั้งค่า (+ 2 ค่าจำกัดบรรทัด) ครบทั้ง **5 แพลตฟอร์ม** ภายใน `< 10ms` (**ความหน่วงเทิร์นแรก 0ms** ผ่าน AOT `<!-- BOOMOPEN-SETTINGS-START -->`):
 
 | โปรไฟล์ (`Preset`) | โหมดการทำงาน (`execution.mode`) | ค่าเริ่มต้น `/cmd` | การวิจัยภาษาธรรมชาติ (`naturalLanguageResearchTrigger`) | มาตรฐานโค้ด (`codingStandards`) | เหมาะสำหรับ |
 |:---|:---|:---:|:---:|:---:|:---|
-| **🛡️ `frontier-guardrails`** *(ค่าเริ่มต้นแนะนำ)* | **`mode_a`** *(รันตรงสูงสุด `≤ 10 ไฟล์`; การ์ดเรลสลิม `< 2.5 KB` ครบทั้ง 5 IDE + `strict_e2e`; รองรับชื่อพ้อง `carbon-guardrails`)* | `auto` | `off` *(ใช้เฉพาะ `/cmd` ที่พิมพ์เอง — ไม่แทรกแทรงภาษาธรรมชาติ)* | `pragmatic` (`400/500` บรรทัด) | ค่าเริ่มต้นสำหรับเอเจนต์รุ่นใหม่ทั้ง 5 IDE: ให้เอเจนต์หลักลุยงานประจำวันเร็วสุด พร้อมเกตคุณภาพ BoomOpen `strict_e2e` |
-| **⚡ `smart-hybrid`** | **`auto`** (`≤ 2 ไฟล์` → Mode A; `> 2 ไฟล์` หรือ `/cmd` → Mode B) | `auto` | **`auto_team`** *(ส่งงานวิจัย/ระดมสมองไป `/research:team` / `/brainstorm:team`)* | `pragmatic` (`400/500` บรรทัด) | งาน Full-Stack ที่ต้องการซับเอเจนต์เชิงรุกตั้งแต่เทิร์น 1 และการนำทางภาษาธรรมชาติ 17 ภาษาอัตโนมัติ |
+| **⚡ `smart-hybrid`** *(ค่าเริ่มต้นแนะนำ)* | **`auto`** (`≤ 2 ไฟล์` → Mode A รันตรง; `> 2 ไฟล์` หรือ `/cmd` → Mode B) | `auto` | **`auto_team`** *(ส่งงานวิจัย/ระดมสมองไป `/research:team` / `/brainstorm:team` อัตโนมัติ)* | `pragmatic` (`400/500` บรรทัด) | ค่าเริ่มต้นเมื่อติดตั้งใหม่ (`boomopen settings reset`): นำทางภาษาธรรมชาติ 17 ภาษา + แยกชาร์ดซับเอเจนต์อัตโนมัติตั้งแต่เทิร์น 1 เมื่อเกิน 2 ไฟล์ครบทั้ง 5 IDE |
+| **🛡️ `frontier-guardrails`** *(โหมดสลิม Mode A ทางเลือก)* | **`mode_a`** *(รันตรงสูงสุด `≤ 10 ไฟล์`; การ์ดเรลสลิม `< 2.5 KB` / `~600 tokens` + `strict_e2e`)* | `auto` | **`off`** *(ใช้เฉพาะ `/cmd` ที่พิมพ์เอง — ไม่ดักจับภาษาธรรมชาติ)* | `pragmatic` (`400/500` บรรทัด) | โหมดสลิมทางเลือก `< 2.5 KB` (`~600 tokens`) ให้เอเจนต์หลักลุยงานประจำวันโดยตรงเร็วสุดพร้อมเกต `strict_e2e` *(รองรับชื่อพ้อง `carbon-guardrails` ย้อนหลัง)* |
 | **🚀 `solo-fast`** | **`mode_a`** *(บังคับรันตรงแบบเดี่ยว ความหน่วงซับเอเจนต์ 0 วินาที)* | `fast` | `off` *(ตอบกลับในแชททันทีเว้นแต่พิมพ์ `/brainstorm`)* | `relaxed` (`600/800` บรรทัด) | งานแก้บั๊กด่วน (Hotfix), ทำต้นแบบไว, สคริปต์สั้นๆ และประหยัดโทเค็นสูงสุด |
 | **🧠 `deep-architect`** | **`mode_b`** *(บังคับใช้ Multi-Agent Mode B ในทุกภารกิจ)* | `hard` | `auto_hard` *(รัน `/research:hard` / `/brainstorm:hard` เชิงลึกอัตโนมัติ)* | `strict` (`300/400` บรรทัด) | ออกแบบสถาปัตยกรรมระบบซับซ้อน โปรเจกต์ใหม่ และการรีแฟกเตอร์ข้ามโดเมน |
 | **🔺 `adversarial-team`** | **`team`** *(บังคับใช้ทีมสามเหลี่ยมทองคำ 3 เอเจนต์ `:team` ทุกเวิร์กโฟลว์)* | `team` | **`auto_team`** *(3 เอเจนต์ถกเถียงและตรวจสอบข้ามกันผ่าน `MAILBOX`)* | `strict` (`300/400` บรรทัด) | ระบบโปรดักชันสำคัญยิ่งยวด งานตรวจสอบความปลอดภัย และการส่งมอบไร้ข้อผิดพลาด |
@@ -162,8 +163,8 @@ BoomOpen v5.5 มาพร้อม **ศูนย์ควบคุมแบบ
 ```bash
 # 1. คำสั่ง Slash ในแชท (เมนูโต้ตอบหรือคำสั่งบรรทัดเดียว)
 /settings                                     # เปิดเมนูเลือกแบบโต้ตอบ (ask_question UI)
-/settings preset frontier-guardrails          # ค่าเริ่มต้นแนะนำ (Mode A ≤10 ไฟล์, การ์ดเรล <2.5 KB; รองรับ alias carbon-guardrails)
-/settings preset smart-hybrid                 # สลับเป็นโหมด Smart-Hybrid (Auto Mode A/B + auto_team)
+/settings preset smart-hybrid                 # ค่าเริ่มต้นแนะนำ (Auto Mode A/B + นำทางภาษาธรรมชาติ 17 ภาษา)
+/settings preset frontier-guardrails          # โหมดสลิมทางเลือก Mode A ≤10 ไฟล์, <2.5 KB / ~600 tokens (alias: carbon-guardrails)
 /settings preset solo-fast                    # สลับเป็น Mode A รันตรงแบบเดี่ยวความเร็วสูง
 /settings preset deep-architect               # สลับเป็น Mode B ระบบประสานงานหลายเอเจนต์
 /settings preset adversarial-team             # สลับเป็นทีมสามเหลี่ยมทองคำ 3 เอเจนต์ (:team)
@@ -174,10 +175,11 @@ boomopen settings --ui
 
 # 3. คำสั่ง Terminal CLI (ระดับ Global ~/.boomopen/settings.json และระดับโปรเจกต์ ./.boomopen.json)
 boomopen settings status
-boomopen settings preset frontier-guardrails
+boomopen settings preset smart-hybrid         # ตั้งค่าเริ่มต้นแนะนำระดับ Global และซิงค์ครบ 5 แพลตฟอร์ม
+boomopen settings preset frontier-guardrails  # สลับเป็นโปรไฟล์ทางเลือกโหมดสลิม Mode A (< 2.5 KB / ~600 tokens)
 cd path/to/your/project
 boomopen settings set execution.mode mode_a --project
-boomopen settings reset
+boomopen settings reset                       # คืนค่าเริ่มต้นแนะนำ (smart-hybrid)
 ```
 
 > `--project` จะเขียน `./.boomopen.json` ในโฟลเดอร์ที่คุณรันคำสั่งเสมอ จึงต้องรันภายในโปรเจกต์ของคุณ ไม่ใช่ในโฟลเดอร์ที่โคลนชุดเครื่องมือ หากไม่ได้ใช้ `npm link` ให้แทน `boomopen` ด้วย `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`
@@ -231,7 +233,7 @@ boomopen settings reset
 | **`/autopilot`** | `:init`, `:run`, `:audit` | ตัวประสานงานโปรเจกต์อัตโนมัติข้ามเซสชันด้วย `.boomopen/project-ledger.json`, ด่านคุณภาพ 4 ชั้น และ `ledger rollback` |
 | **`/conduct`** | `:council`, `:pipeline` | ตัวควบคุมข้ามเอนจินและสภาหลายเอนจินแบบขนาน (`boomopen conduct`) พร้อมรายงานสังเคราะห์ฉันทามติ 4 ส่วน |
 | **`/orchestrate`** | — | ประสานงานไปป์ไลน์ Multi-Agent แบบกำหนดเองข้ามหลายโดเมน |
-| **`/settings`** | `preset`, `mode`, `set`, `ui` | ศูนย์ควบคุมรวมศูนย์: สลับโหมด, เลือก **5 Presets** (`frontier-guardrails` ฯลฯ) หรือเปิด Web UI (`--ui`) |
+| **`/settings`** | `preset`, `mode`, `set`, `ui` | ศูนย์ควบคุมรวมศูนย์: สลับโหมด, เลือก **5 Presets** (ค่าเริ่มต้น `smart-hybrid` ฯลฯ) หรือเปิด Web UI (`--ui`) |
 | **`/save` / `/recap`** | — | บันทึกสถานะเซสชัน (`SESSION-HANDOVER.md`) และกู้คืนบริบททั้งหมดภายใน `< 5 วินาที` |
 
 ---

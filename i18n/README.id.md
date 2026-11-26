@@ -44,10 +44,11 @@
 
 ## 🌟 Apa itu BoomOpen Workflow Kit v5.5?
 
-**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** adalah sistem operasi multi-agen sumber terbuka (open-source) yang mengubah satu asisten coding AI menjadi organisasi rekayasa terkoordinasi yang terdiri dari **22 agen spesialis**, **18 tim Golden Triangle (`72` file tim)**, **36 perintah slash (`93` file perintah: `87` alur kerja + `6` di `_ref/`)**, **14 perintah CLI**, **22 skill inti (Core Skills)**, dan **1.440 skill pustaka khusus (`1.462` skill terdeduplikasi via `~/.agents/skills_library`)**.
+**BoomOpen Workflow Kit v5.5 (Frontier-Guardrails & Multi-Platform Smart-Hybrid Edition)** adalah sistem operasi multi-agen sumber terbuka (open-source) yang mengubah satu asisten coding AI menjadi organisasi rekayasa terkoordinasi yang terdiri dari **22 agen spesialis**, **18 tim Golden Triangle (`72` file tim)**, **36 perintah slash (`93` file perintah: `87` alur kerja + `6` di `_ref/`)**, **14 perintah CLI**, **22 skill inti (Core Skills)**, dan **1.440 skill pustaka khusus (`1.462` skill terdeduplikasi via `~/.agents/skills_library`)**.
 
-Tidak seperti template kaku atau wrapper berat yang memicu pembengkakan konteks di setiap giliran, BoomOpen v5.5 memadukan pagar kualitas ramping (`< 2.5 KB`) pada profil bawaan **`frontier-guardrails`**, **Sharding Kawanan Elastis 4-Tingkat (`role#shard`)**, **Onboarding Brownfield 60 Detik (`/onboard`)**, **Gerbang PR & Rilis (`/pr`, `/pr:review`, `/release`)**, **Rekonsiliasi Otomatis Spec-to-Code Wave 2.5 (`boomopen reconcile`)**, **Audit Pasca-Penyelesaian Multi-Putaran (`/audit` & `boomopen audit`)**, **Autopilot Proyek Multi-Sesi (`/autopilot`)**, dan **Konduktor Lintas-Engine (`/conduct`)**:
-- **🛡️ Guardrail Frontier Ramping (`< 2.5 KB`) & Orkestrasi Mode B Sesuai Permintaan**: Dengan preset bawaan **`frontier-guardrails`**, model frontier bawaan IDE Anda menangani tugas harian langsung hingga `≤ 10` file (`mode_a`, tanpa pembajakan bahasa alami), sementara perintah `/cmd` eksplisit atau preset `smart-hybrid` meluncurkan shard paralel pada Giliran 1 (`role#shard`, `<= 3–4 OWNED_FILES`/shard) dengan **DAG Parallel Fan-Out**, **Direct Plan-to-Executor Dispatch**, **Kunci Kontrak (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Rekonsiliasi Wave 2.5 (`boomopen reconcile` + `spec-reconciler` + `/cook amend-plan`)**, dan **Penggunaan Ulang Hangat (`send_message`)**.
+Tidak seperti template kaku atau wrapper berat yang memicu pembengkakan konteks di setiap giliran, BoomOpen v5.5 hadir secara bawaan dengan **`⚡ smart-hybrid`** (Kawanan Elastis Proaktif Giliran-1 + Perutean Bahasa Alami 17 Bahasa di kelima IDE) pada instalasi baru — sekaligus menyediakan preset Mode A ramping opsional **`🛡️ frontier-guardrails`** (`< 2.5 KB` / `~600 tokens`) — membuka **Sharding Kawanan Elastis 4-Tingkat (`role#shard`)**, **Onboarding Brownfield 60 Detik (`/onboard`)**, **Gerbang PR & Rilis (`/pr`, `/pr:review`, `/release`)**, **Rekonsiliasi Otomatis Spec-to-Code Wave 2.5 (`boomopen reconcile`)**, **Audit Pasca-Penyelesaian Multi-Putaran (`/audit` & `boomopen audit`)**, **Autopilot Proyek Multi-Sesi (`/autopilot`)**, dan **Konduktor Lintas-Engine (`/conduct`)**:
+- **⚡ Preset Bawaan `smart-hybrid` — Kawanan Proaktif + Perutean 17 Bahasa**: Pada instalasi baru (dan dipulihkan oleh `boomopen settings reset`), pengeditan mikro yang sudah jelas (`≤ 2` file) dieksekusi langsung di Mode A, sedangkan tugas multi-file, riset mendalam, pencarian ide, perencanaan, dan perintah `/cmd` eksplisit (**`/onboard`**, **`/pr` + `/pr:review`**, **`/release`**, dll.) otomatis meluncurkan shard sub-agen paralel pada Giliran 1 (`role#shard`, `<= 3–4 OWNED_FILES`/shard) dengan **DAG Parallel Fan-Out**, **Direct Plan-to-Executor Dispatch**, **Kunci Kontrak (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Rekonsiliasi Wave 2.5 (`boomopen reconcile` + `spec-reconciler` + `/cook amend-plan`)**, dan **Penggunaan Ulang Hangat (`send_message`)**.
+- **🛡️ Preset Mode A Ramping Opsional `frontier-guardrails` (`< 2.5 KB` / `~600 tokens`)**: Lebih suka Mode A langsung native hingga `≤ 10` file tanpa pemicu bahasa alami (`naturalLanguageResearchTrigger = off`)? Beralih dalam `< 10ms` melalui `boomopen settings preset frontier-guardrails` (alias kompatibel mundur `carbon-guardrails` tetap didukung) sembari tetap menegakkan standar kode 2-tingkat dan verifikasi `strict_e2e`.
 - **🏛️ Autopilot Multi-Sesi (`/autopilot`), Audit Multi-Putaran (`/audit`) & Dewan Multi-Engine (`/conduct`)**: Mengolah spesifikasi ke `.boomopen/project-ledger.json` dengan penjaga SHA-256, gerbang 4 lapis (`boomopen check --strict-phase --no-stubs`), dan pemulihan aman `boomopen ledger rollback`; menjalankan audit menyeluruh pasca-penyelesaian (`/audit`, `boomopen audit rollback`) via `.boomopen/audit-ledger.json` mencakup RTM, aliran vertikal UI→API→DB, serta **Mesin Keamanan Anti-Kebocoran 2-Lapis (`security_scan.py` v6)**.
 - **🗺️ Siklus Rekayasa Lengkap (`/onboard` → `/cook` → `/pr` → `/release`)**: Petakan kode yang sudah ada dalam 60 detik lewat `/onboard` (`ARCHITECTURE-MAP.md`), validasi serta buka Pull Request terstruktur lewat `/pr` dan `/pr:review`, lalu siapkan rilis SemVer bebas cacat lewat `/release`.
 - **📚 Gudang 1.462 Skill Terdeduplikasi Tanpa Pembengkakan Konteks**: Menggabungkan **22 Core Skills (`skills/`)** dan **1.440 Library Skills** yang dibagikan sekali di `~/.agents/skills_library` (termasuk template `mcp-server` & `ai-agent-worker`), terindeks di `matrix-skills/compact-index.json` untuk pencarian `O(1)` 2 langkah.
@@ -58,9 +59,9 @@ Tidak seperti template kaku atau wrapper berat yang memicu pembengkakan konteks 
 
 ```mermaid
 flowchart TD
-    User["👤 Permintaan Pengguna / Perintah Slash"] --> Gate{"🚦 Gerbang Cerdas (frontier-guardrails / smart-hybrid)"}
-    Gate -->|"Mode Langsung (≤ 10 file di frontier-guardrails | ≤ 2 di smart-hybrid)"| ModeA["⚡ Mode A: Eksekusi Langsung (Tier 0)<br/>Guardrail < 2.5 KB + Standar Pragmatis 2-Tingkat"]
-    Gate -->|"/cmd eksplisit, ≥ 2 domain atau Mode B"| ModeB["🎻 Mode B: Orkestrator Multi-Agen (Tier 1)<br/>Model: inherit"]
+    User["👤 Permintaan Pengguna / Perintah Slash"] --> Gate{"🚦 Gerbang Preset & Kompleksitas (smart-hybrid / frontier-guardrails)"}
+    Gate -->|"Mode A (≤ 2 file di smart-hybrid | ≤ 10 di frontier-guardrails)"| ModeA["⚡ Mode A: Eksekusi Langsung (Tier 0)<br/>Guardrail ~600 tokens (< 2.5 KB) + Standar Pragmatis 2-Tingkat"]
+    Gate -->|"/cmd eksplisit, > batas file, atau Mode B NL 17 bahasa"| ModeB["🎻 Mode B: Orkestrator Multi-Agen (Tier 1)<br/>Model: inherit"]
 
     ModeB --> FanOut["🔀 Fase 1: DAG Parallel Fan-Out<br/>(researcher + scouter | /onboard 3 shard)"]
     FanOut --> Plan["📋 Fase 2: Perencanaan Berbasis Kontrak (planner)<br/>Mengunci SHARED_CONTRACT + OWNED_FILES"]
@@ -80,7 +81,7 @@ flowchart TD
 ## 🧠 6 Pilar Utama v5.5
 
 1. **🌐 Paritas Terpadu di 5 Platform (`platforms/*`)**:
-   - Instalasi native kelas satu untuk **Antigravity (Gemini)**, **Claude Code**, **OpenAI Codex**, **Cursor**, dan **GitHub Copilot** dengan entrypoint ramping (`< 2.5 KB` guardrail) serta gudang bersama `~/.agents/skills_library`.
+   - Instalasi native kelas satu untuk **Antigravity (Gemini)**, **Claude Code**, **OpenAI Codex**, **Cursor**, dan **GitHub Copilot** dengan entrypoint AOT berlatensi nol (serta mode ramping opsional `< 2.5 KB` / `~600 tokens`) dan gudang bersama `~/.agents/skills_library`.
 2. **📏 Standar Pengkodean Pragmatis 2-Tingkat (Anti-Fragmentasi)**:
    - **Tingkat 1 — Toleransi Nol**: Tanggung Jawab Tunggal, **DILARANG `any` eksplisit**, **DILARANG meninggalkan `console.log` debug**, wajib `try/catch` + error bertipe di batas async/API, konstanta `SCREAMING_SNAKE_CASE`, DRY (`≥ 3`), dan import rapi.
    - **Tingkat 2 — Panduan Struktural Fleksibel**: File kohesif menargetkan `~200–350 baris` dengan batas lunak `400` dan pemisahan keras `>500 baris` (file test, tipe, dan dokumen dikecualikan). Fungsi logika `~20–40 baris` (`~40–80` untuk UI/Handler).
@@ -143,12 +144,12 @@ boomopen conduct probe
 
 ## 🎛️ Pengaturan Terpadu & 5 Profil Preset (`/settings`)
 
-BoomOpen v5.5 mengelola **20 kunci pengaturan + 2 batas baris** di **5 platform** dalam `< 10ms` (**latensi Turn-1 0ms**), dengan **`🛡️ frontier-guardrails`** sebagai preset bawaan yang direkomendasikan:
+BoomOpen v5.5 mengelola **20 kunci pengaturan + 2 batas baris** di **5 platform** dalam `< 10ms` (**latensi Turn-1 0ms** via injeksi AOT `<!-- BOOMOPEN-SETTINGS-START -->`), dengan **`⚡ smart-hybrid`** sebagai preset bawaan pada instalasi baru (dipulihkan lewat `boomopen settings reset`) dan **`🛡️ frontier-guardrails`** sebagai preset Mode A ramping opsional:
 
 | Profil (`Preset`) | Mode (`execution.mode`) | Varian Default | Pemicu NL (`naturalLanguageResearchTrigger`) | Standar Kode | Penggunaan Terbaik |
 |:---|:---|:---:|:---:|:---:|:---|
-| **🛡️ `frontier-guardrails`** *(Default Direkomendasikan)* | **`mode_a`** *(Langsung hingga `≤ 10 file`; guardrail ramping `< 2.5 KB` di semua 5 IDE; alias `carbon-guardrails` didukung)* | `auto` | `off` *(Tanpa pembajakan NL; workflow hanya via `/cmd` eksplisit)* | `pragmatic` (`400/500`) | Rekayasa harian di kelima IDE — model frontier native memimpin edit hingga 10 file dengan batas `400/500` baris & verifikasi `strict_e2e` |
-| **⚡ `smart-hybrid`** | **`auto`** (`≤ 2 file` → Mode A; `> 2` atau `/cmd` → Mode B) | `auto` | **`auto_team`** *(Otomatis arahkan riset/ide NL ke `/research:team` / `/brainstorm:team`)* | `pragmatic` (`400/500`) | Orkestrasi proaktif 17 bahasa — cepat di tugas kecil, kawanan otomatis di fitur kompleks |
+| **⚡ `smart-hybrid`** *(Default Direkomendasikan)* | **`auto`** (`≤ 2 file` → Mode A Langsung; `> 2 file` atau `/cmd` → Mode B) | `auto` | **`auto_team`** *(Otomatis arahkan riset/ide NL ke `/research:team` / `/brainstorm:team`)* | `pragmatic` (`400/500`) | Bawaan instalasi baru (`boomopen settings reset`) — perutean NL 17 bahasa + sharding kawanan Giliran-1 di atas 2 file di kelima IDE |
+| **🛡️ `frontier-guardrails`** *(Mode A Ramping Opsional)* | **`mode_a`** *(Langsung hingga `≤ 10 file`; guardrail ramping `< 2.5 KB` / `~600 tokens`)* | `auto` | **`off`** *(Tanpa pembajakan NL; workflow hanya via `/cmd` eksplisit)* | `pragmatic` (`400/500`) | Mode A ramping opsional `< 2.5 KB` (`~600 tokens`) dengan standar `400/500` baris & verifikasi `strict_e2e` *(alias kompatibel mundur: `carbon-guardrails`)* |
 | **🚀 `solo-fast`** | **`mode_a`** *(Eksekusi solo langsung, latensi sub-agen 0d)* | `fast` | `off` *(Balasan langsung kecuali mengetik `/brainstorm`)* | `relaxed` (`600/800`) | Hotfix mendesak, prototipe cepat, skrip & hemat token maksimal |
 | **🧠 `deep-architect`** | **`mode_b`** *(Orkestrator Multi-Agen di setiap tugas)* | `hard` | `auto_hard` *(Otomatis jalankan `/research:hard` / `/brainstorm:hard` 5-Lensa)* | `strict` (`300/400`) | Arsitektur sistem kompleks, proyek baru & refactoring lintas domain |
 | **🔺 `adversarial-team`** | **`team`** *(Tim Golden Triangle 3-Agen `:team` wajib)* | `team` | **`auto_team`** *(Debat & tinjauan silang 3-Agen via `MAILBOX`)* | `strict` (`300/400`) | Kode produksi kritis, audit keamanan & rilis zero-defect |
@@ -156,11 +157,18 @@ BoomOpen v5.5 mengelola **20 kunci pengaturan + 2 batas baris** di **5 platform*
 ```bash
 # Di Chat (/settings) | Dashboard Web (boomopen settings --ui) | Terminal CLI
 /settings                                     # Menu interaktif (ask_question UI)
-/settings preset frontier-guardrails          # Default Direkomendasikan (< 2.5 KB guardrail; alias: carbon-guardrails)
-/settings preset smart-hybrid                 # Orkestrasi proaktif Smart-Hybrid
+/settings preset smart-hybrid                 # Default Direkomendasikan (Auto Mode A/B + perutean NL 17 bahasa)
+/settings preset frontier-guardrails          # Mode A Ramping Opsional < 2.5 KB / ~600 tokens (alias: carbon-guardrails)
+/settings preset solo-fast                    # Mode A solo cepat
+/settings preset deep-architect               # Mode B Orkestrator Multi-Agen
+/settings preset adversarial-team             # Tim Golden Triangle 3-Agen (:team)
 /settings mode auto | mode_a | mode_b | team  # Ubah mode eksekusi langsung
-boomopen settings preset frontier-guardrails  # Terapkan global & sinkronkan 5 platform
-boomopen settings set execution.mode mode_a --project   # Tulis ./.boomopen.json di proyek saat ini
+boomopen settings --ui                        # Buka Web Control Center lokal (http://127.0.0.1:4567)
+boomopen settings status                      # Lihat pengaturan aktif & status sinkronisasi 5 platform
+boomopen settings preset smart-hybrid         # Terapkan preset smart-hybrid global & sinkronkan 5 platform
+boomopen settings preset frontier-guardrails  # Beralih ke preset Mode A ramping opsional
+cd path/to/your/project && boomopen settings set execution.mode mode_a --project
+boomopen settings reset                       # Pulihkan pengaturan bawaan smart-hybrid yang direkomendasikan
 ```
 
 ---
@@ -213,7 +221,7 @@ lalu setelah 100% fase selesai jalankan Putaran 1 /audit untuk menyiapkan lapora
 | **`/autopilot`** | `:init`, `:run`, `:audit` | Orkestrator proyek otonom multi-sesi via `.boomopen/project-ledger.json`, gerbang 4 lapis & `ledger rollback` |
 | **`/conduct`** | `:council`, `:pipeline` | Konduktor lintas-engine & dewan paralel (`boomopen conduct`) dengan sintesis konsensus 4 bagian |
 | **`/orchestrate`** | — | Orkestrasi pipeline multi-agen khusus lintas berbagai domain dan shard |
-| **`/settings`** | `preset`, `mode`, `set`, `ui` | Pusat Kontrol Terpadu: 20 kunci + 2 batas baris, **5 preset** (`frontier-guardrails` default) atau Web UI (`--ui`) |
+| **`/settings`** | `preset`, `mode`, `set`, `ui` | Pusat Kontrol Terpadu: 20 kunci + 2 batas baris, **5 preset** (`smart-hybrid` default) atau Web UI (`--ui`) |
 | **`/save` / `/recap`** | — | Menyimpan status sesi (`SESSION-HANDOVER.md`) dan memulihkan konteks dalam `< 5 detik` |
 
 ---

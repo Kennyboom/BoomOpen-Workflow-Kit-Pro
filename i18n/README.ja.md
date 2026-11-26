@@ -40,11 +40,11 @@
 
 ## 🌟 BoomOpen Workflow Kit v5.5 とは？
 
-**BoomOpen Workflow Kit v5.5（Multi-Platform Unified & Smart-Hybrid Edition）** は、単一の AI コーディングアシスタントを **22 名の専門エージェント（Specialist Agents）**、**18 組のゴールデントライアングル・チーム（72 チームファイル）**、**36 のスラッシュコマンド（93 コマンドファイル：87 ワークフロー + `_ref/` 6 ファイル）**、**14 個の CLI コマンド**、および **1,462 のオンデマンドスキル宝庫（22 コアスキル + 1,440 専門ライブラリスキル、`~/.agents/skills_library` により全 IDE 間で重複排除）** へと進化させるオープンソースのマルチエージェント OS です。
+**BoomOpen Workflow Kit v5.5（Frontier-Guardrails & Multi-Platform Smart-Hybrid Edition）** は、単一の AI コーディングアシスタントを **22 名の専門エージェント（Specialist Agents）**、**18 組のゴールデントライアングル・チーム（72 チームファイル）**、**36 のスラッシュコマンド（93 コマンドファイル：87 ワークフロー + `_ref/` 6 ファイル）**、**14 個の CLI コマンド**、および **1,462 のオンデマンドスキル宝庫（22 コアスキル + 1,440 専門ライブラリスキル、`~/.agents/skills_library` により全 IDE 間で重複排除）** へと進化させるオープンソースのマルチエージェント OS です。
 
-毎回コールドスタート遅延やコンテキスト肥大化を招く重いラッパーとは異なり、BoomOpen v5.5 は全 **5 大 IDE 共通の `< 2.5 KB` スリムガードレール（既定推奨 `frontier-guardrails`）**、**Turn-1 サブエージェント優先ゲート**、**17 言語自然言語ルーティング**、**4 段階エラスティック・スワーム分割（`role#shard`）**、**Wave 2.5 仕様対コード自動整合（`boomopen reconcile` + `spec-reconciler`）**、**複数ラウンド完成後監査（`/audit` & `boomopen audit`）**、**60 秒ブラウンフィールド構造解析（`/onboard`）**、**PR / リリース品質ゲート（`/pr`・`/pr:review`・`/release`）**、**マルチセッション自律操縦（`/autopilot`）**、および **クロスエンジン・コンダクター（`/conduct`）** を統合しています：
-- **🛡️ `frontier-guardrails` 既定推奨 & Mode A ゼロ遅延実行**：`< 2.5 KB` の軽量エントリーポイントにより、フロンティアモデル自身が `≤ 10` ファイルまでの日常開発を 0 秒遅延で直接主導（`smart-hybrid` では `≤ 2` ファイル）。同時に **実践的 2 階層コーディング規約** と **徹底 E2E 検証** を常時強制し、自然言語の誤爆（NL ハイジャック）をゼロに抑えます。
-- **🚀 Turn-1 並列サブエージェント、Wave 2.5 自動整合 & Mode B オーケストレーション**：複数ドメイン開発や明示的な `/cmd` 実行時には、Turn 1 で並列シャード（`role#shard`、各 `<= 3–4 OWNED_FILES`）を起動。**DAG 並列ファンアウト**、**計画から実行役への直接ディスパッチ**、**契約ファーストのファイルロック（`SHARED_CONTRACT` + `OWNED_FILES`）**、**Wave 2.5 仕様対コード自動整合（`boomopen reconcile`・`spec-reconciler`・`/cook amend-plan` が孤立モジュール、ルート/環境変数不整合、`[SC-*]` 漏れを自動補完）**、および **ウォーム再利用（`send_message`）** を実行します。
+毎回コールドスタート遅延やコンテキスト肥大化を招く重いラッパーとは異なり、BoomOpen v5.5 は新規インストール時の既定プリセットとして全 **5 大 IDE 共通の `⚡ smart-hybrid`（Turn-1 プロアクティブ・エラスティック・スワーム + 17 言語自然言語ルーティング）** を搭載しつつ、オプトインの軽量 Mode A プリセット **`🛡️ frontier-guardrails`（`< 2.5 KB` / `~600 tokens`）** も提供し、**4 段階エラスティック・スワーム分割（`role#shard`）**、**Wave 2.5 仕様対コード自動整合（`boomopen reconcile` + `spec-reconciler`）**、**複数ラウンド完成後監査（`/audit` & `boomopen audit`）**、**60 秒ブラウンフィールド構造解析（`/onboard`）**、**PR / リリース品質ゲート（`/pr`・`/pr:review`・`/release`）**、**マルチセッション自律操縦（`/autopilot`）**、および **クロスエンジン・コンダクター（`/conduct`）** を統合しています：
+- **⚡ 既定プリセット `smart-hybrid`：Turn-1 並列スワーム + 17 言語自然言語ルーティング**：新規インストール直後から（`boomopen settings reset` でも復元）、対象が明確な小規模修正（`≤ 2` ファイル）は Mode A で 0 秒直接実行し、複数ファイル開発・深層リサーチ・企画設計・明示的な `/cmd`（**`/onboard`**、**`/pr` + `/pr:review`**、**`/release`** 等）では Turn 1 で並列シャード（`role#shard`、各 `<= 3–4 OWNED_FILES`）を自動起動。**DAG 並列ファンアウト**、**計画から実行役への直接ディスパッチ**、**契約ファーストのファイルロック（`SHARED_CONTRACT` + `OWNED_FILES`）**、**Wave 2.5 仕様対コード自動整合（`boomopen reconcile`・`spec-reconciler`・`/cook amend-plan` が孤立モジュール、ルート/環境変数不整合、`[SC-*]` 漏れを自動補完）**、および **ウォーム再利用（`send_message`）** を実行します。
+- **🛡️ オプトイン軽量 Mode A プリセット `frontier-guardrails`（`< 2.5 KB` / `~600 tokens`）**：自然言語トリガーを無効化（`naturalLanguageResearchTrigger = off`）し、`≤ 10` ファイルまでフロンティアモデルに直接主導（`mode_a`）させたい場合は、`boomopen settings preset frontier-guardrails` で `< 10ms` で切り替え可能（後方互換エイリアス `carbon-guardrails` 対応）。**実践的 2 階層コーディング規約** と **徹底 E2E 検証** はそのまま維持されます。
 - **🏛️ マルチセッション `/autopilot`、複数ラウンド `/audit`（ロールバック対応）& クロスエンジン合議 `/conduct`**：仕様書群を不変台帳 `.boomopen/project-ledger.json`（`boomopen ledger rollback` 対応）に取り込み、4 層ゼロ漏れゲート（`boomopen check --strict-phase --no-stubs`）で完遂。完成後は **多段階プロジェクト監査（`/audit` / `boomopen audit`、`audit rollback` 対応）** が RTM 要件網羅率・UI→API→DB 縦断フロー・**2 層アンチリーケージエンジン `security_scan.py` v6** を検査し、承認後のシャード修正で指摘 0 件まで収束させます。
 - **📚 重複排除された 1,462 スキル宝庫（待機トークン 0）**：`~/.agents/skills_library` で全 IDE 間のディスク重複を排除し、`matrix-skills/compact-index.json` による `O(1)` 2 ステップ検索で `mcp-server` や `ai-agent-worker` テンプレートを含む 2026 年最新スタック知識をオンデマンド注入します。
 
@@ -56,9 +56,9 @@
 
 ```mermaid
 flowchart TD
-    User["👤 ユーザーリクエスト / スラッシュコマンド"] --> Gate{"🚦 2モード・スマート複雑度ゲート"}
-    Gate -->|"frontier-guardrails ≤ 10 ファイル (smart-hybrid ≤ 2), /cmd なし"| ModeA["⚡ Mode A: 直接実行 (Tier 0)<br/>0秒起動 + < 2.5 KB スリムガードレール"]
-    Gate -->|"> 閾値ファイル, ≥ 2 ドメイン, または明示的 /cmd"| ModeB["🎻 Mode B: マルチエージェント・オーケストレーター (Tier 1)<br/>Model: inherit"]
+    User["👤 ユーザーリクエスト / スラッシュコマンド"] --> Gate{"🚦 プリセット & 複雑度スマートゲート"}
+    Gate -->|"Mode A (smart-hybrid ≤ 2 ファイル | frontier-guardrails ≤ 10)"| ModeA["⚡ Mode A: 直接実行 (Tier 0)<br/>~600 tokens (< 2.5 KB) スリムガードレール + 実践的2階層規約"]
+    Gate -->|"明示的 /cmd, > 閾値ファイル, または 17言語 NL Mode B"| ModeB["🎻 Mode B: マルチエージェント・オーケストレーター (Tier 1)<br/>Model: inherit"]
 
     ModeB --> FanOut["🔀 フェーズ 1: DAG 並列ファンアウト<br/>(researcher + scouter | debugger + researcher)"]
     FanOut --> Plan["📋 フェーズ 2: 契約ファースト設計 (planner)<br/>SHARED_CONTRACT + OWNED_FILES をロック"]
@@ -148,25 +148,25 @@ boomopen conduct probe
 
 ## 🎛️ 統合設定と 5 つのプリセット (`/settings` コントロールセンター)
 
-BoomOpen v5.5 の**ゼロレイテンシ統合コントロールセンター**は、**5 種類のワンクリックプリセット**と 20 個の列挙型設定（+ 行数制限 2 キー）を全 **5 プラットフォーム**へ `< 10ms`（ターン 1 レイテンシ **0ms**、`< 2.5 KB` スリムガードレール注入）で同期します：
+BoomOpen v5.5 の**ゼロレイテンシ統合コントロールセンター**は、**5 種類のワンクリックプリセット**（新規インストール時の推奨デフォルト **`⚡ smart-hybrid`**）と 20 個の列挙型設定（+ 行数制限 2 キー）を全 **5 プラットフォーム**へ `< 10ms`（AOT `<!-- BOOMOPEN-SETTINGS-START -->` 注入によりターン 1 レイテンシ **0ms**）で同期します：
 
 | プリセット (`Preset`) | 実行モード (`execution.mode`) | 既定バリアント | 自然言語トリガー (`naturalLanguageResearchTrigger`) | コード規約 (`codingStandards`) | 推奨ユースケース |
 |:---|:---|:---:|:---:|:---:|:---|
-| **🛡️ `frontier-guardrails`** *(推奨デフォルト)* | **`mode_a`**（`≤ 10` ファイルを直接実行、`< 2.5 KB` スリムガードレール、`carbon-guardrails` エイリアス対応） | `auto` | **`off`** *(自然言語ハイジャックなし・明示的 `/cmd` 時のみ発火)* | `pragmatic` (`400/500` 行) | 全 5 大 IDE での日常開発の既定値：最新モデルが自律主導しつつ規約と厳格 E2E 検証を強制 |
-| **⚡ `smart-hybrid`** | **`auto`**（`≤ 2` ファイルは Mode A、`> 2` または `/cmd` は Mode B） | `auto` | **`auto_team`** *(`/research:team` / `/brainstorm:team` へ自動分岐)* | `pragmatic` (`400/500` 行) | フルオートのマルチエージェント編成と 17 言語自然言語ルーティングを活用したい場合 |
+| **⚡ `smart-hybrid`** *(推奨デフォルト)* | **`auto`**（`≤ 2` ファイルは Mode A 直接実行、`> 2` または `/cmd` は Mode B） | `auto` | **`auto_team`** *(`/research:team` / `/brainstorm:team` へ自動分岐)* | `pragmatic` (`400/500` 行) | 新規インストール時の既定値（`boomopen settings reset` で復元）：全 5 大 IDE で 17 言語自然言語ルーティング + 3 ファイル以上の Turn-1 自動スワーム分割 |
+| **🛡️ `frontier-guardrails`** *(オプトイン軽量 Mode A)* | **`mode_a`**（`≤ 10` ファイルまで直接実行、`< 2.5 KB` / `~600 tokens` スリムガードレール） | `auto` | **`off`** *(自然言語ハイジャックなし・明示的 `/cmd` 時のみ発火)* | `pragmatic` (`400/500` 行) | オプトインの軽量 `< 2.5 KB`（`~600 tokens`）直接 Mode A モード：高速直走と厳格 E2E 検証を両立（後方互換エイリアス `carbon-guardrails` 対応） |
 | **🚀 `solo-fast`** | **`mode_a`**（サブエージェントなしの高速直接実行を強制） | `fast` | `off` *(`/brainstorm` 指定時以外はチャットで直接回答)* | `relaxed` (`600/800` 行) | 緊急ホットフィックス、迅速なプロトタイピング、スクリプト作成、トークン節約 |
 | **🧠 `deep-architect`** | **`mode_b`**（全タスクで Mode B マルチエージェント編成を強制） | `hard` | `auto_hard` *(`/research:hard` / `/brainstorm:hard` 5レンズ調査)* | `strict` (`300/400` 行) | 複雑なシステムアーキテクチャ設計、新規構築、多層リファクタリング |
 | **🔺 `adversarial-team`** | **`team`**（全ワークフローで 3 エージェント `:team` 体制を強制） | `team` | **`auto_team`** *(`MAILBOX` 経由の 3 エージェント相互検証)* | `strict` (`300/400` 行) | ミッションクリティカルな本番コード、セキュリティ監査、ゼロ欠陥リリース |
 
-> **🛡️ `frontier-guardrails`（既定推奨）の仕組み**：全 5 大 IDE で `< 2.5 KB` の軽量ガードレールのみを常駐させ、フロンティアモデルが日常の探索・編集（`mode_a`・`≤ 10` ファイル直接実行）を主導します。BoomOpen は `pragmatic`（`400/500` 行、`any` 禁止）規約、`strict_e2e` 検証、および明示的 `/cmd` ワークフローのみを適用します（従来の `carbon-guardrails` も互換エイリアスとしてそのまま利用可能）。
+> **💡 既定 `smart-hybrid` とオプトイン `frontier-guardrails` の使い分け**：新規インストール時（および `boomopen settings reset` 実行時）は **`smart-hybrid`** が有効になり、`≤ 2` ファイルの小規模修正は即座に直接実行しつつ、複数ファイル開発や 17 言語のリサーチ・設計・監査依頼では Turn 1 から並列サブエージェントを自動編成します。自然言語トリガーをオフ（`naturalLanguageResearchTrigger = off`）にして `≤ 10` ファイルまで単一モデルで軽快に直走させたい場合は、`boomopen settings preset frontier-guardrails` で **`< 2.5 KB`（`~600 tokens`）スリム Mode A** へ切り替えられます（従来の `carbon-guardrails` も後方互換エイリアスとして利用可能）。
 
 ### モード切り替えの 3 つの方法（チャット `/settings`、Web UI、CLI）
 
 ```bash
 # 1. チャット内スラッシュコマンド
 /settings                                     # 対話型選択メニューを開く (ask_question UI)
-/settings preset frontier-guardrails          # Frontier-Guardrails 推奨デフォルト (carbon-guardrails エイリアス可)
-/settings preset smart-hybrid                 # Smart-Hybrid 自動マルチエージェント分岐
+/settings preset smart-hybrid                 # Smart-Hybrid 推奨デフォルト (Auto Mode A/B + 17言語 NL ルーティング)
+/settings preset frontier-guardrails          # オプトイン軽量 <2.5KB (~600 tokens) Mode A (エイリアス: carbon-guardrails)
 /settings preset solo-fast                    # Mode A ソロ高速実行
 /settings preset deep-architect               # Mode B マルチエージェント編成
 /settings preset adversarial-team             # ゴールデントライアングル 3 エージェント (:team)
@@ -174,8 +174,11 @@ BoomOpen v5.5 の**ゼロレイテンシ統合コントロールセンター**�
 
 # 2. ローカル Web コントロールセンター (http://127.0.0.1:4567) & ターミナル CLI
 boomopen settings --ui
-boomopen settings preset frontier-guardrails
+boomopen settings status                                  # 現在の設定と 5 大プラットフォーム同期状態を確認
+boomopen settings preset smart-hybrid                     # グローバルに推奨デフォルト smart-hybrid を適用
+boomopen settings preset frontier-guardrails              # オプトインの軽量 Mode A プリセットに切り替え
 cd path/to/your/project && boomopen settings set execution.mode mode_a --project
+boomopen settings reset                                   # 推奨デフォルト (smart-hybrid) にリセット
 ```
 
 ---

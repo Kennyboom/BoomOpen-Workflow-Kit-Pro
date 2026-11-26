@@ -42,9 +42,9 @@
 
 **BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** ist ein quelloffenes Multi-Agenten-Betriebssystem, das einen einzelnen KI-Coding-Assistenten in eine orchestrierte Engineering-Organisation aus **22 Spezialisten-Agenten**, **18 Golden-Triangle-Teams (72 Team-Dateien)**, **36 Slash-Befehlen (93 Befehlsdateien: 87 Workflows + 6 `_ref/`)**, **14 CLI-Befehlen** und **1.462 On-Demand-Skills (22 Kern-Skills + 1.440 Bibliotheks-Skills, plattformübergreifend dedupliziert über `~/.agents/skills_library`)** verwandelt.
 
-Im Gegensatz zu starren Einzel-Prompts oder trägen Wrappern verbindet BoomOpen v5.5 **schlanke `< 2.5 KB`-Guardrails in allen 5 IDEs (Standard-Empfehlung `frontier-guardrails`)**, ein **Proaktives Turn-1-Sub-Agent-Gate**, **17-sprachiges Natural-Language-Routing**, **4-stufiges elastisches Swarm-Sharding (`role#shard`)**, **Wave 2.5 Spec-to-Code Auto-Reconciliation (`boomopen reconcile` + `spec-reconciler`)**, **mehrstufige Projekt-Audits (`/audit` & `boomopen audit`)**, **60s Brownfield-Architektur-Mapping (`/onboard`)**, **PR- & Release-Gates (`/pr`, `/pr:review`, `/release`)**, **Multi-Session Autopilot (`/autopilot`)** und den **Cross-Engine Conductor (`/conduct`)**:
-- **🛡️ `frontier-guardrails` als Standard & Modus A ohne Kaltstart**: Mit `< 2.5 KB` schlanken Einstiegsregeln steuert Ihr Frontier-Modell Alltagsaufgaben bis `≤ 10` Dateien direkt in 0s (`≤ 2` Dateien bei `smart-hybrid`), erzwingt **Pragmatische 2-Stufen-Standards** sowie **strikte E2E-Verifizierung** und verhindert jegliches NL-Hijacking.
-- **🚀 Parallele Turn-1-Sub-Agenten, Wave 2.5 Abgleich & Modus-B-Orchestrierung**: Multi-Domänen-Features oder explizite `/cmd`-Befehle starten sofort parallele Shards (`role#shard`, `<= 3–4 OWNED_FILES`/Shard) mit **DAG Parallel Fan-Out**, **Direct Plan-to-Executor Dispatch**, **Contract-First Dateisperren (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Wave 2.5 Abgleich (`boomopen reconcile`, `spec-reconciler` & `/cook amend-plan` schließen Lücken zu `docs/`, isolierte Module, Routen-/Env-Abweichungen und `[SC-*]`-Klauseln)** und **Warm Reuse (`send_message`)**.
+Im Gegensatz zu starren Einzel-Prompts oder trägen Wrappern liefert BoomOpen v5.5 bei Neuinstallationen standardmäßig **`⚡ smart-hybrid`** aus (Proaktiver Turn-1-Elastik-Schwarm + 17-sprachiges Natural-Language-Routing über alle 5 IDEs) — ergänzt durch das optionale schlanke **`🛡️ frontier-guardrails`-Preset (`< 2.5 KB` / `~600 tokens`, direkter Modus A)** — und verbindet **4-stufiges elastisches Swarm-Sharding (`role#shard`)**, **Wave 2.5 Spec-to-Code Auto-Reconciliation (`boomopen reconcile` + `spec-reconciler`)**, **mehrstufige Projekt-Audits (`/audit` & `boomopen audit`)**, **60s Brownfield-Architektur-Mapping (`/onboard`)**, **PR- & Release-Gates (`/pr`, `/pr:review`, `/release`)**, **Multi-Session Autopilot (`/autopilot`)** und den **Cross-Engine Conductor (`/conduct`)**:
+- **⚡ Standard-Preset `smart-hybrid`: Proaktiver Turn-1-Schwarm + 17-sprachiges Intent-Routing**: Direkt nach einer Neuinstallation (und jederzeit wiederherstellbar per `boomopen settings reset`) werden bekannte Mikro-Edits (`≤ 2` Dateien) direkt im Modus A ausgeführt, während Multi-Datei-Aufgaben, Deep Research, Ideation, Planung und explizite `/cmd`-Workflows (**`/onboard`**, **`/pr` + `/pr:review`**, **`/release`** usw.) sofort parallele Shards in Turn 1 (`role#shard`, `<= 3–4 OWNED_FILES`/Shard) mit **DAG Parallel Fan-Out**, **Direct Plan-to-Executor Dispatch**, **Contract-First Dateisperren (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Wave 2.5 Abgleich (`boomopen reconcile`, `spec-reconciler` & `/cook amend-plan` schließen Lücken zu `docs/`, isolierte Module, Routen-/Env-Abweichungen und `[SC-*]`-Klauseln)** und **Warm Reuse (`send_message`)** starten.
+- **🛡️ Optionaler Schlanker Modus A `frontier-guardrails` (`< 2.5 KB` / `~600 tokens`)**: Sie bevorzugen nativen direkten Modus A bis `≤ 10` Dateien mit `naturalLanguageResearchTrigger = off` (kein Natural-Language-Trigger)? Wechseln Sie in `< 10ms` per `boomopen settings preset frontier-guardrails` (`carbon-guardrails` bleibt als abwärtskompatibler Alias erhalten).
 - **🏛️ Multi-Session Autopilot (`/autopilot`), Multi-Round `/audit` (inkl. Rollback) & Multi-Engine-Rat (`/conduct`)**: Überführt Spezifikationen in `.boomopen/project-ledger.json` (mit `boomopen ledger rollback`) samt 4-Schichten-Gate (`boomopen check --strict-phase --no-stubs`); prüft nach Abschluss mehrstufig (`/audit` & `boomopen audit`, mit `audit rollback`) über RTM-Abdeckung, vertikale UI→API→DB-Flüsse und die **2-Schichten-Anti-Leakage-Engine `security_scan.py` v6** bis auf 0 Befunde.
 - **📚 Deduplizierter Tresor mit 1.462 Skills ohne Kontext-Ballast**: Über `~/.agents/skills_library` gemeinsam genutzt und in `matrix-skills/compact-index.json` für eine `O(1)` 2-Stufen-Suche vorkompiliert — inklusive produktionsreifer **`mcp-server`**- und **`ai-agent-worker`**-Vorlagen.
 
@@ -56,9 +56,9 @@ Im Gegensatz zu starren Einzel-Prompts oder trägen Wrappern verbindet BoomOpen 
 
 ```mermaid
 flowchart TD
-    User["👤 Benutzeranfrage / Slash-Befehl"] --> Gate{"🚦 2-Modus Smart Complexity Gate"}
-    Gate -->|"frontier-guardrails ≤ 10 Dateien (smart-hybrid ≤ 2), kein /cmd"| ModeA["⚡ Modus A: Direkte Ausführung (Tier 0)<br/>0s Kaltstart + < 2.5 KB Schlanke Guardrails"]
-    Gate -->|"> Dateischwelle, ≥ 2 Domänen, oder explizites /cmd"| ModeB["🎻 Modus B: Multi-Agenten-Orchestrator (Tier 1)<br/>Model: inherit"]
+    User["👤 Benutzeranfrage / Slash-Befehl"] --> Gate{"🚦 Preset- & Komplexitäts-Gate"}
+    Gate -->|"Modus A in smart-hybrid (≤ 2 Dateien) oder frontier-guardrails (≤ 10 Dateien)"| ModeA["⚡ Modus A: Direkte Ausführung (Tier 0)<br/>~600-Token (< 2.5 KB) Guardrails + 2-Stufen-Standards"]
+    Gate -->|"Explizites /cmd, > Dateischwelle oder NL-Modus B"| ModeB["🎻 Modus B: Multi-Agenten-Orchestrator (Tier 1)<br/>Model: inherit"]
 
     ModeB --> FanOut["🔀 Phase 1: DAG Parallel Fan-Out<br/>(researcher + scouter | debugger + researcher)"]
     FanOut --> Plan["📋 Phase 2: Contract-First-Planung (planner)<br/>Sperrt SHARED_CONTRACT + OWNED_FILES"]
@@ -103,7 +103,7 @@ flowchart TD
 | **Antigravity (Gemini)** | ✅ Nativ v5.5 | `~/.gemini/GEMINI.md` (`--as-plugin`, `run_workflow` & `/goal`) | `~/.gemini/config/skills/boomopen-workflow-kit/` |
 | **Claude Code** | ✅ Nativ v5.5 | `~/.claude/CLAUDE.md` (`PreCompact`/`Stop`-Hooks & `Bash\|PowerShell`-Guard) | `~/.claude/skills/boomopen-workflow-kit/` |
 | **OpenAI Codex** | ✅ Nativ v5.5 | `~/.codex/CODEX.md` & `AGENTS.md` (`read-only`-Sandboxing & TOML-Rollen) | `~/.codex/skills/boomopen-workflow-kit/` |
-| **Cursor** | ✅ Nativ v5.5 | `~/.cursor/rules/boomopen-workflow-kit.mdc` (`< 2.5 KB` schlanke Regel) | `~/.cursor/skills/boomopen-workflow-kit/` |
+| **Cursor** | ✅ Nativ v5.5 | `~/.cursor/rules/boomopen-workflow-kit.mdc` (`smart-hybrid` bzw. `< 2.5 KB` in `frontier-guardrails`) | `~/.cursor/skills/boomopen-workflow-kit/` |
 | **GitHub Copilot** | ✅ Nativ v5.5 | `~/.copilot/COPILOT.md` (Custom Agent & Sub-Agent-Orchestrierung) | `~/.copilot/skills/boomopen-workflow-kit/` |
 
 ---
@@ -148,25 +148,25 @@ boomopen conduct probe
 
 ## 🎛️ Einheitliche Einstellungen & 5 Ein-Klick-Presets (`/settings`)
 
-BoomOpen v5.5 bietet ein **Zero-Latency Unified Control Center**, das **5 Ein-Klick-Presets** und 20 Enum-Einstellungen (+ 2 Zeilenlimit-Schlüssel) über alle **5 Plattformen** in `< 10ms` (**0ms Turn-1-Latenz**, `< 2.5 KB` schlanke Guardrails) synchronisiert:
+BoomOpen v5.5 bietet ein **Zero-Latency Unified Control Center**, das **5 Ein-Klick-Presets** und 20 Enum-Einstellungen (+ 2 Zeilenlimit-Schlüssel) über alle **5 Plattformen** in `< 10ms` (**0ms Turn-1-Latenz** per AOT-Injektion `<!-- BOOMOPEN-SETTINGS-START -->`) synchronisiert — mit **`⚡ smart-hybrid` als empfohlenem Standard bei Neuinstallationen**:
 
 | Preset-Profil (`Preset`) | Modus (`execution.mode`) | Variante | NL-Trigger (`naturalLanguageResearchTrigger`) | Code-Standards (`codingStandards`) | Empfohlener Einsatzbereich |
 |:---|:---|:---:|:---:|:---:|:---|
-| **🛡️ `frontier-guardrails`** *(Empfohlener Standard)* | **`mode_a`** (`≤ 10` Dateien direkt, `< 2.5 KB` Guardrails in allen 5 IDEs; Alias `carbon-guardrails` unterstützt) | `auto` | **`off`** *(Kein NL-Hijacking — greift nur bei explizitem `/cmd`)* | `pragmatic` (`400/500` Zeilen) | Idealer Standard für alle 5 IDEs: Frontier-Modell führt direkt mit strenger E2E-Prüfung & 400/500L-Schutz |
-| **⚡ `smart-hybrid`** | **`auto`** (`≤ 2` Dateien → Modus A; `> 2` oder `/cmd` → Modus B) | `auto` | **`auto_team`** *(Leitet an `/research:team` / `/brainstorm:team`)* | `pragmatic` (`400/500` Zeilen) | Automatische Multi-Agenten-Orchestrierung & 17-sprachiges Natural-Language-Routing |
+| **⚡ `smart-hybrid`** *(Empfohlener Standard)* | **`auto`** (`≤ 2` Dateien → Modus A Direkt; `> 2` Dateien oder `/cmd` → Modus B) | `auto` | **`auto_team`** *(Leitet NL-Research/Ideation an `/research:team` / `/brainstorm:team`)* | `pragmatic` (`400/500` Zeilen) | Standard bei Neuinstallationen (wiederhergestellt per `boomopen settings reset`): proaktives 17-Sprachen-NL-Routing + Turn-1-Schwarm in allen 5 IDEs |
+| **🛡️ `frontier-guardrails`** *(Optionaler Schlanker Modus A)* | **`mode_a`** (`mode_a <= 10` Dateien direkt; `< 2.5 KB` / `~600 tokens` Guardrails; Alias `carbon-guardrails` abwärtskompatibel) | `auto` | **`off`** *(Kein NL-Hijacking — greift nur bei explizitem `/cmd`)* | `pragmatic` (`400/500` Zeilen) | Optionaler schlanker `< 2.5 KB` Modus A (`boomopen settings preset frontier-guardrails`) mit strenger Qualitäts- & E2E-Prüfung |
 | **🚀 `solo-fast`** | **`mode_a`** *(Direkte Solo-Ausführung, 0s Sub-Agent-Latenz)* | `fast` | `off` *(Direkte Chat-Antwort außer bei `/brainstorm`)* | `relaxed` (`600/800` Zeilen) | Dringende Hotfixes, schnelles Prototyping, Skripte & minimaler Token-Verbrauch |
 | **🧠 `deep-architect`** | **`mode_b`** *(Erzwingt Multi-Agent-Orchestrator bei jeder Aufgabe)* | `hard` | `auto_hard` *(Startet `/research:hard` / `/brainstorm:hard`)* | `strict` (`300/400` Zeilen) | Komplexe Systemarchitektur, Greenfield-Design & Multi-Domain-Refactoring |
 | **🔺 `adversarial-team`** | **`team`** *(Erzwingt das 3-Agenten Golden Triangle `:team`)* | `team` | **`auto_team`** *(Adversariale 3-Agenten-Prüfung über `MAILBOX`)* | `strict` (`300/400` Zeilen) | Unternehmenskritischer Produktionscode, Sicherheitsaudits & Zero-Defect-Releases |
 
-> **🛡️ So arbeitet `frontier-guardrails` (Standard)**: Mit unter `< 2.5 KB` schlanken Guardrails in allen 5 IDEs übernimmt das Frontier-Modell die tägliche Erkundung und Bearbeitung (`mode_a`, `≤ 10` Dateien direkt), während BoomOpen `pragmatic`-Standards (`400/500` Zeilen, kein `any`), `strict_e2e`-Verifizierung und explizite `/cmd`-Workflows durchsetzt (der Alias `carbon-guardrails` bleibt voll kompatibel).
+> **⚡ `smart-hybrid` (Standard) vs. 🛡️ `frontier-guardrails` (Optionaler Schlanker Modus A)**: Bei Neuinstallationen aktiviert BoomOpen standardmäßig `smart-hybrid` (jederzeit wiederherstellbar mit `boomopen settings reset`). Wer den schlanken Modus A bevorzugt (`< 2.5 KB` / `~600 tokens`, `mode_a <= 10` Dateien, `naturalLanguageResearchTrigger = off`), aktiviert ihn gezielt per `boomopen settings preset frontier-guardrails` (der abwärtskompatible Alias `carbon-guardrails` wird weiterhin unterstützt).
 
 ### Drei Wege zur Modusauswahl (In-Chat `/settings`, Web-UI & CLI)
 
 ```bash
 # 1. In-Chat Slash-Befehl
 /settings                                     # Interaktives Auswahlmenü öffnen (ask_question UI)
-/settings preset frontier-guardrails          # Empfohlener Standard (Alias carbon-guardrails unterstützt)
-/settings preset smart-hybrid                 # Automatische Smart-Hybrid-Orchestrierung
+/settings preset smart-hybrid                 # Empfohlener Standard (Auto Modus A/B + 17-Sprachen-NL-Routing)
+/settings preset frontier-guardrails          # Optionaler schlanker Modus A < 2.5 KB / ~600 tokens (Alias: carbon-guardrails)
 /settings preset solo-fast                    # Direkte Solo-Schnellausführung (Mode A)
 /settings preset deep-architect               # Multi-Agent-Orchestrator (Mode B)
 /settings preset adversarial-team             # Golden Triangle 3-Agenten-Team (:team)
@@ -174,8 +174,10 @@ BoomOpen v5.5 bietet ein **Zero-Latency Unified Control Center**, das **5 Ein-Kl
 
 # 2. Lokale Web-Oberfläche (http://127.0.0.1:4567) & Terminal-CLI
 boomopen settings --ui
-boomopen settings preset frontier-guardrails
+boomopen settings preset smart-hybrid         # Global anwenden & alle 5 IDEs synchronisieren
+boomopen settings preset frontier-guardrails  # Optionalen schlanken Modus A aktivieren (Alias: carbon-guardrails)
 cd path/to/your/project && boomopen settings set execution.mode mode_a --project
+boomopen settings reset                       # Empfohlene smart-hybrid-Standardwerte wiederherstellen
 ```
 
 ---
