@@ -110,16 +110,15 @@ function FooterColumn({
 }
 
 /**
- * Open cosmic glyph stage footer inspired by treg.to:
- * transparent unblurred surface revealing the live WebGL interactive micro-glyph forcefield,
- * scroll-linked rising columns, and a colossal bled-edge architectural watermark at the bottom.
+ * Open cosmic glyph stage footer:
+ * transparent unblurred surface revealing the live WebGL interactive micro-glyph forcefield
+ * with smooth scroll-linked rising columns.
  */
 export function Footer() {
   const { t } = useLanguage()
   const reduceMotion = Boolean(useReducedMotion())
   const footerRef = useRef<HTMLElement | null>(null)
   const contentRef = useRef<HTMLDivElement | null>(null)
-  const watermarkRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (reduceMotion || typeof window === 'undefined') return
@@ -133,14 +132,10 @@ export function Footer() {
       const vh = Math.max(1, window.innerHeight)
       const progress = Math.max(0, Math.min(1, (vh - rect.top) / Math.min(vh, rect.height + 120)))
       const eased = 1 - Math.pow(1 - progress, 2)
-      const contentRise = ((1 - eased) * 36).toFixed(2)
-      const markDrift = ((1 - eased) * 64).toFixed(2)
+      const contentRise = ((1 - eased) * 28).toFixed(2)
 
       if (contentRef.current) {
         contentRef.current.style.transform = `translate3d(0, ${contentRise}px, 0)`
-      }
-      if (watermarkRef.current) {
-        watermarkRef.current.style.transform = `translate3d(-50%, ${markDrift}px, 0)`
       }
     }
 
@@ -184,7 +179,7 @@ export function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="relative z-10 overflow-hidden border-t border-indigo-200/[0.12] bg-transparent pt-16 pb-28 sm:pb-36 lg:pt-20 lg:pb-44"
+      className="relative z-10 overflow-hidden border-t border-indigo-200/[0.12] bg-transparent py-16 lg:py-20"
     >
       <div ref={contentRef} className="relative z-10 mx-auto max-w-[90rem] px-5 sm:px-8 lg:px-12 will-change-transform">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-16">
@@ -217,16 +212,6 @@ export function Footer() {
           </div>
           <div className="font-mono text-[13px] tabular-nums">{`MIT License / v${KIT_VERSION}`}</div>
         </div>
-      </div>
-
-      {/* Colossal bled-edge architectural watermark over the live WebGL glyph field */}
-      <div
-        ref={watermarkRef}
-        aria-hidden="true"
-        style={{ transform: 'translate3d(-50%, 0px, 0)' }}
-        className="pointer-events-none absolute bottom-[-0.26em] left-1/2 z-0 font-mono text-[clamp(5.2rem,17.5vw,16.5rem)] leading-none font-bold tracking-[-0.045em] whitespace-nowrap text-white/[0.055] select-none will-change-transform"
-      >
-        BoomOpen
       </div>
     </footer>
   )
