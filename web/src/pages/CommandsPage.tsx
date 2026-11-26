@@ -42,10 +42,10 @@ function CommandsHeroHeader() {
   ]
 
   return (
-    <header className="border-b border-white/[0.09] pt-10 pb-12 sm:pt-14 sm:pb-16">
+    <header className="border-b border-slate-200/85 pt-10 pb-12 sm:pt-14 sm:pb-16">
       <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200/85 bg-slate-100/80 px-3.5 py-1 font-mono text-xs tracking-wider text-slate-600 uppercase">
             <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
             <span>{t.commandsPage.eyebrow}</span>
           </div>
@@ -57,7 +57,7 @@ function CommandsHeroHeader() {
           </p>
         </div>
 
-        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-white/[0.10] bg-white/[0.025] px-6 py-5 sm:gap-8">
+        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-slate-200/85 bg-white px-6 py-5 sm:gap-8">
           {stats.map((stat) => (
             <div key={stat.label} className="space-y-1">
               <dd className="text-3xl font-bold tracking-tight text-ink tabular-nums sm:text-4xl">

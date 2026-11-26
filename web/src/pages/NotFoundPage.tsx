@@ -20,9 +20,9 @@ export function NotFoundPage() {
         initial={reduceMotion ? false : { opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.18, ease: 'easeOut' }}
-        className="specular-surface w-full max-w-2xl rounded-3xl border border-white/[0.10] bg-card p-12 text-center sm:p-16"
+        className="specular-surface w-full max-w-2xl rounded-3xl border border-slate-200/85 bg-white p-12 text-center sm:p-16"
       >
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase tabular-nums">
+        <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/85 bg-slate-100/80 px-3.5 py-1 font-mono text-xs tracking-wider text-slate-600 uppercase tabular-nums">
           <span>{copy.eyebrow}</span>
         </div>
 

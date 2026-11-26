@@ -1,27 +1,28 @@
 @import "tailwindcss";
 
 /*
- * Obsidian Monograph v5.5: Flagship Widescreen OKLCH Design System
- * Deep obsidian optical glass, tactile specular highlights, and Platinum primary controls.
+ * Studio Daylight v5.5: Flagship Widescreen OKLCH Design System
+ * Porcelain canvas (#F9FAFC), pure white studio cards (#FFFFFF), rich carbon ink (#09090B),
+ * Royal Sapphire accent (#2563EB), and soft multi-layered architectural elevation.
  */
 @layer base {
   :root {
-    --surface-canvas: oklch(0.105 0.008 265);
-    --surface-panel: oklch(0.145 0.010 265);
-    --surface-elevated: oklch(0.185 0.012 265);
-    --surface-overlay: oklch(0.13 0.010 265 / 0.82);
-    --border-hairline: oklch(1 0 0 / 0.09);
-    --border-strong: oklch(1 0 0 / 0.20);
-    --text-primary: oklch(0.985 0.003 260);
-    --text-secondary: oklch(0.76 0.010 260);
-    --text-muted: oklch(0.60 0.012 260);
-    --brand-primary: oklch(0.97 0.004 260);
-    --brand-primary-hover: oklch(1 0 0);
-    --brand-primary-ink: oklch(0.105 0.008 265);
-    --signal-accent: oklch(0.76 0.155 162);
-    --signal-cobalt: oklch(0.74 0.13 245);
-    --signal-warning: oklch(0.78 0.12 75);
-    --signal-danger: oklch(0.64 0.19 25);
+    --surface-canvas: oklch(0.985 0.003 255);
+    --surface-panel: oklch(1 0 0);
+    --surface-elevated: oklch(0.962 0.005 255);
+    --surface-overlay: oklch(1 0 0 / 0.88);
+    --border-hairline: oklch(0.20 0.02 260 / 0.085);
+    --border-strong: oklch(0.20 0.02 260 / 0.18);
+    --text-primary: oklch(0.145 0.015 260);
+    --text-secondary: oklch(0.42 0.018 260);
+    --text-muted: oklch(0.52 0.016 260);
+    --brand-primary: oklch(0.145 0.015 260);
+    --brand-primary-hover: oklch(0.24 0.018 260);
+    --brand-primary-ink: oklch(0.99 0.002 260);
+    --signal-accent: oklch(0.53 0.19 258);
+    --signal-cobalt: oklch(0.50 0.19 272);
+    --signal-warning: oklch(0.55 0.15 65);
+    --signal-danger: oklch(0.55 0.20 25);
     --radius-panel: 24px;
     --radius-control: 12px;
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -106,7 +107,7 @@
   }
 
   ::selection {
-    background-color: oklch(0.97 0.004 260 / 0.20);
+    background-color: oklch(0.53 0.19 258 / 0.15);
     color: var(--text-primary);
   }
 }
@@ -139,37 +140,38 @@
 
 @layer components {
   .specular-surface {
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.008) 100%),
-      var(--surface-panel);
+    background: #FFFFFF;
+    border: 1px solid rgba(15, 23, 42, 0.08);
     box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.10),
-      0 20px 48px -16px rgba(0, 0, 0, 0.65);
+      0 1px 2px rgba(15, 23, 42, 0.03),
+      0 12px 32px -8px rgba(15, 23, 42, 0.06);
   }
 
   .specular-surface-elevated {
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.012) 100%),
-      var(--surface-elevated);
+    background: #FFFFFF;
+    border: 1px solid rgba(15, 23, 42, 0.08);
     box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.13),
-      0 24px 56px -16px rgba(0, 0, 0, 0.72);
+      0 1px 2px rgba(15, 23, 42, 0.03),
+      0 12px 32px -8px rgba(15, 23, 42, 0.06),
+      0 20px 44px -14px rgba(15, 23, 42, 0.05);
   }
 
   .hardware-bezel {
     border-radius: 28px;
     padding: 10px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.015) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(15, 23, 42, 0.085);
     box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.16),
-      0 40px 100px -24px rgba(0, 0, 0, 0.9);
+      0 28px 70px -18px rgba(15, 23, 42, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
   }
 
   .architectural-grid-bg {
     background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
     background-size: 64px 64px;
     -webkit-mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, #000 35%, transparent 100%);
     mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, #000 35%, transparent 100%);
@@ -182,7 +184,7 @@
 
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
   .hero-display-gradient {
-    background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 58%, rgba(180, 188, 208, 0.78) 100%);
+    background: linear-gradient(180deg, #09090B 0%, #18181B 68%, #3F3F46 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

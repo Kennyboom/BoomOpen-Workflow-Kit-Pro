@@ -19,18 +19,21 @@ const FOCUS_RING =
 
 function classifyConsoleLine(line: string): string {
   if (line.startsWith('$ ')) {
-    return 'text-ink font-semibold'
+    return 'text-sky-300 font-semibold'
   }
   if (line.includes('PASS') || line.includes('[OK]') || line.includes('exit 0') || line.includes('Healthy')) {
-    return 'text-accent'
+    return 'text-emerald-400'
   }
   if (line.includes('FAIL') || line.includes('Violations: 2') || line.includes('exit 1') || line.includes('exit 2')) {
-    return 'text-danger'
+    return 'text-rose-400'
   }
   if (line.includes('[WARN]') || line.includes('HINT') || line.includes('[SKIP]')) {
-    return 'text-warning'
+    return 'text-amber-300'
   }
-  return 'text-muted'
+  if (line.startsWith('  ') || line.startsWith('-')) {
+    return 'text-slate-400'
+  }
+  return 'text-slate-100'
 }
 
 interface CommandSidebarProps {
@@ -43,12 +46,12 @@ interface CommandSidebarProps {
 
 function CommandSidebar({ commands, activeId, headingLabel, pick, onSelect }: CommandSidebarProps) {
   return (
-    <div className="flex flex-col bg-[#090A0F]">
-      <div className="flex items-center justify-between gap-2 border-b border-white/[0.08] px-5 py-4">
+    <div className="flex flex-col bg-slate-50/90">
+      <div className="flex items-center justify-between gap-2 border-b border-slate-200/85 px-5 py-4">
         <span className="font-mono text-xs font-semibold uppercase tracking-[0.08em] text-subtle">
           {headingLabel}
         </span>
-        <span className="rounded-md border border-white/[0.09] bg-white/[0.04] px-2 py-0.5 font-mono text-xs font-medium text-ink tabular-nums">
+        <span className="rounded-md border border-slate-200/85 bg-white px-2 py-0.5 font-mono text-xs font-medium text-slate-800 tabular-nums">
           {commands.length}
         </span>
       </div>
@@ -66,8 +69,8 @@ function CommandSidebar({ commands, activeId, headingLabel, pick, onSelect }: Co
                 'flex min-h-14 flex-col justify-between gap-1.5 rounded-xl border p-3.5 text-left transition-all duration-150 motion-reduce:transition-none cursor-pointer',
                 FOCUS_RING,
                 isSelected
-                  ? 'border-accent/45 bg-elevated text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
-                  : 'border-white/[0.07] bg-white/[0.015] text-muted hover:border-white/[0.18] hover:bg-white/[0.04] hover:text-ink',
+                  ? 'border-accent/45 bg-white text-slate-950 shadow-xs ring-1 ring-accent/15'
+                  : 'border-slate-200/80 bg-white/75 text-slate-600 hover:border-slate-300 hover:bg-white hover:text-slate-950',
               )}
             >
               <div className="flex w-full items-center justify-between gap-2">
@@ -82,8 +85,8 @@ function CommandSidebar({ commands, activeId, headingLabel, pick, onSelect }: Co
                   className={clsx(
                     'shrink-0 rounded-md border px-2 py-0.5 font-mono text-[11px] leading-none tabular-nums',
                     isSelected
-                      ? 'border-accent/35 bg-accent/15 font-semibold text-accent'
-                      : 'border-white/[0.08] bg-white/[0.03] text-subtle',
+                      ? 'border-accent/35 bg-accent/10 font-semibold text-accent'
+                      : 'border-slate-200/80 bg-slate-100/80 text-slate-600',
                   )}
                 >
                   {`${cmd.gates.length}G`}
@@ -166,7 +169,7 @@ export function CliPlayground() {
         />
       ) : (
         <div className="hardware-bezel">
-          <div className="grid min-h-[540px] divide-y divide-white/[0.09] overflow-hidden rounded-[20px] border border-white/[0.09] bg-[#06070A] lg:grid-cols-[380px_1fr] lg:divide-y-0 lg:divide-x">
+          <div className="grid min-h-[540px] divide-y divide-slate-200/80 overflow-hidden rounded-[20px] border border-slate-200/85 bg-white lg:grid-cols-[380px_1fr] lg:divide-y-0 lg:divide-x">
             <CommandSidebar
               commands={filteredCommands}
               activeId={activeCommand.id}
@@ -175,15 +178,15 @@ export function CliPlayground() {
               onSelect={setSelectedId}
             />
 
-            <div className="flex min-w-0 flex-col justify-between bg-[#050609]">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] bg-[#0B0C11] px-5 py-3.5 lg:px-7">
+            <div className="flex min-w-0 flex-col justify-between bg-white">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/85 bg-slate-50/90 px-5 py-3.5 lg:px-7">
                 <div className="flex flex-wrap items-center gap-3">
                   <span aria-hidden="true" className="hidden items-center gap-1.5 sm:inline-flex">
-                    <span className="size-2.5 rounded-full bg-[#FF5F56]/75" />
-                    <span className="size-2.5 rounded-full bg-[#FFBD2E]/75" />
-                    <span className="size-2.5 rounded-full bg-[#27C93F]/75" />
+                    <span className="size-2.5 rounded-full bg-[#FF5F56]/85" />
+                    <span className="size-2.5 rounded-full bg-[#FFBD2E]/85" />
+                    <span className="size-2.5 rounded-full bg-[#27C93F]/85" />
                   </span>
-                  <span className="rounded-lg border border-white/[0.09] bg-white/[0.04] px-3 py-1 font-mono text-xs font-semibold text-ink">
+                  <span className="rounded-lg border border-slate-200/85 bg-white px-3 py-1 font-mono text-xs font-semibold text-slate-800">
                     {`bash : boomopen ${activeCommand.id}`}
                   </span>
                   <StatusBadge tone={simMode === 'pass' ? 'emerald' : 'danger'}>
@@ -201,7 +204,7 @@ export function CliPlayground() {
                 <div
                   role="group"
                   aria-label={t.cliPlayground.outputLabel}
-                  className="inline-flex items-center gap-1 rounded-xl border border-white/[0.10] bg-[#06070A] p-1"
+                  className="inline-flex items-center gap-1 rounded-xl border border-slate-200/85 bg-slate-100/85 p-1"
                 >
                   <button
                     type="button"
@@ -211,8 +214,8 @@ export function CliPlayground() {
                       'inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3.5 font-mono text-xs leading-none transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
                       FOCUS_RING,
                       simMode === 'pass'
-                        ? 'border border-accent/35 bg-accent/15 font-semibold text-accent'
-                        : 'border border-transparent text-muted hover:text-ink',
+                        ? 'border border-emerald-600/30 bg-white font-semibold text-emerald-700 shadow-xs'
+                        : 'border border-transparent text-slate-600 hover:text-slate-950',
                     )}
                   >
                     <CheckCircle2 aria-hidden="true" className="size-3.5" />
@@ -226,8 +229,8 @@ export function CliPlayground() {
                       'inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3.5 font-mono text-xs leading-none transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
                       FOCUS_RING,
                       simMode === 'fail'
-                        ? 'border border-danger/35 bg-danger/15 font-semibold text-danger'
-                        : 'border border-transparent text-muted hover:text-ink',
+                        ? 'border border-danger/35 bg-white font-semibold text-danger shadow-xs'
+                        : 'border border-transparent text-slate-600 hover:text-slate-950',
                     )}
                   >
                     <ShieldAlert aria-hidden="true" className="size-3.5" />
@@ -262,16 +265,16 @@ export function CliPlayground() {
                   />
                 </div>
 
-                <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-white/[0.10] bg-[#030407]">
-                  <div className="flex items-center justify-between border-b border-white/[0.08] bg-white/[0.025] px-4 py-2.5 font-mono text-xs tabular-nums">
-                    <span className="text-subtle">{t.cliPlayground.outputLabel}</span>
-                    <span className={simMode === 'pass' ? 'font-semibold text-accent' : 'font-semibold text-danger'}>
+                <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-slate-800 bg-[#0F172A] text-slate-100 shadow-sm">
+                  <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900/90 px-4 py-2.5 font-mono text-xs tabular-nums">
+                    <span className="text-slate-400">{t.cliPlayground.outputLabel}</span>
+                    <span className={simMode === 'pass' ? 'font-semibold text-emerald-400' : 'font-semibold text-rose-400'}>
                       {simMode === 'pass' ? 'exit code 0' : 'exit code 1'}
                     </span>
                   </div>
                   <pre
                     aria-live="polite"
-                    className="flex-1 overflow-x-auto p-6 font-mono text-[15px] leading-relaxed tabular-nums lg:p-8"
+                    className="flex-1 overflow-x-auto bg-[#0F172A] p-6 font-mono text-[15px] leading-relaxed text-slate-100 tabular-nums lg:p-8"
                   >
                     <code>
                       {outputLines.map((line, idx) => (

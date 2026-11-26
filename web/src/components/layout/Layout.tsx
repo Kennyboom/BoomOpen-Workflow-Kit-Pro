@@ -10,9 +10,9 @@ import { Header } from './Header'
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
 
-const VOLUMETRIC_SPOTLIGHT_BG = [
-  'radial-gradient(ellipse 75% 42% at 50% -8%, oklch(0.65 0.12 250 / 0.14), transparent 70%)',
-  'radial-gradient(ellipse 45% 30% at 75% 5%, oklch(0.72 0.14 165 / 0.07), transparent 70%)',
+const STUDIO_AURORA_BG = [
+  'radial-gradient(ellipse 75% 42% at 50% -8%, rgba(59, 130, 246, 0.09), transparent 70%)',
+  'radial-gradient(ellipse 45% 30% at 78% 4%, rgba(99, 102, 241, 0.07), transparent 70%)',
 ].join(', ')
 
 export interface LayoutProps {
@@ -71,8 +71,8 @@ function RouteLoadingFallback({ label }: { readonly label: string }) {
 }
 
 /**
- * Expansive 1440px (90rem) flagship architectural stage:
- * pairs dual volumetric spotlights and a 64px engineering grid with persistent Header and Footer.
+ * Expansive 1440px (90rem) Studio Daylight architectural stage:
+ * pairs airy daylight pastel aurora whispers and a 64px drafting grid with persistent Header and Footer.
  */
 export function Layout({ children }: LayoutProps) {
   const { t } = useLanguage()
@@ -94,7 +94,7 @@ export function Layout({ children }: LayoutProps) {
       >
         <div
           className="absolute inset-0"
-          style={{ backgroundImage: VOLUMETRIC_SPOTLIGHT_BG }}
+          style={{ backgroundImage: STUDIO_AURORA_BG }}
         />
         <div className="architectural-grid-bg absolute inset-0" />
       </div>

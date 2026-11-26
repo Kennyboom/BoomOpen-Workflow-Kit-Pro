@@ -23,10 +23,10 @@ function ArchitectureHeroHeader() {
   ]
 
   return (
-    <header className="border-b border-white/[0.09] pt-10 pb-12 sm:pt-14 sm:pb-16">
+    <header className="border-b border-slate-200/85 pt-10 pb-12 sm:pt-14 sm:pb-16">
       <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200/85 bg-slate-100/80 px-3.5 py-1 font-mono text-xs tracking-wider text-slate-600 uppercase">
             <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
             <span>{copy.eyebrow}</span>
           </div>
@@ -42,7 +42,7 @@ function ArchitectureHeroHeader() {
           </div>
         </div>
 
-        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-white/[0.10] bg-white/[0.025] px-6 py-5 sm:gap-8">
+        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-slate-200/85 bg-white px-6 py-5 sm:gap-8">
           {stats.map((stat) => (
             <div key={stat.label} className="space-y-1">
               <dd className="text-3xl font-bold tracking-tight text-ink tabular-nums sm:text-4xl">{stat.value}</dd>
@@ -60,7 +60,7 @@ function CoreRulesSection() {
   const { coreRules } = t.architecturePage
 
   return (
-    <section aria-labelledby="core-rules-heading" className="space-y-8 border-b border-white/[0.09] py-16 lg:py-20">
+    <section aria-labelledby="core-rules-heading" className="space-y-8 border-b border-slate-200/85 py-16 lg:py-20">
       <div className="space-y-2.5">
         <p className="font-mono text-xs tracking-wider text-subtle uppercase">{coreRules.badge}</p>
         <h2 id="core-rules-heading" className="text-[clamp(2rem,3vw,2.75rem)] leading-[1.08] font-bold tracking-[-0.032em] text-ink">
@@ -69,7 +69,7 @@ function CoreRulesSection() {
         <p className="max-w-[62ch] text-base leading-relaxed text-muted sm:text-lg">{coreRules.subtitle}</p>
       </div>
 
-      <div className="specular-surface divide-y divide-white/[0.08] rounded-3xl border border-white/[0.09] bg-card">
+      <div className="specular-surface divide-y divide-slate-200/80 rounded-3xl border border-slate-200/85 bg-white">
         {coreRules.items.map((rule, index) => (
           <div key={rule.file} className="flex flex-col gap-3 px-7 py-5 sm:px-8 sm:py-6 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
             <div className="flex flex-col gap-2 lg:flex-row lg:items-baseline lg:gap-6">
@@ -79,7 +79,7 @@ function CoreRulesSection() {
               </div>
               <p className="text-[15.5px] leading-relaxed text-muted sm:text-base">{rule.summary}</p>
             </div>
-            <span className="shrink-0 self-start rounded-lg border border-white/[0.12] bg-[#090B10] px-3.5 py-1.5 font-mono text-xs text-ink/90 lg:self-center">
+            <span className="shrink-0 self-start rounded-lg border border-slate-200/80 bg-slate-50/90 px-3.5 py-1.5 font-mono text-xs text-slate-800 lg:self-center">
               {rule.trigger}
             </span>
           </div>
@@ -101,7 +101,7 @@ function PresetsControlSection({
   const activePreset = controlCenter.presets[selectedPresetIdx] ?? controlCenter.presets[0]
 
   return (
-    <section aria-labelledby="control-center-heading" className="space-y-8 border-b border-white/[0.09] py-16 lg:py-20">
+    <section aria-labelledby="control-center-heading" className="space-y-8 border-b border-slate-200/85 py-16 lg:py-20">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="space-y-2.5">
           <p className="font-mono text-xs tracking-wider text-subtle uppercase">{controlCenter.badge}</p>
@@ -110,7 +110,7 @@ function PresetsControlSection({
           </h2>
           <p className="max-w-[62ch] text-base leading-relaxed text-muted sm:text-lg">{controlCenter.subtitle}</p>
         </div>
-        <code className="rounded-xl border border-white/[0.12] bg-[#090B10] px-4 py-2 font-mono text-sm text-ink/90 tabular-nums">
+        <code className="rounded-xl border border-slate-200/85 bg-slate-50/90 px-4 py-2 font-mono text-sm text-slate-800 tabular-nums">
           {controlCenter.webUiUrl}
         </code>
       </div>
@@ -128,7 +128,9 @@ function PresetsControlSection({
               className={clsx(
                 'specular-surface flex min-h-11 flex-col justify-between gap-5 rounded-3xl border p-7 text-left transition-colors duration-150 motion-reduce:transition-none cursor-pointer sm:p-8',
                 FOCUS_RING,
-                isSelected ? 'border-white/[0.30] bg-elevated text-ink' : 'border-white/[0.09] bg-card text-muted hover:border-white/[0.20] hover:text-ink',
+                isSelected
+                  ? 'border-accent/50 bg-white text-ink shadow-[0_12px_32px_-10px_rgba(37,99,235,0.16)] ring-1 ring-accent/20'
+                  : 'border-slate-200/85 bg-white text-muted hover:border-slate-300 hover:text-ink',
               )}
             >
               <div className="space-y-3.5">
@@ -139,12 +141,12 @@ function PresetsControlSection({
                       {locale === 'vi' ? 'Mặc định' : 'Default'}
                     </span>
                   ) : (
-                    <span className="rounded-full border border-white/[0.10] bg-white/[0.04] px-3 py-1 font-mono text-xs text-subtle tabular-nums">
+                    <span className="rounded-full border border-slate-200/85 bg-slate-100/80 px-3 py-1 font-mono text-xs text-slate-600 tabular-nums">
                       {preset.lineBudget}
                     </span>
                   )}
                 </div>
-                <code className="inline-block max-w-full truncate rounded-lg border border-white/[0.09] bg-[#090B10] px-3 py-1.5 font-mono text-xs text-ink/90">
+                <code className="inline-block max-w-full truncate rounded-lg border border-slate-200/80 bg-slate-50/90 px-3 py-1.5 font-mono text-xs text-slate-800">
                   {preset.mode}
                 </code>
                 <p className="text-[15.5px] leading-relaxed text-muted sm:text-base">{preset.summary}</p>
@@ -163,12 +165,12 @@ function PresetsControlSection({
 
       <div className="grid gap-6 lg:grid-cols-3">
         {controlCenter.surfaces.map((surface) => (
-          <div key={surface.title} className="specular-surface flex flex-col justify-between gap-5 rounded-3xl border border-white/[0.09] bg-card p-7 sm:p-8">
+          <div key={surface.title} className="specular-surface flex flex-col justify-between gap-5 rounded-3xl border border-slate-200/85 bg-white p-7 sm:p-8">
             <div className="space-y-2">
               <h3 className="text-lg font-bold tracking-tight text-ink">{surface.title}</h3>
               <p className="text-[15.5px] leading-relaxed text-muted">{surface.summary}</p>
             </div>
-            <code className="block truncate rounded-xl border border-white/[0.10] bg-[#090B10] px-3.5 py-2.5 font-mono text-xs text-ink sm:text-[13px]">
+            <code className="block truncate rounded-xl border border-slate-200/80 bg-slate-50/90 px-3.5 py-2.5 font-mono text-xs text-slate-800 sm:text-[13px]">
               {surface.command}
             </code>
           </div>
@@ -183,9 +185,9 @@ function StandardsAndLedgerSection() {
   const { codingStandards, specRatchet, artifactRouting } = t.architecturePage
 
   return (
-    <section aria-labelledby="standards-ratchet-heading" className="space-y-7 border-b border-white/[0.09] py-16 lg:py-20">
+    <section aria-labelledby="standards-ratchet-heading" className="space-y-7 border-b border-slate-200/85 py-16 lg:py-20">
       <div className="grid gap-7 lg:grid-cols-2">
-        <div className="specular-surface space-y-6 rounded-3xl border border-white/[0.09] bg-card p-8 sm:p-10">
+        <div className="specular-surface space-y-6 rounded-3xl border border-slate-200/85 bg-white p-8 sm:p-10">
           <div className="space-y-2">
             <p className="font-mono text-xs tracking-wider text-subtle uppercase">{codingStandards.badge}</p>
             <h2 id="standards-ratchet-heading" className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">{codingStandards.title}</h2>
@@ -193,11 +195,11 @@ function StandardsAndLedgerSection() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-white/[0.09] bg-[#090B10]/80 p-5">
+            <div className="rounded-2xl border border-slate-200/80 bg-slate-50/90 p-5 text-slate-800">
               <div className="font-mono text-3xl font-bold text-ink tabular-nums sm:text-4xl">{`${codingStandards.softLines}L`}</div>
               <div className="mt-1 text-xs font-medium text-muted">{locale === 'vi' ? 'Trần mềm cho module gắn kết' : 'Soft ceiling per module'}</div>
             </div>
-            <div className="rounded-2xl border border-white/[0.09] bg-[#090B10]/80 p-5">
+            <div className="rounded-2xl border border-slate-200/80 bg-slate-50/90 p-5 text-slate-800">
               <div className="font-mono text-3xl font-bold text-ink tabular-nums sm:text-4xl">{`${codingStandards.hardLines}L`}</div>
               <div className="mt-1 text-xs font-medium text-muted">{locale === 'vi' ? 'Ngưỡng tách file bắt buộc' : 'Hard split threshold'}</div>
             </div>
@@ -215,7 +217,7 @@ function StandardsAndLedgerSection() {
                 ))}
               </ul>
             </div>
-            <div className="space-y-2.5 border-t border-white/[0.08] pt-5">
+            <div className="space-y-2.5 border-t border-slate-200/85 pt-5">
               <h3 className="text-base font-bold text-ink">{codingStandards.tier2Title}</h3>
               <ul className="space-y-2 text-[15.5px] leading-relaxed text-muted">
                 {codingStandards.tier2Items.map((item) => (
@@ -229,7 +231,7 @@ function StandardsAndLedgerSection() {
           </div>
         </div>
 
-        <div className="specular-surface flex flex-col justify-between gap-7 rounded-3xl border border-white/[0.09] bg-card p-8 sm:p-10">
+        <div className="specular-surface flex flex-col justify-between gap-7 rounded-3xl border border-slate-200/85 bg-white p-8 sm:p-10">
           <div className="space-y-6">
             <div className="space-y-2">
               <p className="font-mono text-xs tracking-wider text-subtle uppercase">{specRatchet.badge}</p>
@@ -238,7 +240,7 @@ function StandardsAndLedgerSection() {
             </div>
             <div className="space-y-3.5">
               {specRatchet.guarantees.map((item) => (
-                <div key={item.title} className="space-y-1.5 rounded-2xl border border-white/[0.09] bg-[#090B10]/75 p-5">
+                <div key={item.title} className="space-y-1.5 rounded-2xl border border-slate-200/80 bg-slate-50/90 p-5 text-slate-800">
                   <h3 className="text-base font-bold text-ink">{item.title}</h3>
                   <p className="text-sm leading-relaxed text-muted sm:text-[15px]">{item.summary}</p>
                 </div>
@@ -246,7 +248,7 @@ function StandardsAndLedgerSection() {
             </div>
           </div>
 
-          <div className="space-y-2.5 border-t border-white/[0.08] pt-5">
+          <div className="space-y-2.5 border-t border-slate-200/85 pt-5">
             <div className="font-mono text-xs text-subtle">{specRatchet.ledgerFile}</div>
             <CopyCommandBar command={specRatchet.auditCommand} copyLabel={t.common.copy} copiedLabel={t.common.copied} manualCopyHint={t.common.copyManualHint} />
           </div>
@@ -258,12 +260,12 @@ function StandardsAndLedgerSection() {
           { card: artifactRouting.brainCard, tag: locale === 'vi' ? 'Mặc định' : 'Default' },
           { card: artifactRouting.workspaceCard, tag: '/docs' },
         ].map(({ card, tag }) => (
-          <div key={card.title} className="specular-surface space-y-3 rounded-3xl border border-white/[0.09] bg-card p-7 sm:p-8">
+          <div key={card.title} className="specular-surface space-y-3 rounded-3xl border border-slate-200/85 bg-white p-7 sm:p-8">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="text-lg font-bold text-ink">{card.title}</h3>
-              <span className="rounded-full border border-white/[0.12] bg-white/[0.04] px-3 py-1 font-mono text-xs text-muted">{tag}</span>
+              <span className="rounded-full border border-slate-200/85 bg-slate-100/80 px-3 py-1 font-mono text-xs text-slate-600">{tag}</span>
             </div>
-            <code className="block rounded-xl border border-white/[0.09] bg-[#090B10] px-3.5 py-2 font-mono text-xs text-ink/90">{card.pathPattern}</code>
+            <code className="block rounded-xl border border-slate-200/80 bg-slate-50/90 px-3.5 py-2 font-mono text-xs text-slate-800">{card.pathPattern}</code>
             <p className="text-[15px] leading-relaxed text-muted">{card.summary}</p>
           </div>
         ))}
@@ -292,10 +294,10 @@ export function ArchitecturePage() {
       <StandardsAndLedgerSection />
 
       <section aria-labelledby="overnight-playbook-heading" className="pt-16 lg:pt-20">
-        <div className="hardware-bezel rounded-3xl border border-white/[0.12] bg-[#090B10]/90 p-2.5 sm:p-3.5">
-          <div className="specular-surface space-y-8 rounded-2xl border border-white/[0.09] bg-card p-8 sm:p-10">
+        <div className="hardware-bezel rounded-3xl border border-slate-200/85 bg-slate-100/80 p-2.5 sm:p-3.5">
+          <div className="specular-surface space-y-8 rounded-2xl border border-slate-200/85 bg-white p-8 sm:p-10">
             <div className="space-y-2.5">
-              <span className="inline-flex rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+              <span className="inline-flex rounded-full border border-slate-200/85 bg-slate-100/80 px-3.5 py-1 font-mono text-xs tracking-wider text-slate-600 uppercase">
                 {overnight.badge}
               </span>
               <h2 id="overnight-playbook-heading" className="text-[clamp(1.85rem,2.8vw,2.5rem)] leading-[1.1] font-bold tracking-[-0.032em] text-ink">
@@ -306,10 +308,10 @@ export function ArchitecturePage() {
 
             <div className="grid gap-6 lg:grid-cols-2">
               {overnight.modes.map((row) => (
-                <div key={row.workflow} className="space-y-3 rounded-2xl border border-white/[0.09] bg-[#090B10]/85 p-6">
+                <div key={row.workflow} className="space-y-3 rounded-2xl border border-slate-200/80 bg-slate-50/95 p-6 text-slate-800">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <code className="font-mono text-lg font-bold text-ink">{row.workflow}</code>
-                    <span className="rounded-full border border-white/[0.10] bg-white/[0.04] px-3 py-1 font-mono text-xs text-muted">{row.scope}</span>
+                    <span className="rounded-full border border-slate-200/85 bg-white px-3 py-1 font-mono text-xs text-slate-600">{row.scope}</span>
                   </div>
                   <p className="text-[15.5px] leading-relaxed text-muted">{row.behavior}</p>
                 </div>

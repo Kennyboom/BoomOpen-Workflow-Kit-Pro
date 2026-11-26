@@ -45,9 +45,9 @@ function TierZeroStage({ t }: { readonly t: Dictionary }) {
         {t.swarm.tier0.steps.map((step, idx) => (
           <div
             key={idx}
-            className="specular-surface flex flex-col justify-between gap-4 rounded-2xl border border-white/[0.09] bg-[#07080B] p-6"
+            className="specular-surface flex flex-col justify-between gap-4 rounded-2xl border border-slate-200/85 bg-white p-6"
           >
-            <span className="inline-flex size-9 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.04] font-mono text-xs font-semibold text-ink tabular-nums">
+            <span className="inline-flex size-9 items-center justify-center rounded-xl border border-slate-200/85 bg-slate-50/90 font-mono text-xs font-semibold text-slate-800 tabular-nums">
               {`0${idx + 1}`}
             </span>
             <p className="text-[15px] leading-relaxed text-ink/95">{step}</p>
@@ -55,7 +55,7 @@ function TierZeroStage({ t }: { readonly t: Dictionary }) {
         ))}
       </div>
 
-      <div className="flex flex-col gap-4 rounded-2xl border border-white/[0.09] bg-[#07080B] p-5 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-4 rounded-2xl border border-slate-200/80 bg-slate-50/90 p-5 lg:flex-row lg:items-center lg:justify-between">
         <CopyCommandBar
           command={TIER0_VERIFY_CMD}
           copyLabel={t.common.copy}
@@ -119,8 +119,8 @@ function TierOneStage({
                 'specular-surface relative flex min-h-[260px] flex-col items-start justify-between gap-5 rounded-2xl border p-5 text-left transition-all duration-150 motion-reduce:transition-none lg:p-6 cursor-pointer',
                 FOCUS_RING,
                 isActiveWave
-                  ? 'border-accent/55 bg-elevated text-ink shadow-[0_0_34px_-8px_oklch(0.74_0.14_160/0.35)] ring-1 ring-accent/25'
-                  : 'border-white/[0.09] bg-[#07080B] text-muted hover:border-white/[0.22] hover:bg-card/85 hover:text-ink',
+                  ? 'border-accent/50 bg-white text-ink shadow-[0_12px_32px_-10px_rgba(37,99,235,0.18)] ring-1 ring-accent/20'
+                  : 'border-slate-200/85 bg-slate-50/90 text-muted hover:border-slate-300 hover:bg-white hover:text-ink',
               )}
             >
               <div className="w-full space-y-3">
@@ -130,8 +130,8 @@ function TierOneStage({
                       className={clsx(
                         'inline-flex size-8 items-center justify-center rounded-lg border font-mono text-xs font-bold tabular-nums',
                         isActiveWave
-                          ? 'border-accent/40 bg-accent/15 text-accent'
-                          : 'border-white/[0.12] bg-white/[0.04] text-ink',
+                          ? 'border-accent/35 bg-accent/10 text-accent'
+                          : 'border-slate-200/85 bg-white text-slate-800',
                       )}
                     >
                       {`0${idx + 1}`}
@@ -139,7 +139,7 @@ function TierOneStage({
                     <span className="font-mono text-xs font-semibold text-ink">{label}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 font-mono text-[11px] text-subtle tabular-nums">
+                    <span className="rounded-md border border-slate-200/80 bg-slate-100/80 px-2 py-0.5 font-mono text-[11px] text-slate-600 tabular-nums">
                       {gateTag}
                     </span>
                     {!isLast && (
@@ -158,7 +158,7 @@ function TierOneStage({
                 <p className="text-sm leading-relaxed text-muted lg:text-[15px]">{item.summary}</p>
               </div>
 
-              <code className="w-full truncate rounded-xl border border-white/[0.08] bg-[#040507] px-3 py-2 font-mono text-xs text-ink/85 tabular-nums">
+              <code className="w-full truncate rounded-xl border border-slate-200/80 bg-slate-100/80 px-3 py-2 font-mono text-xs text-slate-800 tabular-nums">
                 {item.shardSpec}
               </code>
             </button>
@@ -167,7 +167,7 @@ function TierOneStage({
       </div>
 
       {activeWave && (
-        <div className="grid gap-5 rounded-2xl border border-white/[0.10] bg-[#07080B] p-5 sm:p-6 lg:grid-cols-12 lg:items-center">
+        <div className="grid gap-5 rounded-2xl border border-slate-200/80 bg-slate-50/90 p-5 sm:p-6 lg:grid-cols-12 lg:items-center">
           <div className="space-y-2 lg:col-span-6">
             <div className="flex flex-wrap items-center gap-2">
               <GitBranch aria-hidden="true" className="size-4 text-accent" />
@@ -175,12 +175,12 @@ function TierOneStage({
                 {`${activeWave.wave} | ${activeWave.contractBadge}`}
               </span>
             </div>
-            <div className="rounded-xl border border-white/[0.07] bg-[#040507] px-3.5 py-2 font-mono text-xs leading-relaxed text-ink/90">
+            <div className="rounded-xl border border-slate-200/85 bg-white px-3.5 py-2 font-mono text-xs leading-relaxed text-slate-800">
               {activeWave.shardSpec}
             </div>
           </div>
 
-          <div className="space-y-1.5 border-t border-white/[0.08] pt-4 lg:col-span-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-6">
+          <div className="space-y-1.5 border-t border-slate-200/85 pt-4 lg:col-span-6 lg:border-t-0 lg:border-l lg:border-slate-200/85 lg:pt-0 lg:pl-6">
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-display text-[15px] font-semibold text-ink">
                 {t.swarm.tier1.warmReuseTitle}
@@ -218,7 +218,7 @@ function CouncilStage({ t }: { readonly t: Dictionary }) {
         {(['Claude Code', 'OpenAI Codex', 'Antigravity'] as const).map((engine, idx) => (
           <div
             key={engine}
-            className="specular-surface space-y-2.5 rounded-2xl border border-white/[0.09] bg-[#07080B] p-5 lg:p-6"
+            className="specular-surface space-y-2.5 rounded-2xl border border-slate-200/85 bg-white p-5 lg:p-6"
           >
             <div className="flex items-center justify-between gap-2 font-mono text-xs text-subtle tabular-nums">
               <span>{`LANE 0${idx + 1}`}</span>
@@ -233,7 +233,7 @@ function CouncilStage({ t }: { readonly t: Dictionary }) {
         {t.swarm.council.highlights.map((item, idx) => (
           <li
             key={idx}
-            className="rounded-2xl border border-white/[0.08] bg-[#07080B] p-5 text-[15px] leading-relaxed text-muted"
+            className="rounded-2xl border border-slate-200/80 bg-slate-50/90 p-5 text-[15px] leading-relaxed text-slate-700"
           >
             {item}
           </li>
@@ -280,11 +280,11 @@ export function SwarmVisualizer() {
 
   return (
     <div className="hardware-bezel">
-      <div className="overflow-hidden rounded-[20px] border border-white/[0.09] bg-[#07080C] p-3 sm:p-5 lg:p-6">
+      <div className="overflow-hidden rounded-[20px] border border-slate-200/85 bg-slate-50/90 p-3 sm:p-5 lg:p-6">
         <div
           role="tablist"
           aria-label={t.swarm.eyebrow}
-          className="grid grid-cols-1 gap-2 rounded-2xl border border-white/[0.09] bg-[#040507] p-2 lg:grid-cols-3"
+          className="grid grid-cols-1 gap-2 rounded-2xl border border-slate-200/85 bg-slate-100/85 p-2 lg:grid-cols-3"
         >
         {SWARM_MODES.map((modeId, index) => {
           const isSelected = activeMode === modeId
@@ -307,8 +307,8 @@ export function SwarmVisualizer() {
                 'inline-flex min-h-13 items-center justify-center gap-3 rounded-xl border px-6 py-3 text-base leading-snug transition-all duration-150 motion-reduce:transition-none cursor-pointer',
                 FOCUS_RING,
                 isSelected
-                  ? 'border-white/[0.18] bg-elevated text-ink font-semibold shadow-sm'
-                  : 'border-transparent bg-transparent text-muted hover:bg-white/[0.03] hover:text-ink font-medium',
+                  ? 'border-slate-200/90 bg-white text-slate-950 font-semibold shadow-sm'
+                  : 'border-transparent bg-transparent text-slate-600 hover:bg-white/70 hover:text-slate-950 font-medium',
               )}
             >
               <ModeIcon aria-hidden="true" className={clsx('size-4 shrink-0', isSelected ? 'text-accent' : 'text-subtle')} />
@@ -327,7 +327,7 @@ export function SwarmVisualizer() {
         initial={reduceMotion ? false : { opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.16, ease: 'easeOut' }}
-        className="mt-4 rounded-2xl border border-white/[0.08] bg-[#0B0C11] p-6 sm:p-8 lg:p-10"
+        className="mt-4 rounded-2xl border border-slate-200/85 bg-white p-6 shadow-xs sm:p-8 lg:p-10"
       >
         {activeMode === 'tier0' && <TierZeroStage t={t} />}
         {activeMode === 'tier1' && (

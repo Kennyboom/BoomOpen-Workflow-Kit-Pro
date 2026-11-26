@@ -4,15 +4,14 @@ import { useReducedMotion } from 'framer-motion'
 import { CheckCircle2, ExternalLink, Film, Play } from 'lucide-react'
 import { useLanguage } from '../../i18n/context'
 import type { Locale, TrailerChapter } from '../../types/ui-contract'
-import { ActionButton, ActionLink, InlineErrorState, StatusBadge, SurfaceCard } from '../ui/Primitives'
+import { ActionButton, ActionLink, InlineErrorState } from '../ui/Primitives'
 
 /**
- * Sculpted widescreen cinema stage for the 1080p HD walkthrough video:
- * syncs automatically with the active locale, respects prefers-reduced-motion,
- * and provides a compact single-row inline chapter pill bar below the hardware bezel.
+ * Studio Daylight cinema player for the 90-second 1080p HD walkthrough film:
+ * pairs a crisp porcelain header and chapter bar with a pure bg-slate-950 video stage.
  */
 const FOCUS_RING =
-  'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
+  'outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 focus-visible:ring-offset-white'
 
 interface ChapterSelection {
   readonly locale: Locale
@@ -60,21 +59,21 @@ function ChapterPillBar({
             disabled={disabled}
             onClick={() => onSelectChapter(chapter.seconds, chapter.label)}
             className={clsx(
-              'inline-flex min-h-11 min-w-0 items-center gap-2 rounded-full border px-3.5 py-2 text-left text-xs sm:text-[13px] transition-all duration-150 motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-40 cursor-pointer',
+              'inline-flex min-h-11 min-w-0 items-center gap-2 rounded-full border px-3.5 py-2 text-left text-xs transition-all duration-150 motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-40 sm:text-[13px] cursor-pointer',
               FOCUS_RING,
               isSelected
-                ? 'border-accent/45 bg-accent/12 text-ink font-semibold shadow-[0_0_22px_-6px_oklch(0.76_0.155_162/0.35)]'
-                : 'border-white/[0.10] bg-white/[0.03] text-muted font-medium hover:border-white/[0.22] hover:bg-white/[0.07] hover:text-ink',
+                ? 'border-blue-200 bg-blue-50 font-semibold text-blue-800 shadow-2xs'
+                : 'border-slate-200/80 bg-white font-medium text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900',
             )}
           >
             <Play
               aria-hidden="true"
-              className={clsx('size-3 shrink-0', isSelected ? 'text-accent' : 'text-subtle')}
+              className={clsx('size-3 shrink-0', isSelected ? 'fill-blue-600 text-blue-600' : 'text-slate-400')}
             />
             <span
               className={clsx(
                 'shrink-0 font-mono text-[11px] tabular-nums',
-                isSelected ? 'text-accent font-semibold' : 'text-subtle',
+                isSelected ? 'font-semibold text-blue-700' : 'text-slate-500',
               )}
             >
               {timestamp}
@@ -152,35 +151,35 @@ export function TrailerPlayer() {
   return (
     <div className="mx-auto w-full max-w-[82rem]">
       <div className="hardware-bezel">
-        <div className="overflow-hidden rounded-[20px] border border-white/[0.09] bg-[#06070A]">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] bg-[#0B0C10] px-4 py-2.5 sm:px-6">
+        <div className="overflow-hidden rounded-[20px] border border-slate-200/80 bg-white">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/80 bg-white px-4 py-3 sm:px-6">
             <div className="flex items-center gap-3">
               <span aria-hidden="true" className="hidden items-center gap-1.5 sm:inline-flex">
-                <span className="size-2.5 rounded-full bg-[#FF5F56]/75" />
-                <span className="size-2.5 rounded-full bg-[#FFBD2E]/75" />
-                <span className="size-2.5 rounded-full bg-[#27C93F]/75" />
+                <span className="size-2.5 rounded-full bg-[#FF5F56]" />
+                <span className="size-2.5 rounded-full bg-[#FFBD2E]" />
+                <span className="size-2.5 rounded-full bg-[#27C93F]" />
               </span>
               <div className="flex items-center gap-2 text-xs sm:text-sm">
-                <Film aria-hidden="true" className="size-4 text-accent" />
-                <span className="font-semibold text-ink">{t.trailer.localeBadge}</span>
+                <Film aria-hidden="true" className="size-4 text-blue-600" />
+                <span className="font-semibold text-slate-900">{t.trailer.localeBadge}</span>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5">
               {activeChapter && (
-                <StatusBadge tone="emerald">
-                  <CheckCircle2 aria-hidden="true" className="size-3.5 text-accent" />
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 font-mono text-xs font-semibold text-emerald-700">
+                  <CheckCircle2 aria-hidden="true" className="size-3.5 text-emerald-600" />
                   <span>{`${t.trailer.chapterJumpedLabel}: ${activeChapter.label}`}</span>
-                </StatusBadge>
+                </span>
               )}
-              <span className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-xs text-muted tabular-nums">
+              <span className="rounded-full border border-slate-200/80 bg-slate-50 px-3 py-1 font-mono text-xs font-medium text-slate-600 tabular-nums">
                 1920x1080 · H.264 HD
               </span>
             </div>
           </div>
 
           {hasStreamError ? (
-            <div className="p-6 sm:p-8">
+            <div className="bg-white p-6 sm:p-8">
               <InlineErrorState
                 title={t.trailer.errorTitle}
                 message={t.trailer.errorBody}
@@ -208,7 +207,7 @@ export function TrailerPlayer() {
               </div>
             </div>
           ) : (
-            <div key={attempt} className="relative aspect-video w-full bg-[#050608]">
+            <div key={attempt} className="relative aspect-video w-full bg-slate-950">
               <video
                 key={locale}
                 ref={videoRef}
@@ -247,9 +246,9 @@ export function TrailerPlayer() {
                 <div
                   role="status"
                   aria-live="polite"
-                  className="pointer-events-none absolute left-5 top-5 inline-flex items-center gap-2 rounded-xl border border-line-strong bg-overlay px-3.5 py-2 font-mono text-xs text-ink animate-pulse motion-reduce:animate-none"
+                  className="pointer-events-none absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900/90 px-3.5 py-2 font-mono text-xs text-white animate-pulse motion-reduce:animate-none"
                 >
-                  <span aria-hidden="true" className="size-2 rounded-full bg-accent" />
+                  <span aria-hidden="true" className="size-2 rounded-full bg-blue-500" />
                   <span>{t.trailer.loadingLabel}</span>
                 </div>
               )}
@@ -257,12 +256,12 @@ export function TrailerPlayer() {
           )}
 
           {showReducedMotionBanner && (
-            <SurfaceCard variant="subtle" className="m-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl px-5 py-4">
-              <div className="max-w-prose text-sm leading-relaxed text-muted">{t.trailer.reducedMotionNotice}</div>
+            <div className="m-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-5 py-4">
+              <div className="max-w-prose text-sm leading-relaxed text-slate-600">{t.trailer.reducedMotionNotice}</div>
               <ActionButton variant="primary" icon={<Play aria-hidden="true" className="size-4" />} onClick={handlePlayStudioTrailer}>
                 {t.trailer.playStudioCta}
               </ActionButton>
-            </SurfaceCard>
+            </div>
           )}
         </div>
       </div>

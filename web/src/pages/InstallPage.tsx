@@ -47,10 +47,10 @@ function InstallHeroHeader() {
   ]
 
   return (
-    <header className="border-b border-white/[0.09] pt-10 pb-12 sm:pt-14 sm:pb-16">
+    <header className="border-b border-slate-200/85 pt-10 pb-12 sm:pt-14 sm:pb-16">
       <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200/85 bg-slate-100/80 px-3.5 py-1 font-mono text-xs tracking-wider text-slate-600 uppercase">
             <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
             <span>{copy.eyebrow}</span>
           </div>
@@ -58,7 +58,7 @@ function InstallHeroHeader() {
             {copy.title}
           </h1>
           <p className="mt-4 max-w-[58ch] text-lg leading-relaxed text-muted sm:text-xl">{copy.subtitle}</p>
-          <p role="note" className="mt-5 max-w-[60ch] border-l-2 border-white/[0.24] pl-4 text-sm leading-relaxed text-muted">
+          <p role="note" className="mt-5 max-w-[60ch] border-l-2 border-slate-300 pl-4 text-sm leading-relaxed text-muted">
             {copy.gitOnlyNotice}
           </p>
           <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -69,7 +69,7 @@ function InstallHeroHeader() {
           </div>
         </div>
 
-        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-white/[0.10] bg-white/[0.025] px-6 py-5 sm:gap-8">
+        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-slate-200/85 bg-white px-6 py-5 sm:gap-8">
           {stats.map((stat) => (
             <div key={stat.label} className="space-y-1">
               <dd className="text-3xl font-bold tracking-tight text-ink tabular-nums sm:text-4xl">{stat.value}</dd>
@@ -87,8 +87,8 @@ function CloneSetupStage() {
   const copy = t.installPage
 
   return (
-    <section aria-labelledby="step-clone-heading" className="border-b border-white/[0.09] py-14 lg:py-16">
-      <div className="specular-surface space-y-8 rounded-3xl border border-white/[0.09] bg-card p-8 sm:p-10">
+    <section aria-labelledby="step-clone-heading" className="border-b border-slate-200/85 py-14 lg:py-16">
+      <div className="specular-surface space-y-8 rounded-3xl border border-slate-200/85 bg-white p-8 sm:p-10">
         <div className="space-y-2">
           <p className="font-mono text-xs tracking-wider text-subtle uppercase">
             {locale === 'vi' ? '01 · Sao chép & cài đặt' : '01 · Clone & Install'}
@@ -99,7 +99,7 @@ function CloneSetupStage() {
 
         <div className="grid gap-6 lg:grid-cols-3">
           {copy.steps.items.map((item, idx) => (
-            <div key={item.step} className="flex flex-col justify-between gap-5 rounded-2xl border border-white/[0.09] bg-[#090B10]/80 p-6">
+            <div key={item.step} className="flex flex-col justify-between gap-5 rounded-2xl border border-slate-200/80 bg-slate-50/90 p-6 text-slate-800">
               <div className="space-y-2.5">
                 <div className="font-mono text-sm font-bold text-ink tabular-nums">{`0${idx + 1}`}</div>
                 <h3 className="text-lg font-bold tracking-tight text-ink">{item.title}</h3>
@@ -110,9 +110,9 @@ function CloneSetupStage() {
           ))}
         </div>
 
-        <div className="grid gap-4 border-t border-white/[0.08] pt-6 sm:grid-cols-3">
+        <div className="grid gap-4 border-t border-slate-200/85 pt-6 sm:grid-cols-3">
           {copy.prerequisites.items.map((req) => (
-            <div key={req.name} className="space-y-1 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4">
+            <div key={req.name} className="space-y-1 rounded-2xl border border-slate-200/80 bg-slate-50/90 p-4">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-sm font-bold text-ink">{req.name}</span>
                 <code className="font-mono text-xs text-accent tabular-nums">{req.version}</code>
@@ -138,10 +138,10 @@ function DoctorAndCliSection({
   const doctorOutput = findCliCommand('doctor')?.passOutput ?? ''
 
   return (
-    <section aria-labelledby="step-doctor-heading" className="border-b border-white/[0.09] py-14 lg:py-16">
+    <section aria-labelledby="step-doctor-heading" className="border-b border-slate-200/85 py-14 lg:py-16">
       <div className="grid gap-7 xl:grid-cols-[1.15fr_0.85fr]">
-        <div className="hardware-bezel rounded-3xl border border-white/[0.12] bg-[#090B10]/90 p-2.5 sm:p-3">
-          <div className="specular-surface h-full space-y-6 rounded-2xl border border-white/[0.09] bg-card p-7 sm:p-9">
+        <div className="hardware-bezel rounded-3xl border border-slate-200/85 bg-slate-100/80 p-2.5 sm:p-3">
+          <div className="specular-surface h-full space-y-6 rounded-2xl border border-slate-200/85 bg-white p-7 sm:p-9">
             <div className="space-y-2">
               <p className="font-mono text-xs tracking-wider text-subtle uppercase">
                 {locale === 'vi' ? '03 · Kiểm tra với Doctor' : '03 · Verify with Doctor'}
@@ -153,8 +153,8 @@ function DoctorAndCliSection({
             <CopyCommandBar command={verifyCommand} copyLabel={t.common.copy} copiedLabel={t.common.copied} manualCopyHint={t.common.copyManualHint} />
 
             {doctorOutput && (
-              <pre className="overflow-x-auto rounded-2xl border border-white/[0.10] bg-[#07090E] p-5 font-mono text-xs leading-relaxed text-ink/90 sm:text-[13.5px]">
-                <code>{doctorOutput}</code>
+              <pre className="overflow-x-auto rounded-2xl border border-slate-800 bg-[#0F172A] p-5 font-mono text-xs leading-relaxed text-slate-100 sm:text-[13.5px]">
+                <code className="text-slate-100">{doctorOutput}</code>
               </pre>
             )}
 
@@ -169,7 +169,7 @@ function DoctorAndCliSection({
           </div>
         </div>
 
-        <div className="specular-surface flex flex-col justify-between gap-6 rounded-3xl border border-white/[0.09] bg-card p-8 sm:p-10">
+        <div className="specular-surface flex flex-col justify-between gap-6 rounded-3xl border border-slate-200/85 bg-white p-8 sm:p-10">
           <div className="space-y-5">
             <div className="space-y-2">
               <p className="font-mono text-xs tracking-wider text-subtle uppercase">{`CLI · ${CLI_COMMANDS.length} Commands`}</p>
@@ -179,7 +179,7 @@ function DoctorAndCliSection({
             <CopyCommandBar command={copy.globalLink.command} copyLabel={t.common.copy} copiedLabel={t.common.copied} manualCopyHint={t.common.copyManualHint} />
           </div>
 
-          <div className="divide-y divide-white/[0.08] rounded-2xl border border-white/[0.09] bg-[#090B10]/70 px-5 py-2">
+          <div className="divide-y divide-slate-200/80 rounded-2xl border border-slate-200/80 bg-slate-50/90 px-5 py-2 text-slate-800">
             {compilerQuickList.map((cli) => (
               <div key={cli.id} className="flex items-center justify-between gap-3 py-3 font-mono text-sm">
                 <span className="font-semibold text-ink">{`boomopen ${cli.id}`}</span>
@@ -200,12 +200,12 @@ function SafeUninstallNote({ maintenanceCommand }: { readonly maintenanceCommand
   return (
     <section aria-labelledby="maintenance-heading" className="pt-10">
       <h2 id="maintenance-heading" className="sr-only">{copy.maintenance.summaryToggle}</h2>
-      <details className="specular-surface group rounded-3xl border border-white/[0.09] bg-card">
+      <details className="specular-surface group rounded-3xl border border-slate-200/85 bg-white">
         <summary className={clsx('flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 rounded-3xl px-7 py-5 text-base font-bold text-ink', FOCUS_RING)}>
           <span>{copy.maintenance.summaryToggle}</span>
           <ChevronDown aria-hidden="true" className="size-5 text-subtle transition-transform duration-150 motion-reduce:transition-none group-open:rotate-180" />
         </summary>
-        <div className="space-y-4 border-t border-white/[0.08] px-7 py-6">
+        <div className="space-y-4 border-t border-slate-200/85 px-7 py-6">
           <p className="text-base leading-relaxed text-ink">{copy.maintenance.safetyNotice}</p>
           <p className="text-sm leading-relaxed text-muted">{copy.maintenance.description}</p>
           <CopyCommandBar command={maintenanceCommand} copyLabel={t.common.copy} copiedLabel={t.common.copied} manualCopyHint={t.common.copyManualHint} />
@@ -291,8 +291,8 @@ export function InstallPage() {
       <InstallHeroHeader />
       <CloneSetupStage />
 
-      <section aria-labelledby="step-ide-heading" className="border-b border-white/[0.09] py-14 lg:py-16">
-        <div className="specular-surface space-y-7 rounded-3xl border border-white/[0.09] bg-card p-8 sm:p-10">
+      <section aria-labelledby="step-ide-heading" className="border-b border-slate-200/85 py-14 lg:py-16">
+        <div className="specular-surface space-y-7 rounded-3xl border border-slate-200/85 bg-white p-8 sm:p-10">
           <div className="space-y-2">
             <p className="font-mono text-xs tracking-wider text-subtle uppercase">
               {locale === 'vi' ? '02 · Chọn môi trường IDE' : '02 · Select Target IDE'}
@@ -302,13 +302,13 @@ export function InstallPage() {
           </div>
 
           {hasUnrecognizedTool && (
-            <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.18] bg-[#090B10] px-5 py-3.5 text-sm text-muted">
+            <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200/85 bg-slate-50/90 px-5 py-3.5 text-sm text-slate-700">
               <span>{t.platformsSection.unrecognizedToolHint}</span>
-              <code className="rounded-lg bg-white/[0.05] px-2.5 py-1 font-mono text-xs text-ink">{`?tool=${rawTool ?? ''}`}</code>
+              <code className="rounded-lg border border-slate-200/80 bg-white px-2.5 py-1 font-mono text-xs text-slate-800">{`?tool=${rawTool ?? ''}`}</code>
             </div>
           )}
 
-          <div role="tablist" aria-label={t.platformsSection.tabsAriaLabel} className="flex flex-wrap gap-2 rounded-2xl border border-white/[0.12] bg-[#090B10]/80 p-2">
+          <div role="tablist" aria-label={t.platformsSection.tabsAriaLabel} className="flex flex-wrap gap-2 rounded-2xl border border-slate-200/90 bg-slate-100/85 p-2">
             {targets.map((target, index) => {
               const isSelected = target.id === activeTarget.id
               return (
@@ -326,7 +326,7 @@ export function InstallPage() {
                   className={clsx(
                     'inline-flex min-h-12 items-center rounded-xl px-5 py-2.5 text-base transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
                     FOCUS_RING,
-                    isSelected ? 'bg-primary font-semibold text-primary-ink' : 'bg-transparent font-medium text-muted hover:bg-white/[0.05] hover:text-ink',
+                    isSelected ? 'bg-primary font-semibold text-primary-ink shadow-sm' : 'bg-transparent font-medium text-slate-600 hover:bg-white/80 hover:text-slate-950',
                   )}
                 >
                   {target.label}
@@ -340,7 +340,7 @@ export function InstallPage() {
             role="tabpanel"
             aria-labelledby={`install-tab-${activeTarget.id}`}
             tabIndex={0}
-            className={clsx('space-y-6 rounded-2xl border border-white/[0.10] bg-[#090B10]/65 p-6 sm:p-8', FOCUS_RING)}
+            className={clsx('space-y-6 rounded-2xl border border-slate-200/80 bg-slate-50/90 p-6 sm:p-8', FOCUS_RING)}
           >
             <div className="flex flex-wrap items-baseline justify-between gap-3">
               <h3 className="text-xl font-bold tracking-tight text-ink sm:text-[22px]">
@@ -350,7 +350,7 @@ export function InstallPage() {
             </div>
             <p className="max-w-[65ch] text-base leading-relaxed text-muted">{activeTarget.summary}</p>
             <CopyCommandBar command={activeTarget.installCommand} copyLabel={t.common.copy} copiedLabel={t.common.copied} manualCopyHint={t.common.copyManualHint} />
-            <div className="divide-y divide-white/[0.08] rounded-2xl border border-white/[0.09] bg-card">
+            <div className="divide-y divide-slate-200/80 rounded-2xl border border-slate-200/85 bg-white">
               <div className="flex flex-col gap-1.5 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <span className="text-[15px] font-medium text-muted sm:text-base">{t.platformsSection.entryPointLabel}</span>
                 <code className="font-mono text-[15px] text-ink sm:text-base">{activeTarget.entryFile}</code>

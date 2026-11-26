@@ -33,10 +33,10 @@ function SkillsHeroHeader() {
   ]
 
   return (
-    <header className="border-b border-white/[0.09] pt-10 pb-12 sm:pt-14 sm:pb-16">
+    <header className="border-b border-slate-200/85 pt-10 pb-12 sm:pt-14 sm:pb-16">
       <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200/85 bg-slate-100/80 px-3.5 py-1 font-mono text-xs tracking-wider text-slate-600 uppercase">
             <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
             <span>{copy.eyebrow}</span>
           </div>
@@ -46,7 +46,7 @@ function SkillsHeroHeader() {
           <p className="mt-4 max-w-[58ch] text-lg leading-relaxed text-muted sm:text-xl">{copy.subtitle}</p>
         </div>
 
-        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-white/[0.10] bg-white/[0.025] px-6 py-5 sm:gap-8">
+        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-slate-200/85 bg-white px-6 py-5 sm:gap-8">
           {stats.map((stat) => (
             <div key={stat.label} className="space-y-1">
               <dd className="text-3xl font-bold tracking-tight text-ink tabular-nums sm:text-4xl">{stat.value}</dd>
@@ -65,14 +65,14 @@ function SkillCard({ skill }: { readonly skill: SkillShowcaseItem }) {
   const skillPath = isCore ? `skills/${skill.id}/SKILL.md` : `skills_library/${skill.id}/SKILL.md`
 
   return (
-    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-white/[0.09] bg-card p-7 transition-colors duration-150 motion-reduce:transition-none hover:border-white/[0.22]">
+    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-slate-200/85 bg-white p-7 transition-colors duration-150 motion-reduce:transition-none hover:border-slate-300">
       <div>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <code className="font-mono text-xl font-bold tracking-tight text-ink">{skill.id}</code>
           <span
             className={clsx(
               'shrink-0 rounded-full border px-3 py-1 font-mono text-xs font-medium',
-              isCore ? 'border-white/[0.16] bg-white/[0.06] text-ink' : 'border-white/[0.10] bg-white/[0.03] text-muted',
+              isCore ? 'border-slate-300 bg-slate-100 text-slate-900' : 'border-slate-200/85 bg-slate-50/90 text-slate-600',
             )}
           >
             {isCore ? 'core' : 'library'}
@@ -81,11 +81,11 @@ function SkillCard({ skill }: { readonly skill: SkillShowcaseItem }) {
         <p className="mt-3.5 text-base leading-relaxed text-muted">{pick(skill.summary)}</p>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-2.5 border-t border-white/[0.08] pt-4">
-        <code className="max-w-full truncate rounded-lg border border-white/[0.09] bg-[#090B10] px-3 py-1.5 font-mono text-xs text-ink/90">
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-2.5 border-t border-slate-200/85 pt-4">
+        <code className="max-w-full truncate rounded-lg border border-slate-200/80 bg-slate-50/90 px-3 py-1.5 font-mono text-xs text-slate-800">
           {skillPath}
         </code>
-        <span className="shrink-0 rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-xs text-muted">
+        <span className="shrink-0 rounded-md border border-slate-200/80 bg-slate-100/80 px-2.5 py-1 font-mono text-xs text-slate-600">
           {pick(getSkillDomainLabel(skill.domainId))}
         </span>
       </div>
@@ -114,7 +114,7 @@ function DomainSidebar({
           className={clsx(
             'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 text-sm transition-colors cursor-pointer tabular-nums',
             FOCUS_RING,
-            activeDomain === 'all' ? 'border-primary bg-primary font-semibold text-primary-ink' : 'border-white/[0.10] bg-card text-muted hover:text-ink',
+            activeDomain === 'all' ? 'border-primary bg-primary font-semibold text-primary-ink' : 'border-slate-200/85 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-950',
           )}
         >
           <span>{allDomainsLabel}</span>
@@ -130,7 +130,7 @@ function DomainSidebar({
               className={clsx(
                 'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 text-sm transition-colors cursor-pointer tabular-nums',
                 FOCUS_RING,
-                selected ? 'border-primary bg-primary font-semibold text-primary-ink' : 'border-white/[0.10] bg-card text-muted hover:text-ink',
+                selected ? 'border-primary bg-primary font-semibold text-primary-ink' : 'border-slate-200/85 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-950',
               )}
             >
               <span>{pick(getSkillDomainLabel(domain.id))}</span>
@@ -144,7 +144,7 @@ function DomainSidebar({
 
       <nav
         aria-label={copy.domainsSectionTitle}
-        className="specular-surface hidden space-y-1 rounded-3xl border border-white/[0.10] bg-white/[0.02] p-4 lg:sticky lg:top-24 lg:block"
+        className="specular-surface hidden space-y-1 rounded-3xl border border-slate-200/85 bg-white p-4 lg:sticky lg:top-24 lg:block"
       >
         <div className="mb-3 px-3 font-mono text-xs tracking-wider text-subtle uppercase">{copy.domainsSectionTitle}</div>
         <button
@@ -154,11 +154,11 @@ function DomainSidebar({
           className={clsx(
             'flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-left text-[15px] transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
             FOCUS_RING,
-            activeDomain === 'all' ? 'border-white/[0.14] bg-white/[0.09] font-semibold text-ink' : 'border-transparent text-muted hover:bg-white/[0.04] hover:text-ink',
+            activeDomain === 'all' ? 'border-slate-200/90 bg-slate-100/90 font-semibold text-slate-950' : 'border-transparent text-slate-600 hover:bg-slate-50/90 hover:text-slate-950',
           )}
         >
           <span>{locale === 'vi' ? 'Tất cả lĩnh vực' : 'All Domains'}</span>
-          <span className="rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-mono text-xs text-ink/90 tabular-nums">
+          <span className="rounded-md border border-slate-200/80 bg-white px-2 py-0.5 font-mono text-xs text-slate-800 tabular-nums">
             {formatCount(KIT_STATS.skills)}
           </span>
         </button>
@@ -174,11 +174,11 @@ function DomainSidebar({
               className={clsx(
                 'flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-left text-[15px] transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
                 FOCUS_RING,
-                selected ? 'border-white/[0.14] bg-white/[0.09] font-semibold text-ink' : 'border-transparent text-muted hover:bg-white/[0.04] hover:text-ink',
+                selected ? 'border-slate-200/90 bg-slate-100/90 font-semibold text-slate-950' : 'border-transparent text-slate-600 hover:bg-slate-50/90 hover:text-slate-950',
               )}
             >
               <span className="truncate">{pick(getSkillDomainLabel(domain.id))}</span>
-              <span className="shrink-0 rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-mono text-xs text-subtle tabular-nums">
+              <span className="shrink-0 rounded-md border border-slate-200/80 bg-slate-50/90 px-2 py-0.5 font-mono text-xs text-slate-600 tabular-nums">
                 {formatCount(domain.count)}
               </span>
             </button>
@@ -195,10 +195,10 @@ function ProgressiveLookupStage() {
 
   return (
     <section aria-labelledby="progressive-lookup-heading" className="pt-4">
-      <div className="hardware-bezel rounded-3xl border border-white/[0.12] bg-[#090B10]/90 p-2.5 sm:p-3.5">
-        <div className="specular-surface space-y-7 rounded-2xl border border-white/[0.09] bg-card p-7 sm:p-9">
+      <div className="hardware-bezel rounded-3xl border border-slate-200/85 bg-slate-100/80 p-2.5 sm:p-3.5">
+        <div className="specular-surface space-y-7 rounded-2xl border border-slate-200/85 bg-white p-7 sm:p-9">
           <div className="space-y-2">
-            <span className="inline-flex rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+            <span className="inline-flex rounded-full border border-slate-200/85 bg-slate-100/80 px-3.5 py-1 font-mono text-xs tracking-wider text-slate-600 uppercase">
               {progressiveLookup.badge}
             </span>
             <h2 id="progressive-lookup-heading" className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
@@ -209,10 +209,10 @@ function ProgressiveLookupStage() {
 
           <div className="grid gap-5 xl:grid-cols-3">
             {progressiveLookup.steps.map((hop) => (
-              <div key={hop.step} className="space-y-3 rounded-2xl border border-white/[0.09] bg-[#090B10]/85 p-6">
+              <div key={hop.step} className="space-y-3 rounded-2xl border border-slate-200/80 bg-slate-50/95 p-6 text-slate-800">
                 <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-xs text-subtle tabular-nums">
                   <span className="text-sm font-bold text-ink">{hop.step}</span>
-                  <code className="max-w-full truncate rounded-lg border border-white/[0.10] bg-white/[0.04] px-2.5 py-1 text-ink/90">
+                  <code className="max-w-full truncate rounded-lg border border-slate-200/85 bg-white px-2.5 py-1 text-slate-800">
                     {hop.code}
                   </code>
                 </div>

@@ -48,10 +48,10 @@ function AgentsHeroHeader() {
   ]
 
   return (
-    <header className="border-b border-white/[0.09] pt-10 pb-12 sm:pt-14 sm:pb-16">
+    <header className="border-b border-slate-200/85 pt-10 pb-12 sm:pt-14 sm:pb-16">
       <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3.5 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200/85 bg-slate-100/80 px-3.5 py-1 font-mono text-xs tracking-wider text-slate-600 uppercase">
             <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
             <span>{t.agentsPage.eyebrow}</span>
           </div>
@@ -63,7 +63,7 @@ function AgentsHeroHeader() {
           </p>
         </div>
 
-        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-white/[0.10] bg-white/[0.025] px-6 py-5 sm:gap-8">
+        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-slate-200/85 bg-white px-6 py-5 sm:gap-8">
           {stats.map((stat) => (
             <div key={stat.label} className="space-y-1">
               <dd className="text-3xl font-bold tracking-tight text-ink tabular-nums sm:text-4xl">{stat.value}</dd>
@@ -81,22 +81,22 @@ function SpecialistAgentCard({ agent }: { readonly agent: AgentSpec }) {
   const domainLabel = DOMAIN_LABELS[agent.domain] ? pick(DOMAIN_LABELS[agent.domain]) : agent.domain
 
   return (
-    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-white/[0.09] bg-card p-7 transition-colors duration-150 motion-reduce:transition-none hover:border-white/[0.22] sm:p-8">
+    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-slate-200/85 bg-white p-7 transition-colors duration-150 motion-reduce:transition-none hover:border-slate-300 sm:p-8">
       <div>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-1">
             <code className="block font-mono text-xl font-bold tracking-tight text-ink">{agent.id}</code>
             <div className="text-sm font-medium text-ink/80">{pick(agent.title)}</div>
           </div>
-          <span className="shrink-0 rounded-full border border-white/[0.12] bg-white/[0.04] px-3 py-1 text-xs font-medium text-muted">
+          <span className="shrink-0 rounded-full border border-slate-200/85 bg-slate-100/80 px-3 py-1 text-xs font-medium text-slate-600">
             {domainLabel}
           </span>
         </div>
         <p className="mt-4 text-[15.5px] leading-relaxed text-muted sm:text-base">{pick(agent.summary)}</p>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.08] pt-5">
-        <code className="max-w-full truncate rounded-lg border border-white/[0.09] bg-[#090B10] px-3 py-1.5 font-mono text-xs text-ink/90 sm:text-[13px]">
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200/85 pt-5">
+        <code className="max-w-full truncate rounded-lg border border-slate-200/80 bg-slate-50/90 px-3 py-1.5 font-mono text-xs text-slate-800 sm:text-[13px]">
           {agent.deliverable}
         </code>
         <span className="shrink-0 font-mono text-xs text-subtle">{`model:${agent.modelPolicy}`}</span>
@@ -110,18 +110,18 @@ function TeamsScalingBanner() {
   const { diamondSection } = t.agentsPage
 
   return (
-    <div className="hardware-bezel mt-10 rounded-3xl border border-white/[0.12] bg-[#090B10]/90 p-2.5 sm:p-3">
-      <div className="specular-surface grid gap-6 rounded-2xl border border-white/[0.08] bg-card p-7 sm:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+    <div className="hardware-bezel mt-10 rounded-3xl border border-slate-200/85 bg-slate-100/80 p-2.5 sm:p-3">
+      <div className="specular-surface grid gap-6 rounded-2xl border border-slate-200/85 bg-white p-7 sm:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <div className="space-y-2">
-          <span className="inline-flex rounded-full border border-white/[0.12] bg-white/[0.04] px-3 py-1 font-mono text-xs tracking-wider text-muted uppercase">
+          <span className="inline-flex rounded-full border border-slate-200/85 bg-slate-100/80 px-3 py-1 font-mono text-xs tracking-wider text-slate-600 uppercase">
             {diamondSection.badge}
           </span>
           <h2 className="text-2xl font-bold tracking-tight text-ink">{diamondSection.title}</h2>
           <p className="text-base leading-relaxed text-muted">{diamondSection.subtitle}</p>
         </div>
-        <div className="space-y-3 rounded-2xl border border-white/[0.09] bg-[#090B10]/80 p-5 font-mono text-xs leading-relaxed text-muted sm:text-[13px]">
-          <p className="text-ink/90">{diamondSection.scalingRule}</p>
-          <p className="border-t border-white/[0.08] pt-3 text-subtle">{diamondSection.mailboxNote}</p>
+        <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-slate-50/90 p-5 font-mono text-xs leading-relaxed text-slate-700 sm:text-[13px]">
+          <p className="text-slate-900">{diamondSection.scalingRule}</p>
+          <p className="border-t border-slate-200/80 pt-3 text-subtle">{diamondSection.mailboxNote}</p>
         </div>
       </div>
     </div>
@@ -248,7 +248,7 @@ export function AgentsTeamsPage() {
             <div
               role="tablist"
               aria-label={t.agentsPage.title}
-              className="specular-surface inline-flex flex-wrap self-start gap-1.5 rounded-2xl border border-white/[0.12] bg-white/[0.03] p-1.5"
+              className="inline-flex flex-wrap self-start gap-1.5 rounded-full border border-slate-200/90 bg-slate-100/85 p-1.5"
             >
               {WORKFORCE_TAB_ORDER.map((tabId) => {
                 const selected = activeTab === tabId
@@ -265,14 +265,21 @@ export function AgentsTeamsPage() {
                     onClick={() => setActiveTab(tabId)}
                     onKeyDown={(event) => handleTabKeyDown(event, tabId)}
                     className={clsx(
-                      'inline-flex min-h-13 items-center gap-2.5 rounded-xl px-6 py-3 text-base font-semibold transition-colors duration-150 motion-reduce:transition-none cursor-pointer tabular-nums',
+                      'inline-flex min-h-12 items-center gap-2.5 rounded-full px-6 py-2.5 text-base font-semibold transition-colors duration-150 motion-reduce:transition-none cursor-pointer tabular-nums',
                       FOCUS_RING,
-                      selected ? 'bg-primary text-primary-ink' : 'bg-transparent text-muted hover:bg-white/[0.05] hover:text-ink',
+                      selected
+                        ? 'bg-[#09090B] text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-950',
                     )}
                   >
                     <span>{tabMeta[tabId].label}</span>
                     {hasFilters && (
-                      <span className={clsx('rounded-md px-2 py-0.5 font-mono text-xs tabular-nums', selected ? 'bg-black/15 text-primary-ink' : 'bg-white/[0.06] text-subtle')}>
+                      <span
+                        className={clsx(
+                          'rounded-full px-2 py-0.5 font-mono text-xs tabular-nums',
+                          selected ? 'bg-white/20 text-white' : 'bg-slate-200/80 text-slate-700',
+                        )}
+                      >
                         {formatCount(tabMeta[tabId].count)}
                       </span>
                     )}
