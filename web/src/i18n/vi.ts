@@ -12,10 +12,10 @@ export const vi: Dictionary = {
   hero: {
     badge: 'BoomOpen v5.5 · Antigravity · Claude Code · Codex · Cursor · Copilot',
     eyebrow: 'Hệ thống điều phối kỹ sư AI',
-    headline: 'Biến AI coding thành đội ngũ kỹ sư thực thụ.',
-    subheadline: 'Tự động xây dựng dự án lớn nhiều phase từ tài liệu, đối soát chống bỏ sót tính năng, hội chẩn đa model và kiểm toán bảo mật đa vòng.',
+    headline: 'Đội ngũ AI cho mọi dự án.',
+    subheadline: 'Tự động từ tài liệu đến sản phẩm hoàn chỉnh trên cả 5 AI IDE.',
     primaryCta: 'Cài đặt miễn phí',
-    secondaryCta: 'Khám phá 36 lệnh',
+    secondaryCta: '36 lệnh quy trình',
     quickInstallLabel: 'Clone & cài đặt nhanh',
     quickInstallCaption: 'Quản lý qua manifest SHA-256: đồng bộ 14 tệp đầu vào trên 5 IDE và giữ nguyên toàn bộ quy tắc cá nhân có sẵn.',
     metrics: {

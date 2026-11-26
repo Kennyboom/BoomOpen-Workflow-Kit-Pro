@@ -12,10 +12,10 @@ export const en: Dictionary = {
   hero: {
     badge: 'BoomOpen v5.5 · Antigravity · Claude Code · Codex · Cursor · Copilot',
     eyebrow: 'Autonomous Engineering Workflows',
-    headline: 'Turn AI coding into an autonomous engineering team.',
-    subheadline: 'Build multi-phase projects from specs, auto-reconcile missing features, run cross-model councils, and ship through multi-round security audits.',
+    headline: 'Autonomous AI engineering, unified.',
+    subheadline: 'From project specs to verified production code across all 5 AI IDEs.',
     primaryCta: 'Install Free',
-    secondaryCta: 'Explore 36 Workflows',
+    secondaryCta: '36 Workflows',
     quickInstallLabel: 'Clone & Install',
     quickInstallCaption: 'SHA-256 manifest installer: syncs 14 entry files across 5 IDEs while preserving your existing rules.',
     metrics: {
