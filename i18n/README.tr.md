@@ -1,27 +1,46 @@
 <div align="center">
-  <h1>⚡ BoomOpen Workflow Kit v5.5.0</h1>
-  <p><strong>Çok Platformlu Smart-Hybrid Yapay Zeka İş Gücü İS — 22 Uzman Ajan, 18 Altın Üçgen Ekibi ve 1.462 İsteğe Bağlı Yetenek Kasası</strong></p>
+  <h1>⚡ BoomOpen Workflow Kit Pro v5.5</h1>
+  <p><strong>Antigravity, Claude Code, OpenAI Codex, Cursor ve GitHub Copilot genelinde çoklu ajan iş akışı orkestrasyonu ve deterministik CLI doğrulama kapıları.</strong></p>
 
   <p>
-    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
-    <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
-    <a href="#agents"><img src="https://img.shields.io/badge/Agents-22%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 22 Specialists + 18 Teams" /></a>
+    <a href="https://boomopen.com"><img src="https://img.shields.io/badge/Website-boomopen.com-06b6d4.svg" alt="Website: boomopen.com" /></a>
+    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Release-v5.5.0-7c3aed.svg" alt="Release: v5.5.0" /></a>
+    <a href="#platforms"><img src="https://img.shields.io/badge/IDEs-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="5 Supported AI IDEs" /></a>
+    <a href="#cli"><img src="https://img.shields.io/badge/CLI-14%20Gates%20%C2%B7%200%20Deps-10b981.svg" alt="CLI: 14 Gates, 0 Runtime Dependencies" /></a>
     <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
-    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
-    <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
+    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js >= 18.0.0" /></a>
+    <a href="../LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
   </p>
 
   <p>
-    <a href="../README.md">🇬🇧 English</a> • <a href="./README.vi.md">🇻🇳 Tiếng Việt</a> • <a href="./README.zh-CN.md">🇨🇳 简体中文</a> • <a href="./README.zh-TW.md">🇹🇼 繁體中文</a> • <a href="./README.ja.md">🇯🇵 日本語</a> • <a href="./README.ko.md">🇰🇷 한국어</a> • <a href="./README.es.md">🇪🇸 Español</a> • <a href="./README.fr.md">🇫🇷 Français</a> • <a href="./README.de.md">🇩🇪 Deutsch</a><br/>
-    <a href="./README.pt-BR.md">🇧🇷 Português</a> • <a href="./README.ru.md">🇷🇺 Русский</a> • <a href="./README.hi.md">🇮🇳 हिन्दी</a> • <a href="./README.ar.md">🇸🇦 العربية</a> • <a href="./README.id.md">🇮🇩 Bahasa Indonesia</a> • <a href="./README.th.md">🇹🇭 ไทย</a> • <b>🇹🇷 Türkçe</b> • <a href="./README.it.md">🇮🇹 Italiano</a>
+    <a href="../README.md">English</a> •
+    <a href="./README.vi.md">Tiếng Việt</a> •
+    <a href="./README.zh-CN.md">简体中文</a> •
+    <a href="./README.zh-TW.md">繁體中文</a> •
+    <a href="./README.ja.md">日本語</a> •
+    <a href="./README.ko.md">한국어</a> •
+    <a href="./README.es.md">Español</a> •
+    <a href="./README.fr.md">Français</a> •
+    <a href="./README.de.md">Deutsch</a><br/>
+    <a href="./README.pt-BR.md">Português (BR)</a> •
+    <a href="./README.ru.md">Русский</a> •
+    <a href="./README.hi.md">हिन्दी</a> •
+    <a href="./README.ar.md">العربية</a> •
+    <a href="./README.id.md">Bahasa Indonesia</a> •
+    <a href="./README.th.md">ไทย</a> •
+    <b>Türkçe</b> •
+    <a href="./README.it.md">Italiano</a>
   </p>
 
   <p>
-    <a href="https://boomopen.com">🌐 Website</a> •
-    <a href="#pillars"><b>🧠 6 Temel Sütun</b></a> •
-    <a href="#platforms"><b>💻 5 Platform</b></a> •
-    <a href="#settings"><b>🎛️ 5 Hazır Profil</b></a> •
-    <a href="#commands"><b>🎯 36 Slash Komutu</b></a> •
+    <a href="https://boomopen.com"><b>🌐 boomopen.com (15 Dil)</b></a> •
+    <a href="#trailer"><b>🎬 Lansman Videosu</b></a> •
+    <a href="#why-boomopen"><b>⚡ Neden BoomOpen</b></a> •
+    <a href="#architecture"><b>🏗️ Mimari</b></a> •
+    <a href="#quickstart"><b>🚀 Hızlı Başlangıç</b></a> •
+    <a href="#cli"><b>🛠️ 14 CLI Kapısı</b></a> •
+    <a href="#settings"><b>🎛️ Profiller &amp; Ayarlar</b></a> •
+    <a href="#commands"><b>🎯 36 Komut</b></a> •
     <a href="#agents"><b>🤖 22 Ajan &amp; 18 Ekip</b></a> •
     <a href="#skills"><b>📚 1.462 Yetenek</b></a>
   </p>
@@ -29,242 +48,256 @@
 
 ---
 
-## 🎬 Resmi Lansman Fragmanı (Full HD 1080p)
+<a id="trailer"></a>
+
+## 🎬 Resmi Lansman Videosu ve Etkileşimli Web Gezgini (`boomopen.com`)
 
 <div align="center">
   <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
-    <img src="../assets/media/poster_en.png" alt="BoomOpen Workflow Kit v5.5 Resmi Lansman Fragmanını İzleyin (Full HD 1080p)" width="92%" />
+    <img src="https://raw.githubusercontent.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/main/assets/media/poster_en.png" alt="BoomOpen Workflow Kit Pro v5.5 Resmi Lansman Videosunu İzleyin (Full HD 1080p)" width="92%" />
   </a>
   <p>
-    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Full HD 1080p Resmi Lansman Fragmanını izlemek / oynatmak için buraya tıklayın (Stüdyo seslendirmeli MP4)</b></a>
+    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Full HD 1080p Lansman Videosunu Oynatın (Stüdyo Seslendirmeli MP4)</b></a> • 🌐 <a href="https://boomopen.com"><b>boomopen.com Üzerinde Canlı 14 Komutlu CLI Oyun Alanını ve Aranabilir Katalogları Keşfedin (15 Dil)</b></a>
   </p>
 </div>
 
 ---
 
-## 🌟 BoomOpen Workflow Kit v5.5 Nedir?
+<a id="why-boomopen"></a>
+<a id="-what-is-boomopen-workflow-kit"></a>
 
-**BoomOpen Workflow Kit v5.5 (Frontier-Guardrails & Multi-Platform Smart-Hybrid Edition)**, tek bir yapay zeka kodlama asistanını **22 uzman ajan** (`spec-reconciler` dahil), **18 çapraz denetimli Altın Üçgen ekibi (`72` ekip dosyası)**, **36 slash komutu (`93` komut dosyası = `87` iş akışı + `6` `_ref/` protokolü)**, **14 CLI komutu**, **22 temel yetenek (`skills/`)** ve **1.440 niş kütüphane yeteneğinden (`skills_library/`)** oluşan koordine bir mühendislik organizasyonuna dönüştüren açık kaynaklı bir çoklu ajan işletim sistemidir (`~/.agents/skills_library` üzerinden tekilleştirilmiş toplam **1.462** yetenek, `1,462` indeks kaydı, **5 platform**).
+## ⚡ Neden BoomOpen Workflow Kit?
 
-Her turda soğuk başlatma gecikmesine ve bağlam şişkinliğine yol açan hantal sarmalayıcıların aksine BoomOpen v5.5, temiz kurulumlarda varsayılan olarak **`⚡ smart-hybrid`** profiliyle (5 IDE genelinde 1. tur proaktif elastik sürü + 17 dilde doğal dil yönlendirmesi; `boomopen settings reset` ile geri yüklenir) gelir ve aynı zamanda isteğe bağlı İnce Mod A profili **`🛡️ frontier-guardrails`** (`< 2.5 KB` / `~600 tokens`, `mode_a <= 10 files`, `naturalLanguageResearchTrigger = off`) sunarak **4 Katmanlı Dinamik Elastik Sürü Parçalama (`role#shard`)**, **60 Saniyede Mevcut Kod Tabanı Mimari Haritalama (`/onboard`)**, **PR Öncesi Kalite Kapıları ve Sürüm Hazırlığı (`/pr`, `/release`)**, **Dalga 2.5 Spec-to-Code Otomatik Mutabakatı (`boomopen reconcile`)**, **Çok Turlu Proje Denetimi (`/audit`)**, **Çok Oturumlu Proje Otopilotu (`/autopilot`)** ve **Çapraz Motor Orkestra Şefini (`/conduct`)** birleştirir:
-- **⚡ Varsayılan `smart-hybrid` Proaktif Sürü + 17 Dilde Doğal Dil Yönlendirmesi**: Temiz kurulumlarda bilinen mikro düzenlemeler (`≤ 2` dosya) doğrudan Mod A'da yürütülürken; çok dosyalı görevler, derin araştırma, fikir üretimi, planlama ve açık `/cmd` iş akışları (**`/onboard`**, **`/pr` + `/pr:review`**, **`/release`** vb.) 1. turda **DAG Paralel Dağıtım**, **Sözleşme Kilitleri (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Dalga 2.5 Otomatik Mutabakat (`boomopen reconcile` + `/cook amend-plan`)** ve **Sıcak Oturum Yeniden Kullanımı (`send_message`)** ile paralel alt ajan parçaları (`role#shard`, parça başına `<= 3–4 OWNED_FILES`) başlatır.
-- **🛡️ İsteğe Bağlı İnce `frontier-guardrails` (`< 2.5 KB` / `~600 tokens` Slim Mod A)**: Doğal dil tetiklemesi olmadan (`naturalLanguageResearchTrigger = off`) `≤ 10` dosyaya kadar doğrudan yerel Mod A (`mode_a <= 10 files`) ve `strict_e2e` doğrulaması mı tercih ediyorsunuz? `boomopen settings preset frontier-guardrails` ile `< 10ms` içinde geçiş yapın (`carbon-guardrails` geriye dönük uyumlu takma ad olarak korunur).
-- **🗺️ Uçtan Uca Mühendislik Yaşam Döngüsü (`/onboard`, `/pr`, `/release`, `/autopilot`, `/audit`, `/conduct`)**: **`/onboard`** ile mevcut projeler için 60 saniyede `ARCHITECTURE-MAP.md` üretir (`/init` çakışması yok, depo kirliliği sıfır); **`/pr`** (`/pr:review`) ile PR öncesi kapıları ve incelemeleri çalıştırır; **`/release`** ile semantik sürüm ve `CHANGELOG.md` hazırlar; `.boomopen/project-ledger.json` (`ledger rollback`), `.boomopen/audit-ledger.json` (`audit rollback` + `security_scan.py` v6) ve `/conduct` ile büyük projeleri güvenle yönetir.
-- **📚 Sıfır Bağlam Şişkinliği ile 1.462 Yetenek Kasası ve Hazır Şablonlar**: `matrix-skills/compact-index.json` ile 2 adımlı `O(1)` arama sunar ve tüm IDE'ler arasında `~/.agents/skills_library` üzerinden tekilleştirilir; üretime hazır **`mcp-server`** ve **`ai-agent-worker`** şablonlarını içerir.
+**Ham Yapay Zeka Kodlama Asistanlarının Sorunu:** Tek ajanlı kodlama araçları, mühendislik işi birden fazla dosyaya, alana veya oturuma yayıldığında hızla bozulur. Sıralı dosya okuma birincil bağlam penceresini şişirir; koordinesiz alt ajanlar ortak dosyaların üzerine yazar veya bağlantısız "ada" modüller bırakır; üretilen kod sessiz `TODO` stub'ları ya da `any` tip kaçamaklarıyla çıkar; tek modelli incelemeler kendi kör noktalarını kaçırır (`Author == Critic`) ve çok fazlı geliştirmeler başlangıçtaki şartnameden sapar.
+
+**BoomOpen Bunu Nasıl Çözer:** BoomOpen, **sıfır çalışma zamanı npm bağımlılığıyla** **Antigravity (Gemini)**, **Claude Code**, **OpenAI Codex**, **Cursor** ve **GitHub Copilot** üzerinde tek bir birleşik orkestrasyon ve doğrulama katmanı kurar. Varsayılan **`smart-hybrid`** profili etkinken `≤ 2` dosyalık düzenlemeler sıfır ek yükle doğrudan çalışır; çok dosyalı geliştirmeler, derin araştırma, mimari planlama ve **`36` slash komutu (`93` dosya)** ise daha 1. turda işi **22 uzman ajan** ve **18 çapraz denetimli 3 rollü ekip** arasında otomatik parçalar — **14 yerel `boomopen` CLI kapısı** ile doğrulanır ve **`1.462` isteğe bağlı yetenek** (`22` Çekirdek + `~/.agents/skills_library` içinde tekilleştirilmiş `1.440` kütüphane yeteneği) ile desteklenir.
+
+### ⚖️ BoomOpen Olmadan vs. BoomOpen v5.5 İle
+
+| Mühendislik Hata Modu | BoomOpen Olmadan (Ham AI IDE) | BoomOpen Workflow Kit Pro v5.5 İle |
+|:-------------------------|:------------------------------|:------------------------------------|
+| **Bağlam Penceresi Şişkinliği** | Ana ajan tek satır kod yazmadan önce sırayla 15–30 dosyayı okur | **1. Tur Elastik Sürü (`role#shard`)**: Salt okunur keşif ajanları ve alan parçaları (`≤ 3–4` dosya/parça) + `0s` Sıcak Yeniden Kullanım (`send_message`) |
+| **Paralel Üzerine Yazma & Kopuk Bağlantılar** | Paralel ajanlar ortak dosyaları ezer, uyumsuz `/api` rotaları uydurur veya ölü modüller bırakır | **Sözleşme Öncelikli Kilitler + Dalga 2.5 Mutabakatı**: Dalga 1'de `SHARED_CONTRACT` + ayrık `OWNED_FILES` kilitler, `boomopen reconcile` (`REC-G1..G4`) ile doğrular |
+| **Yüzeysel Araştırma & Muğlak Planlar** | Tek bakış açılı yanıtlar ("harika fikir!"), doğrulanmamış iddialar, serbest metin planlar | **Kanıt Kapılı 6 Bloklu Şartnameler**: Çapraz denetimli `:team` Şeytanın Avukatı + `< 50ms` CLI doğrulayıcıları (`boomopen research`, `design`, `plan`) |
+| **Sessiz Stub'lar, `any` & Test Hileleri** | Ajan `// TODO`, açık `any`, `console.log` veya `.skip` testler bırakıp işi tamamlandı sayar | **Pragmatik 2 Katmanlı Statik Kapı**: `boomopen check --strict-phase --no-stubs` ile `0` `any`, `0` stub ve bütünlüklü `400/500` satırlık dosyalar zorlanır |
+| **Çok Oturumlu Sapma & Regresyon** | Bağlam sıkıştırması önceki faz kısıtlarını siler ve çalışan özellikleri bozar | **5 Katmanlı Faz Kilidi & Rollback**: `.boomopen/project-ledger.json` SHA-256 sapma koruması, `/autopilot`, `/audit` ve atomik `rollback --yes` |
+| **Tek Modelli Kör Noktalar** | Aynı model kendi yazdığı kodu yine kendisi inceler (`Author == Critic`) | **Çapraz Motor Orkestra Şefi (`/conduct`)**: Claude Code, Codex, Antigravity, Cursor ve Copilot arasında paralel Çoklu Motor Konseyleri ve çapraz aile iş hatları |
+| **5 IDE Yapılandırma Sapması & Kirli Git** | Her IDE için ayrı kural dosyaları, gigabaytlarca kopya yetenek, `git status` kirleten geçici dosyalar | **Birleşik Senkronizasyon & Temiz Git**: `< 10ms` içinde senkronize 14 giriş dosyası, 1 ortak `~/.agents/skills_library` (`0` boşta token) ve Brain Artifacts yönlendirmesi |
 
 ---
 
-## 🏗️ Akıllı-Hibrit & Frontier-Guardrails Mimarisi (v5.5)
+<a id="architecture"></a>
+<a id="-smart-hybrid-architecture-v55"></a>
+
+## 🏗️ Smart-Hybrid Mimarisi (v5.5)
 
 ```mermaid
 flowchart TD
-    User["👤 Kullanıcı İsteği / 36 Slash Komutu"] --> Gate{"🚦 Profil & Karmaşıklık Kapısı (smart-hybrid / frontier-guardrails)"}
-    Gate -->|"Mod A (smart-hybrid ≤ 2 dosya | frontier-guardrails ≤ 10 dosya)"| ModeA["⚡ Mod A: Doğrudan Yürütme (Tier 0)<br/>~600 token (< 2.5 KB) Koruma Rayları + 2 Katmanlı Standartlar + strict_e2e"]
-    Gate -->|"Açık /cmd, dosya eşiği üstü veya NL Mod B"| ModeB["🎻 Mod B: Çoklu Ajan Orkestratörü (Tier 1)<br/>Model: inherit"]
+    User["👤 Doğal Dil İstemi (17 Dil) veya /cmd"] --> Gate{"🚦 Profil ve Karmaşıklık Kapısı"}
+    Gate -->|"smart-hybrid (≤ 2 bilinen dosya) veya frontier-guardrails (≤ 10 dosya)"| ModeA["⚡ Mode A: Doğrudan Yürütme (Tier 0)<br/>Pragmatik 2 Katmanlı Standartlar + Sıkı E2E Doğrulama"]
+    Gate -->|"> 2 dosya, açık uçlu keşif, 17 dilde NL niyeti veya açık /cmd"| ModeB["🎻 Mode B: 1. Tur Çoklu Ajan Sürüsü (Tiers 1–3)<br/>Model: inherit · Parça başına ≤ 3–4 OWNED_FILES"]
 
-    ModeB --> FanOut["🔀 Faz 1: DAG Paralel Dağıtım<br/>(/onboard scouter | researcher + debugger)"]
-    FanOut --> Plan["📋 Faz 2: Sözleşme Öncelikli Planlama (planner)<br/>SHARED_CONTRACT + OWNED_FILES Kilitler"]
-    Plan --> Dispatch{"🎯 Yürütme Varyantı"}
+    ModeB --> Wave0["🔍 Phase 1: Paralel Araştırma ve Kod Tabanı Keşfi<br/>(researcher + scouter parçaları | boomopen research validate)"]
+    Wave0 --> Wave1["📐 Wave 1: Sözleşme Öncelikli Şartname ve Şema Kilidi<br/>(SHARED_CONTRACT + DESIGN_CONTRACT + boomopen plan validate)"]
+    Wave1 --> Wave2{"🎯 Wave 2: Ayrık Paralel Parçalar"}
 
-    Dispatch -->|":fast / :hard"| Direct["⚡ Plandan Mühendise Doğrudan Paralel Görevlendirme<br/>(backend-engineer + frontend-engineer)"]
-    Dispatch -->|":team"| Triangle["🔺 Altın Üçgen Çapraz Denetim Ekibi<br/>(TechLead ⇄ Executor ⇄ Reviewer via MAILBOX)"]
+    Wave2 -->|":fast / :hard"| Direct["⚡ Plandan Uygulayıcıya Doğrudan Parçalar<br/>(backend/frontend/db/mobile/game-engineer#shard)"]
+    Wave2 -->|":team / Council"| Diamond["💎 Elastik Altın Elmas ve Konsey<br/>(Tech Lead ⇄ Parallel Executors ⇄ Critics · Author != Critic)"]
 
-    Direct --> Reconcile["🔄 Dalga 2.5: spec-reconciler & boomopen reconcile<br/>İzole modül, route/.env uyumu & /cook amend-plan"]
-    Triangle --> Reconcile
-    Reconcile --> Verify["🧪 Faz 4: Doğrulama, /audit, /pr & /release<br/>tester + reviewer (send_message 0sn döngü)"]
+    Direct --> Wave25["🔗 Wave 2.5: Şartname-Kod Mutabakatı<br/>(spec-reconciler + boomopen reconcile REC-G1..G4)"]
+    Diamond --> Wave25
+    Wave25 --> Wave3["🧪 Wave 3: Sıcak QA, Güvenlik v6 ve 5 Katmanlı Kilit<br/>(check --strict-phase --no-stubs + tester + reviewer)"]
 ```
 
 ---
 
 <a id="pillars"></a>
 
-## 🧠 v5.5 Sürümünün 6 Temel Sütunu
+## 🧠 6 Temel Mühendislik Sütunu
 
-1. **🌐 5 Platformda 2026 Yerel Özellik Uyumu (`platforms/*`)**:
-   - **Antigravity (Gemini)** (`--as-plugin` paketleme & Python `run_workflow`), **Claude Code** (`/plan:hard`, `PreCompact`/`Stop` kalite kancaları & `Bash|PowerShell` güvenlik koruması), **OpenAI Codex** (`read-only` kum havuzlu `.toml` ajanları), **Cursor** ve **GitHub Copilot** için tek mimariden yerel kurulum ve ortak `~/.agents/skills_library` kasası.
-2. **📏 Pragmatik 2 Katmanlı Kodlama Standartları (Parçalanmayı Önleme)**:
-   - **Katman 1 (Sıfır Tolerans)**: Tek Sorumluluk, **açık `any` YASAK**, **üretim kodunda unutulmuş `console.log` YASAK**, async/API sınırlarında `try/catch` + tipli hata yönetimi, `SCREAMING_SNAKE_CASE` sabitler, DRY (`≥ 3`) ve sıralı importlar.
-   - **Katman 2 (Bütünlük Öncelikli)**: Dosyalar `~200–350 satır` hedefler, `~400–450 satır` esnek tavan (`>500 satır` veya çoklu alan bölünür; test/tip/doküman muaf). Fonksiyonlar `~20–40 satır` (UI/Handler `~40–80 satır`).
-3. **🎯 4 Katmanlı Dinamik Elastik Sürü Parçalama (`role#shard`), Doğrudan Plan Görevlendirme ve Sıcak Yeniden Kullanım (`send_message`)**:
-   - `PLAN-{feature}.md` sonrası görevler parça başına `<= 3–4 OWNED_FILES` ile **doğrudan** alan mühendisi parçalarına iletilir; aktif alt ajanlar oturum kayıt defterinden `send_message` ile **0 sn** gecikmeyle yeniden kullanılır.
-4. **🤝 Sözleşme Öncelikli Görevlendirme (`SHARED_CONTRACT` + `OWNED_FILES`) ve Dalga 2.5 Otomatik Mutabakat**:
-   - Paralel yürütmeden önce API/DTO ve dosya sahipliği kilitlenir; ardından Dalga 2.5'te `boomopen reconcile` ve `spec-reconciler` (`REC-G1..G4`), bağlanmamış ada modülleri, route/`.env` uyuşmazlıklarını ve eksik `[SC-*]` koşullarını yakalayarak `/cook amend-plan` ile otomatik delta dalgası üretir.
-5. **🔍 5-Whys (SPIE v3.0), Çok Turlu `/audit`, Git Geri Alma Noktaları ve 2 Katmanlı Güvenlik Motoru v6**:
-   - `debugger` 3 hipotez + 5-Whys zinciriyle kök nedene iner; `/audit` (`R1` → kullanıcı onayı → `/audit:fix` → `/audit:round2`) **2 Katmanlı Güvenlik Motoru v6 (`security_scan.py` v6)** ile sızıntıları yakalar, `boomopen ledger rollback` ve `boomopen audit rollback` ile güvenli geri dönüş sağlar ve `<appDataDir>\brain\<conversation-id>\` yönlendirmesiyle Git ağacını %100 temiz tutar.
-6. **🩺 Yerleşik 14 Komutlu CLI Paketi (`research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`, `check`, `doctor`, `settings`, `install`, `uninstall`, `list`) ve O(1) İndeks**:
-   - `npm run doctor` tüm 5 platformu, **22 ajanı**, **18 ekibi (`72` dosya)**, **36 komutu (`93` dosya = `87` iş akışı + `6` `_ref/`)** ve `matrix-skills/compact-index.json` (`1,462` yetenek) indeksini doğrular. `reconcile`, `audit` (`audit rollback`), `ledger` (`ledger rollback`), `check --strict-phase --no-stubs`, `install antigravity --as-plugin` ve `conduct` tüm yaşam döngüsünde deterministik kapılar uygular.
+1. **🌐 5 IDE Yerel Derlemesi ve Tekilleştirilmiş Kasa (`platforms/*`)**:
+   - **22 uzman ajanı** ve **93 komut/referans dosyasını** her IDE'nin kendi yerel biçimine derler: **Antigravity** (`--as-plugin` paketi + `3` çalıştırılabilir `run_workflow` Python betiği: `audit_fanout.py`, `review_fanout.py`, `research_fanout.py`), **Claude Code** (`isolation: worktree` parçaları, `/plan:hard` iki noktalı komutlar, isteğe bağlı `PreToolUse` ve `Stop`/`PreCompact` kancaları), **OpenAI Codex** (keşif/eleştirmen için işletim sistemi düzeyinde `read-only` kum havuzlu `22` TOML rolü + `87` `$boomopen-*` yeteneği), **Cursor** (`.mdc` kuralları + isteğe bağlı `beforeShellExecution` kancası) ve **GitHub Copilot** (`.agent.md` istem ajanları).
+   - Tüm `1.440` kütüphane yeteneğini 5 IDE genelinde `~/.agents/skills_library` dizinine tek seferde bağlar (~%80 disk tasarrufu, 1. turda `0` token şişkinliği).
+2. **🎯 4 Katmanlı Dinamik Elastik Sürü (`role#shard`) ve Kapsamlı Sıcak Yeniden Kullanım**:
+   - **Katman 0** (`≤ 2` bilinen dosya için `0` alt ajan) → **Katman 1** (`2–3` parça) → **Katman 2** (`4–6` parça) → **Katman 3** (`7–8+` parça, `16`'ya kadar yapılandırılabilir) arasında otomatik ölçeklenir; bilişsel yükü alt ajan başına **`≤ 3–4 OWNED_FILES`** ile sınırlar ve aktif oturumları `role#shard → conversationId` (`send_message`) üzerinden yeniden kullanır.
+3. **🤝 3 Dalgalı Sözleşme Öncelikli Yürütme + Dalga 2.5 Mutabakatı (`REC-G1..G4`)**:
+   - Dalga 1, Dalga 2 paralel mühendisleri görevlendirmeden önce `SHARED_CONTRACT` (API şemaları/DTO'lar) ve `DESIGN_CONTRACT` (OKLCH `@theme` CSS + TypeScript prop'ları) sözleşmelerini kilitler. Dalga 2.5'te `boomopen reconcile` + `spec-reconciler`, bağlanmamış ada dosyalarını (`REC-G1`), frontend/backend rota uyuşmazlıklarını (`REC-G2`), atlanmış `[SC-*]` alt maddelerini (`REC-G3`) ve eksik `.env.example` anahtarlarını (`REC-G4`) yakalayarak `boomopen cook amend-plan` ile otomatik delta dalgaları ekler.
+4. **🏛️ Çok Oturumlu Otopilot (`/autopilot`) ve Durum Bilgili Çok Turlu Denetim (`/audit`)**:
+   - Çok belgeli şartnameleri SHA-256 sapma tespiti, faz öncesi Git kontrol noktaları (`boomopen ledger rollback --yes`) ve sıkı **5 Katmanlı Faz Kalite Kilidi** (`G1 check --strict-phase --no-stubs` → `G2` monotonik test kilidi → `G3 reconcile --strict` → `G4 Author != Critic` incelemesi → `G5 ledger verify`) ile `.boomopen/project-ledger.json` dosyasına derler. Geliştirme sonrasında `/audit`, insan onaylı çok turlu RTM, dikey akış ve Güvenlik v6 denetimlerini yürütür (`.boomopen/audit-ledger.json` + `boomopen audit rollback --yes`).
+5. **🎼 Çapraz Motor Orkestra Şefi ve Çoklu Motor Konseyi (`boomopen conduct`)**:
+   - Claude Code, OpenAI Codex, Antigravity, Cursor ve Copilot'u eşzamanlı olarak **6 Görevli Paralel Konseylerde** (`research`, `brainstorm`, `plan`, `design`, `review`, `debug` → 4 bölümlü `COUNCIL-SYNTHESIS.md`) veya hiçbir modelin kendi çıktısını notlamadığı **Çapraz Aile Rol İş Hatlarında** (`Author != Critic`) koordine eder.
+6. **📏 Pragmatik 2 Katmanlı Kodlama Standartları ve SPIE v3.0 Kök Neden Hata Ayıklama**:
+   - **Katman 1 (Sıfır Tolerans)**: Tek sorumluluk, `0` açık `any`, uygulama kodunda `0` debug `console.log`, tipli `try/catch` sınırları, `SCREAMING_SNAKE_CASE` sabitler. **Katman 2 (Önce Bütünlük)**: `~200–350` satır hedefi (`400` esnek / `500` kesin bölme sınırı; testler/tipler/dokümanlar muaf). Hatalar 3 sıralı hipotez ve **5-Whys (SPIE v3.0)** nedensellik izinden geçerken geçici şartnameler Brain Artifacts dizinine yönlendirilir (`%100` temiz Git çalışma ağacı).
 
 ---
 
 <a id="platforms"></a>
+<a id="-supported-ai-platforms"></a>
 
-## 💻 Desteklenen Yapay Zeka Platformları & 2026 Yerel Özellikleri
+## 💻 Desteklenen 5 Yapay Zeka Kodlama Platformu
 
-| Platform | Destek Düzeyi | Küresel Giriş Noktası | Framework Kurulum Yolu & 2026 Yerel Yetenekleri |
-|----------|:-------------:|-------------------|------------------------|
-| **Antigravity (Gemini)** | ✅ Yerel v5.5 | `~/.gemini/GEMINI.md` | `~/.gemini/config/skills/boomopen-workflow-kit/` • `--as-plugin` paketleme, Python `run_workflow` orkestrasyonu & yerel `/goal` döngüsü |
-| **Claude Code** | ✅ Yerel v5.5 | `~/.claude/CLAUDE.md` | `~/.claude/skills/boomopen-workflow-kit/` • `/plan:hard`, `PreCompact`/`Stop` kalite kancaları & `Bash\|PowerShell` koruması (`--with-hooks`) |
-| **OpenAI Codex** | ✅ Yerel v5.5 | `~/.codex/CODEX.md` & `AGENTS.md` | `~/.codex/skills/boomopen-workflow-kit/` • 22 uzman `.toml` ajan kaydı & keşif/inceleme parçaları için `read-only` kum havuzu |
-| **Cursor** | ✅ Yerel v5.5 | `~/.cursor/rules/boomopen-workflow-kit.mdc` | `~/.cursor/skills/boomopen-workflow-kit/` • `< 2.5 KB` ince `.mdc` kuralları, `--with-hooks` & ortak `~/.agents/skills_library` |
-| **GitHub Copilot** | ✅ Yerel v5.5 | `~/.copilot/COPILOT.md` | `~/.copilot/skills/boomopen-workflow-kit/` • Yerel `.agent.md` profili & ortak `~/.agents/skills_library` tekilleştirmesi |
+| Platform | Destek | Senkronize Giriş Dosyaları | Yerel Platform Entegrasyonu |
+|:---------|:-------:|:---------------------|:----------------------------|
+| **Antigravity (Gemini)** | ✅ v5.5 | `~/.gemini/GEMINI.md` | `invoke_subagent`, `run_workflow` Python dağıtımı, `/goal` dış döngüsü, `--as-plugin` paketi, isteğe bağlı `--with-hooks`, Brain Artifacts |
+| **Claude Code** | ✅ v5.5 | `~/.claude/CLAUDE.md` | Paralel `Task`/`Agent` parçaları (`isolation: worktree`), `/plan:hard` iki noktalı komutlar, isteğe bağlı `PreToolUse` ve `Stop`/`PreCompact` kancaları |
+| **OpenAI Codex** | ✅ v5.5 | `~/.codex/AGENTS.md` ve `CODEX.md` | `~/.codex/agents/boomopen/` altında keşif/inceleme için işletim sistemi `sandbox_mode = "read-only"` korumalı `22` TOML rolü + `87` `$boomopen-*` yeteneği |
+| **Cursor** | ✅ v5.5 | `~/.cursor/rules/boomopen-workflow-kit.mdc` | Her zaman aktif `.mdc` frontmatter kuralları, `CURSOR.md`, alt ajan yönlendirmesi ve isteğe bağlı `.cursor/hooks.json` (`beforeShellExecution`) |
+| **GitHub Copilot** | ✅ v5.5 | `~/.copilot/copilot-instructions.md` | VS Code için derlenmiş `boomopen-workflow-kit.agent.md` istem ajanı, `runSubagent` görevlendirmesi ve `COPILOT.md` |
 
 ---
 
-## 🚀 Hızlı Başlangıç ve Kurulum
+<a id="quickstart"></a>
+<a id="-quick-start--installation"></a>
+
+## 🚀 Hızlı Başlangıç ve Kurulum (Yalnızca Git — Sıfır Çalışma Zamanı Bağımlılığı)
 
 ```bash
-# 1. Depoyu klonlayın
+# 1. Depoyu klonlayın (yalnızca GitHub üzerinden dağıtılır — npm üzerinde kesinlikle yayımlanmaz)
 git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
 cd BoomOpen-Workflow-Kit-Pro
 
-# 2. Yapay zeka kodlama asistanınız için kurun (~/.agents/skills_library otomatik paylaşılır)
-npm run install:antigravity                        # Google Antigravity 2.0 (Gemini)
-node cli/install.js install antigravity --as-plugin # İsteğe bağlı: yerel Antigravity eklentisi olarak kur
-node cli/install.js install claude --with-hooks    # Anthropic Claude Code (+ PreCompact/Stop & Bash|PowerShell guard)
-npm run install:codex                              # OpenAI Codex CLI (+ 22 ajan & read-only kum havuzu)
-npm run install:cursor                             # Cursor AI Editor
-npm run install:copilot                            # GitHub Copilot (VS Code)
-npm run install:all                                # Tüm 5 platform için tek seferde kurulum
+# 2. Kullandığınız AI IDE için (varsayılan profil: smart-hybrid) veya 5 IDE'nin tamamına tek seferde kurun
+npm run install:all                                 # Tüm 5 IDE'yi kur ve senkronize et + ortak ~/.agents/skills_library
+npm run install:antigravity                         # Google Antigravity 2.0 (veya --as-plugin / --with-hooks ekleyin)
+node cli/install.js install claude --with-hooks     # Claude Code + isteğe bağlı PreToolUse ve Stop/PreCompact kancaları
+npm run install:codex                               # OpenAI Codex CLI + OS salt okunur keşif/inceleme kum havuzları
+npm run install:cursor                              # Cursor (beforeShellExecution koruması için --with-hooks geçin)
+npm run install:copilot                             # GitHub Copilot (VS Code .agent.md + copilot-instructions.md)
 
-# 3. Kurulumu doğrulayın ve 14 CLI komutunu kullanın
+# 3. Sistem sağlığını doğrulayın ve isteğe bağlı olarak `boomopen` komutunu global PATH'e bağlayın
 npm run doctor
 npm link
-boomopen research validate path/to/RESEARCH.md
-boomopen design validate path/to/DESIGN.md
-boomopen plan validate path/to/PLAN.md
-boomopen cook preflight path/to/PLAN.md
-boomopen reconcile path/to/your/project --plan path/to/PLAN.md   # Dalga 2.5 mutabakatı (REC-G1..G4)
-boomopen audit init --docs docs/prd.md,docs/arch.md              # Çok turlu denetim defteri (boomopen audit rollback destekli)
-boomopen check path/to/your/project --strict-phase --no-stubs
-boomopen ledger status                                           # Faz defterini incele (boomopen ledger rollback destekli)
-boomopen conduct probe
+boomopen settings status
 ```
 
-> Kit **npm'de yayımlanmamıştır** — yalnızca bu depodan kurun. İsteğe bağlı: `npm link`, `boomopen` komutunu PATH'inize ekler (npm'den hiçbir şey indirilmez).
+> **Güvenli ve Tahribatsız Kurulum / Kaldırma**: SHA-256 manifestoları (`~/.boomopen/manifests/<tool>.json`) ile izlenir. `GEMINI.md` / `CLAUDE.md` içindeki mevcut kişisel kurallarınız kit işaretleyicilerinin dışında korunur ve otomatik yedeklenir; `boomopen uninstall <tool|--all>` kendi dosyalarınıza dokunmadan yalnızca değiştirilmemiş kit dosyalarını temiz biçimde kaldırır.
+
+---
+
+<a id="cli"></a>
+
+## 🛠️ Bağımlılıksız 14 CLI Alt Komutu (`boomopen`)
+
+Node.js `>= 18` üzerinde **sıfır npm çalışma zamanı bağımlılığı** ve **sıfır ağ çağrısı** ile yerel olarak `< 50ms` içinde çalışır:
+
+| Alt Komut | Temel Bayraklar ve Sözdizimi | Deterministik Kapılar ve Mühendislik Amacı |
+|:-----------|:-------------------|:------------------------------|
+| **`install` / `uninstall` / `list`** | `<tool\|--all> [--with-hooks] [--as-plugin]` | SHA-256 manifestolu kurucu, ortak `~/.agents/skills_library` bağlayıcısı, isteğe bağlı güvenlik kancaları ve temiz kaldırıcı |
+| **`doctor`** | `[--source-only]` | Tüm 5 IDE paketini, `93` komut dosyasını, `72` ekip dosyasını, `1.462` yeteneği ve senkronize ayarları kapsayan 30 maddelik salt okunur denetim |
+| **`settings`** | `status \| preset <name> \| set <k> <v> \| --ui` | 5 hazır profili + `22` yapılandırma anahtarını yönetin (`./.boomopen.json` için `--project`) veya CSP korumalı Web UI'yi (`127.0.0.1:4567`) açın |
+| **`research`** | `<validate\|brief> <file.md> [--mode brainstorm]` | **`RES-G1..G4`** kapılarını (`≥ 4` çapraz doğrulanmış kaynak, çelişki matrisi, pre-mortem riskler) zorlar ve `HANDOFF_BRIEF` derler |
+| **`design`** | `<validate\|contract> <DESIGN.md> [--json]` | **`DESIGN-G1..G4`** kapılarını (6 bloklu şartname, OKLCH token'ları, 5 durumlu UI matrisi, WCAG 2.2 AA) zorlar ve `DESIGN_CONTRACT` üretir |
+| **`plan`** | `<validate\|compile> <PLAN.md> [--sync-ledger]` | **`PLAN-G1..G5`** kapılarını (döngüsüz DAG, parça başına ayrık `OWNED_FILES ≤ 4`, `SHARED_CONTRACT`) zorlar ve defteri senkronize eder |
+| **`cook`** | `<state\|packets\|verify-wave\|preflight\|amend-plan>` | **`COOK-G1..G4`** kapılarını uygular: 5 aşamalı hızlı geçiş durumu, 5 alanlı Dalga Devir Paketleri, git yazma kilidi kontrolleri ve delta dalgaları |
+| **`reconcile`** | `<dir> [--plan <PLAN.md>] [--strict]` | Dalga 2.5 **`REC-G1..G4`**: bağlanmamış ada modülleri, `/api` rota sapmalarını, atlanan `[SC-*]` maddelerini ve `.env.example` eksiklerini yakalar |
+| **`check`** | `[path] --strict-phase --no-stubs [--ignore <dir>]` | Pragmatik 2 Katmanlı statik kapı: `400/500` satır bütçesi, `0` açık `any`, `0` debug `console.log`, `0` stub/`TODO`/`.skip` |
+| **`ledger`** | `<init\|from-plan\|status\|next\|verify\|rollback>` | Çok oturumlu `.boomopen/project-ledger.json` DAG durum makinesi, SHA-256 şartname sapma koruması ve atomik `rollback --yes` |
+| **`audit`** | `<init\|slice\|record\|approve\|verify-fix\|rollback>` | Tamamlama sonrası durum bilgili çok turlu denetim defteri (`.boomopen/audit-ledger.json`), bulgu eritme kilidi ve `rollback --yes` |
+| **`conduct`** | `<probe\|council\|dispatch\|status> [--dry-run]` | Çapraz motor orkestra şefi ve 6 görevli paralel Çoklu Motor Konseyi (5 IDE genelinde `Author != Critic` → `COUNCIL-SYNTHESIS.md`) |
 
 ---
 
 <a id="settings"></a>
+<a id="-unified-settings--mode-selection-settings"></a>
 
-## 🎛️ Birleşik Ayarlar ve Mod Seçimi (`/settings` Kontrol Merkezi)
+## 🎛️ Birleşik Kontrol Merkezi ve 5 Hazır Profil (`/settings`)
 
-BoomOpen v5.5, çalışma modlarını, **5 hazır profili (Preset)** ve 20 sistem ayarını (+ 2 satır sınırı) **5 platformun** tamamında `< 10ms` içinde (**Turn-1 gecikmesi 0ms**) yöneten **Sıfır Gecikmeli Birleşik Kontrol Merkezi** içerir. Temiz kurulumlarda **`⚡ smart-hybrid`** **varsayılan önerilen profildir** (`boomopen settings reset` ile geri yüklenir); **`🛡️ frontier-guardrails`** (`< 2.5 KB` / `~600 tokens`, `mode_a <= 10 files`, `naturalLanguageResearchTrigger = off`, geriye dönük uyumlu `carbon-guardrails` takma adıyla) ise **isteğe bağlı İnce Mod A profilidir** (`boomopen settings preset frontier-guardrails`):
+Küresel olarak (`~/.boomopen/settings.json`) veya depo bazında (`./.boomopen.json`) **`20` enum anahtarını + `2` özel satır sınırı anahtarını** yönetin; tüm 14 IDE giriş dosyasına `< 10ms` içinde anında senkronize edilir:
 
-| Hazır Profil (`Preset`) | Çalışma Modu (`execution.mode`) | Varsayılan Varyant | Doğal Dil Araştırması (`naturalLanguageResearchTrigger`) | Kod Standartları (`codingStandards`) | En Uygun Kullanım |
-|:---|:---|:---:|:---:|:---:|:---|
-| **⚡ `smart-hybrid`** *(Varsayılan Önerilen)* | **`auto`** (`≤ 2 dosya` → Mode A; `> 2 dosya` veya `/cmd` → Mode B) | `auto` | **`auto_team`** *(Araştırma/fikirleri otomatik `/research:team` / `/brainstorm:team` ekibine yönlendirir)* | `pragmatic` (`400/500` satır) | Temiz kurulumlarda varsayılan (`boomopen settings reset`) — 5 IDE genelinde 17 dilde NL yönlendirmesi ve 2 dosya üzerinde otomatik 1. tur sürü parçalama |
-| **🛡️ `frontier-guardrails`** *(İsteğe Bağlı İnce Mod A)* | **`mode_a`** *(`≤ 10 dosya` doğrudan; `< 2.5 KB` / `~600 tokens` ince koruma rayları + `strict_e2e`; `carbon-guardrails` takma adı desteklenir)* | `auto` | **`off`** *(Yalnızca açık `/cmd` ile tetiklenir — doğal dil müdahalesi sıfır)* | `pragmatic` (`400/500` satır) | İsteğe bağlı `< 2.5 KB` (`~600 tokens`) doğrudan Mod A hızı ve sıkı `strict_e2e` kalite kapıları |
-| **🚀 `solo-fast`** | **`mode_a`** *(Doğrudan tekli çalışmayı zorlar, 0 sn alt-ajan gecikmesi)* | `fast` | `off` *(`/brainstorm` yazılmadıkça sohbette doğrudan yanıt verir)* | `relaxed` (`600/800` satır) | Acil hotfix'ler, hızlı prototipleme, betikler ve maksimum token tasarrufu |
-| **🧠 `deep-architect`** | **`mode_b`** *(Her görevde Mode B Çoklu-Ajan Orkestrasyonunu zorlar)* | `hard` | `auto_hard` *(Otomatik `/research:hard` / `/brainstorm:hard` araştırması çalıştırır)* | `strict` (`300/400` satır) | Karmaşık sistem mimarisi, sıfırdan tasarım ve çoklu-alan refaktör |
-| **🔺 `adversarial-team`** | **`team`** *(Tüm iş akışlarında 3-Ajanlı Golden Triangle `:team` modunu zorlar)* | `team` | **`auto_team`** *(`MAILBOX` üzerinden 3-Ajanlı çapraz inceleme ve tartışma)* | `strict` (`300/400` satır) | Kritik prodüksiyon kodu, güvenlik denetimleri ve sıfır hatalı sürümler |
-
-### Mod Değiştirmenin 3 Yolu (Sohbet İçi `/settings`, Yerel Web Paneli ve CLI)
+| Hazır Profil | Yürütme Modu (`execution.mode`) | Varsayılan `/cmd` | 17 Dilde NL Yönlendirmesi (`naturalLanguageResearchTrigger`) | Kodlama Standartları | En Uygun Kullanım |
+|:---------------|:----------------------------------|:--------------:|:---------------------------------------------------------:|:----------------:|:--------------|
+| **⚡ `smart-hybrid`** *(Default)* | **`auto`** (`≤ 2` dosya doğrudan; `> 2` dosya veya `/cmd` → Mode B Sürüsü) | `auto` | **`auto_team`** *(17 dilde doğal dil araştırma/fikir/inceleme isteklerini `:team` ve iş akışlarına yönlendirir)* | `pragmatic` (`400/500`L) | Kutudan çıktığı haliyle varsayılan deneyim: doğal dil niyet yönlendirmesi + otomatik 1. tur paralel parçalama |
+| **🛡️ `frontier-guardrails`** *(Slim Opt-In)* | **`mode_a`** (`≤ 10` dosya doğrudan; `< 2.5 KB` / `~600` token giriş dosyası) | `auto` | **`off`** *(Yalnızca açık `/cmd` — sıfır doğal dil müdahalesi)* | `pragmatic` (`400/500`L) | Sıkı 2 Katmanlı ve E2E kapılarıyla ultra hafif `< 2.5 KB` günlük doğrudan mod *(`carbon-guardrails` takma adı desteklenir)* |
+| **🚀 `solo-fast`** | **`mode_a`** (`≤ 10` dosya doğrudan; temkinli maksimum `3` parça) | `fast` | `off` | `relaxed` (`600/800`L) | Hızlı prototipleme, küçük betikler, acil hotfix'ler ve minimum token harcaması |
+| **🧠 `deep-architect`** | **`mode_b`** *(Sıkı Mode B Orkestratörü; maksimum `12` parça)* | `hard` | `auto_hard` + `council` araştırma / `cross_family` inceleme | `strict` (`300/400`L) | Karmaşık sistem mimarisi, sıfırdan tasarım ve modüller arası refaktör |
+| **🔺 `adversarial-team`** | **`team`** *(Elastik Altın Elmas `:team`; `hyper_swarm` maksimum `12`)* | `team` | **`auto_team`** + `council` araştırma, planlama ve inceleme | `strict` (`300/400`L) | Kritik prodüksiyon sürümleri, güvenlik denetimleri ve çoklu motor uzlaşısı |
 
 ```bash
-# 1. Sohbet İçi Slash Komutu (Etkileşimli menü veya tek satır komut)
-/settings                                     # Etkileşimli seçim menüsünü aç (ask_question UI)
-/settings preset smart-hybrid                 # Varsayılan önerilen mod (Auto Mode A/B + 17 dilde NL yönlendirmesi)
-/settings preset frontier-guardrails          # İsteğe bağlı İnce Mod A (≤10 dosya, <2.5 KB / ~600 tokens; carbon-guardrails alias)
-/settings preset solo-fast                    # Mode A Doğrudan Hızlı Çalıştırma moduna geç
-/settings preset deep-architect               # Mode B Çoklu-Ajan Orkestratör moduna geç
-/settings preset adversarial-team             # Golden Triangle 3-Ajanlı Ekip (:team) moduna geç
-/settings mode auto | mode_a | mode_b | team  # Çalışma modunu doğrudan değiştir
-
-# 2. Yerel Web Kontrol Merkezi Paneli (http://127.0.0.1:4567)
-boomopen settings --ui
-
-# 3. Terminal CLI (Global ~/.boomopen/settings.json ve Proje ./.boomopen.json)
-boomopen settings status
-boomopen settings preset smart-hybrid                     # Varsayılan profili global olarak uygula ve 5 IDE'yi senkronize et
-boomopen settings preset frontier-guardrails              # İsteğe bağlı İnce Mod A (< 2.5 KB) profiline geç
-cd path/to/your/project
-boomopen settings set execution.mode mode_a --project
-boomopen settings reset                                   # Önerilen smart-hybrid varsayılanlarını geri yükle
-```
-
-> `--project`, `./.boomopen.json` dosyasını her zaman komutu çalıştırdığınız klasöre yazar; bu yüzden onu kit klonunda değil, kendi projenizde çalıştırın. `npm link` kullanmıyorsanız `boomopen` yerine `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js` yazın.
-
----
-
-## 🌙 Gece Boyu Büyük Çok Fazlı Proje Rehberi (`/autopilot` vs `/goal` + `/autopilot` + `/audit`)
-
-> **Platform Süreklilik Notu**: **`/goal`**, **Antigravity (Gemini)** platformunun yerleşik dış döngüsüdür (native outer loop); **Claude Code** ve **OpenAI Codex** üzerinde ise çok oturumlu gece boyu süreklilik, **`/autopilot`** ile **`Stop` / `PreCompact`** kalite kancaları (`--with-hooks`) ve `.boomopen/project-ledger.json` tarafından sağlanır!
-
-| Karşılaştırma | `/autopilot` (+ Claude Code & Codex üzerinde `Stop`/`PreCompact` kancaları) | `/goal` + `/autopilot` + `/audit` *(Antigravity Yerel Dış Döngüsü)* |
-|:---|:---|:---|
-| **Belge Alımı & Defter** | `docs/` belgelerini SHA-256 korumalı `project-ledger.json` + `PLAN` içine derler (`ledger rollback` destekli) | Aynı defter ve `PLAN` yapısını korur; `/goal` tüm fazlar bitene kadar dış döngüyü sürdürür |
-| **Çok Oturumlu Süreklilik** | `PreCompact`/`Stop` kancaları bağlam sıkıştırmasında kalite kapılarını ve kaldığı fazı otomatik korur | Bağlam ~%70 dolduğunda otomatik sıfırlayıp devam eder; `project-ledger.json` %100 olana dek `reconcile` çalıştırır |
-| **Tamamlama Sonrası Doğrulama** | Faz kapanışında `check --strict-phase --no-stubs` ve `/autopilot:audit` uygular | Tam `/audit` döngüsüyle biter (Round 1 → onay için rapor → `/audit:fix` → `/audit:round2` + Güvenlik v6) |
-
-### Gece Boyu Çok Fazlı Proje İçin Kopyalanabilir Hazır İstem
-
-```text
-/goal /autopilot kullanarak docs/ altındaki tüm spesifikasyon belgelerini oku ve projeyi baştan sona tüm fazlarıyla tamamla:
-1. Gereksinimlerin %100 kapsandığından emin olmak için project-ledger.json ve PLAN dosyalarını oluşturup doğrula.
-2. Her fazı paralel parçalarla uygula, gerçek testleri çalıştır ve her faz sonunda reconcile + spec-reconciler ile Dalga 2.5 mutabakatını doğrula.
-3. Tüm fazlar tamamlandığında /audit (Round 1 + Güvenlik v6) çalıştır; kodda düzeltme yapmadan önce tüm bulguları onaylamam için raporu sun.
+# Sohbet (/settings), Yerel Web UI (--ui) veya CLI üzerinden profil değiştirin ya da anahtarları özelleştirin:
+boomopen settings --ui                                      # http://127.0.0.1:4567 adresinde Yerel Web Kontrol Merkezini başlat
+boomopen settings preset smart-hybrid                       # Varsayılan: Auto Mode A/B + 17 dilde NL iş akışı yönlendirmesi
+boomopen settings preset frontier-guardrails                # İsteğe bağlı: < 2.5 KB ince Mode A (takma ad: carbon-guardrails)
+boomopen settings set engines.reviewer cross_family         # Farklı model ailesinden Reviewer zorla (Author != Critic)
+cd path/to/your/repo && boomopen settings mode team --project # Depo kapsamlı ./.boomopen.json geçersiz kılması
+boomopen settings reset                                     # Varsayılan smart-hybrid yapılandırmasını geri yükle
 ```
 
 ---
 
 <a id="commands"></a>
+<a id="-slash-commands-reference"></a>
 
-## 🎯 Slash Komutları Başvuru Tablosu (36 Komut / 93 Dosya)
+## 🎯 Tüm 36 Slash Komutu Başvuru Rehberi (`93` Dosya = `87` İş Akışı + `6` `_ref/`)
 
-| Komut | Varyantlar | Temel Amaç |
-|---------|----------|-----------------|
-| **`/onboard`** | — | 60 saniyede mevcut kod tabanı mimari haritası (`ARCHITECTURE-MAP.md`: giriş noktaları, veri akışı, risk odakları & test kapıları; sıfır `/init` çakışması) |
-| **`/cook`** | `:fast`, `:hard`, `:team`, `amend-plan` | Uçtan uca özellik geliştirme (Keşif → Plan → Paralel Kod → Dalga 2.5 `reconcile` → Test → İnceleme) |
-| **`/code`** | `:fast`, `:hard`, `:team` | Mevcut bir `PLAN-{feature}.md` üzerinden doğrudan kodlama ve doğrulama yürütme |
-| **`/plan`** | `:fast`, `:hard`, `:team` | `SHARED_CONTRACT`, `OWNED_FILES` ve Given/When/Then kriterleriyle uygulama planları (Claude Code `/plan:hard` dahil) |
-| **`/fix`** | `:fast`, `:hard`, `:team` | Zorunlu regresyon testi doğrulamasıyla kök neden hata çözümü |
-| **`/debug`** | `:fast`, `:hard`, `:team` | 3 Hipotez + **5-Whys (SPIE v3.0)** nedensellik zinciriyle kök neden araştırması (`DEBUG-{issue}.md`) |
-| **`/test`** | `:fast`, `:hard`, `:team` | DAG Paralel Fan-Out test yürütme + kapsanmayan uç durumların keşfi (`tester` + `scouter`) |
-| **`/review`** | `:fast`, `:hard`, `:team` | 4 yönlü paralel kod denetimi (Mimari, Kod Kalitesi, OWASP Güvenliği, Performans) |
-| **`/pr`** | `create`, `:review` (`/pr:review`) | PR öncesi sıkı kalite kapısı (`check`, `reconcile`, diff testleri), dal/commit hijyeni & yapılandırılmış `gh pr create` veya PR incelemesi |
-| **`/audit`** | `:run`, `:round2`, `:fix`, `:auto` | Tamamlama sonrası çok turlu proje denetimi: Round 1 → kullanıcı onayı → `/audit:fix` → `/audit:round2` (Güvenlik v6, RTM & `audit rollback`) |
-| **`/design`** | `:fast`, `:hard`, `:team` | Sistem mimarisi, veritabanı şeması ve UI/UX teknik şartnamesi (`DESIGN.md`) |
-| **`/docs`** | `:core`, `:business`, `:audit` | 2 katmanlı yapılandırılmış mimari ve iş dokümantasyonu oluşturma veya senkronize etme (`./documents/`) |
-| **`/release`** | `patch`, `minor`, `major` | Semantik sürüm hazırlığı: Conventional Commit denetimi, `CHANGELOG.md` sentezi, sürüm kapıları (`doctor`, `check`, `test`, `test:pack`) & `gh release create` |
-| **`/deploy`** | `:check`, `:preview`, `:production`, `:rollback` | Dağıtım öncesi hazırlık kapıları, önizleme ortamları, canlıya alma ve güvenli geri alma (rollback) |
-| **`/research`** | `:fast`, `:hard`, `:team` | Otonom Derin Araştırma Motoru (4 kaynaklı üçgenleme, 3 dalgalı arama ve 3 vektörlü konsey) |
-| **`/brainstorm`** | `:fast`, `:hard`, `:team` | Sokratik gereksinim keşfi, ödünleşim (trade-off) analizi ve fikir geliştirme |
-| **`/report`** | `:fast`, `:hard`, `:team` | Metrikler ve diyagramlar içeren yönetici ve teknik sentez raporları |
-| **`/autopilot`** | `:init`, `:run`, `:audit` | `.boomopen/project-ledger.json`, 4 katmanlı kalite kilidi ve `ledger rollback` ile çok oturumlu otonom proje orkestratörü |
-| **`/conduct`** | `:council`, `:pipeline` | Motorlar arası orkestratör ve paralel çoklu motor konseyi (`boomopen conduct`) ile 4 bölümlü uzlaşı sentezi |
-| **`/orchestrate`** | — | Birden fazla alanda özel çoklu ajan iş hattı orkestrasyonu |
-| **`/settings`** | `preset`, `mode`, `set`, `ui` | Birleşik Kontrol Merkezi: mod geçişi, **5 hazır profil** (`smart-hybrid` varsayılan, isteğe bağlı `frontier-guardrails`) veya Web UI (`--ui`) |
-| **`/save` / `/recap`** | — | Oturum durumunu (`SESSION-HANDOVER.md`) kaydetme ve `< 5 sn` içinde tüm bağlamı geri yükleme |
+`smart-hybrid` altında **desteklenen 17 dilden herhangi birinde** doğal biçimde yazın veya **36 standart slash komutundan** istediğinizi doğrudan çağırın:
+
+| Kategori | Komut | Varyantlar | Amaç ve Deterministik Çıktılar |
+|:---------|:--------|:---------|:-------------------------------------|
+| **Orkestrasyon ve Otonomi** | **`/cook`** | `:fast`, `:hard`, `:team` | Henüz plan yokken uçtan uca özellik geliştirici (Keşif → Sözleşmeli Plan → Paralel Parçalar → Dalga 2.5 Mutabakatı → QA) |
+| | **`/code`** | `:fast`, `:hard`, `:team` | Onaylanmış bir `PLAN-{task}.md` dosyasını `/plan` komutunu yeniden çalıştırmadan doğrudan Dalga 1–3 parçalarında uygular |
+| | **`/autopilot`** | `:init`, `:run`, `:audit` | `.boomopen/project-ledger.json` ve **5 Katmanlı Faz Kalite Kilidi** üzerinden çok oturumlu şartnameden prodüksiyona orkestratör |
+| | **`/conduct`** | `:council`, `:pipeline` | 5 IDE genelinde çoklu motor paralel konseyi (`COUNCIL-SYNTHESIS.md`) ve çapraz aile rol iş hattı (`--dry-run` hazır) |
+| | **`/orchestrate`** / **`/auto`** | — | Özel çok alanlı sürü koordinasyonu (`/orchestrate`) veya uçtan uca tam otonom yürütme (`/auto`) |
+| **Mimari, Tasarım ve Araştırma** | **`/plan`** | `:fast`, `:hard`, `:team` | `SHARED_CONTRACT`, parça başına ayrık `OWNED_FILES ≤ 4` ve Given/When/Then kriterlerini kilitleyen 5 kapılı `PLAN-{task}.md` planı |
+| | **`/architect`** | — | Yalnızca tasarım odaklı sistem planı: C4 diyagramları, ADR'ler, DB şemaları, API sözleşmeleri, ekran şartnameleri ve kapsam denetimi (sıfır kod yazar) |
+| | **`/design`** / **`/ui-ux-pro-max`** | `:fast`, `:hard`, `:team` | 6 bloklu UI/UX `DESIGN-{task}.md` + `DESIGN_CONTRACT` (`@theme` OKLCH token'ları, 5 durumlu UI matrisi, 50+ stil ve canlı HTML önizleme) |
+| | **`/research`** | `:fast`, `:hard`, `:team` | 5 mercekli Derin Araştırma (`RESEARCH-{topic}.md`, `RES-G1..G4` ≥ 4 kaynaklı üçgenleme, çelişki tablosu ve `HANDOFF_BRIEF`) |
+| | **`/brainstorm`** / **`/ask`** | `:fast`, `:hard`, `:team` | Dalkavukluk karşıtı stratejik fikir üretimi (pre-mortem ve MCDA matrisli `BRAINSTORM-{topic}.md`) ve kanıt kapılı soru-cevap (`/ask`) |
+| **Kalite, Denetim, Hata Ayıklama ve Güvenlik** | **`/review`** | `:fast`, `:hard`, `:team` | Çok mercekli çapraz kod, mimari, güvenlik ve performans incelemesi (`Author != Critic`, tek tıkla `/fix` geçişi) |
+| | **`/audit`** / **`/deep-audit`** | `:run`, `:fix`, `:auto` | Geliştirme sonrası çok turlu tam proje denetimi (`/audit` defteri) ve kod öncesi 10 boyutlu şartname mantık denetimi (`/deep-audit`) |
+| | **`/security-audit`** | — | OWASP Top 10 + LLM/Agentic Top 10 taraması (`security_scan.py` v6), STRIDE tehdit modellemesi, kimlik doğrulama ve tedarik zinciri raporu |
+| | **`/debug`** / **`/fix`** | `:fast`, `:hard`, `:team` | 3 hipotez + **5-Whys (SPIE v3.0)** kök neden izi (`DEBUG-{issue}.md`) ve önce başarısız test yazan TDD hata çözümü (`/fix`) |
+| | **`/test`** / **`/performance`** / **`/refactor`** | `:fast`, `:hard`, `:team` | Test hilesine izin vermeyen QA parçaları (`/test`), Core Web Vitals / DB / paket boyutu iyileştirmesi (`/performance`) ve metrik doğrulanmış `/refactor` |
+| **Git, Sürüm, Dokümantasyon ve Oturum İşlemleri** | **`/onboard`** / **`/init`** | — | Mevcut projeler için 60 saniyede salt okunur `ARCHITECTURE-MAP.md` (`/onboard`, sıfır `/init` çakışması) ve yeni proje kurulumu (`/init`) |
+| | **`/pr`** / **`/release`** | —, `:review` | PR öncesi kalite ve mutabakat kapısı + `gh pr create` / çapraz diff incelemesi (`/pr:review`) ve eşlik kapılı semantik `/release` |
+| | **`/deploy`** / **`/rollback`** | `:check`, `:preview`, `:production`, `:rollback` | Dağıtım hazırlık kapıları, önizleme/prodüksiyon geçişleri (`/deploy`) ve önem dereceli acil geri alma (`/rollback`) |
+| | **`/docs`** / **`/report`** | `:core`, `:business`, `:audit` / `:fast..:team` | Kaynak koda dayalı `./documents/` dokümantasyon paketleri (`/docs`) ve kurgu içermeyen gerçek CLI telemetri durum raporları (`/report`) |
+| | **`/settings`** / **`/status`** / **`/next`** | — | Birleşik Kontrol Merkezi (`/settings`), canlı defter/sürü sağlık panosu (`/status`) ve akıllı sonraki adım kılavuzu (`/next`) |
+| | **`/preview`** / **`/save`** / **`/recap`** | — | Yerel geliştirme sunucusu yaşam döngüsü yöneticisi (`/preview`), oturum durumu kaydı (`/save`) ve `< 5s` bağlam geri yükleme (`/recap`) |
+
+### 🌙 Gece Boyu Çok Fazlı Proje Oyun Kitabı (`/autopilot` & `/goal`)
+
+| İş Akışı | Hedef Platform ve Çalıştırıcı | Bağlam Sürekliliği | Kalite ve Şartname Garantileri |
+|:---------|:-------------------------|:-------------------|:--------------------------|
+| **`/autopilot` (+ `--with-hooks`)** | Tüm 5 IDE (**Claude Code**, **Antigravity** ve **Cursor** üzerinde `--with-hooks` ile eşleştirin) | `Stop` ve `PreCompact` kancaları (`stop-quality-gate.mjs`) + `.boomopen/project-ledger.json` bağlam sıkıştırmaları boyunca imleci korur | **5 Katmanlı Faz Kalite Kilidi** (`G1..G5`), Dalga 2.5 `reconcile` ve `boomopen ledger rollback --yes` uygular |
+| **`/goal` + `/autopilot` + `/audit`** | Büyük `docs/` şartnameleri için **Antigravity 2.0** kalıcı dış döngüsü | Antigravity'nin yerel **`/goal`** çalıştırıcısı defterdeki her faz `VERIFIED` olana dek fazlar boyunca döner | Her fazı 5 kapının tamamından + Dalga 2.5 mutabakatından geçirir, ardından **`/audit`** 1. Turunu çalıştırır |
+
+```text
+/goal docs/ içindeki tüm proje dokümantasyonunu okumak, .boomopen/project-ledger.json dosyasını başlatmak ve her fazı sırayla otonom biçimde uygulamak için /autopilot kullan (her faz tüm 5 doğrulama kapısını ve Dalga 2.5 reconcile kontrolünü geçmelidir). Fazların %100'ü geçtiğinde /audit 1. Turunu çalıştır ve incelemem için özet raporla dur.
+```
 
 ---
 
 <a id="agents"></a>
+<a id="-22-specialist-agents--18-golden-triangle-teams"></a>
 
-## 🤖 22 Uzman Ajan ve 18 Altın Üçgen Ekibi (72 Dosya)
+## 🤖 22 Uzman Ajan ve 18 Çapraz Denetimli 3 Rollü Ekip
 
-| Kategori | Uzman Ajanlar (`agents/*.md`) | Altın Üçgen Ekipleri (`agents/teams/*-team/`) |
-|----------|-----------------------------------|------------------------------------------------|
+Her alt ajan oturum modelinizi devralır (`Model: "inherit"` — `flash_lite` kesinlikle yasaktır) ve **18 Altın Elmas / Üçgen ekibi** (`Tech Lead` ⇄ `Parallel Shard Executors` ⇄ `Independent Reviewers/Critics`) halinde eşleşir:
+
+| Alan | Uzman Ajanlar (`agents/*.md`, her IDE için derlenir) | 3 Rollü İnceleme Ekipleri (`agents/teams/*-team/`, `72` dosya) |
+|:-------|:----------------------------------------------------|:---------------------------------------------------------|
 | **Mühendislik ve Uygulama** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer`, `database-architect`, `devops-engineer` | `backend-team`, `frontend-team`, `fullstack-team`, `mobile-team`, `game-team`, `database-team`, `devops-team` |
-| **Mimari ve Planlama** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
-| **Kalite, Güvenlik, Hata Ayıklama & Mutabakat** | `debugger`, `tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
-| **Araştırma ve Bilgi Yönetimi** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
+| **Mimari ve Ürün** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
+| **Kalite, Mutabakat ve Güvenlik** | `debugger`, `tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
+| **Araştırma ve Dokümantasyon** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
 
 ---
 
 <a id="skills"></a>
+<a id="-1460-skills-vault-22-core--1440-niche-library-skills"></a>
 
-## 📚 1.462 Yetenek Kasası (22 Çekirdek + 1.440 Kütüphane Yeteneği)
+## 📚 1.462 Yeteneklik İsteğe Bağlı Kasa (`22` Çekirdek + `1.440` Kütüphane Yeteneği)
 
-BoomOpen, tüm IDE'ler arasında ortak **`~/.agents/skills_library`** diziniyle tekilleştirilen **1.462 indekslenmiş yeteneği** (`1,462` kayıt), **2 Adımlı O(1) Aşamalı Yetenek Çözümlemesi** (`<skills>` → `matrix-skills/compact-index.json` → yalnızca gereken `SKILL.md` dosyasını yükleme) ile **boşta 0 token maliyetiyle** sunar:
+`matrix-skills/compact-index.json` içinde **19 mühendislik alanında** indekslenir, `~/.agents/skills_library` dizininde tek seferde tekilleştirilir ve **2 Adımlı O(1) Aşamalı Çözümleme** (`skills/` Çekirdek kontrolü → `compact-index.json` sorgusu → eşleşen `SKILL.md` dosyasını yalnızca görevlendirilen parçaya yükleme, boşta `0` token) ile yüklenir:
 
-| Yetenek Katmanı / Alanı | Sayı | Temsili Yetenekler ve Yetkinlikler | Yükleme Mekanizması |
-|:---|:---:|:---|:---|
-| **⚡ Katman 1: Çekirdek Yetenekler (`skills/`)** | **22** | `clean-code`, `debugger`, `plan-writing`, `brainstorming`, `frontend-design`, `frontend-architecture`, `design-spec`, `api-patterns`, `database-design`, `testing-patterns`, `skill-seeker` | Turn 1'de anında erişim için `<skills>` içinde önceden indekslenmiştir |
-| **🎨 UI/UX Tasarımı, Motion & Tasarım Sistemleri** | **42** | Anti-AI-Slop Visual Craft, OKLCH renk paletleri & Bento Grid, Motion v12 + CSS View Transitions, headless bileşenler (`cmdk`/`vaul`/`sonner`), Figma MCP + W3C DTCG Tokens, WCAG 2.2 AA/AAA, iOS 18 HIG & Material 3 Expressive | `compact-index.json` üzerinden isteğe bağlı (`matrix-skills/design.yaml`) |
-| **🌐 Web, Backend & Dağıtık Sistemler** | **390+** | Next.js 15/React 19, Hono RPC, FastAPI, NestJS, Go/Rust Axum, GraphQL, gRPC, Redis/Kafka, Supabase RLS, çok kiracılı SaaS | `~/.agents/skills_library` üzerinden isteğe bağlı |
-| **🤖 Yapay Zeka, LLM Ajanları, MCP & Veri** | **320+** | **`mcp-server`** & **`ai-agent-worker`** şablonları, MCP FastMCP (`StreamableHTTP`), OpenAI/Claude/Google ADK, RAG hatları, LangGraph, BigQuery, dbt | `~/.agents/skills_library` üzerinden isteğe bağlı |
-| **☁️ Bulut, DevOps, Kubernetes & Güvenlik** | **300+** | Cloudflare Workers/D1/R2/DO, Terraform/OpenTofu, AWS/GCP/Azure, Docker/K8s GitOps, 2 Katmanlı Güvenlik v6 & OWASP LLM Top 10 | `~/.agents/skills_library` üzerinden isteğe bağlı |
-| **📱 Mobil, Oyun Motorları & Özel Alanlar** | **410+** | Tauri v2, SwiftUI, Kotlin, React Native, Flutter, Unity 6 DOTS, Unreal Engine 5, Godot 4, WebGPU/Three.js TSL, Colyseus | `~/.agents/skills_library` üzerinden isteğe bağlı |
+| Katman / Mühendislik Alanı | Yetenek | Temsili Yetkinlikler ve Proje İskeletleri | Yükleme |
+|:--------------------------|:------:|:----------------------------------------|:--------|
+| **⚡ Çekirdek İş Akışı ve Kalite (`skills/`)** | **22** | `clean-code`, `debugger`, `plan-writing`, `brainstorming`, `deep-research`, `design-spec`, `frontend-design`, `frontend-architecture`, `api-patterns`, `database-design`, `tdd-workflow`, `testing-patterns`, `webapp-testing`, `security-auditor` (`security_scan.py` v6), `app-builder` (**`mcp-server`**, **`ai-agent-worker`**, `nextjs-saas`, `monorepo-turborepo`, `python-fastapi`, `flutter-app` dahil **15 proje şablonu**), `skill-seeker` | 1. Turda Hazır |
+| **🤖 Yapay Zeka, Ajan SDK'ları, MCP ve Veri** | **340+** | FastMCP (`StreamableHTTP`), OpenAI Agents SDK, Claude Agent SDK, Google ADK, Vercel AI SDK, LangGraph, RAG, BigQuery, dbt | İsteğe bağlı (`compact-index.json`) |
+| **🌐 Web, Backend, API ve Veritabanları** | **380+** | React 19, Next.js 15 RSC, Tailwind CSS v4, TanStack Start/Router/Query, Hono RPC + Zod OpenAPI, Rust Axum/SQLx, Drizzle, Postgres/RLS | İsteğe bağlı (`compact-index.json`) |
+| **☁️ Bulut, DevOps, QA ve Güvenlik** | **300+** | Cloudflare Workers/Durable Objects/D1, Docker/K8s, Terraform, Playwright, Vitest + MSW v2, Better Auth (Passkeys), OWASP LLM Top 10 | İsteğe bağlı (`compact-index.json`) |
+| **🎨 UI/UX, Oyun Motorları ve Mobil** | **420+** | OKLCH Tasarım Token'ları, WCAG 2.2 AA, Motion, Unity 6 DOTS/ECS, Godot 4, Unreal 5, WebGPU/Three.js, Phaser/PixiJS, Tauri v2, SwiftUI, Flutter, React Native | İsteğe bağlı (`compact-index.json`) |
 
 ---
 
@@ -272,17 +305,18 @@ BoomOpen, tüm IDE'ler arasında ortak **`~/.agents/skills_library`** diziniyle 
 
 ```text
 BoomOpen-Workflow-Kit-Pro/
-├── agents/                  # 22 Uzman Ajan tanımı + 18 Altın Üçgen Ekibi (54 rol dosyası + 18 _team.md = 72 dosya)
-├── cli/                     # 14 Komutlu CLI Paketi: install, uninstall, list, doctor, check, settings, research, design, plan, cook, reconcile, audit, ledger & conduct
-├── commands/                # 36 Slash komutu (87 iş akışı: /onboard, /pr, /pr:review, /release, /audit, /autopilot, /conduct vb.) + 6 _ref/ protokolü (93 dosya)
-├── documents/               # 2 katmanlı Mimari, Alan, Kaynak Kod ve Kodlama Standartları dokümantasyonu
-├── i18n/                    # Çok dilli dokümantasyon (16 dilde eksiksiz README çevirisi)
-├── matrix-skills/           # Alan bazlı YAML yetenek matrisleri + önceden derlenmiş compact-index.json (1.462 yetenek)
-├── platforms/               # 5 platform için birleşik şablonlar (antigravity/, claude/, codex/, copilot/, cursor/) + kanca ve eklenti paketleri
-├── rules/                   # İsteğe bağlı yüklenen Mod B kuralları (CORE, PHASES, AGENTS, TEAMS, SKILLS, ERRORS, REFERENCE)
-├── scripts/                 # Python otomasyon ve doğrulama betikleri (checklist.py, verify_all.py, security_scan.py vb.)
-├── skills/                  # 22 Temel Yetenek (clean-code, debugger, plan-writing, frontend-design vb.)
-├── skills_library/          # ~/.agents/skills_library ile tekilleştirilen 1.440 niş yetenek (mcp-server & ai-agent-worker şablonları dahil)
+├── agents/                  # 22 Uzman Ajan (her IDE için derlenir) + 18 3 Rollü Ekip (72 dosya)
+├── cli/                     # Bağımlılıksız 14 Node.js CLI Alt Komutu + 33 node:test test paketi
+├── commands/                # 87 iş akışı dosyasında 36 Slash Komutu + 6 _ref/ protokolü (93 dosya)
+├── documents/               # Mimari, alan, kaynak kod tabanı ve Pragmatik 2 Katmanlı kodlama standartları belgeleri
+├── i18n/                    # Tamamı yerelleştirilmiş 16 README (kök README.md ile birlikte toplam 17 dil)
+├── matrix-skills/           # 19 alan YAML kataloğu + O(1) compact-index.json (indekslenmiş 1.462 yetenek)
+├── platforms/               # 5 IDE paketi, isteğe bağlı koruma kancaları, 3 Antigravity run_workflow/*.py ve Codex TOML rolleri
+├── rules/                   # İsteğe bağlı yüklenen 7 Mode B kural modülü (CORE, PHASES, AGENTS, TEAMS, SKILLS, ERRORS, REFERENCE)
+├── scripts/                 # Çapraz platform doğrulama ve oturum yardımcıları (checklist.py, verify_all.py, auto_preview.py, session_manager.py)
+├── skills/                  # 22 Çekirdek Yetenek + 15 app-builder proje şablonu + Güvenlik v6 / UX / Perf denetim betikleri
+├── skills_library/          # Ortak ~/.agents/skills_library dizinine tek seferde bağlanan 1.440 kütüphane yeteneği
+├── web/                     # https://boomopen.com adresine güç veren 15 dilli Cosmic WebGL vitrini ve aranabilir kataloglar
 └── GEMINI.md | CLAUDE.md | CODEX.md | COPILOT.md | CURSOR.md | AGENT.md
 ```
 
@@ -290,5 +324,6 @@ BoomOpen-Workflow-Kit-Pro/
 
 ## 📄 Lisans ve Güvenlik
 
-- **Lisans**: [MIT Lisansı](../LICENSE) altında dağıtılmaktadır. Telif Hakkı © 2026 **BoomOpen Labs**. `skills_library/` içindeki üçüncü taraf skill'ler kendi orijinal lisanslarını korur — bkz. [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
-- **Güvenlik Politikası**: Yerleşik güvenlik korumaları ve güvenlik açığı bildirim yönergeleri için [SECURITY.md](../SECURITY.md) dosyasına bakın.
+- **Resmi Web Sitesi**: [https://boomopen.com](https://boomopen.com)
+- **Lisans**: Kit kaynak kodu, CLI, kurallar, ajanlar ve dokümantasyon [MIT Lisansı](../LICENSE) altında yayımlanmaktadır (Telif Hakkı © 2026 **BoomOpen Labs**). `skills_library/` içindeki üçüncü taraf yetenekler kendi orijinal üst kaynak lisanslarını korur — bkz. [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
+- **Güvenlik Politikası**: SHA-256 manifesto korumaları, isteğe bağlı kanca kum havuzu izolasyonu ve güvenlik açığı bildirimi için [SECURITY.md](../SECURITY.md) dosyasına bakın.

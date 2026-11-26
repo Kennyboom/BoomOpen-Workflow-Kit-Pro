@@ -1,261 +1,303 @@
 <div align="center">
-  <h1>⚡ BoomOpen Workflow Kit v5.5.0</h1>
-  <p><strong>跨平台前沿护栏 (Frontier-Guardrails) 与智能混合 AI 研发操作系统 — 22 位专家级智能体、18 支黄金三角团队、36 个斜杠命令与 1,462 项按需技能宝库</strong></p>
+  <h1>⚡ BoomOpen Workflow Kit Pro v5.5</h1>
+  <p><strong>跨 Antigravity、Claude Code、OpenAI Codex、Cursor 与 GitHub Copilot 的多智能体工作流编排框架与确定性 CLI 质量门禁。</strong></p>
 
   <p>
     <a href="https://boomopen.com"><img src="https://img.shields.io/badge/Website-boomopen.com-06b6d4.svg" alt="Website: boomopen.com" /></a>
-    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
-    <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
-    <a href="#agents"><img src="https://img.shields.io/badge/Agents-22%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 22 Specialists + 18 Teams" /></a>
-    <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
-    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
-    <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
+    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Release-v5.5.0-7c3aed.svg" alt="Release: v5.5.0" /></a>
+    <a href="#platforms"><img src="https://img.shields.io/badge/IDEs-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="支持 5 大 AI IDE" /></a>
+    <a href="#cli"><img src="https://img.shields.io/badge/CLI-14%20Gates%20%C2%B7%200%20Deps-10b981.svg" alt="CLI: 14 道质量门禁, 0 运行时依赖" /></a>
+    <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 核心 + 1,440 扩展库" /></a>
+    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js >= 18.0.0" /></a>
+    <a href="../LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
   </p>
 
   <p>
-    <a href="../README.md">🇬🇧 English</a> • <a href="./README.vi.md">🇻🇳 Tiếng Việt</a> • <b>🇨🇳 简体中文</b> • <a href="./README.zh-TW.md">🇹🇼 繁體中文</a> • <a href="./README.ja.md">🇯🇵 日本語</a> • <a href="./README.ko.md">🇰🇷 한국어</a> • <a href="./README.es.md">🇪🇸 Español</a> • <a href="./README.fr.md">🇫🇷 Français</a> • <a href="./README.de.md">🇩🇪 Deutsch</a><br/>
-    <a href="./README.pt-BR.md">🇧🇷 Português</a> • <a href="./README.ru.md">🇷🇺 Русский</a> • <a href="./README.hi.md">🇮🇳 हिन्दी</a> • <a href="./README.ar.md">🇸🇦 العربية</a> • <a href="./README.id.md">🇮🇩 Bahasa Indonesia</a> • <a href="./README.th.md">🇹🇭 ไทย</a> • <a href="./README.tr.md">🇹🇷 Türkçe</a> • <a href="./README.it.md">🇮🇹 Italiano</a>
+    <a href="../README.md">English</a> •
+    <a href="./README.vi.md">Tiếng Việt</a> •
+    <b>简体中文</b> •
+    <a href="./README.zh-TW.md">繁體中文</a> •
+    <a href="./README.ja.md">日本語</a> •
+    <a href="./README.ko.md">한국어</a> •
+    <a href="./README.es.md">Español</a> •
+    <a href="./README.fr.md">Français</a> •
+    <a href="./README.de.md">Deutsch</a><br/>
+    <a href="./README.pt-BR.md">Português (BR)</a> •
+    <a href="./README.ru.md">Русский</a> •
+    <a href="./README.hi.md">हिन्दी</a> •
+    <a href="./README.ar.md">العربية</a> •
+    <a href="./README.id.md">Bahasa Indonesia</a> •
+    <a href="./README.th.md">ไทย</a> •
+    <a href="./README.tr.md">Türkçe</a> •
+    <a href="./README.it.md">Italiano</a>
   </p>
 
   <p>
-    <a href="https://boomopen.com"><b>🌐 官方网站 (boomopen.com)</b></a> •
-    <a href="#pillars"><b>🧠 6 大核心支柱</b></a> •
-    <a href="#platforms"><b>💻 5 大支持平台</b></a> •
-    <a href="#agents"><b>🤖 22 智能体 &amp; 18 团队</b></a> •
-    <a href="#skills"><b>📚 1,462 技能宝库</b></a>
+    <a href="https://boomopen.com"><b>🌐 boomopen.com（15 种语言）</b></a> •
+    <a href="#trailer"><b>🎬 发布宣传片</b></a> •
+    <a href="#why-boomopen"><b>⚡ 为什么需要 BoomOpen</b></a> •
+    <a href="#architecture"><b>🏗️ 架构设计</b></a> •
+    <a href="#quickstart"><b>🚀 快速开始</b></a> •
+    <a href="#cli"><b>🛠️ 14 道 CLI 门禁</b></a> •
+    <a href="#settings"><b>🎛️ 预设与配置</b></a> •
+    <a href="#commands"><b>🎯 36 个斜杠命令</b></a> •
+    <a href="#agents"><b>🤖 22 智能体与 18 团队</b></a> •
+    <a href="#skills"><b>📚 1,462 项按需技能</b></a>
   </p>
 </div>
 
 ---
 
-## 🎬 官方发布宣传片 (Full HD 1080p)
+<a id="trailer"></a>
+
+## 🎬 官方发布宣传片与交互式在线演练场 (`boomopen.com`)
 
 <div align="center">
   <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
-    <img src="https://raw.githubusercontent.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/main/assets/media/poster_en.png" alt="观看 BoomOpen Workflow Kit v5.5 官方发布宣传片 (Full HD 1080p)" width="92%" />
+    <img src="https://raw.githubusercontent.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/main/assets/media/poster_en.png" alt="观看 BoomOpen Workflow Kit Pro v5.5 官方发布宣传片 (Full HD 1080p)" width="92%" />
   </a>
   <p>
-    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>点击此处在线观看 / 播放 Full HD 1080p 官方宣传片 (MP4 专业配音版)</b></a> • 🌐 <a href="https://boomopen.com"><b>访问交互式展厅 boomopen.com</b></a>
+    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>在线播放 Full HD 1080p 官方宣传片（MP4 专业配音版）</b></a> • 🌐 <a href="https://boomopen.com"><b>前往 boomopen.com 体验 14 命令在线 CLI 演练场与技能目录检索（支持 15 种语言）</b></a>
   </p>
 </div>
 
 ---
 
-## 🌟 什么是 BoomOpen Workflow Kit v5.5？
+<a id="why-boomopen"></a>
+<a id="-what-is-boomopen-workflow-kit"></a>
 
-**BoomOpen Workflow Kit v5.5（前沿护栏 Frontier-Guardrails 与跨平台智能混合版）** 是一个开源的多智能体（Multi-Agent）研发操作系统，可将单一 AI 编程助手升级为由 **22 位按 IDE 原生编译的专家级智能体**、**18 支黄金三角对抗团队（`72` 个文件）**、**36 个斜杠命令（`93` 个命令与协议文件：`87` 个工作流 + `6` 个 `_ref/`）**、**14 个确定性 CLI 子命令**、**22 项核心技能** 以及 **1,440 项垂直领域技能库（共 `1,462` 项技能，单次去重安装至 `~/.agents/skills_library`）** 组成的协同工程团队。
+## ⚡ 为什么需要 BoomOpen Workflow Kit？
 
-不同于每轮对话都会带来上下文膨胀的笨重代理封装，BoomOpen v5.5 全新安装默认启用跨五大 IDE 的 **`⚡ smart-hybrid`（Turn-1 主动弹性蜂群 + 17 种语言自然语言意图路由）**，同时提供可选的 **`🛡️ frontier-guardrails`（`< 2.5 KB` / `~600 tokens` 超轻量 Mode A 预设）**，开箱即释放 **4 层动态弹性蜂群分片（`role#shard`）**、**Wave 2.5 规格到代码自动对账（`boomopen reconcile`）**、**多轮次全项目审计（`/audit` & `boomopen audit`）**、**多会话项目自动驾驶（`/autopilot`）** 与 **跨引擎指挥官（`/conduct`）**：
-- **⚡ 默认 `smart-hybrid` 主动弹性蜂群 + 17 语言意图路由**：开箱即用，已知目标微改（`≤ 2` 个文件）直接走 Mode A 极速执行；而跨多文件任务、深度调研、头脑风暴、架构规划以及显式调用 **36 个 `/cmd` 命令**（含 **`/onboard`**、**`/pr` + `/pr:review`**、**`/release`** 等）会自动在 Turn 1 并发启动子代理分片（`role#shard`，每分片 `<= 3–4` 个 `OWNED_FILES`），结合 **契约优先文件锁（`SHARED_CONTRACT` + `OWNED_FILES`）**、**Wave 2.5 规格对账（`boomopen reconcile` + `cook amend-plan`）** 与 **热会话复用（`send_message`）**。
-- **🛡️ 可选超轻量 `frontier-guardrails`（`< 2.5 KB` Slim Mode A）**：偏好在 `≤ 10` 个文件以内保持原生直接 Mode A（`mode_a <= 10 files`）并关闭自然语言自动触发（`naturalLanguageResearchTrigger = off`）？只需运行 `boomopen settings preset frontier-guardrails` 即可在 `< 10ms` 内切换（保留 `carbon-guardrails` 作为向后兼容别名）。
-- **🏛️ 多会话自动驾驶 (`/autopilot`)、多轮全项目审计 (`/audit`) 与跨引擎委员会 (`/conduct`)**：将需求文档编译为带 SHA-256 防漂移校验的 `.boomopen/project-ledger.json` 账本，支持安全回滚（`boomopen ledger rollback --yes`）与 4 层阶段门禁（`boomopen check --strict-phase --no-stubs`）；通过 `/audit` 与 `boomopen audit`（支持 `boomopen audit rollback --yes`）执行 RTM 需求覆盖、UI->API->DB 垂直链路与 **2 层安全防泄漏扫描（`security_scan.py` v6）**；或通过 `boomopen conduct`（含 `--dry-run` 预演）调度五大引擎并行委员会。
-- **📚 1,462 去重共享技能库与 15 套 `app-builder` 模板（零上下文膨胀）**：单次安装至 `~/.agents/skills_library` 供全部 5 大 IDE 共享，经由 `matrix-skills/compact-index.json` 实现 `O(1)` 两步按需检索（`22` 核心 + `1,440` 领域技能，含 **`mcp-server`** 与 **`ai-agent-worker`** 在内的 **15 套 `app-builder` 工程模板**）。
+**原生 AI 编程助手的工程瓶颈：** 开箱即用的单智能体编程工具一旦面对跨多文件、跨领域或跨会话的复杂研发任务，交付质量便会迅速劣化：串行翻阅文件污染主会话上下文窗口；缺乏协同的子智能体互相覆盖共享文件，或留下未挂载的“孤岛”模块；生成代码暗藏 `TODO` 桩代码与显式 `any` 类型逃逸；单一模型既写代码又做评审（`Author == Critic`）难以察觉自身盲区；多阶段长周期开发更会在上下文压缩后偏离原始技术规格。
+
+**BoomOpen 的解决思路：** BoomOpen 在 **Antigravity (Gemini)**、**Claude Code**、**OpenAI Codex**、**Cursor** 和 **GitHub Copilot** 之上构建了一套**零运行时 npm 依赖**的统一多智能体编排与确定性验证底座。默认启用 **`smart-hybrid`** 配置后，`≤ 2` 个文件的明确微改直接零开销执行；而跨文件特性开发、深度技术调研、架构规划以及 **`36` 个斜杠命令（`93` 个工作流与协议文件）** 则会在首轮（Turn 1）自动按领域分片调度 **22 位专业智能体** 与 **18 支三角色对抗评审团队**，全程由 **14 个本地 `boomopen` CLI 确定性质量门禁** 强约束，并按需挂载 **`1,462` 项工程技能**（`22` 项核心技能 + 单次去重存储于 `~/.agents/skills_library` 的 `1,440` 项扩展技能）。
+
+### ⚖️ 原生 AI IDE vs. 接入 BoomOpen v5.5 对比
+
+| 典型工程失效模式 | 未接入 BoomOpen（原生 AI IDE） | 接入 BoomOpen Workflow Kit Pro v5.5 |
+|:-----------------|:-------------------------------|:------------------------------------|
+| **上下文窗口膨胀** | 主智能体串行读取 15–30 个文件后才开始写第一行代码 | **Turn-1 弹性分片蜂群 (`role#shard`)**：并发派发只读侦察与领域分片（每分片 `≤ 3–4` 个文件）+ `0s` 热会话复用（`send_message`） |
+| **并发覆盖与链路断层** | 并行子任务互相覆盖公共文件、前后端自造不一致的 `/api` 路由或遗留死模块 | **契约优先文件锁 + Wave 2.5 对账**：Wave 1 锁定 `SHARED_CONTRACT` 与互斥 `OWNED_FILES`，经 `boomopen reconcile`（`REC-G1..G4`）自动核验 |
+| **浅层调研与空泛计划** | 单一视角迎合式回答、未经核实的论断、散文式无约束计划文档 | **证据门控 6 模块规格书**：`:team` 反方辩手对抗质询 + `< 50ms` 本地 CLI 校验器（`boomopen research`、`design`、`plan`） |
+| **隐式桩代码、`any` 与测试作弊** | 智能体宣称完工，实则遗留 `// TODO`、显式 `any`、调试 `console.log` 或 `.skip` 测试 | **务实双层静态质量门禁**：`boomopen check --strict-phase --no-stubs` 强制执行 `0` `any`、`0` 桩代码及 `400/500` 行内聚上限 |
+| **跨会话规格漂移与回归故障** | 上下文压缩冲掉阶段约束，后续改动破坏原本已通过的功能 | **5 层阶段质量棘轮与原子回滚**：`.boomopen/project-ledger.json` SHA-256 规格防漂移校验、`/autopilot`、`/audit` 与 `rollback --yes` |
+| **单一模型认知盲区** | 同一模型既负责实现又负责代码审查（`Author == Critic`） | **跨引擎指挥官 (`/conduct`)**：跨 Claude Code、Codex、Antigravity、Cursor 与 Copilot 并行召开多引擎委员会与跨模型家族流水线 |
+| **5 大 IDE 配置割裂与 Git 脏工作区** | 各 IDE 维护独立提示词、重复占用数 GB 技能目录、临时规格书污染 `git status` | **毫秒级统一同步与洁净 Git**：`< 10ms` 同步 14 个入口文件，共享单一 `~/.agents/skills_library`（`0` 空闲 Token），过程产物路由至 Brain Artifacts |
 
 ---
 
-## 🏗️ 智能混合架构图 (v5.5)
+<a id="architecture"></a>
+<a id="-smart-hybrid-architecture-v55"></a>
+
+## 🏗️ 智能混合架构设计 (v5.5)
 
 ```mermaid
 flowchart TD
-    User["👤 用户请求 / 斜杠命令"] --> Gate{"🚦 预设与智能复杂度门控"}
-    Gate -->|"frontier-guardrails (≤ 10 个文件) 或 Mode A (≤ 2 个文件)"| ModeA["⚡ Mode A: 直接执行 (Tier 0)<br/>~600 tokens 轻量护栏 + 务实双层编码规范"]
-    Gate -->|"显式 /cmd、超阈值文件数 或 Mode B"| ModeB["🎻 Mode B: 多智能体编排器 (Tier 1)<br/>Model: inherit"]
+    User["👤 自然语言指令（支持 17 种语言）或 /cmd"] --> Gate{"🚦 预设与复杂度路由门控"}
+    Gate -->|"smart-hybrid（≤ 2 个已知文件）或 frontier-guardrails（≤ 10 个文件）"| ModeA["⚡ Mode A：直接执行（Tier 0）<br/>务实双层编码规范 + 严格端到端验证"]
+    Gate -->|"> 2 个文件、未知范围探索、17 语言工作流意图或显式 /cmd"| ModeB["🎻 Mode B：Turn-1 多智能体并发分片（Tiers 1–3）<br/>Model: inherit · 每分片 ≤ 3–4 个 OWNED_FILES"]
 
-    ModeB --> FanOut["🔀 阶段 1: DAG 并行扇出<br/>(researcher + scouter | debugger + researcher)"]
-    FanOut --> Plan["📋 阶段 2: 契约优先规划 (planner)<br/>锁定 SHARED_CONTRACT + OWNED_FILES"]
-    Plan --> Dispatch{"🎯 执行变体路由"}
+    ModeB --> Wave0["🔍 Phase 1：并行技术调研与代码库侦察<br/>(researcher + scouter 分片 | boomopen research validate)"]
+    Wave0 --> Wave1["📐 Wave 1：契约优先规格与 Schema 锁定<br/>(SHARED_CONTRACT + DESIGN_CONTRACT + boomopen plan validate)"]
+    Wave1 --> Wave2{"🎯 Wave 2：互斥文件分片并行实施"}
 
-    Dispatch -->|":fast / :hard"| Direct["⚡ 计划直达工程师分片并行派发<br/>(backend-engineer + frontend-engineer shards)"]
-    Dispatch -->|":team"| Triangle["🔺 黄金三角对抗审查团队<br/>(TechLead ⇄ Executor ⇄ Reviewer 经由 MAILBOX)"]
+    Wave2 -->|":fast / :hard"| Direct["⚡ 计划直达工程师分片派发<br/>(backend/frontend/db/mobile/game-engineer#shard)"]
+    Wave2 -->|":team / Council"| Diamond["💎 弹性黄金菱形与多引擎委员会<br/>(Tech Lead ⇄ 并行执行分片 ⇄ 独立评审 · Author != Critic)"]
 
-    Direct --> Verify["🧪 阶段 4: Wave 2.5 对账与热会话验证<br/>reconcile + tester + reviewer (0秒热循环)"]
-    Triangle --> Verify
+    Direct --> Wave25["🔗 Wave 2.5：规格到代码一致性对账<br/>(spec-reconciler + boomopen reconcile REC-G1..G4)"]
+    Diamond --> Wave25
+    Wave25 --> Wave3["🧪 Wave 3：热会话 QA、Security v6 与 5 层质量棘轮<br/>(check --strict-phase --no-stubs + tester + reviewer)"]
 ```
 
 ---
 
 <a id="pillars"></a>
 
-## 🧠 v5.5 的 6 大核心支柱
+## 🧠 6 大核心工程支柱
 
-1. **🌐 五大平台统一架构与 2026 原生生命周期钩子 (`platforms/*`)**：
-   - 为 **Antigravity (Gemini)**、**Claude Code**、**OpenAI Codex**、**Cursor** 和 **GitHub Copilot** 按各 IDE 原生格式编译 **22 位专家智能体**，并共享同一份去重技能库 `~/.agents/skills_library`。
-   - 深度集成 2026 平台原生能力：**Antigravity 原生插件模式**（`boomopen install antigravity --as-plugin`）与 **`run_workflow` Python 编排脚本**（`platforms/antigravity/workflows/*.py`）、**Claude Code `isolation: worktree`** 独立工作树 + 冒号命令（`/plan:hard`、`/pr:review`）+ `PreCompact`/`Stop` 质量门禁钩子（`stop-quality-gate.mjs`）+ `Bash|PowerShell` 命令安全守卫（`validate-tool-call.mjs`，通过 `--with-hooks` 启用），以及 **OpenAI Codex 操作系统级 `read-only` 沙箱**（`platforms/codex/config.toml`）。
-2. **📏 务实双层编码规范（Pragmatic 2-Tier Coding Standards — 拒绝机械拆碎文件）**：
-   - **第一层（Tier 1 — 严苛质量与安全底线，零容忍）**：单一职责原则、**严禁显式 `any`**、**严禁在生产代码中遗留调试 `console.log`**、异步与 API 边界强制 `try/catch` 与强类型错误处理、常量 `SCREAMING_SNAKE_CASE`、DRY（≥ 3）与导入排序。
-   - **第二层（Tier 2 — 弹性结构指南，内聚优先）**：单文件软目标 `~200–350 行`，软上限 `~400–450 行`（仅当 `>500 行` 或混杂多领域职责时强制拆分；测试、Schema/Types 与文档豁免）。逻辑函数 `~20–40 行`（UI/处理函数 `~40–80 行`）。
-3. **🎯 4 层动态弹性蜂群分片（`role#shard`）、计划直达派发 & 热会话复用 (`send_message`)**：
-   - 一旦生成 `PLAN-{feature}.md`，编排器将任务**直接派发**给领域工程师分片（每分片 `<= 3–4` 个 `OWNED_FILES`），消除多余 `tech-lead` 中转，并通过 `role#shard → conversationId` 实现 0 秒热复用。
-4. **🤝 契约优先并行派发 (`SHARED_CONTRACT` + `OWNED_FILES`)**：
-   - 并行开发前预先锁定 API 契约、DTO 结构与互斥写入所有权（`OWNED_FILES` vs. `READ_ONLY_FILES`），配合 Wave 2.5 `boomopen reconcile`（`REC-G1..G4`）自动消除孤岛模块与路由偏差。
-5. **🔍 5-Whys (SPIE v3.0) 根因调试与 100% 洁净 Git 树**：
-   - `debugger` 通过 3 假设验证与 **5-Whys 因果链**定位系统根因。过程产物（`PLAN`、`DEBUG`、`TEST`、`REVIEW`、`MAILBOX`）默认写入 `<appDataDir>\brain\<conversation-id>\`（或 `./reports/`），保持项目 Git 工作区 100% 洁净。
-6. **🩺 内置 14 命令 CLI 套件 (`research`, `design`, `plan`, `cook`, `reconcile`, `audit`, `ledger`, `conduct`, `check`, `doctor`, `settings`, `install`, `uninstall`, `list`)**：
-   - `npm run doctor` 校验五大平台配置、22 个智能体、72 个团队文件（18 个团队目录）、`commands/**/*.md` 中的 **93 个命令文件**（`87` 个工作流 + `6` 个 `_ref/`）及 `matrix-skills/compact-index.json`（`1,462` 项技能）。内置确定性工作流编译器，并支持 `boomopen ledger rollback --yes`、`boomopen audit rollback --yes` 与 `boomopen conduct --dry-run`。
+1. **🌐 5 大 IDE 原生格式编译与单实例去重技能库 (`platforms/*`)**：
+   - 将 **22 位专业智能体** 与 **93 个命令及参考协议文件** 编译为各 IDE 的原生形态：**Antigravity**（`--as-plugin` 插件包 + `3` 个可执行 `run_workflow` Python 并发脚本：`audit_fanout.py`、`review_fanout.py`、`research_fanout.py`）、**Claude Code**（`isolation: worktree` 隔离分片、`/plan:hard` 冒号命令、可选 `PreToolUse` 与 `Stop`/`PreCompact` 生命周期钩子）、**OpenAI Codex**（`22` 个 TOML 角色定义，为侦察与评审角色启用操作系统级 `read-only` 沙箱 + `87` 项 `$boomopen-*` 技能）、**Cursor**（`.mdc` 规则 + 可选 `beforeShellExecution` 拦截钩子）以及 **GitHub Copilot**（`.agent.md` 原生智能体）。
+   - 全部 `1,440` 项扩展技能单次去重链接至 `~/.agents/skills_library` 供 5 大 IDE 共用（节省约 80% 磁盘占用，Turn-1 零额外 Token 开销）。
+2. **🎯 4 层动态弹性分片蜂群 (`role#shard`) 与作用域热会话复用**：
+   - 按任务规模自动从 **Tier 0**（`≤ 2` 个已知文件时不启动子智能体）弹性扩展至 **Tier 1**（`2–3` 分片）→ **Tier 2**（`4–6` 分片）→ **Tier 3**（`7–8+` 分片，最高可配置至 `16`），严格限制单个子智能体的认知负载不超过 **`≤ 3–4` 个 `OWNED_FILES`**，并通过 `role#shard → conversationId`（`send_message`）复用活跃上下文。
+3. **🤝 三波次契约优先执行 + Wave 2.5 自动对账 (`REC-G1..G4`)**：
+   - Wave 1 先行锁定 `SHARED_CONTRACT`（API Schema/DTO）与 `DESIGN_CONTRACT`（OKLCH `@theme` CSS 令牌 + TypeScript 组件属性），随后 Wave 2 再并发派发各领域工程师。Wave 2.5 运行 `boomopen reconcile` 与 `spec-reconciler`，精准拦截未挂载的孤岛文件（`REC-G1`）、前后端路由不匹配（`REC-G2`）、遗漏的 `[SC-*]` 验收子条款（`REC-G3`）及 `.env.example` 缺失环境变量（`REC-G4`），并通过 `boomopen cook amend-plan` 自动追加增量修复波次。
+4. **🏛️ 跨会话项目自动驾驶 (`/autopilot`) 与有状态多轮全量审计 (`/audit`)**：
+   - 将多文档规格书编译为带 SHA-256 漂移检测的 `.boomopen/project-ledger.json`，在每个阶段前自动打下 Git 检查点（支持 `boomopen ledger rollback --yes`），并强制通过 **5 层阶段质量棘轮**（`G1 check --strict-phase --no-stubs` → `G2 测试用例单调递增棘轮` → `G3 reconcile --strict` → `G4 Author != Critic 独立审查` → `G5 ledger verify`）。项目开发完成后，`/audit` 基于状态账本（`.boomopen/audit-ledger.json` + `boomopen audit rollback --yes`）执行人工门控的多轮 RTM 需求矩阵、全栈垂直链路及 Security v6 深度审计。
+5. **🎼 跨引擎指挥官与多引擎并行委员会 (`boomopen conduct`)**：
+   - 同时调度 Claude Code、OpenAI Codex、Antigravity、Cursor 与 Copilot 组建 **6 类任务并行委员会**（`research`、`brainstorm`、`plan`、`design`、`review`、`debug` → 输出四段式 `COUNCIL-SYNTHESIS.md` 共识报告）或 **跨模型家族角色流水线**，确保任何模型都不会既当作者又当裁判（`Author != Critic`）。
+6. **📏 务实双层编码规范与 SPIE v3.0 根因调试体系**：
+   - **第一层（红线零容忍）**：单一职责、`0` 显式 `any`、业务代码 `0` 调试 `console.log`、异步/I/O 边界强类型 `try/catch`、配置常量采用 `SCREAMING_SNAKE_CASE`。**第二层（内聚优先）**：单文件目标 `~200–350` 行（`400` 行软上限 / `500` 行硬拆分线；测试、类型定义与文档豁免）。缺陷排查强制经过 3 项优先级假设验证与 **5-Whys (SPIE v3.0)** 因果链推导，临时规格产物统一写入 Brain Artifacts 以保持 Git 工作区 `100%` 洁净。
 
 ---
 
 <a id="platforms"></a>
+<a id="-supported-ai-platforms"></a>
 
-## 💻 支持的 AI 编程平台
+## 💻 支持的 5 大 AI 编程平台
 
-| 平台名称 | 支持级别 | 全局入口文件 | 框架、插件与钩子安装路径 |
-|----------|:-------------:|-------------------|------------------------|
-| **Antigravity (Gemini)** | ✅ 原生 v5.5 | `~/.gemini/GEMINI.md` | `~/.gemini/config/skills/boomopen-workflow-kit/` *（或 `--as-plugin` → `~/.gemini/config/plugins/boomopen-workflow-kit/`）* |
-| **Claude Code** | ✅ 原生 v5.5 | `~/.claude/CLAUDE.md` | `~/.claude/skills/boomopen-workflow-kit/` + `~/.claude/agents/`（`isolation: worktree` + `PreCompact`/`Stop` 钩子） |
-| **OpenAI Codex** | ✅ 原生 v5.5 | `~/.codex/CODEX.md` & `AGENTS.md` | `~/.codex/skills/boomopen-workflow-kit/` + `config.toml`（OS `read-only` 沙箱） |
-| **Cursor** | ✅ 原生 v5.5 | `~/.cursor/rules/boomopen-workflow-kit.mdc` | `~/.cursor/skills/boomopen-workflow-kit/` + 可选 `.cursor/hooks.json` |
-| **GitHub Copilot** | ✅ 原生 v5.5 | `~/.copilot/COPILOT.md` | `~/.copilot/skills/boomopen-workflow-kit/` + `~/.copilot/agents/` |
-
-> **单次去重技能库**：全部 `1,440` 项领域技能仅安装一份于 `~/.agents/skills_library/` 并跨平台链接，彻底告别多 IDE 重复占用磁盘。
+| 平台 | 支持版本 | 同步入口文件 | 平台原生集成能力 |
+|:-----|:--------:|:-------------|:-----------------|
+| **Antigravity (Gemini)** | ✅ v5.5 | `~/.gemini/GEMINI.md` | `invoke_subagent`、`run_workflow` Python 并发扇出、`/goal` 持久外层循环、`--as-plugin` 插件包、可选 `--with-hooks`、Brain Artifacts |
+| **Claude Code** | ✅ v5.5 | `~/.claude/CLAUDE.md` | 并行 `Task`/`Agent` 分片（`isolation: worktree`）、`/plan:hard` 冒号命令、可选 `PreToolUse` 与 `Stop`/`PreCompact` 钩子 |
+| **OpenAI Codex** | ✅ v5.5 | `~/.codex/AGENTS.md` & `CODEX.md` | `~/.codex/agents/boomopen/` 下 `22` 个 TOML 角色（侦察/评审启用 OS 级 `sandbox_mode = "read-only"`）+ `87` 项 `$boomopen-*` 技能 |
+| **Cursor** | ✅ v5.5 | `~/.cursor/rules/boomopen-workflow-kit.mdc` | 常驻 `.mdc` Frontmatter 规则、`CURSOR.md`、子智能体路由与可选 `.cursor/hooks.json`（`beforeShellExecution`） |
+| **GitHub Copilot** | ✅ v5.5 | `~/.copilot/copilot-instructions.md` | VS Code 编译版 `boomopen-workflow-kit.agent.md` 提示词智能体、`runSubagent` 分发与 `COPILOT.md` |
 
 ---
 
-## 🚀 快速开始与安装指南
+<a id="quickstart"></a>
+<a id="-quick-start--installation"></a>
+
+## 🚀 快速开始与安装（仅限 Git 仓库分发 — 零运行时依赖）
 
 ```bash
-# 1. 克隆代码仓库
+# 1. 克隆代码仓库（仅通过 GitHub 分发 —— 从未发布至 npm）
 git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
 cd BoomOpen-Workflow-Kit-Pro
 
-# 2. 为您的 AI 编程助手安装（任选其一，可附加 --with-hooks / --as-plugin，或 --all）
-npm run install:antigravity                        # Google Antigravity 2.0 (Gemini)
-node cli/install.js install antigravity --as-plugin # 原生 Antigravity 插件包模式安装
-node cli/install.js install claude --with-hooks    # Claude Code 并注册 PreToolUse & Stop/PreCompact 钩子
-npm run install:codex                              # OpenAI Codex CLI（含 OS 级 read-only 沙箱配置）
-npm run install:cursor                             # Cursor AI Editor
-npm run install:copilot                            # GitHub Copilot (VS Code)
-npm run install:all                                # 一键安装全部 5 大平台
+# 2. 为单个 AI IDE 安装（默认预设：smart-hybrid）或一键同步全部 5 大 IDE
+npm run install:all                                 # 安装并同步全部 5 大 IDE + 共享 ~/.agents/skills_library
+npm run install:antigravity                         # Google Antigravity 2.0（可附加 --as-plugin / --with-hooks）
+node cli/install.js install claude --with-hooks     # Claude Code + 启用可选 PreToolUse 与 Stop/PreCompact 钩子
+npm run install:codex                               # OpenAI Codex CLI + OS 级只读侦察/评审沙箱
+npm run install:cursor                              # Cursor（附加 --with-hooks 启用 beforeShellExecution 命令守卫）
+npm run install:copilot                             # GitHub Copilot（VS Code .agent.md + copilot-instructions.md）
 
-# 3. 校验安装结果与确定性 CLI 门禁（可选 npm link 将 boomopen 加入 PATH）
+# 3. 运行健康检查，并可选将 `boomopen` 软链接至全局 PATH
 npm run doctor
 npm link
-boomopen research validate path/to/RESEARCH.md
-boomopen design validate path/to/DESIGN.md
-boomopen plan validate path/to/PLAN.md
-boomopen cook preflight path/to/PLAN.md
-boomopen reconcile path/to/your/project --plan path/to/PLAN.md
-boomopen audit init --docs docs/prd.md,docs/arch.md
-boomopen audit rollback --yes                                   # 一键回滚至审计修复前的 Git 检查点
-boomopen check path/to/your/project --strict-phase --no-stubs
-boomopen ledger status                                          # 查看多阶段账本（或 boomopen ledger rollback --yes）
-boomopen conduct council plan "认证架构重构" --dry-run            # 预演跨引擎委员会调度 (--dry-run)
+boomopen settings status
 ```
 
-> 本套件**未发布到 npm**，请仅从本仓库安装（`boomopen uninstall <tool>` 可干净卸载套件并保留您的个人文件）。
+> **非破坏性安全安装与卸载**：全程通过 SHA-256 清单（`~/.boomopen/manifests/<tool>.json`）追踪文件变更。`GEMINI.md` / `CLAUDE.md` 标记块之外的个人自定义规则会完整保留并自动备份；执行 `boomopen uninstall <tool|--all>` 仅精准移除未修改的套件文件，绝不误删用户自有配置。
 
 ---
 
-## 🎛️ 统一设置与执行模式选择 (`/settings` 控制中心)
+<a id="cli"></a>
 
-BoomOpen v5.5 内置**零延迟统一控制中心**（全新安装默认启用 **`⚡ smart-hybrid`**），支持在 `< 10ms` 内跨全部 **5 大平台**同步 20 项枚举配置 + 2 项行数上限（首轮对话延迟 **0ms**）：
+## 🛠️ 14 个零依赖 CLI 子命令 (`boomopen`)
 
-### 1️⃣ 5 套一键预设配置（默认推荐 `smart-hybrid`）
+基于 Node.js `>= 18` 本地运行，单次执行 `< 50ms`，**零 npm 运行时依赖**、**零外部网络请求**：
 
-| 预设配置 (`Preset`) | 执行模式 (`execution.mode`) | 默认变体 | 自然语言工作流路由 (`naturalLanguageResearchTrigger`) | 代码规范 (`codingStandards`) | 适用场景 |
-|:---|:---|:---:|:---:|:---:|:---|
-| **⚡ `smart-hybrid`** *(默认推荐)* | **`auto`**（`≤ 2 个文件` 走 Mode A 直接执行；`> 2 个文件` 或 `/cmd` 走 Mode B 多智能体） | `auto` | **`auto_team`** *(自动路由自然语言调研/构思至 `:team` 黄金三角)* | `pragmatic` (`400/500` 行) | 全新安装默认配置：跨全部 5 大 IDE 支持 17 语言自然语言工作流路由 + 超过 2 个文件自动 Turn-1 蜂群分片 |
-| **🛡️ `frontier-guardrails`** *(可选轻量 Mode A)* | **`mode_a`** *（`≤ 10 个文件` 直接执行；`< 2.5 KB` / `~600 tokens` 超轻量护栏）* | `auto` | **`off`** *（零自然语言劫持；仅响应显式 `/cmd`）* | `pragmatic` (`400/500` 行) | 可选 `< 2.5 KB` 极速直连 Mode A 预设（`boomopen settings preset frontier-guardrails`），兼顾严格编码与 E2E 门禁 *（保留 `carbon-guardrails` 作为向后兼容别名）* |
-| **🚀 `solo-fast`** | **`mode_a`** *(强制单智能体直接执行，0 秒子代理开销)* | `fast` | `off` *(直接回复，除非显式输入 `/brainstorm`)* | `relaxed` (`600/800` 行) | 紧急热修复、快速原型验证、小型脚本与极致节省 Token |
-| **🧠 `deep-architect`** | **`mode_b`** *(所有任务强制启用 Mode B 多智能体编排)* | `hard` | `auto_hard` *(自动运行 `/research:hard` / `/brainstorm:hard`)* | `strict` (`300/400` 行) | 复杂系统架构设计、从零新建项目与跨领域重构 |
-| **🔺 `adversarial-team`** | **`team`** *(所有工作流强制启用 3 智能体黄金三角 `:team`)* | `team` | **`auto_team`** *(3 智能体经由 `MAILBOX` 交叉对抗评审)* | `strict` (`300/400` 行) | 核心生产系统、金融级安全审计与零缺陷交付 |
+| 子命令 | 核心参数与语法 | 确定性质量门禁与工程职责 |
+|:-------|:---------------|:-------------------------|
+| **`install` / `uninstall` / `list`** | `<tool\|--all> [--with-hooks] [--as-plugin]` | SHA-256 清单安装器、共享 `~/.agents/skills_library` 链接器、可选安全钩子注入与无残留卸载 |
+| **`doctor`** | `[--source-only]` | 30 项只读完整性自检：覆盖 5 大 IDE 产物、`93` 个命令文件、`72` 个团队文件、`1,462` 项技能与配置同步状态 |
+| **`settings`** | `status \| preset <name> \| set <k> <v> \| --ui` | 管理 5 套预设 + `22` 项配置键（`--project` 写入 `./.boomopen.json`），或启动带 CSP 防护的本地 Web 面板（`127.0.0.1:4567`） |
+| **`research`** | `<validate\|brief> <file.md> [--mode brainstorm]` | 校验 **`RES-G1..G4`**（`≥ 4` 信源交叉三角验证、矛盾矩阵、事前验尸风险）并提炼 `HANDOFF_BRIEF` |
+| **`design`** | `<validate\|contract> <DESIGN.md> [--json]` | 校验 **`DESIGN-G1..G4`**（6 模块设计规格、OKLCH 色彩令牌、5 状态 UI 矩阵、WCAG 2.2 AA）并生成 `DESIGN_CONTRACT` |
+| **`plan`** | `<validate\|compile> <PLAN.md> [--sync-ledger]` | 校验 **`PLAN-G1..G5`**（无环 DAG、互斥 `OWNED_FILES ≤ 4`/分片、`SHARED_CONTRACT`）并同步项目账本 |
+| **`cook`** | `<state\|packets\|verify-wave\|preflight\|amend-plan>` | 校验 **`COOK-G1..G4`**：5 阶段快进状态检测、5 字段波次交接包编译、Git 写锁核验与增量波次修订 |
+| **`reconcile`** | `<dir> [--plan <PLAN.md>] [--strict]` | Wave 2.5 **`REC-G1..G4`**：检测未挂载孤岛模块、`/api` 前后端路由偏差、遗漏 `[SC-*]` 条款及 `.env.example` 缺口 |
+| **`check`** | `[path] --strict-phase --no-stubs [--ignore <dir>]` | 务实双层静态门禁：`400/500` 行预算、`0` 显式 `any`、`0` 调试 `console.log`、`0` 桩代码/`TODO`/`.skip` |
+| **`ledger`** | `<init\|from-plan\|status\|next\|verify\|rollback>` | 跨会话 `.boomopen/project-ledger.json` DAG 状态机、SHA-256 规格防漂移守卫与原子级 `rollback --yes` |
+| **`audit`** | `<init\|slice\|record\|approve\|verify-fix\|rollback>` | 完工后有状态多轮审计账本（`.boomopen/audit-ledger.json`）、问题收敛棘轮与 `rollback --yes` |
+| **`conduct`** | `<probe\|council\|dispatch\|status> [--dry-run]` | 跨引擎指挥官与 6 类任务并行多引擎委员会（跨 5 大 IDE 落实 `Author != Critic` → `COUNCIL-SYNTHESIS.md`） |
 
-### 三种切换方式（聊天框 `/settings`、本地 Web 面板、终端 CLI）
+---
+
+<a id="settings"></a>
+<a id="-unified-settings--mode-selection-settings"></a>
+
+## 🎛️ 统一控制中心与 5 套预设 (`/settings`)
+
+支持全局（`~/.boomopen/settings.json`）或仓库级（`./.boomopen.json`）管理 **`20` 项枚举配置键 + `2` 项自定义行数上限**，并在 `< 10ms` 内热同步至全部 14 个 IDE 入口文件：
+
+| 预设档位 | 执行模式 (`execution.mode`) | 默认 `/cmd` | 17 语言自然语言路由 (`naturalLanguageResearchTrigger`) | 编码规范 | 适用工程场景 |
+|:---------|:----------------------------|:-----------:|:------------------------------------------------------:|:--------:|:-------------|
+| **⚡ `smart-hybrid`** *（默认）* | **`auto`**（`≤ 2` 个文件直连执行；`> 2` 个文件或 `/cmd` → Mode B 蜂群） | `auto` | **`auto_team`** *（将 17 种语言的调研/构思/审查意图自动路由至 `:team` 与对应工作流）* | `pragmatic` (`400/500`L) | 默认开箱体验：自然语言工作流意图识别 + Turn-1 自动并发分片 |
+| **🛡️ `frontier-guardrails`** *（可选极简档）* | **`mode_a`**（`≤ 10` 个文件直连；`< 2.5 KB` / `~600` Token 入口） | `auto` | **`off`** *（仅响应显式 `/cmd` —— 零自然语言拦截）* | `pragmatic` (`400/500`L) | `< 2.5 KB` 超轻量日常直连模式，保留双层规范与端到端门禁 *（兼容别名 `carbon-guardrails`）* |
+| **🚀 `solo-fast`** | **`mode_a`**（`≤ 10` 个文件直连；保守上限 `3` 分片） | `fast` | `off` | `relaxed` (`600/800`L) | 快速原型验证、小型脚本编写、紧急热修复与低 Token 消耗场景 |
+| **🧠 `deep-architect`** | **`mode_b`** *（强制启用 Mode B 编排器；最高 `12` 分片）* | `hard` | `auto_hard` + `council` 调研 / `cross_family` 审查 | `strict` (`300/400`L) | 复杂系统架构设计、全新项目搭建与跨模块大规模重构 |
+| **🔺 `adversarial-team`** | **`team`** *（弹性黄金菱形 `:team`；`hyper_swarm` 最高 `12` 分片）* | `team` | **`auto_team`** + `council` 调研、规划与审查 | `strict` (`300/400`L) | 核心生产环境发布、高敏安全审计与多引擎交叉共识评审 |
 
 ```bash
-# 1. 聊天框内直接输入斜杠命令（弹出交互式选择菜单或单行速设）
-/settings                                     # 打开交互式选择菜单 (ask_question UI)
-/settings preset smart-hybrid                 # 切换为默认推荐模式（Auto Mode A/B + 17 语言自动路由）
-/settings preset frontier-guardrails          # 切换为可选轻量 <2.5KB Mode A 模式（兼容别名：carbon-guardrails）
-/settings preset solo-fast                    # 切换为 Mode A 极速单代理直接执行
-/settings preset deep-architect               # 切换为 Mode B 多智能体深度编排
-/settings preset adversarial-team             # 切换为黄金三角 3 智能体对抗团队 (:team)
-/settings mode auto | mode_a | mode_b | team  # 单独覆盖执行模式 (execution.mode)
-
-# 2. 启动本地 Web 可视化控制中心 (http://127.0.0.1:4567)
-boomopen settings --ui
-
-# 3. 终端 CLI 命令（支持全局 ~/.boomopen/settings.json 与项目级 ./.boomopen.json）
-boomopen settings status
-boomopen settings preset smart-hybrid         # 全局应用默认推荐 smart-hybrid 并同步五大 IDE
-boomopen settings preset frontier-guardrails  # 切换为可选超轻量 <2.5KB Mode A 预设（别名：carbon-guardrails）
-cd path/to/your/project && boomopen settings set execution.mode mode_a --project
-boomopen settings reset                       # 恢复为默认推荐配置 (smart-hybrid)
+# 可通过聊天框 (/settings)、本地可视化面板 (--ui) 或终端 CLI 切换预设与配置项：
+boomopen settings --ui                                      # 启动本地 Web 控制中心 http://127.0.0.1:4567
+boomopen settings preset smart-hybrid                       # 默认：Auto Mode A/B + 17 语言自然语言工作流路由
+boomopen settings preset frontier-guardrails                # 可选：< 2.5 KB 极简 Mode A（兼容别名：carbon-guardrails）
+boomopen settings set engines.reviewer cross_family         # 强制启用跨模型家族独立评审（Author != Critic）
+cd path/to/your/repo && boomopen settings mode team --project # 写入仓库级 ./.boomopen.json 覆盖配置
+boomopen settings reset                                     # 恢复默认 smart-hybrid 配置
 ```
-
-> `--project` 会在当前运行的项目目录写入 `./.boomopen.json`。未执行 `npm link` 时，请将 `boomopen` 替换为 `node /path/to/BoomOpen-Workflow-Kit-Pro/cli/install.js`。
 
 ---
 
-## 🎯 斜杠命令参考手册
+<a id="commands"></a>
+<a id="-slash-commands-reference"></a>
 
-| 命令 | 支持变体 | 核心用途说明 |
-|---------|----------|-----------------|
-| **`/onboard`** | — | 60 秒只读存量代码库快速导览（生成 `ARCHITECTURE-MAP.md`：技术栈、入口点、数据流、高风险热点与构建测试门禁，零 `/init` 冲突） |
-| **`/cook`** | `:fast`, `:hard`, `:team` | 端到端功能研发全流程（调研/侦察 → 规划 → 并行编码 → Wave 2.5 对账 → 测试 → 审查） |
-| **`/code`** | `:fast`, `:hard`, `:team` | 基于现有 `PLAN-{feature}.md` 直接执行代码实现与验证 |
-| **`/plan`** | `:fast`, `:hard`, `:team` | 生成包含 `SHARED_CONTRACT`、`OWNED_FILES` 与 Given/When/Then 验收标准的实施蓝图 |
-| **`/fix`** | `:fast`, `:hard`, `:team` | 根因缺陷修复并强制执行回归测试验证 |
-| **`/debug`** | `:fast`, `:hard`, `:team` | 基于 3 假设验证 + **5-Whys (SPIE v3.0)** 因果链的深度根因调查（`DEBUG-{issue}.md`） |
-| **`/test`** | `:fast`, `:hard`, `:team` | DAG 并行扇出执行测试套件 + 扫描未覆盖边界场景（`tester` + `scouter`） |
-| **`/review`** | `:fast`, `:hard`, `:team` | 四维并行代码审计（架构合规、代码质量、OWASP 安全、性能瓶颈） |
-| **`/pr`** | —, `:review` | PR 提交前严苛质量门禁（`boomopen check`、`reconcile` 与差异测试）及结构化 `gh pr create`，或三视角对抗式 PR Hunk 审查（`/pr:review`） |
-| **`/release`** | — | 语义化版本发布准备：审计上次 Tag 以来的 Conventional Commits、合成 `CHANGELOG.md`、执行全套门禁（`doctor`、`check`、`test`、`test:pack`）与人工确认 `gh release create` |
-| **`/audit`** | `:run`, `:fix`, `:auto` | 基于状态账本的多轮次全项目完工审计（RTM 规格覆盖、UI->API->DB 垂直链路、2 层安全防泄漏扫描及用户审批分片修复） |
-| **`/design`** | `:fast`, `:hard`, `:team` | 系统架构、数据库模式与 6 模块 UI/UX 设计规范生成（`DESIGN.md` + `DESIGN_CONTRACT`） |
-| **`/docs`** | `:core`, `:business`, `:audit` | 生成或同步双层结构化架构文档与业务文档（`./documents/`） |
-| **`/deploy`** | `:check`, `:preview`, `:production`, `:rollback` | 部署前质量门禁检查、预览环境发布、生产环境上线与安全回滚 |
-| **`/research`** | `:fast`, `:hard`, `:team` | 自主深度研究引擎（4 源三角验证、3 波次迭代搜索与 3 向量黄金三角委员会） |
-| **`/brainstorm`** | `:fast`, `:hard`, `:team` | 苏格拉底式需求澄清、架构权衡分析与 MCDA 评分决策 |
-| **`/report`** | `:fast`, `:hard`, `:team` | 生成包含指标统计与架构图表的技术及管理总结报告 |
-| **`/autopilot`** | `:init`, `:run`, `:audit` | 跨会话多阶段项目自动驾驶仪（基于 `.boomopen/project-ledger.json` 账本与 4 层零遗漏棘轮门禁） |
-| **`/conduct`** | `:council`, `:pipeline` | 跨引擎指挥官与多引擎并行委员会（`boomopen conduct`，支持 `--dry-run` 预演与 4 部分共识报告） |
-| **`/orchestrate`** | — | 跨多个领域的自定义多智能体流水线协同编排 |
-| **`/settings`** | `preset`, `mode`, `set`, `ui` | 统一控制中心：配置 20 项枚举 + 2 项行数上限、切换预设或打开本地 Web 界面 (`--ui`) |
-| **`/save` / `/recap`** | — | 保存会话交接状态（`SESSION-HANDOVER.md`）并在 `< 5秒` 内恢复上下文 *（另含 `/git`、`/migrate`、`/perf`、`/preview`、`/refactor`、`/security-audit`、`/skill`、`/status`、`/team`、`/tdd`、`/worktree` — 共 `36` 个命令）* |
+## 🎯 全部 36 个斜杠命令参考手册（`93` 个文件 = `87` 个工作流 + `6` 个 `_ref/`）
 
-### 🌙 过夜大型多阶段项目指南 (`/autopilot` vs. `/goal` + `/autopilot` + `/audit`)
+在 `smart-hybrid` 下可直接使用 **17 种支持语言中的任意一种** 自然对话触发，也可显式调用以下 **36 个标准斜杠命令**：
 
-| 工作流方案 | 适用平台与范围 | 跨会话上下文连续性 (`~70%`) | 质量与规格保障 |
-|:-----------|:---------------|:----------------------------|:---------------|
-| **`/autopilot`（配合 `--with-hooks`）** | 单会话构建，或 **Claude Code / OpenAI Codex** 启用 `--with-hooks` 的跨会话多阶段构建 | 在 Claude Code / Codex 上，`Stop` 与 `PreCompact` 钩子（`stop-quality-gate.mjs`）跨上下文压缩保持 `.boomopen/project-ledger.json` 账本连续续跑 | 维护 `.boomopen/project-ledger.json`、强制执行 5 道验证门禁、支持 `boomopen ledger rollback --yes` 与 Wave 2.5 对账 |
-| **`/goal` + `/autopilot` + `/audit`** | **Antigravity 2.0** 包含 `docs/` 的过夜大型多阶段项目（**`/goal`** 为 Antigravity 2.0 原生持久外层运行器） | Antigravity 原生 **`/goal`** 外层循环在上下文接近 `~70%` 时自动重置并无缝衔接下一阶段 | **`/autopilot`** 强制每阶段通过 5 道验证门禁与 Wave 2.5 规格对账，并在 100% 完工后触发多轮 **`/audit`** |
+| 分类 | 命令 | 支持变体 | 核心职责与确定性交付物 |
+|:-----|:-----|:---------|:-----------------------|
+| **编排与自主执行** | **`/cook`** | `:fast`, `:hard`, `:team` | 无现成计划时的端到端特性构建（侦察 → 契约规划 → 并行分片开发 → Wave 2.5 对账 → QA） |
+| | **`/code`** | `:fast`, `:hard`, `:team` | 直接按已审批的 `PLAN-{task}.md` 派发 Wave 1–3 分片编码，无需重复执行 `/plan` |
+| | **`/autopilot`** | `:init`, `:run`, `:audit` | 基于 `.boomopen/project-ledger.json` 与 **5 层阶段质量棘轮** 的跨会话全自动规格交付引擎 |
+| | **`/conduct`** | `:council`, `:pipeline` | 跨 5 大 IDE 的多引擎并行委员会（`COUNCIL-SYNTHESIS.md`）与跨模型家族流水线（支持 `--dry-run`） |
+| | **`/orchestrate`** / **`/auto`** | — | 自定义跨领域蜂群协同编排（`/orchestrate`）或端到端全自动闭环执行（`/auto`） |
+| **架构、设计与深度调研** | **`/plan`** | `:fast`, `:hard`, `:team` | 经 5 道门禁校验的 `PLAN-{task}.md` 实施蓝图：锁定 `SHARED_CONTRACT`、互斥 `OWNED_FILES ≤ 4`/分片与 Given/When/Then 验收标准 |
+| | **`/architect`** | — | 纯架构设计蓝图：C4 架构图、ADR 决策记录、数据库表结构、API 契约、界面规格与覆盖率核查（零业务代码改动） |
+| | **`/design`** / **`/ui-ux-pro-max`** | `:fast`, `:hard`, `:team` | 6 模块 `DESIGN-{task}.md` + `DESIGN_CONTRACT`（`@theme` OKLCH 令牌、5 状态 UI 矩阵、50+ 视觉风格与实时 HTML 预览） |
+| | **`/research`** | `:fast`, `:hard`, `:team` | 5 视角深度技术调研（`RESEARCH-{topic}.md`、`RES-G1..G4` ≥ 4 信源三角验证、矛盾仲裁表与 `HANDOFF_BRIEF`） |
+| | **`/brainstorm`** / **`/ask`** | `:fast`, `:hard`, `:team` | 反迎合战略构思（含事前验尸与 MCDA 决策矩阵的 `BRAINSTORM-{topic}.md`）及基于代码证据的问答（`/ask`） |
+| **质量、审计、调试与安全** | **`/review`** | `:fast`, `:hard`, `:team` | 多维度对抗式代码、架构、安全与性能审查（`Author != Critic`，支持一键衔接 `/fix`） |
+| | **`/audit`** / **`/deep-audit`** | `:run`, `:fix`, `:auto` | 完工后多轮全仓库对账审计（`/audit` 状态账本）与编码前 10 维度规格逻辑预审（`/deep-audit`） |
+| | **`/security-audit`** | — | OWASP Top 10 + LLM/智能体 Top 10 安全扫描（`security_scan.py` v6）、STRIDE 威胁建模、认证鉴权与供应链报告 |
+| | **`/debug`** / **`/fix`** | `:fast`, `:hard`, `:team` | 3 假设验证 + **5-Whys (SPIE v3.0)** 根因追踪（`DEBUG-{issue}.md`）与失败测试先行的 TDD 缺陷修复（`/fix`） |
+| | **`/test`** / **`/performance`** / **`/refactor`** | `:fast`, `:hard`, `:team` | 零作弊测试分片生成与执行（`/test`）、Core Web Vitals / 数据库 / 包体积调优（`/performance`）及指标可验证的 `/refactor` |
+| **Git、发布、文档与会话运维** | **`/onboard`** / **`/init`** | — | 60 秒只读存量代码库全景测绘 `ARCHITECTURE-MAP.md`（`/onboard`，与内置 `/init` 零冲突）及新项目脚手架初始化（`/init`） |
+| | **`/pr`** / **`/release`** | —, `:review` | PR 提交前质量与对账门禁 + `gh pr create` / 差异块对抗审查（`/pr:review`），以及版本一致性校验的语义化发布（`/release`） |
+| | **`/deploy`** / **`/rollback`** | `:check`, `:preview`, `:production`, `:rollback` | 部署就绪门禁核查、预览/生产环境上线（`/deploy`）与按故障等级执行的紧急回滚（`/rollback`） |
+| | **`/docs`** / **`/report`** | `:core`, `:business`, `:audit` / `:fast..:team` | 严格忠于源码的 `./documents/` 双层文档体系（`/docs`）与基于真实 CLI 遥测数据的状态报告（`/report`） |
+| | **`/settings`** / **`/status`** / **`/next`** | — | 统一控制中心（`/settings`）、账本与蜂群实时健康看板（`/status`）及下一步行动智能导航（`/next`） |
+| | **`/preview`** / **`/save`** / **`/recap`** | — | 本地开发服务器生命周期管理（`/preview`）、会话交接状态持久化（`/save`）与 `< 5s` 上下文快速恢复（`/recap`） |
 
-**可直接复制使用的过夜提示词（Antigravity 2.0 使用 `/goal`；Claude Code / Codex 启用 `--with-hooks` 时去掉开头的 `/goal`）：**
+### 🌙 过夜多阶段大型项目实战指南 (`/autopilot` & `/goal`)
+
+| 工作流组合 | 适用平台与运行机制 | 跨会话上下文连续性 | 质量与规格一致性保障 |
+|:-----------|:-------------------|:-------------------|:---------------------|
+| **`/autopilot`（配合 `--with-hooks`）** | 全部 5 大 IDE（推荐在 **Claude Code**、**Antigravity** 与 **Cursor** 上开启 `--with-hooks`） | `Stop` 与 `PreCompact` 钩子（`stop-quality-gate.mjs`）配合 `.boomopen/project-ledger.json` 在上下文压缩后精准保留执行游标 | 强制执行 **5 层阶段质量棘轮**（`G1..G5`）、Wave 2.5 `reconcile` 对账以及 `boomopen ledger rollback --yes` |
+| **`/goal` + `/autopilot` + `/audit`** | **Antigravity 2.0** 面向大型 `docs/` 规格书的持久外层循环运行器 | Antigravity 原生 **`/goal`** 循环跨阶段持续推进，直至账本中所有阶段均达到 `VERIFIED` 状态 | 每个阶段均通过全部 5 道验证门禁与 Wave 2.5 对账，全部完成后自动启动第 1 轮 **`/audit`** |
 
 ```text
-/goal 使用 /autopilot 读取 docs/ 目录下的全部项目文档，初始化 project-ledger.json，并从头到尾按顺序自主实现每一个 phase（跳过初始 PLAN 审批暂停；每个 phase 都必须通过全部 5 道验证门禁并与规格文档 100% reconcile 对齐）。在 100% 完成所有 phase 后，执行第 1 轮 /audit 并停止，输出审计报告供我审查。
+/goal 使用 /autopilot 读取 docs/ 目录下的全部项目文档，初始化 .boomopen/project-ledger.json，并按顺序自主实现每一个阶段（每个阶段都必须通过全部 5 道验证门禁与 Wave 2.5 reconcile 对账）。当 100% 阶段通过后，运行第 1 轮 /audit 并停下输出汇总报告供我审查。
 ```
 
 ---
 
 <a id="agents"></a>
+<a id="-22-specialist-agents--18-golden-triangle-teams"></a>
 
-## 🤖 22 位专家级智能体 & 18 支黄金三角团队
+## 🤖 22 位专业智能体与 18 支三角色对抗团队
 
-| 领域分类 | 专家级智能体 (`agents/*.md`，按 IDE 原生编译) | 黄金三角对抗团队 (`agents/teams/*-team/`，`72` 个文件) |
-|----------|-----------------------------------------------|--------------------------------------------------------|
-| **工程实现与交付** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer`, `database-architect`, `devops-engineer` | `backend-team`, `frontend-team`, `fullstack-team`, `mobile-team`, `game-team`, `database-team`, `devops-team` |
-| **架构设计与规划** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
-| **质量、安全与调试** | `debugger`, `tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
-| **技术调研与知识管理** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
+所有子智能体均继承当前会话主模型（`Model: "inherit"` —— 严禁降级使用 `flash_lite`），并按领域编组为 **18 支黄金菱形 / 黄金三角团队**（`Tech Lead` ⇄ `并行分片执行工程师` ⇄ `独立审查员/反方辩手`）：
+
+| 工程领域 | 专业智能体（`agents/*.md`，按 IDE 原生编译） | 三角色对抗审查团队（`agents/teams/*-team/`，共 `72` 个文件） |
+|:---------|:---------------------------------------------|:-------------------------------------------------------------|
+| **工程研发与交付** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer`, `database-architect`, `devops-engineer` | `backend-team`, `frontend-team`, `fullstack-team`, `mobile-team`, `game-team`, `database-team`, `devops-team` |
+| **系统架构与产品规划** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
+| **质量保障、对账与安全** | `debugger`, `tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
+| **技术调研与文档体系** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
 
 ---
 
 <a id="skills"></a>
+<a id="-1460-skills-vault-22-core--1440-niche-library-skills"></a>
 
-## 📚 1,460+ 专业技能宝库（22 项核心技能 + 1,440 项领域技能）
+## 📚 1,462 项按需加载技能库（`22` 项核心技能 + `1,440` 项扩展技能）
 
-BoomOpen 内置 `1,462` 项跨 19 大领域的工程技能，安装时单次去重至 `~/.agents/skills_library`，通过 **两步 O(1) 渐进式检索**（`<skills>` 核心匹配 → `matrix-skills/compact-index.json` 索引检索 → 按需加载 `SKILL.md`）实现 **0 空闲 Token 消耗**：
+统一索引于涵盖 **19 个工程领域** 的 `matrix-skills/compact-index.json`，单次去重链接至 `~/.agents/skills_library`，通过 **两步 O(1) 渐进式解析**（检索核心 `skills/` → 查询 `compact-index.json` → 仅向对应分片注入匹配的 `SKILL.md`，空闲状态 `0` Token 消耗）：
 
-| 技能层级 / 领域 | 数量 | 代表性技能与核心能力 | 加载机制 |
-|:---|:---:|:---|:---|
-| **⚡ Tier 1：核心技能 (`skills/`)** | **22** | `clean-code`, `debugger`, `plan-writing`, `brainstorming`, `app-builder`（含 **`mcp-server`** 与 **`ai-agent-worker`** 等 **15 套工程模板**）, `frontend-design`, `frontend-architecture`, `design-spec`, `api-patterns`, `database-design`, `testing-patterns`, `skill-seeker` | 预加载于 `<skills>`，首轮零延迟调用 |
-| **🎨 UI/UX 视觉工艺、动效与设计系统** | **42** | Anti-AI-Slop 视觉工艺、OKLCH 感知色彩与 Bento 网格、Motion v12 + CSS View Transitions、无头原语 (`cmdk`/`vaul`/`sonner`)、Figma MCP + W3C DTCG 设计令牌、WCAG 2.2 AA/AAA、iOS 18 HIG 与 Material 3 Expressive | 经由 `compact-index.json` 按需加载 (`matrix-skills/design.yaml`) |
-| **🌐 Web、后端与分布式系统** | **390+** | Next.js 15/React 19、Tailwind v4、Hono RPC、FastAPI、NestJS、Go/Rust Axum 微服务、Supabase RLS、Drizzle + Neon/Turso | 经由 `compact-index.json` 按需加载 (`~/.agents/skills_library/`) |
-| **🤖 AI、LLM 智能体与数据工程** | **320+** | MCP FastMCP 2025 (`StreamableHTTP`)、OpenAI/Claude/Google ADK 智能体 SDK、Vercel AI SDK v4、RAG 流水线、BigQuery、dbt | 经由 `compact-index.json` 按需加载 (`~/.agents/skills_library/`) |
-| **☁️ 云原生、DevOps、测试与网络安全** | **300+** | Cloudflare Workers/D1/R2/DO、Terraform/OpenTofu、Docker/K8s GitOps、Vitest + MSW v2、Better Auth、OWASP LLM 2025 安全审计 | 经由 `compact-index.json` 按需加载 (`~/.agents/skills_library/`) |
-| **📱 移动端、游戏引擎与 3D Web** | **410+** | Unity 6 DOTS/ECS、Godot 4、WebGPU/Three.js TSL、Colyseus 多人同步、Tauri v2、SwiftUI、Kotlin、React Native、Flutter | 经由 `compact-index.json` 按需加载 (`~/.agents/skills_library/`) |
+| 层级 / 工程领域 | 技能数 | 代表性技术栈与脚手架能力 | 加载时机 |
+|:----------------|:------:|:-------------------------|:---------|
+| **⚡ 核心工作流与质量底座 (`skills/`)** | **22** | `clean-code`, `debugger`, `plan-writing`, `brainstorming`, `deep-research`, `design-spec`, `frontend-design`, `frontend-architecture`, `api-patterns`, `database-design`, `tdd-workflow`, `testing-patterns`, `webapp-testing`, `security-auditor`（`security_scan.py` v6）, `app-builder`（内置 **`mcp-server`**、**`ai-agent-worker`**、`nextjs-saas`、`monorepo-turborepo`、`python-fastapi`、`flutter-app` 等 **15 套项目模板**）, `skill-seeker` | Turn 1 即刻可用 |
+| **🤖 AI、智能体 SDK、MCP 与数据工程** | **340+** | FastMCP (`StreamableHTTP`)、OpenAI Agents SDK、Claude Agent SDK、Google ADK、Vercel AI SDK、LangGraph、RAG、BigQuery、dbt | 按需加载 (`compact-index.json`) |
+| **🌐 Web、后端服务、API 与数据库** | **380+** | React 19、Next.js 15 RSC、Tailwind CSS v4、TanStack Start/Router/Query、Hono RPC + Zod OpenAPI、Rust Axum/SQLx、Drizzle、Postgres/RLS | 按需加载 (`compact-index.json`) |
+| **☁️ 云原生、DevOps、QA 与网络安全** | **300+** | Cloudflare Workers/Durable Objects/D1、Docker/K8s、Terraform、Playwright、Vitest + MSW v2、Better Auth (Passkeys)、OWASP LLM Top 10 | 按需加载 (`compact-index.json`) |
+| **🎨 UI/UX 设计、游戏引擎与移动端** | **420+** | OKLCH 设计令牌、WCAG 2.2 AA、Motion、Unity 6 DOTS/ECS、Godot 4、Unreal 5、WebGPU/Three.js、Phaser/PixiJS、Tauri v2、SwiftUI、Flutter、React Native | 按需加载 (`compact-index.json`) |
 
 ---
 
@@ -263,17 +305,18 @@ BoomOpen 内置 `1,462` 项跨 19 大领域的工程技能，安装时单次去�
 
 ```text
 BoomOpen-Workflow-Kit-Pro/
-├── agents/                  # 22 个专家智能体（按 IDE 原生编译）+ 18 支黄金三角团队（54 个角色文件 + 18 个 _team.md，共 72 个文件）
-├── cli/                     # 14 命令 CLI 套件：install (--as-plugin/--with-hooks), uninstall, list, doctor, check, settings, research, design, plan, cook, reconcile, audit, ledger 与 conduct
-├── commands/                # 87 个斜杠命令工作流（36 个命令，含 /onboard, /pr + /pr:review, /release）+ 6 个 _ref/ 协议（共 93 个文件）
-├── documents/               # 双层架构、领域模型、源码底座与编码规范文档
-├── i18n/                    # 多语言国际化文档目录（包含 16 种主流语言的完整译本）
-├── matrix-skills/           # 领域技能矩阵 YAML + 预编译 compact-index.json (1,462 项技能)
-├── platforms/               # 五大平台统一模板、生命周期钩子 (stop-quality-gate.mjs, validate-tool-call.mjs)、Antigravity workflows/*.py 与 Codex 沙箱
-├── rules/                   # Mode B 按需加载核心规则 (CORE, PHASES, AGENTS, TEAMS, SKILLS, ERRORS, REFERENCE)
-├── scripts/                 # Python 自动化校验与辅助脚本 (checklist.py, verify_all.py, security_scan.py 等)
-├── skills/                  # 22 项核心技能（含拥有 15 套模板的 app-builder：mcp-server, ai-agent-worker 等）
-├── skills_library/          # 1,440 项垂直领域按需技能库（安装时单次去重至 ~/.agents/skills_library）
+├── agents/                  # 22 个专业智能体（按 IDE 原生编译）+ 18 支三角色团队（共 72 个文件）
+├── cli/                     # 14 个零依赖 Node.js CLI 子命令 + 33 套 node:test 自动化测试套件
+├── commands/                # 36 个斜杠命令，涵盖 87 个工作流文件 + 6 个 _ref/ 共享协议（共 93 个文件）
+├── documents/               # 系统架构、领域模型、源码底座与务实双层编码规范文档
+├── i18n/                    # 16 份完整本地化 README（连同根目录 README.md 共支持 17 种语言）
+├── matrix-skills/           # 19 个领域 YAML 目录 + O(1) compact-index.json（索引全部 1,462 项技能）
+├── platforms/               # 5 大 IDE 平台适配包、可选安全钩子、3 个 Antigravity run_workflow/*.py 与 Codex TOML 角色
+├── rules/                   # 7 个 Mode B 按需加载规则模块 (CORE, PHASES, AGENTS, TEAMS, SKILLS, ERRORS, REFERENCE)
+├── scripts/                 # 跨平台校验与会话辅助脚本 (checklist.py, verify_all.py, auto_preview.py, session_manager.py)
+├── skills/                  # 22 项核心技能 + 15 套 app-builder 项目模板 + Security v6 / UX / 性能审计脚本
+├── skills_library/          # 1,440 项扩展技能库，安装时单次去重链接至共享目录 ~/.agents/skills_library
+├── web/                     # 驱动 https://boomopen.com 的 15 语言 Cosmic WebGL 交互展示站与可检索目录
 └── GEMINI.md | CLAUDE.md | CODEX.md | COPILOT.md | CURSOR.md | AGENT.md
 ```
 
@@ -282,5 +325,5 @@ BoomOpen-Workflow-Kit-Pro/
 ## 📄 开源许可与安全策略
 
 - **官方网站**：[https://boomopen.com](https://boomopen.com)
-- **开源协议**：本项目基于 [MIT 许可证](../LICENSE) 开源发布。版权所有 © 2026 **BoomOpen Labs**。`skills_library/` 中的第三方技能沿用其上游许可证，详见 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)。
-- **安全策略**：请参阅 [SECURITY.md](../SECURITY.md) 了解内置安全防护机制及漏洞私密报告流程。
+- **开源许可**：本套件源码、CLI 工具、规则、智能体定义与文档基于 [MIT 许可证](../LICENSE) 发布（Copyright © 2026 **BoomOpen Labs**）。`skills_library/` 目录下的第三方技能保留其各自的上游开源许可证，详见 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)。
+- **安全策略**：有关 SHA-256 清单防篡改保护、可选钩子沙箱机制及安全漏洞上报流程，请参阅 [SECURITY.md](../SECURITY.md)。

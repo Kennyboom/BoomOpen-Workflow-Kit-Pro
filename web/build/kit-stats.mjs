@@ -259,7 +259,7 @@ export function renderLlmsTxt(stats, siteOrigin = SITE_ORIGIN) {
     '- `audit` / `ledger` / `conduct` / `check`: Multi-round project audit (`.boomopen/audit-ledger.json`, `audit rollback --round 1 --yes`), `.boomopen/project-ledger.json` phase ratchet (`ledger rollback --phase PHASE-1 --yes`), Multi-Engine Council (`conduct council --task review --prompt "..."`), and 2-tier static gate (`--strict-phase --no-stubs`)',
     '',
     '## Documentation & Catalogs',
-    `- [Overview & Walkthrough](${siteOrigin}/): Bilingual EN/VI overview, workflow visualizer, and 14-command CLI Playground`,
+    `- [Overview & Walkthrough](${siteOrigin}/): 15-language overview, workflow visualizer, and 14-command CLI Playground`,
     `- [Slash Commands Catalog](${siteOrigin}/commands): Searchable reference of all ${cmdTotal} commands and variants`,
     `- [Sub-Agents & 3-Role Review Teams](${siteOrigin}/agents): ${stats.agents} sub-agents and ${stats.teams} review teams`,
     `- [Skills Vault Explorer](${siteOrigin}/skills): ${skillsTotal} indexed skills across ${domainTotal} engineering domains`,

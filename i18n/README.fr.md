@@ -1,265 +1,303 @@
 <div align="center">
-  <h1>⚡ BoomOpen Workflow Kit v5.5.0</h1>
-  <p><strong>Système d&#39;Exploitation IA Smart-Hybrid Multiplateforme — 22 Agents Spécialistes, 18 Équipes Triangle d&#39;Or &amp; Coffre de 1 462 Compétences à la Demande</strong></p>
+  <h1>⚡ BoomOpen Workflow Kit Pro v5.5</h1>
+  <p><strong>Orchestration multi-agents et contrôles CLI déterministes sur Antigravity, Claude Code, OpenAI Codex, Cursor et GitHub Copilot.</strong></p>
 
   <p>
-    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Version-5.5.0-7c3aed.svg" alt="Version: 5.5.0" /></a>
-    <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="Platforms: 5 Unified" /></a>
-    <a href="#agents"><img src="https://img.shields.io/badge/Agents-22%20Specialists%20%2B%2018%20Teams-10b981.svg" alt="Agents: 22 Specialists + 18 Teams" /></a>
-    <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills: 22 Core + 1,440 Library" /></a>
-    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js: >=18.0.0" /></a>
-    <a href="../LICENSE"><img src="https://img.shields.io/badge/License%20(kit%20code)-MIT-blue.svg" alt="License: MIT (kit code)" /></a>
+    <a href="https://boomopen.com"><img src="https://img.shields.io/badge/Website-boomopen.com-06b6d4.svg" alt="Site web : boomopen.com" /></a>
+    <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/releases"><img src="https://img.shields.io/badge/Release-v5.5.0-7c3aed.svg" alt="Version : v5.5.0" /></a>
+    <a href="#platforms"><img src="https://img.shields.io/badge/IDEs-Antigravity%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot-0ea5e9.svg" alt="5 IDE IA pris en charge" /></a>
+    <a href="#cli"><img src="https://img.shields.io/badge/CLI-14%20Gates%20%C2%B7%200%20Deps-10b981.svg" alt="CLI : 14 contrôles, 0 dépendance runtime" /></a>
+    <a href="#skills"><img src="https://img.shields.io/badge/Skills-22%20Core%20%2B%201%2C440%20Library-f59e0b.svg" alt="Skills : 22 Core + 1 440 en bibliothèque" /></a>
+    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-22c55e.svg" alt="Node.js >= 18.0.0" /></a>
+    <a href="../LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="Licence : MIT" /></a>
   </p>
 
   <p>
-    <a href="../README.md">🇬🇧 English</a> • <a href="./README.vi.md">🇻🇳 Tiếng Việt</a> • <a href="./README.zh-CN.md">🇨🇳 简体中文</a> • <a href="./README.zh-TW.md">🇹🇼 繁體中文</a> • <a href="./README.ja.md">🇯🇵 日本語</a> • <a href="./README.ko.md">🇰🇷 한국어</a> • <a href="./README.es.md">🇪🇸 Español</a> • <b>🇫🇷 Français</b> • <a href="./README.de.md">🇩🇪 Deutsch</a><br/>
-    <a href="./README.pt-BR.md">🇧🇷 Português</a> • <a href="./README.ru.md">🇷🇺 Русский</a> • <a href="./README.hi.md">🇮🇳 हिन्दी</a> • <a href="./README.ar.md">🇸🇦 العربية</a> • <a href="./README.id.md">🇮🇩 Bahasa Indonesia</a> • <a href="./README.th.md">🇹🇭 ไทย</a> • <a href="./README.tr.md">🇹🇷 Türkçe</a> • <a href="./README.it.md">🇮🇹 Italiano</a>
+    <a href="../README.md">English</a> •
+    <a href="./README.vi.md">Tiếng Việt</a> •
+    <a href="./README.zh-CN.md">简体中文</a> •
+    <a href="./README.zh-TW.md">繁體中文</a> •
+    <a href="./README.ja.md">日本語</a> •
+    <a href="./README.ko.md">한국어</a> •
+    <a href="./README.es.md">Español</a> •
+    <b>Français</b> •
+    <a href="./README.de.md">Deutsch</a><br/>
+    <a href="./README.pt-BR.md">Português (BR)</a> •
+    <a href="./README.ru.md">Русский</a> •
+    <a href="./README.hi.md">हिन्दी</a> •
+    <a href="./README.ar.md">العربية</a> •
+    <a href="./README.id.md">Bahasa Indonesia</a> •
+    <a href="./README.th.md">ไทย</a> •
+    <a href="./README.tr.md">Türkçe</a> •
+    <a href="./README.it.md">Italiano</a>
   </p>
 
   <p>
-    <a href="https://boomopen.com">🌐 Website</a> • <a href="#overview"><b>🌟 Aperçu</b></a> • <a href="#architecture"><b>🏗️ Architecture</b></a> • <a href="#quickstart"><b>🚀 Démarrage</b></a> • <a href="#settings"><b>🎛️ Profils &amp; Réglages</b></a> • <a href="#commands"><b>🎯 36 Commandes</b></a> • <a href="#agents"><b>🤖 22 Agents &amp; 18 Équipes</b></a> • <a href="#skills"><b>📚 1 462 Compétences</b></a>
+    <a href="https://boomopen.com"><b>🌐 boomopen.com (15 langues)</b></a> •
+    <a href="#trailer"><b>🎬 Bande-annonce</b></a> •
+    <a href="#why-boomopen"><b>⚡ Pourquoi BoomOpen</b></a> •
+    <a href="#architecture"><b>🏗️ Architecture</b></a> •
+    <a href="#quickstart"><b>🚀 Démarrage rapide</b></a> •
+    <a href="#cli"><b>🛠️ 14 contrôles CLI</b></a> •
+    <a href="#settings"><b>🎛️ Profils &amp; réglages</b></a> •
+    <a href="#commands"><b>🎯 36 commandes</b></a> •
+    <a href="#agents"><b>🤖 22 agents &amp; 18 équipes</b></a> •
+    <a href="#skills"><b>📚 1 462 skills</b></a>
   </p>
 </div>
 
 ---
 
-## 🎬 Bande-Annonce Officielle de Lancement (Full HD 1080p)
+<a id="trailer"></a>
+
+## 🎬 Bande-annonce de Lancement et Explorateur Web Interactif (`boomopen.com`)
 
 <div align="center">
   <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4">
-    <img src="../assets/media/poster_en.png" alt="Regarder la Bande-Annonce Officielle de BoomOpen Workflow Kit v5.5 (Full HD 1080p)" width="92%" />
+    <img src="https://raw.githubusercontent.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/main/assets/media/poster_en.png" alt="Voir la bande-annonce de lancement de BoomOpen Workflow Kit Pro v5.5 (Full HD 1080p)" width="92%" />
   </a>
   <p>
-    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Cliquez ici pour regarder / diffuser la Bande-Annonce Officielle en Full HD 1080p (MP4 avec voix-off studio)</b></a>
+    ▶️ <a href="https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4"><b>Visionner la bande-annonce Full HD 1080p (MP4 avec voix off studio)</b></a> • 🌐 <a href="https://boomopen.com"><b>Explorer le Playground CLI des 14 commandes et les catalogues interactifs sur boomopen.com (15 langues)</b></a>
   </p>
 </div>
 
 ---
 
-<a id="overview"></a>
+<a id="why-boomopen"></a>
+<a id="-what-is-boomopen-workflow-kit"></a>
 
-## 🌟 Qu’est-ce que BoomOpen Workflow Kit v5.5 ?
+## ⚡ Pourquoi BoomOpen Workflow Kit ?
 
-**BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition)** est un système d’exploitation multi-agents open-source qui transforme un assistant de codage IA individuel en une organisation d’ingénierie orchestrée réunissant **22 agents spécialistes**, **18 équipes contradictoires Golden Triangle (72 fichiers d’équipe)**, **36 commandes slash (93 fichiers de commandes : 87 workflows + 6 `_ref/`)**, **14 commandes CLI** et **1 462 compétences à la demande (22 clés + 1 440 spécialisées, dédupliquées entre IDE via `~/.agents/skills_library`)**.
+**Les limites des assistants de code IA bruts :** Sans cadre d'orchestration, un agent unique se dégrade dès qu'une tâche traverse plusieurs fichiers, domaines ou sessions. L'exploration séquentielle sature la fenêtre de contexte principale, des sous-agents non coordonnés écrasent les mêmes fichiers ou livrent des modules orphelins non raccordés, le code généré laisse passer des stubs `TODO` silencieux ou des types `any`, l'auto-relecture par un seul modèle manque ses propres angles morts (`Author == Critic`), et les chantiers multi-phases dérivent par rapport aux spécifications initiales.
 
-Contrairement aux surcouches lourdes qui gonflent le contexte à chaque tour, BoomOpen v5.5 embarque **`⚡ smart-hybrid` comme profil par défaut lors d’une installation neuve** (Essaim Élastique Proactif dès le Tour 1 + Routage en Langage Naturel en 17 Langues sur les 5 IDE) — tout en proposant le profil léger optionnel **`🛡️ frontier-guardrails` (`< 2.5 KB` / `~600 tokens`, Mode A direct)** — activant le **Sharding d’Essaim Élastique à 4 Niveaux (`role#shard`)**, l’**Auto-Réconciliation Spécification-Code Wave 2.5 (`boomopen reconcile` + `spec-reconciler`)**, l’**Audit Multi-Tours (`/audit` & `boomopen audit`)**, la **Cartographie Brownfield en 60s (`/onboard`)**, les **Portes PR & Release (`/pr`, `/pr:review`, `/release`)**, l’**Autopilote Multi-Sessions (`/autopilot`)** et le **Conducteur Multi-Moteurs (`/conduct`)** :
-- **⚡ `smart-hybrid` par Défaut : Essaim Proactif au Tour 1 + Routage NL en 17 Langues** : Dès une installation fraîche (et restauré par `boomopen settings reset`), les micro-éditions connues (`≤ 2` fichiers) s’exécutent directement en Mode A, tandis que les tâches multi-fichiers, recherches approfondies, idéations, planifications et workflows `/cmd` explicites (**`/onboard`**, **`/pr` + `/pr:review`**, **`/release`**, etc.) lancent immédiatement des fragments parallèles au Tour 1 (`role#shard`, `<= 3–4 OWNED_FILES`/shard) avec **Déploiement Parallèle DAG**, **Distribution Directe du Plan**, **Verrouillage par Contrat (`SHARED_CONTRACT` + `OWNED_FILES`)**, **Réconciliation Wave 2.5 (`boomopen reconcile`, `spec-reconciler` et `/cook amend-plan` comblant modules isolés, parité routes/env et clauses `[SC-*]`)** et **Réutilisation à Chaud (`send_message`)**.
-- **🛡️ Mode A Léger Optionnel `frontier-guardrails` (`< 2.5 KB` / `~600 tokens`)** : Vous préférez le Mode A direct natif jusqu’à `≤ 10` fichiers avec `naturalLanguageResearchTrigger = off` (aucun déclenchement en langage naturel) ? Basculez en `< 10ms` via `boomopen settings preset frontier-guardrails` (`carbon-guardrails` est conservé comme alias rétrocompatible).
-- **🏛️ Autopilote Multi-Sessions (`/autopilot`), Audit Multi-Tours (`/audit`, avec rollback) & Conseil Multi-Moteurs (`/conduct`)** : Ingère les spécifications dans `.boomopen/project-ledger.json` (avec `boomopen ledger rollback`) et un cliquet qualité à 4 couches (`boomopen check --strict-phase --no-stubs`) ; puis pilote l’audit post-achèvement (`/audit` & `boomopen audit`, avec `audit rollback`) couvrant RTM, flux vertical UI→API→DB et **Moteur Anti-Fuites 2 Couches `security_scan.py` v6** jusqu’à 0 anomalie.
-- **📚 Coffre Dédupliqué de 1 462 Compétences à Coût Repos Zéro** : Mutualisé dans `~/.agents/skills_library` et indexé dans `matrix-skills/compact-index.json` pour une recherche `O(1)` en 2 étapes, incluant les modèles **`mcp-server`** et **`ai-agent-worker`**.
+**La réponse d'ingénierie BoomOpen :** BoomOpen installe un harnais unifié d'orchestration et de vérification déterministe sur **Antigravity (Gemini)**, **Claude Code**, **OpenAI Codex**, **Cursor** et **GitHub Copilot**, avec **zéro dépendance npm à l'exécution**. Avec le profil **`smart-hybrid`** activé par défaut, les retouches ciblées (`≤ 2` fichiers) s'exécutent en direct sans surcoût, tandis que les développements multi-fichiers, la recherche approfondie, l'architecture et les **`36` commandes slash (`93` fichiers)** découpent le travail dès le Tour 1 entre **22 agents spécialisés** et **18 équipes contradictoires à 3 rôles** — verrouillés par **14 contrôles CLI `boomopen` locaux** et appuyés par **`1,462` skills à la demande** (`22` Core + `1,440` dédupliquées une seule fois dans `~/.agents/skills_library`).
+
+### ⚖️ Sans BoomOpen vs. Avec BoomOpen v5.5
+
+| Mode de défaillance technique | Sans BoomOpen (IDE IA standard) | Avec BoomOpen Workflow Kit Pro v5.5 |
+|:------------------------------|:--------------------------------|:------------------------------------|
+| **Saturation de la fenêtre de contexte** | L'agent principal lit 15 à 30 fichiers en série avant d'écrire une seule ligne | **Essaim élastique dès le Tour 1 (`role#shard`)** : Délègue l'exploration en lecture seule et découpe par domaine (`≤ 3–4` fichiers/shard) + réutilisation à chaud (`0s`, `send_message`) |
+| **Écrasements parallèles et câblage cassé** | Les agents parallèles écrasent les fichiers partagés, divergent sur les routes `/api` ou créent des modules morts | **Verrous Contract-First + Réconciliation Wave 2.5** : Fige `SHARED_CONTRACT` en Wave 1 + `OWNED_FILES` disjoints, vérifiés par `boomopen reconcile` (`REC-G1..G4`) |
+| **Recherche superficielle et plans flous** | Réponses complaisantes à point de vue unique, affirmations non sourcées, plans en prose libre | **Spécifications en 6 blocs validées** : Contradicteur `:team` + validateurs CLI `< 50ms` (`boomopen research`, `design`, `plan`) |
+| **Stubs silencieux, `any` et tests biaisés** | L'agent déclare la tâche terminée en laissant des `// TODO`, `any` explicites, `console.log` ou tests `.skip` | **Contrôle statique pragmatique à 2 niveaux** : `boomopen check --strict-phase --no-stubs` impose `0` `any`, `0` stub et des fichiers cohérents (`400/500` lignes) |
+| **Dérive multi-sessions et régressions** | Le compactage du contexte efface les contraintes de phase et casse des fonctionnalités déjà validées | **Cliquet qualité à 5 niveaux et rollback** : `.boomopen/project-ledger.json` avec garde SHA-256 anti-dérive, `/autopilot`, `/audit` et `rollback --yes` atomique |
+| **Angles morts d'un modèle unique** | Le même modèle écrit et relit son propre code (`Author == Critic`) | **Conducteur multi-moteurs (`/conduct`)** : Conseils parallèles et pipelines inter-familles sur Claude Code, Codex, Antigravity, Cursor et Copilot |
+| **Dérive sur 5 IDE et arbre Git pollué** | Fichiers de règles dispersés par IDE, gigaoctets de skills dupliquées et specs temporaires dans `git status` | **Synchronisation unifiée et Git propre** : 14 points d'entrée synchronisés en `< 10ms`, 1 `~/.agents/skills_library` partagée (`0` token au repos) et routage vers Brain Artifacts |
 
 ---
 
 <a id="architecture"></a>
+<a id="-smart-hybrid-architecture-v55"></a>
 
-## 🏗️ Architecture Hybride-Intelligente (v5.5)
+## 🏗️ Architecture Smart-Hybrid (v5.5)
 
 ```mermaid
 flowchart TD
-    User["👤 Requête Utilisateur / Commande Slash"] --> Gate{"🚦 Porte de Profil & Complexité"}
-    Gate -->|"Mode A sous smart-hybrid (≤ 2 fichiers) ou frontier-guardrails (≤ 10 fichiers)"| ModeA["⚡ Mode A : Exécution Directe (Tier 0)<br/>Garde-fous Légers ~600 tokens (< 2.5 KB) + Standards 2 Niveaux"]
-    Gate -->|"/cmd explicite, > seuil de fichiers ou Mode B NL"| ModeB["🎻 Mode B : Orchestrateur Multi-Agents (Tier 1)<br/>Model: inherit"]
+    User["👤 Requête en langage naturel (17 langues) ou /cmd"] --> Gate{"🚦 Contrôle de profil et de complexité"}
+    Gate -->|"smart-hybrid (≤ 2 fichiers connus) ou frontier-guardrails (≤ 10 fichiers)"| ModeA["⚡ MODE A : Exécution directe (Tier 0)<br/>Standards pragmatiques à 2 niveaux + vérification E2E stricte"]
+    Gate -->|"> 2 fichiers, exploration ouverte, intention NL 17 langues ou /cmd explicite"| ModeB["🎻 MODE B : Essaim multi-agents au Tour 1 (Tiers 1–3)<br/>Model: inherit · ≤ 3–4 OWNED_FILES par shard"]
 
-    ModeB --> FanOut["🔀 Phase 1 : Déploiement Parallèle DAG<br/>(researcher + scouter | debugger + researcher)"]
-    FanOut --> Plan["📋 Phase 2 : Planification par Contrat (planner)<br/>Verrouille SHARED_CONTRACT + OWNED_FILES"]
-    Plan --> Dispatch{"🎯 Variante d’Exécution"}
+    ModeB --> Wave0["🔍 Phase 1 : Recherche et exploration parallèles du dépôt<br/>(shards researcher + scouter | boomopen research validate)"]
+    Wave0 --> Wave1["📐 Wave 1 : Verrouillage des contrats et schémas<br/>(SHARED_CONTRACT + DESIGN_CONTRACT + boomopen plan validate)"]
+    Wave1 --> Wave2{"🎯 Wave 2 : Shards parallèles disjoints"}
 
-    Dispatch -->|":fast / :hard"| Direct["⚡ Distribution Directe Plan vers Ingénieurs<br/>(backend-engineer + frontend-engineer en parallèle)"]
-    Dispatch -->|":team"| Triangle["🔺 Équipe Contradictoire Golden Triangle<br/>(TechLead ⇄ Executor ⇄ Reviewer via MAILBOX)"]
+    Wave2 -->|":fast / :hard"| Direct["⚡ Dispatch direct du plan vers les exécutants<br/>(backend/frontend/db/mobile/game-engineer#shard)"]
+    Wave2 -->|":team / Council"| Diamond["💎 Diamant d'Or élastique et Conseil<br/>(Tech Lead ⇄ Exécutants parallèles ⇄ Critiques · Author != Critic)"]
 
-    Direct --> Reconcile["🧩 Wave 2.5 : spec-reconciler & boomopen reconcile<br/>Vérifie docs/ vs code + /cook amend-plan comble les manques"]
-    Triangle --> Reconcile
-    Reconcile --> Verify["🧪 Phase 4 : Vérification, Porte PR & Audit Multi-Tours<br/>tester + reviewer → /pr & /audit → 0 défaut"]
+    Direct --> Wave25["🔗 Wave 2.5 : Réconciliation spécification-code<br/>(spec-reconciler + boomopen reconcile REC-G1..G4)"]
+    Diamond --> Wave25
+    Wave25 --> Wave3["🧪 Wave 3 : QA à chaud, Sécurité v6 et cliquet à 5 niveaux<br/>(check --strict-phase --no-stubs + tester + reviewer)"]
 ```
 
 ---
 
 <a id="pillars"></a>
 
-## 🧠 Les 6 Piliers Fondamentaux & Fonctionnalités Natives 2026
+## 🧠 6 Piliers d'Ingénierie Fondamentaux
 
-1. **🌐 Parité Unifiée sur 5 Plateformes & Intégrations Natives 2026 (`platforms/*`)** :
-   - Prise en charge native pour **Antigravity (Gemini)** (packaging plugin natif `install antigravity --as-plugin` et orchestration Python `run_workflow`), **Claude Code** (`/plan:hard` + hooks de qualité/continuité `PreCompact`/`Stop` + garde `Bash|PowerShell`), **OpenAI Codex** (sandboxing `read-only` pour l’exploration/revue et profils TOML), **Cursor** et **GitHub Copilot**.
-2. **📏 Standards de Code Pragmatiques à 2 Niveaux (Anti-Fragmentation)** :
-   - **Niveau 1 — Qualité & Sécurité Strictes (Tolérance Zéro)** : Responsabilité Unique, **AUCUN `any` explicite**, **AUCUN `console.log` de débogage oublié**, `try/catch` + erreurs typées aux frontières async/API, constantes `SCREAMING_SNAKE_CASE`, DRY (`≥ 3`) et imports triés.
-   - **Niveau 2 — Directives Structurelles Flexibles (Cohésion d’Abord)** : Fichiers cohésifs de `~200–350 lignes` (plafond souple `400` / découpage strict `500` ; tests, types et docs exemptés) ; fonctions logiques `~20–40 lignes` (`~40–80` UI/Handlers).
-3. **🎯 Sharding Élastique (`role#shard`) & Auto-Réconciliation Wave 2.5 (`spec-reconciler`)** :
-   - Dès que `PLAN-{feature}.md` existe, l’Orchestrateur assigne directement aux fragments (`<= 3–4 OWNED_FILES`/shard) et les réutilise à chaud via `send_message` en **0s**. En **Wave 2.5**, `spec-reconciler` et `boomopen reconcile` (`REC-G1..G4`) résorbent tout écart vis-à-vis de `docs/` avant clôture.
-4. **🤝 Contrats Parallèles, Portes PR/Release & Audit Multi-Tours `/audit` (v6)** :
-   - `SHARED_CONTRACT` + `OWNED_FILES` éliminent les conflits ; `/onboard` cartographie un dépôt existant en 60s ; `/pr` (`/pr:review`) et `/release` sécurisent Pull Requests et versions sémantiques ; et `/audit` exécute le Moteur Anti-Fuites 2 Couches v6 jusqu’à zéro constat.
-5. **🔍 Débogage 5-Whys (SPIE v3.0) & Arbre Git 100% Propre** :
-   - `debugger` trace chaque bug via 3 hypothèses et une chaîne causale **5-Whys**. Les artefacts transitoires (`PLAN`, `DEBUG`, `TEST`, `REVIEW`, `AUDIT`, `ARCHITECTURE-MAP`, `MAILBOX`) vont dans `<appDataDir>\brain\<conversation-id>\` (ou `./reports/`), gardant Git propre.
-6. **🩺 Suite CLI de 14 Commandes & Index Dédupliqué O(1)** :
-   - `npm run doctor` valide les 5 plateformes, **22 agents**, **72 fichiers d’équipe (18 équipes)**, **93 fichiers de commandes (36 commandes : 87 workflows + 6 `_ref/`)** et **`1 462` compétences** mutualisées via `~/.agents/skills_library`. Les **14 commandes CLI** (`research`, `design`, `plan`, `cook`, `reconcile`, `audit` avec `audit rollback`, `ledger` avec `ledger rollback`, `conduct`, `check`, `doctor`, `settings`, `install` avec `--as-plugin`, `uninstall`, `list`) assurent une conformité déterministe.
+1. **🌐 Compilation native sur 5 IDE et coffre dédupliqué (`platforms/*`)** :
+   - Compile **22 agents spécialisés** et **93 fichiers de commandes/référence** dans les formats natifs de chaque IDE : **Antigravity** (bundle `--as-plugin` + `3` scripts Python exécutables pour `run_workflow` : `audit_fanout.py`, `review_fanout.py`, `research_fanout.py`), **Claude Code** (shards `isolation: worktree`, commandes `/plan:hard`, hooks optionnels `PreToolUse` et `Stop`/`PreCompact`), **OpenAI Codex** (`22` rôles TOML avec bacs à sable OS `read-only` pour éclaireurs/critiques + `87` skills `$boomopen-*`), **Cursor** (règles `.mdc` + hook optionnel `beforeShellExecution`) et **GitHub Copilot** (agents `.agent.md`).
+   - Relie une seule fois les `1,440` skills de bibliothèque dans `~/.agents/skills_library` pour les 5 IDE (~80 % d'espace disque économisé, `0` surcharge de tokens au Tour 1).
+2. **🎯 Essaim élastique dynamique à 4 paliers (`role#shard`) et réutilisation à chaud** :
+   - Dimensionne automatiquement de **Tier 0** (`0` sous-agent pour `≤ 2` fichiers connus) → **Tier 1** (`2–3` shards) → **Tier 2** (`4–6` shards) → **Tier 3** (`7–8+` shards, configurable jusqu'à `16`), en plafonnant la charge cognitive à **`≤ 3–4 OWNED_FILES` par sous-agent** et en réutilisant les sessions actives via `role#shard → conversationId` (`send_message`).
+3. **🤝 Exécution Contract-First en 3 vagues + Réconciliation Wave 2.5 (`REC-G1..G4`)** :
+   - La Wave 1 verrouille `SHARED_CONTRACT` (schémas API/DTO) et `DESIGN_CONTRACT` (CSS `@theme` OKLCH + props TypeScript) avant le dispatch parallèle de la Wave 2. La Wave 2.5 exécute `boomopen reconcile` + `spec-reconciler` pour détecter les fichiers îlots non raccordés (`REC-G1`), les écarts de routes frontend/backend (`REC-G2`), les sous-clauses `[SC-*]` omises (`REC-G3`) et les clés manquantes dans `.env.example` (`REC-G4`), puis génère les vagues correctives via `boomopen cook amend-plan`.
+4. **🏛️ Autopilote multi-sessions (`/autopilot`) et audit multi-cycles à état (`/audit`)** :
+   - Compile les dossiers de spécifications dans `.boomopen/project-ledger.json` avec détection de dérive SHA-256, points de sauvegarde Git avant chaque phase (`boomopen ledger rollback --yes`) et un **cliquet qualité de phase à 5 niveaux** (`G1 check --strict-phase --no-stubs` → `G2 cliquet monotone de tests` → `G3 reconcile --strict` → `G4 revue Author != Critic` → `G5 ledger verify`). Après construction, `/audit` pilote des cycles supervisés couvrant RTM, flux verticaux et Sécurité v6 (`.boomopen/audit-ledger.json` + `boomopen audit rollback --yes`).
+5. **🎼 Conducteur multi-moteurs et Conseil parallèle (`boomopen conduct`)** :
+   - Coordonne simultanément Claude Code, OpenAI Codex, Antigravity, Cursor et Copilot au sein de **Conseils parallèles sur 6 tâches** (`research`, `brainstorm`, `plan`, `design`, `review`, `debug` → synthèse en 4 parties `COUNCIL-SYNTHESIS.md`) ou de **Pipelines inter-familles** où aucun modèle n'évalue sa propre production (`Author != Critic`).
+6. **📏 Standards de code pragmatiques à 2 niveaux et diagnostic racine SPIE v3.0** :
+   - **Niveau 1 (Tolérance zéro)** : Responsabilité unique, `0` `any` explicite, `0` `console.log` de débogage dans le code applicatif, frontières async/API typées avec `try/catch`, constantes `SCREAMING_SNAKE_CASE`. **Niveau 2 (Cohésion d'abord)** : Cible de `~200–350` lignes (`400` souple / `500` plafond strict ; tests/types/docs exemptés). Chaque anomalie passe par 3 hypothèses classées et une chaîne causale **5-Whys (SPIE v3.0)**, tandis que les artefacts transitoires sont routés vers Brain Artifacts (`100 %` arbre Git propre).
 
 ---
 
 <a id="platforms"></a>
+<a id="-supported-ai-platforms"></a>
 
-## 💻 Plateformes IA Supportées
+## 💻 5 Plateformes de Développement IA Prises en Charge
 
-| Plateforme | Niveau de Support | Point d’Entrée Global & Fonctions Natives 2026 | Chemin d’Installation du Framework |
-|----------|:-------------:|-------------------|------------------------|
-| **Antigravity (Gemini)** | ✅ Natif v5.5 | `~/.gemini/GEMINI.md` (`--as-plugin`, `run_workflow` & `/goal`) | `~/.gemini/config/skills/boomopen-workflow-kit/` |
-| **Claude Code** | ✅ Natif v5.5 | `~/.claude/CLAUDE.md` (hooks `PreCompact`/`Stop` & garde `Bash\|PowerShell`) | `~/.claude/skills/boomopen-workflow-kit/` |
-| **OpenAI Codex** | ✅ Natif v5.5 | `~/.codex/CODEX.md` & `AGENTS.md` (sandbox `read-only` & rôles TOML) | `~/.codex/skills/boomopen-workflow-kit/` |
-| **Cursor** | ✅ Natif v5.5 | `~/.cursor/rules/boomopen-workflow-kit.mdc` (`smart-hybrid` ou `< 2.5 KB` sous `frontier-guardrails`) | `~/.cursor/skills/boomopen-workflow-kit/` |
-| **GitHub Copilot** | ✅ Natif v5.5 | `~/.copilot/COPILOT.md` (agent personnalisé & sous-agents) | `~/.copilot/skills/boomopen-workflow-kit/` |
+| Plateforme | Support | Point(s) d'entrée synchronisés | Intégration native par plateforme |
+|:-----------|:-------:|:-------------------------------|:----------------------------------|
+| **Antigravity (Gemini)** | ✅ v5.5 | `~/.gemini/GEMINI.md` | `invoke_subagent`, fan-out Python `run_workflow`, boucle externe `/goal`, bundle `--as-plugin`, `--with-hooks` optionnel, Brain Artifacts |
+| **Claude Code** | ✅ v5.5 | `~/.claude/CLAUDE.md` | Shards parallèles `Task`/`Agent` (`isolation: worktree`), commandes `/plan:hard`, hooks optionnels `PreToolUse` et `Stop`/`PreCompact` |
+| **OpenAI Codex** | ✅ v5.5 | `~/.codex/AGENTS.md` et `CODEX.md` | `22` rôles TOML dans `~/.codex/agents/boomopen/` avec `sandbox_mode = "read-only"` OS pour éclaireurs/relecteurs + `87` skills `$boomopen-*` |
+| **Cursor** | ✅ v5.5 | `~/.cursor/rules/boomopen-workflow-kit.mdc` | Règles `.mdc` permanentes, `CURSOR.md`, routage de sous-agents et `.cursor/hooks.json` optionnel (`beforeShellExecution`) |
+| **GitHub Copilot** | ✅ v5.5 | `~/.copilot/copilot-instructions.md` | Agent compilé `boomopen-workflow-kit.agent.md` pour VS Code, dispatch `runSubagent` et `COPILOT.md` |
 
 ---
 
 <a id="quickstart"></a>
+<a id="-quick-start--installation"></a>
 
-## 🚀 Démarrage Rapide & Installation
+## 🚀 Démarrage Rapide et Installation (Via Git Uniquement — Zéro Dépendance Runtime)
 
 ```bash
-# 1. Cloner le dépôt
+# 1. Cloner le dépôt (distribué uniquement sur GitHub — jamais publié sur npm)
 git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git
 cd BoomOpen-Workflow-Kit-Pro
 
-# 2. Installer pour votre assistant IA (déduplique les compétences via ~/.agents/skills_library)
-npm run install:antigravity                        # Antigravity (Gemini) standard
-node cli/install.js install antigravity --as-plugin # Antigravity en mode plugin natif
-npm run install:claude                             # Claude Code (hooks PreCompact/Stop + garde Bash|PowerShell)
-npm run install:codex                              # OpenAI Codex (avec sandboxing read-only)
-npm run install:cursor                             # Cursor
-npm run install:copilot                            # GitHub Copilot
-npm run install:all                                # Installer sur les 5 plateformes simultanément
+# 2. Installer pour votre IDE IA (profil par défaut : smart-hybrid) ou sur les 5 IDE d'un coup
+npm run install:all                                 # Installe et synchronise les 5 IDE + ~/.agents/skills_library partagée
+npm run install:antigravity                         # Google Antigravity 2.0 (ajouter --as-plugin ou --with-hooks au besoin)
+node cli/install.js install claude --with-hooks     # Claude Code + hooks optionnels PreToolUse et Stop/PreCompact
+npm run install:codex                               # OpenAI Codex CLI + bacs à sable OS read-only pour scouts/reviewers
+npm run install:cursor                              # Cursor (passer --with-hooks pour la garde beforeShellExecution)
+npm run install:copilot                             # GitHub Copilot (VS Code .agent.md + copilot-instructions.md)
 
-# 3. Vérifier l’installation et tester les 14 commandes CLI (dont rollback)
+# 3. Vérifier l'intégrité et lier optionnellement `boomopen` dans le PATH global
 npm run doctor
 npm link
-boomopen research validate path/to/RESEARCH.md
-boomopen design validate path/to/DESIGN.md
-boomopen plan validate path/to/PLAN.md
-boomopen cook preflight path/to/PLAN.md
-boomopen reconcile path/to/your/project --plan path/to/PLAN.md   # Réconciliation Wave 2.5 (REC-G1..G4)
-boomopen audit init --docs docs/prd.md,docs/arch.md              # Audit multi-tours (supporte audit rollback)
-boomopen check path/to/your/project --strict-phase --no-stubs    # Longueur, any, console.log, zéro stub
-boomopen ledger status                                           # État du registre (supporte boomopen ledger rollback)
-boomopen conduct probe
+boomopen settings status
 ```
 
-> Le kit **n’est pas publié sur npm** : installez-le uniquement depuis ce dépôt (`npm link` relie ce clone local sans rien télécharger depuis npm).
+> **Installation et désinstallation sûres et non destructives** : Suivies par manifestes SHA-256 (`~/.boomopen/manifests/<tool>.json`). Vos règles personnelles existantes dans `GEMINI.md` / `CLAUDE.md` sont préservées hors des balises du kit avec sauvegarde automatique ; `boomopen uninstall <tool|--all>` retire proprement les fichiers non modifiés du kit sans toucher à vos propres fichiers.
+
+---
+
+<a id="cli"></a>
+
+## 🛠️ 14 Sous-commandes CLI Sans Dépendance (`boomopen`)
+
+S'exécute localement en `< 50ms` sur Node.js `>= 18` avec **zéro dépendance npm à l'exécution** et **zéro appel réseau** :
+
+| Sous-commande | Options et syntaxe clés | Contrôles déterministes et rôle |
+|:--------------|:------------------------|:--------------------------------|
+| **`install` / `uninstall` / `list`** | `<tool\|--all> [--with-hooks] [--as-plugin]` | Installateur à manifeste SHA-256, liaison `~/.agents/skills_library`, hooks de sécurité optionnels et désinstallation propre |
+| **`doctor`** | `[--source-only]` | Audit en lecture seule en 30 points des 5 bundles IDE, `93` fichiers commandes, `72` fichiers équipes, `1,462` skills et réglages |
+| **`settings`** | `status \| preset <name> \| set <k> <v> \| --ui` | Gère 5 profils + `22` clés (`--project` pour `./.boomopen.json`) ou ouvre l'interface Web durcie par CSP (`127.0.0.1:4567`) |
+| **`research`** | `<validate\|brief> <file.md> [--mode brainstorm]` | Impose **`RES-G1..G4`** (`≥ 4` sources triangulées, matrice de contradictions, risques pre-mortem) et compile `HANDOFF_BRIEF` |
+| **`design`** | `<validate\|contract> <DESIGN.md> [--json]` | Impose **`DESIGN-G1..G4`** (spec en 6 blocs, tokens OKLCH, matrice UI à 5 états, WCAG 2.2 AA) et génère `DESIGN_CONTRACT` |
+| **`plan`** | `<validate\|compile> <PLAN.md> [--sync-ledger]` | Impose **`PLAN-G1..G5`** (DAG acyclique, `OWNED_FILES ≤ 4`/shard disjoints, `SHARED_CONTRACT`) et synchronise le registre |
+| **`cook`** | `<state\|packets\|verify-wave\|preflight\|amend-plan>` | Impose **`COOK-G1..G4`** : état fast-forward en 5 étapes, paquets Wave à 5 champs, verrous d'écriture Git et vagues delta |
+| **`reconcile`** | `<dir> [--plan <PLAN.md>] [--strict]` | Wave 2.5 **`REC-G1..G4`** : détecte les modules îlots, dérives de routes `/api`, clauses `[SC-*]` omises et manques `.env.example` |
+| **`check`** | `[path] --strict-phase --no-stubs [--ignore <dir>]` | Contrôle statique à 2 niveaux : budgets `400/500` lignes, `0` `any` explicite, `0` `console.log` de debug, `0` stub/`TODO`/`.skip` |
+| **`ledger`** | `<init\|from-plan\|status\|next\|verify\|rollback>` | Automate DAG multi-sessions `.boomopen/project-ledger.json`, garde SHA-256 anti-dérive et `rollback --yes` atomique |
+| **`audit`** | `<init\|slice\|record\|approve\|verify-fix\|rollback>` | Registre d'audit multi-cycles post-livraison (`.boomopen/audit-ledger.json`), cliquet de résorption et `rollback --yes` |
+| **`conduct`** | `<probe\|council\|dispatch\|status> [--dry-run]` | Conducteur multi-moteurs et Conseil parallèle sur 6 tâches (`Author != Critic` sur 5 IDE → `COUNCIL-SYNTHESIS.md`) |
 
 ---
 
 <a id="settings"></a>
+<a id="-unified-settings--mode-selection-settings"></a>
 
-## 🎛️ Paramètres Unifiés & 5 Profils Prédéfinis (`/settings`)
+## 🎛️ Centre de Contrôle Unifié et 5 Profils (`/settings`)
 
-BoomOpen v5.5 intègre un **Centre de Contrôle Unifié à Latence Zéro** synchronisant **5 profils prédéfinis** et 20 paramètres énumérés (+ 2 limites de lignes) sur les **5 plateformes** en `< 10ms` (**0ms au Tour 1** par injection AOT `<!-- BOOMOPEN-SETTINGS-START -->`), avec **`⚡ smart-hybrid` activé par défaut lors d’une installation neuve** :
+Pilotez **`20` clés énumérées + `2` seuils de lignes personnalisables** globalement (`~/.boomopen/settings.json`) ou par dépôt (`./.boomopen.json`), synchronisés à chaud dans les 14 fichiers d'entrée IDE en `< 10ms` :
 
-| Profil Prédéfini (`Preset`) | Mode (`execution.mode`) | Variante `/cmd` | Déclencheur Langage Naturel (`naturalLanguageResearchTrigger`) | Standards (`codingStandards`) | Cas d’Usage Idéal |
-|:---|:---|:---:|:---:|:---:|:---|
-| **⚡ `smart-hybrid`** *(Recommandé par Défaut)* | **`auto`** (`≤ 2` fichiers → Mode A Direct ; `> 2` fichiers ou `/cmd` → Mode B) | `auto` | **`auto_team`** *(Route la recherche/idéation NL vers `/research:team` / `/brainstorm:team`)* | `pragmatic` (`400/500` lignes) | Par défaut sur installation fraîche (et restauré via `boomopen settings reset`) : routage NL proactif en 17 langues + essaim au Tour 1 sur les 5 IDE |
-| **🛡️ `frontier-guardrails`** *(Mode A Léger Optionnel)* | **`mode_a`** (`mode_a <= 10` fichiers directs ; garde-fous `< 2.5 KB` / `~600 tokens` ; alias `carbon-guardrails` rétrocompatible) | `auto` | **`off`** *(Zéro détournement NL — actif uniquement sur `/cmd` explicite)* | `pragmatic` (`400/500` lignes) | Mode A léger optionnel (`boomopen settings preset frontier-guardrails`) alliant exécution directe `< 2.5 KB` et portes E2E strictes |
-| **🚀 `solo-fast`** | **`mode_a`** *(Force l’exécution directe en solo, 0s sous-agent)* | `fast` | `off` *(Réponse directe sauf si `/brainstorm` est saisi)* | `relaxed` (`600/800` lignes) | Correctifs urgents, prototypage rapide, scripts et économie de tokens |
-| **🧠 `deep-architect`** | **`mode_b`** *(Force l’Orchestrateur Multi-Agents sur chaque tâche)* | `hard` | `auto_hard` *(Route vers `/research:hard` / `/brainstorm:hard`)* | `strict` (`300/400` lignes) | Architecture complexe, conception greenfield et refonte multi-domaines |
-| **🔺 `adversarial-team`** | **`team`** *(Force le Triangle d’Or à 3 agents `:team`)* | `team` | **`auto_team`** *(Revue contradictoire à 3 agents via `MAILBOX`)* | `strict` (`300/400` lignes) | Production critique, audits de sécurité et livraisons zéro défaut |
-
-> **⚡ `smart-hybrid` (Par Défaut) vs 🛡️ `frontier-guardrails` (Mode A Léger Optionnel)** : Sur toute nouvelle installation, BoomOpen active `smart-hybrid` par défaut (et `boomopen settings reset` restaure ce profil). Pour basculer vers le Mode A léger optionnel (`< 2.5 KB` / `~600 tokens`, `mode_a <= 10` fichiers, `naturalLanguageResearchTrigger = off`), exécutez `boomopen settings preset frontier-guardrails` (l’alias rétrocompatible `carbon-guardrails` reste pris en charge).
-
-### Trois Façons de Changer de Mode (Chat `/settings`, Web UI & CLI)
+| Profil (`Preset`) | Mode d'exécution (`execution.mode`) | `/cmd` par défaut | Routage NL 17 langues (`naturalLanguageResearchTrigger`) | Standards de code | Usage recommandé |
+|:------------------|:------------------------------------|:-----------------:|:--------------------------------------------------------:|:-----------------:|:-----------------|
+| **⚡ `smart-hybrid`** *(Par défaut)* | **`auto`** (`≤ 2` fichiers en direct ; `> 2` fichiers ou `/cmd` → Essaim Mode B) | `auto` | **`auto_team`** *(Route recherche/idéation/revue NL vers `:team` et les workflows en 17 langues)* | `pragmatic` (`400/500`L) | Expérience par défaut : routage d'intention en langage naturel + découpage parallèle dès le Tour 1 |
+| **🛡️ `frontier-guardrails`** *(Léger optionnel)* | **`mode_a`** (`≤ 10` fichiers en direct ; point d'entrée `< 2.5 KB` / `~600` tokens) | `auto` | **`off`** *(Commandes `/cmd` explicites uniquement — zéro interception NL)* | `pragmatic` (`400/500`L) | Mode direct quotidien ultra-léger `< 2.5 KB` avec contrôles 2 niveaux et E2E stricts *(alias `carbon-guardrails` supporté)* |
+| **🚀 `solo-fast`** | **`mode_a`** (`≤ 10` fichiers en direct ; plafond prudent de `3` shards) | `fast` | `off` | `relaxed` (`600/800`L) | Prototypage rapide, petits scripts, correctifs urgents et sobriété en tokens |
+| **🧠 `deep-architect`** | **`mode_b`** *(Orchestrateur Mode B strict ; max `12` shards)* | `hard` | `auto_hard` + recherche `council` / revue `cross_family` | `strict` (`300/400`L) | Architecture système complexe, conception greenfield et refontes inter-modules |
+| **🔺 `adversarial-team`** | **`team`** *(Diamant d'Or élastique `:team` ; `hyper_swarm` max `12`)* | `team` | **`auto_team`** + recherche, plan et revue en `council` | `strict` (`300/400`L) | Mises en production critiques, audits de sécurité et consensus multi-moteurs |
 
 ```bash
-# 1. Commande Slash dans le Chat
-/settings                                     # Ouvrir le menu interactif (ask_question UI)
-/settings preset smart-hybrid                 # Profil recommandé par défaut (Mode A/B auto + routage NL en 17 langues)
-/settings preset frontier-guardrails          # Mode A léger optionnel < 2.5 KB / ~600 tokens (alias : carbon-guardrails)
-/settings preset solo-fast                    # Exécution directe rapide (Mode A)
-/settings preset deep-architect               # Orchestrateur Multi-Agents (Mode B)
-/settings preset adversarial-team             # Équipe Golden Triangle (:team)
-/settings mode auto | mode_a | mode_b | team  # Changer directement le mode d’exécution
-
-# 2. Interface Web Locale (http://127.0.0.1:4567) & Terminal CLI
-boomopen settings --ui
-boomopen settings preset smart-hybrid         # Appliquer globalement et synchroniser les 5 IDE
-boomopen settings preset frontier-guardrails  # Activer le Mode A léger optionnel (alias : carbon-guardrails)
-cd path/to/your/project && boomopen settings set execution.mode mode_a --project
-boomopen settings reset                       # Restaurer le profil par défaut smart-hybrid
+# Changer de profil ou ajuster une clé via le chat (/settings), l'interface Web locale (--ui) ou la CLI :
+boomopen settings --ui                                      # Ouvrir le Centre de Contrôle Web local sur http://127.0.0.1:4567
+boomopen settings preset smart-hybrid                       # Par défaut : Mode A/B auto + routage NL en 17 langues
+boomopen settings preset frontier-guardrails                # Optionnel : Mode A léger < 2.5 KB (alias : carbon-guardrails)
+boomopen settings set engines.reviewer cross_family         # Imposer un relecteur d'une autre famille (Author != Critic)
+cd path/to/your/repo && boomopen settings mode team --project # Surcharge locale au dépôt dans ./.boomopen.json
+boomopen settings reset                                     # Restaurer la configuration smart-hybrid par défaut
 ```
 
 ---
 
 <a id="commands"></a>
+<a id="-slash-commands-reference"></a>
 
-## 🎯 Référence des Commandes Slash (36 Commandes / 93 Fichiers : 87 Workflows + 6 `_ref/`)
+## 🎯 Référence des 36 Commandes Slash (`93` Fichiers = `87` Workflows + `6` `_ref/`)
 
-| Commande | Variantes / Sous-commandes | Objectif Principal |
-|---------|----------|-----------------|
-| **`/onboard`** | — | **Cartographie Brownfield en 60s** : Génère `ARCHITECTURE-MAP.md` (stack, points d’entrée, flux de données, zones à risque et commandes build/test) sans conflit `/init` ni pollution Git |
-| **`/cook`** | `:fast`, `:hard`, `:team`, `amend-plan` | Développement complet (Recherche → Plan → Code Parallèle → **Wave 2.5 `reconcile`** → Test → Revue) |
-| **`/code`** | `:fast`, `:hard`, `:team` | Exécuter l’implémentation directement depuis un `PLAN-{feature}.md` existant |
-| **`/plan`** | `:fast`, `:hard`, `:team` | Créer des plans avec `SHARED_CONTRACT`, `OWNED_FILES` et critères Given/When/Then (dont `/plan:hard` sur Claude Code) |
-| **`/fix`** | `:fast`, `:hard`, `:team` | Résolution de bugs à la racine avec vérification par test de régression |
-| **`/debug`** | `:fast`, `:hard`, `:team` | Investigation via 3 hypothèses + **5-Whys (SPIE v3.0)** (`DEBUG-{issue}.md`) |
-| **`/test`** | `:fast`, `:hard`, `:team` | Exécution parallèle DAG des suites de tests + repérage des cas limites (`tester` + `scouter`) |
-| **`/review`** | `:fast`, `:hard`, `:team` | Audit parallèle à 4 dimensions (Architecture, Qualité, Sécurité OWASP, Performance) |
-| **`/pr`** | `:review` (`/pr:review`) | **Porte Pré-PR & Revue Contradictoire** : Vérifie `check`, `reconcile` et tests avant `gh pr create`, ou audite les hunks en parallèle via `/pr:review` (`gh pr view` / `gh pr diff`) |
-| **`/release`** | — | **Préparation de Release Sémantique** : Audit Conventional Commits, synthèse `CHANGELOG.md`, portes `doctor`/`check`/`test`/`test:pack` et `gh release create` validé par l’humain |
-| **`/audit`** | `:run`, `:fix`, `:auto` | **Audit Multi-Tours Post-Achèvement** : Couverture RTM, flux vertical & Moteur Anti-Fuites v6 avec correction par fragments (`boomopen audit` / `audit rollback`) |
-| **`/design`** | `:fast`, `:hard`, `:team` | Architecture système, schéma de base de données et spécification UI/UX (`DESIGN.md`) |
-| **`/docs`** | `:core`, `:business`, `:audit` | Générer ou synchroniser la documentation structurée à 2 niveaux (`./documents/`) |
-| **`/deploy`** | `:check`, `:preview`, `:production`, `:rollback` | Contrôles pré-déploiement, environnements preview, production et rollback sécurisé |
-| **`/research`** | `:fast`, `:hard`, `:team` | Moteur autonome de recherche (triangulation 4 sources, 3 vagues et conseil à 3 vecteurs) |
-| **`/brainstorm`** | `:fast`, `:hard`, `:team` | Découverte socratique des besoins, analyse des compromis et idéation |
-| **`/report`** | `:fast`, `:hard`, `:team` | Rapports de synthèse exécutifs et techniques avec métriques et diagrammes |
-| **`/autopilot`** | `:init`, `:run`, `:audit` | Orchestrateur autonome multi-sessions avec `.boomopen/project-ledger.json` (`ledger rollback`) et cliquet 4 couches |
-| **`/conduct`** | `:council`, `:pipeline` | Conducteur multi-moteurs et conseil parallèle (`boomopen conduct`) avec consensus en 4 parties |
-| **`/orchestrate`** | — | Orchestration personnalisée de pipelines multi-agents sur plusieurs domaines |
-| **`/settings`** | `preset`, `mode`, `set`, `ui` | Centre de Contrôle Unifié : 5 profils, 20 paramètres + 2 limites de lignes ou UI Web (`--ui`) |
-| **`/save` / `/recap`** | — | Sauvegarder la session (`SESSION-HANDOVER.md`) et restaurer le contexte en `< 5s` (ainsi que `/ask`, `/status`, `/next`, etc. soit 36 commandes) |
+Exprimez votre besoin naturellement dans **l'une des 17 langues prises en charge** sous `smart-hybrid` ou invoquez explicitement l'une des **36 commandes slash canoniques** :
 
----
+| Catégorie | Commande | Variantes | Rôle et livrables déterministes |
+|:----------|:---------|:----------|:--------------------------------|
+| **Orchestration et autonomie** | **`/cook`** | `:fast`, `:hard`, `:team` | Développement de fonctionnalité de bout en bout sans plan préalable (Scout → Plan contractuel → Shards parallèles → Wave 2.5 Reconcile → QA) |
+| | **`/code`** | `:fast`, `:hard`, `:team` | Exécute directement un `PLAN-{task}.md` validé sur les shards Wave 1–3 sans relancer `/plan` |
+| | **`/autopilot`** | `:init`, `:run`, `:audit` | Orchestrateur multi-sessions de la spec à la production via `.boomopen/project-ledger.json` et **cliquet qualité à 5 niveaux** |
+| | **`/conduct`** | `:council`, `:pipeline` | Conseil parallèle multi-moteurs (`COUNCIL-SYNTHESIS.md`) et pipeline inter-familles sur 5 IDE (`--dry-run` inclus) |
+| | **`/orchestrate`** / **`/auto`** | — | Coordination sur mesure d'essaims multi-domaines (`/orchestrate`) ou exécution autonome intégrale (`/auto`) |
+| **Architecture, design et recherche** | **`/plan`** | `:fast`, `:hard`, `:team` | Plan `PLAN-{task}.md` à 5 contrôles figeant `SHARED_CONTRACT`, `OWNED_FILES ≤ 4`/shard disjoints et critères Given/When/Then |
+| | **`/architect`** | — | Dossier d'architecture pur : diagrammes C4, ADR, schémas BDD, contrats API, écrans et couverture (zéro code écrit) |
+| | **`/design`** / **`/ui-ux-pro-max`** | `:fast`, `:hard`, `:team` | Spec UI/UX `DESIGN-{task}.md` en 6 blocs + `DESIGN_CONTRACT` (tokens OKLCH `@theme`, matrice 5 états, 50+ styles et aperçu HTML) |
+| | **`/research`** | `:fast`, `:hard`, `:team` | Recherche approfondie à 5 prismes (`RESEARCH-{topic}.md`, triangulation `RES-G1..G4` ≥ 4 sources, contradictions et `HANDOFF_BRIEF`) |
+| | **`/brainstorm`** / **`/ask`** | `:fast`, `:hard`, `:team` | Idéation stratégique sans complaisance (`BRAINSTORM-{topic}.md` avec pre-mortem et matrice MCDA) et Q&R sourcée (`/ask`) |
+| **Qualité, audit, debug et sécurité** | **`/review`** | `:fast`, `:hard`, `:team` | Revue contradictoire multi-axes de code, architecture, sécurité et performance (`Author != Critic`, enchaînement vers `/fix`) |
+| | **`/audit`** / **`/deep-audit`** | `:run`, `:fix`, `:auto` | Audit global post-build multi-cycles (`/audit` avec registre) et audit logique pré-code en 10 dimensions (`/deep-audit`) |
+| | **`/security-audit`** | — | Analyse OWASP Top 10 + LLM/Agentic Top 10 (`security_scan.py` v6), modélisation STRIDE, auth et chaîne d'approvisionnement |
+| | **`/debug`** / **`/fix`** | `:fast`, `:hard`, `:team` | Diagnostic racine à 3 hypothèses + **5-Whys (SPIE v3.0)** (`DEBUG-{issue}.md`) et correction TDD fail-first (`/fix`) |
+| | **`/test`** / **`/performance`** / **`/refactor`** | `:fast`, `:hard`, `:team` | Shards QA sans contournement de tests (`/test`), optimisation Core Web Vitals / BDD / bundles (`/performance`) et `/refactor` mesuré |
+| **Git, releases, docs et session** | **`/onboard`** / **`/init`** | — | Cartographie brownfield `ARCHITECTURE-MAP.md` en lecture seule en 60s (`/onboard`, sans collision avec `/init`) et bootstrap (`/init`) |
+| | **`/pr`** / **`/release`** | —, `:review` | Contrôle qualité/réconciliation pré-PR + `gh pr create` / revue contradictoire de diff (`/pr:review`), et `/release` sémantique |
+| | **`/deploy`** / **`/rollback`** | `:check`, `:preview`, `:production`, `:rollback` | Contrôles pré-déploiement, déploiements preview/production (`/deploy`) et reprise d'urgence graduée par sévérité (`/rollback`) |
+| | **`/docs`** / **`/report`** | `:core`, `:business`, `:audit` / `:fast..:team` | Documentation `./documents/` ancrée dans le code (`/docs`) et rapports d'avancement fondés sur la télémétrie CLI (`/report`) |
+| | **`/settings`** / **`/status`** / **`/next`** | — | Centre de Contrôle Unifié (`/settings`), tableau de bord du registre/essaim (`/status`) et guide de prochaine étape (`/next`) |
+| | **`/preview`** / **`/save`** / **`/recap`** | — | Gestion du serveur de dev local (`/preview`), sauvegarde d'état de session (`/save`) et reprise de contexte en `< 5s` (`/recap`) |
 
-## 🌙 Guide Nocturne pour Grands Projets Multi-Phases (`/autopilot` vs `/goal` + `/autopilot` + `/audit`)
+### 🌙 Playbook Nocturne pour Projets Multi-Phases (`/autopilot` et `/goal`)
 
-- **Boucle Externe selon la Plateforme** : **`/goal`** est la **boucle externe native d’Antigravity (Gemini)** qui relance et poursuit automatiquement au-delà de ~70% de contexte, tandis que **`/autopilot` associé aux hooks `Stop` / `PreCompact`** assure la continuité multi-sessions autonome sur **Claude Code et OpenAI Codex**.
-
-| Approche | Portée & Continuité par Plateforme | Garanties Registre, Portes & Audit | Cas Idéal |
-|:---|:---|:---|:---|
-| **`/autopilot` (+ hooks Claude/Codex)** | Exécution sur une session ou continuité multi-sessions pilotée par les hooks `Stop`/`PreCompact` sur Claude Code & Codex | `.boomopen/project-ledger.json` (`ledger rollback`), 5 portes qualité et réconciliation Wave 2.5 | Développement par phases et exécution autonome multi-sessions sur Claude Code / Codex |
-| **`/goal` + `/autopilot` + `/audit`** *(Antigravity)* | **`/goal` agit comme boucle externe native d’Antigravity** sur toutes les phases durant la nuit | `project-ledger.json` + **5 portes** + **Wave 2.5 `reconcile`** + **Tour 1 `/audit`** (`audit rollback`) à 100% d’achèvement | Construction nocturne autonome de bout en bout depuis `docs/` sur Antigravity |
-
-**📋 Prompt nocturne prêt à copier (préfixez avec `/goal` sur Antigravity ; démarrez par `/autopilot` sur Claude Code / Codex) :**
+| Workflow | Plateforme cible et moteur | Continuité du contexte | Garanties qualité et conformité spec |
+|:---------|:---------------------------|:-----------------------|:-------------------------------------|
+| **`/autopilot` (+ `--with-hooks`)** | Les 5 IDE (associer `--with-hooks` sur **Claude Code**, **Antigravity** et **Cursor**) | Les hooks `Stop` et `PreCompact` (`stop-quality-gate.mjs`) + `.boomopen/project-ledger.json` conservent la progression malgré les compactages | Impose le **cliquet qualité à 5 niveaux** (`G1..G5`), `reconcile` en Wave 2.5 et `boomopen ledger rollback --yes` |
+| **`/goal` + `/autopilot` + `/audit`** | Boucle externe persistante d'**Antigravity 2.0** pour les dossiers `docs/` volumineux | L'exécuteur natif **`/goal`** d'Antigravity enchaîne les phases jusqu'à ce que tout le registre soit `VERIFIED` | Valide chaque phase sur les 5 contrôles + réconciliation Wave 2.5, puis lance le Cycle 1 de **`/audit`** |
 
 ```text
-/goal /autopilot Lis toutes les spécifications dans `docs/`, initialise .boomopen/project-ledger.json
-et implémente de façon autonome chaque phase de bout en bout selon le PLAN initial approuvé.
-Chaque phase doit valider les 5 portes de vérification, Wave 2.5 boomopen reconcile et boomopen check --strict-phase --no-stubs.
-Une fois 100% des phases terminées, lance le Tour 1 de /audit et arrête-toi avec le rapport pour revue.
+/goal Utilise /autopilot pour lire toute la documentation projet dans docs/, initialiser .boomopen/project-ledger.json et implémenter de manière autonome chaque phase dans l'ordre (chaque phase doit valider les 5 contrôles et Wave 2.5 reconcile). Une fois 100 % des phases validées, exécute le Cycle 1 de /audit puis arrête-toi avec un rapport de synthèse pour relecture.
 ```
 
 ---
 
 <a id="agents"></a>
+<a id="-22-specialist-agents--18-golden-triangle-teams"></a>
 
-## 🤖 22 Agents Spécialistes & 18 Équipes Golden Triangle (72 Fichiers)
+## 🤖 22 Agents Spécialisés et 18 Équipes Contradictoires à 3 Rôles
 
-| Catégorie | Agents Spécialistes (`agents/*.md`) | Équipes Golden Triangle (`agents/teams/*-team/`) |
-|----------|-----------------------------------|------------------------------------------------|
-| **Ingénierie & Exécution** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer`, `database-architect`, `devops-engineer` | `backend-team`, `frontend-team`, `fullstack-team`, `mobile-team`, `game-team`, `database-team`, `devops-team` |
-| **Architecture & Planification** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
-| **Qualité, Sécurité & Débogage** | `debugger`, `tester`, `reviewer`, **`spec-reconciler`**, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
-| **Recherche & Connaissances** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
+Chaque sous-agent hérite du modèle de votre session (`Model: "inherit"` — `flash_lite` est strictement interdit) et s'articule en **18 équipes Golden Diamond / Triangle** (`Tech Lead` ⇄ `Exécutants parallèles par shard` ⇄ `Relecteurs/Critiques indépendants`) :
+
+| Domaine | Agents spécialisés (`agents/*.md`, compilés par IDE) | Équipes de revue à 3 rôles (`agents/teams/*-team/`, `72` fichiers) |
+|:--------|:-----------------------------------------------------|:-------------------------------------------------------------------|
+| **Ingénierie et exécution** | `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `game-engineer`, `database-architect`, `devops-engineer` | `backend-team`, `frontend-team`, `fullstack-team`, `mobile-team`, `game-team`, `database-team`, `devops-team` |
+| **Architecture et produit** | `tech-lead`, `planner`, `brainstormer`, `business-analyst`, `project-manager`, `designer` | `planning-team`, `brainstorm-team`, `project-team`, `design-team` |
+| **Qualité, réconciliation et sécurité** | `debugger`, `tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer` | `debug-team`, `qa-team`, `security-team`, `performance-team` |
+| **Recherche et documentation** | `researcher`, `scouter`, `docs-manager`, `reporter` | `research-team`, `docs-team`, `report-team` |
 
 ---
 
 <a id="skills"></a>
+<a id="-1460-skills-vault-22-core--1440-niche-library-skills"></a>
 
-## 📚 Coffre de 1 462 Compétences (22 Clés + 1 440 dans `~/.agents/skills_library`)
+## 📚 Coffre de 1 462 Skills à la Demande (`22` Core + `1,440` en Bibliothèque)
 
-BoomOpen intègre `1,462` compétences curées et dédupliquées dans `~/.agents/skills_library` avec **0 coût de tokens au repos** grâce à la **Résolution Progressive O(1) en 2 Étapes** (`<skills>` → `matrix-skills/compact-index.json` → chargement ciblé de `SKILL.md` à la demande) :
+Indexées sur **19 domaines d'ingénierie** dans `matrix-skills/compact-index.json`, dédupliquées une seule fois dans `~/.agents/skills_library` et chargées par **résolution progressive O(1) en 2 étapes** (vérification Core `skills/` → index `compact-index.json` → chargement du `SKILL.md` ciblé uniquement dans le shard concerné, `0` token au repos) :
 
-| Niveau / Domaine de Compétence | Nombre | Compétences & Modèles 2026 Représentatifs | Mécanisme de Chargement |
-|:---|:---:|:---|:---|
-| **⚡ Niveau 1 : Compétences Clés (`skills/`)** | **22** | `clean-code`, `debugger`, `plan-writing`, `brainstorming`, `frontend-design`, `frontend-architecture`, `design-spec`, `api-patterns`, `database-design`, `testing-patterns`, `skill-seeker` | Pré-indexé dans `<skills>` pour un accès immédiat au Tour 1 |
-| **🎨 Design UI/UX, Motion & Systèmes de Design** | **42** | Anti-AI-Slop Visual Craft, palettes OKLCH & Bento Grids, Motion v12 + CSS View Transitions, primitives headless (`cmdk`/`vaul`/`sonner`), Figma MCP + W3C DTCG Tokens, WCAG 2.2 AA/AAA, iOS 18 HIG & Material 3 Expressive | À la demande via `compact-index.json` (`matrix-skills/design.yaml`) |
-| **🌐 Web, Backend & Données Edge** | **390+** | React 19 & Next.js 15, Tailwind v4, TanStack Start, Hono RPC + Zod OpenAPI, Rust Axum/Tokio/SQLx, Supabase RLS, Drizzle + Neon/Turso | À la demande via `compact-index.json` (`~/.agents/skills_library`) |
-| **🤖 IA, SDKs Agents, MCP & Données** | **320+** | **Modèles `mcp-server` & `ai-agent-worker`**, MCP FastMCP (`StreamableHTTP`), OpenAI/Claude Agents SDK, Google ADK, RAG, BigQuery, dbt | À la demande via `compact-index.json` (`~/.agents/skills_library`) |
-| **☁️ Cloud, DevOps, Tests & Sécurité** | **300+** | Cloudflare Workers/D1/R2/Durable Objects, Terraform/OpenTofu, Docker/K8s GitOps, Vitest + MSW v2, Better Auth, audit OWASP LLM 2025 | À la demande via `compact-index.json` (`~/.agents/skills_library`) |
-| **📱 Mobile, Moteurs de Jeux & Web 3D** | **410+** | Unity 6 DOTS/ECS, Godot 4, WebGPU/WGSL & Three.js TSL, Colyseus Netcode, Tauri v2, SwiftUI, Kotlin, React Native, Flutter | À la demande via `compact-index.json` (`~/.agents/skills_library`) |
+| Palier / Domaine d'ingénierie | Skills | Capacités et gabarits représentatifs | Chargement |
+|:------------------------------|:------:|:-------------------------------------|:-----------|
+| **⚡ Workflow et qualité Core (`skills/`)** | **22** | `clean-code`, `debugger`, `plan-writing`, `brainstorming`, `deep-research`, `design-spec`, `frontend-design`, `frontend-architecture`, `api-patterns`, `database-design`, `tdd-workflow`, `testing-patterns`, `webapp-testing`, `security-auditor` (`security_scan.py` v6), `app-builder` (**15 gabarits de projets** dont **`mcp-server`**, **`ai-agent-worker`**, `nextjs-saas`, `monorepo-turborepo`, `python-fastapi`, `flutter-app`), `skill-seeker` | Prêt dès le Tour 1 |
+| **🤖 IA, SDK agentiques, MCP et données** | **340+** | FastMCP (`StreamableHTTP`), OpenAI Agents SDK, Claude Agent SDK, Google ADK, Vercel AI SDK, LangGraph, RAG, BigQuery, dbt | À la demande (`compact-index.json`) |
+| **🌐 Web, Backend, API et bases de données** | **380+** | React 19, Next.js 15 RSC, Tailwind CSS v4, TanStack Start/Router/Query, Hono RPC + Zod OpenAPI, Rust Axum/SQLx, Drizzle, Postgres/RLS | À la demande (`compact-index.json`) |
+| **☁️ Cloud, DevOps, QA et sécurité** | **300+** | Cloudflare Workers/Durable Objects/D1, Docker/K8s, Terraform, Playwright, Vitest + MSW v2, Better Auth (Passkeys), OWASP LLM Top 10 | À la demande (`compact-index.json`) |
+| **🎨 UI/UX, moteurs de jeu et mobile** | **420+** | Design Tokens OKLCH, WCAG 2.2 AA, Motion, Unity 6 DOTS/ECS, Godot 4, Unreal 5, WebGPU/Three.js, Phaser/PixiJS, Tauri v2, SwiftUI, Flutter, React Native | À la demande (`compact-index.json`) |
 
 ---
 
@@ -267,23 +305,25 @@ BoomOpen intègre `1,462` compétences curées et dédupliquées dans `~/.agents
 
 ```text
 BoomOpen-Workflow-Kit-Pro/
-├── agents/                  # 22 Agents Spécialistes (dont spec-reconciler) + 18 Équipes Golden Triangle (54 rôles + 18 _team.md, 72 fichiers)
-├── cli/                     # Suite CLI de 14 commandes : install (--as-plugin), doctor, checker, settings, research, design, plan, cook, reconcile, audit (rollback), ledger (rollback) & conductor
-├── commands/                # 87 workflows (36 commandes Slash : /onboard, /pr, /pr:review, /release, /audit, /autopilot, etc.) + 6 _ref/ (93 fichiers)
-├── documents/               # Documentation à 2 niveaux (Architecture, Domaine, Base de Code & Standards)
-├── i18n/                    # Documentation multilingue (16 traductions complètes du README)
-├── matrix-skills/           # Matrices YAML de compétences par domaine + compact-index.json précompilé (1 462 compétences)
-├── platforms/               # Modèles unifiés et hooks pour les 5 plateformes (antigravity/, claude/, codex/, copilot/, cursor/)
-├── rules/                   # Règles Mode B chargées à la demande (CORE, PHASES, AGENTS, TEAMS, SKILLS, ERRORS, REFERENCE)
-├── scripts/                 # Scripts Python de vérification et sécurité (security_scan.py v6, checklist.py, verify_all.py, etc.)
-├── skills/                  # 22 Compétences Clés (clean-code, debugger, plan-writing, frontend-design, etc.)
-├── skills_library/          # 1 440 compétences dédupliquées via ~/.agents/skills_library (dont mcp-server & ai-agent-worker)
+├── agents/                  # 22 agents spécialisés (compilés par IDE) + 18 équipes à 3 rôles (72 fichiers)
+├── cli/                     # 14 sous-commandes CLI Node.js sans dépendance + 33 suites de tests node:test
+├── commands/                # 36 commandes slash réparties sur 87 workflows + 6 protocoles _ref/ (93 fichiers)
+├── documents/               # Documentation d'architecture, de domaine, du code source et des standards à 2 niveaux
+├── i18n/                    # 16 README complets traduits (17 langues au total avec le README.md racine)
+├── matrix-skills/           # 19 catalogues YAML métier + compact-index.json O(1) (1,462 skills indexées)
+├── platforms/               # 5 bundles IDE, hooks de garde optionnels, 3 scripts Antigravity run_workflow/*.py et rôles TOML Codex
+├── rules/                   # 7 modules de règles Mode B à la demande (CORE, PHASES, AGENTS, TEAMS, SKILLS, ERRORS, REFERENCE)
+├── scripts/                 # Utilitaires multiplateformes de vérification et de session (checklist.py, verify_all.py, auto_preview.py, session_manager.py)
+├── skills/                  # 22 skills Core + 15 gabarits app-builder + scripts d'audit Security v6 / UX / Perf
+├── skills_library/          # 1,440 skills de bibliothèque liées une seule fois vers ~/.agents/skills_library
+├── web/                     # Vitrine WebGL en 15 langues et catalogues interactifs propulsant https://boomopen.com
 └── GEMINI.md | CLAUDE.md | CODEX.md | COPILOT.md | CURSOR.md | AGENT.md
 ```
 
 ---
 
-## 📄 Licence & Sécurité
+## 📄 Licence et Sécurité
 
-- **Licence** : Distribué sous [Licence MIT](../LICENSE). Copyright © 2026 **BoomOpen Labs**. Les skills tierces de `skills_library/` conservent leurs licences d’origine — voir [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
-- **Politique de Sécurité** : Consultez [SECURITY.md](../SECURITY.md) pour les garde-fous de sécurité intégrés et le signalement de vulnérabilités.
+- **Site officiel** : [https://boomopen.com](https://boomopen.com)
+- **Licence** : Le code source du kit, la CLI, les règles, les agents et la documentation sont publiés sous [Licence MIT](../LICENSE) (Copyright © 2026 **BoomOpen Labs**). Les skills tierces dans `skills_library/` conservent leurs licences d'origine — voir [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
+- **Politique de sécurité** : Consultez [SECURITY.md](../SECURITY.md) pour la protection par manifestes SHA-256, l'isolation des hooks optionnels et le signalement de vulnérabilités.

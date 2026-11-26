@@ -1,7 +1,7 @@
 {
   "name": "@boomopen/workflow-kit",
   "version": "5.5.0",
-  "description": "BoomOpen Workflow Kit v5.5 (Multi-Platform Unified & Smart-Hybrid Edition) - 100% unified orchestration across Antigravity, Claude Code, Codex, Cursor, and GitHub Copilot with 22 Specialist Agents, 18 Golden Triangle Teams, 1,460+ On-Demand Skills Vault, 17-Language Natural-Language Routing, 4-Tier Dynamic Elastic Swarm Sharding (role#shard), Deterministic CLI Compilers (boomopen research/design/plan/cook), Wave 2.5 Spec-to-Code Reconciliation (boomopen reconcile), Stateful Multi-Round Project Audit (boomopen audit), Multi-Session Project Autopilot (boomopen ledger), Cross-Engine Conductor & Multi-Engine Council (boomopen conduct), Pragmatic 2-Tier Coding Standards, Direct Plan-to-Executor Dispatch, Warm Sub-agent Reuse, and CLI doctor/check.",
+  "description": "Multi-agent workflow orchestration and zero-dependency CLI quality gates across Antigravity, Claude Code, OpenAI Codex, Cursor, and GitHub Copilot: smart-hybrid Turn-1 swarm sharding, 36 slash commands (93 files), 22 specialist agents, 18 3-role review teams, 14 deterministic CLI commands, Wave 2.5 spec-to-code reconciliation, multi-session /autopilot, multi-round /audit, cross-engine /conduct councils, and 1,462 on-demand skills (22 core + 1,440 library).",
   "main": "cli/install.js",
   "bin": {
     "boomopen": "./cli/install.js"
@@ -41,16 +41,22 @@
   "keywords": [
     "agentic-coding",
     "ai-agents",
-    "cursor",
-    "copilot",
+    "coding-agents",
+    "multi-agent",
+    "workflow-orchestration",
+    "spec-driven-development",
     "antigravity",
     "gemini",
-    "claude",
-    "codex",
+    "claude-code",
+    "openai-codex",
+    "cursor",
+    "github-copilot",
+    "mcp",
+    "slash-commands",
+    "code-quality",
+    "code-review",
     "cli",
-    "automation",
-    "agent-orchestration",
-    "multi-agent"
+    "developer-tools"
   ],
   "author": "BoomOpen Labs",
   "license": "MIT",
