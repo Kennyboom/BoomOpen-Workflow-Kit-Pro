@@ -253,14 +253,21 @@ export function StudioHeroShowcase({ selectedPlatformId = null }: StudioHeroShow
             <div className="relative flex size-60 items-center justify-center sm:size-68">
               <div
                 aria-hidden="true"
-                className="absolute inset-0 rounded-full border border-sky-400/25 bg-gradient-to-b from-sky-400/[0.08] via-indigo-500/[0.05] to-transparent shadow-[inset_0_1px_0_rgba(186,230,253,0.22)]"
+                className="cosmic-core-pulse absolute -inset-4 rounded-full bg-gradient-to-tr from-sky-500/20 via-indigo-500/18 to-fuchsia-500/18 blur-2xl"
               />
               <div
                 aria-hidden="true"
-                className="absolute inset-4 rounded-full border border-dashed border-indigo-300/30"
+                className="absolute inset-0 rounded-full border border-sky-400/30 bg-gradient-to-b from-sky-400/[0.10] via-indigo-500/[0.06] to-purple-500/[0.05] shadow-[inset_0_1px_0_rgba(186,230,253,0.28)]"
               />
+              <div
+                aria-hidden="true"
+                className="cosmic-orbit-ring absolute inset-4 rounded-full border border-dashed border-indigo-300/40"
+              >
+                <span className="absolute -top-1 left-1/2 size-2 -translate-x-1/2 rounded-full bg-sky-300 shadow-[0_0_10px_#38BDF8]" />
+                <span className="absolute -bottom-1 left-1/2 size-2 -translate-x-1/2 rounded-full bg-purple-300 shadow-[0_0_10px_#C084FC]" />
+              </div>
 
-              <div className="relative flex size-42 flex-col items-center justify-center gap-2 rounded-full border border-sky-300/30 bg-[#0B132E]/95 px-3 text-center shadow-[0_0_50px_-8px_rgba(56,189,248,0.38),inset_0_1px_1px_rgba(224,231,255,0.22)] sm:size-48">
+              <div className="relative flex size-42 flex-col items-center justify-center gap-2 rounded-full border border-sky-300/35 bg-[#0B132E]/95 px-3 text-center shadow-[0_0_58px_-6px_rgba(56,189,248,0.45),0_0_32px_-8px_rgba(168,85,247,0.35),inset_0_1px_1px_rgba(224,231,255,0.28)] sm:size-48">
                 <img
                   src="/assets/logo.webp"
                   alt="BoomOpen Workflow Kit"

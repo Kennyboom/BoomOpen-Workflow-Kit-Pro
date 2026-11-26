@@ -4,16 +4,12 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { clsx } from 'clsx'
 import { useLanguage } from '../../i18n/context'
 import { InlineErrorState, SkeletonCard } from '../ui/Primitives'
+import { CosmicBackdrop } from './CosmicBackdrop'
 import { Footer } from './Footer'
 import { Header } from './Header'
 
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
-
-const COSMIC_NEBULA_BG = [
-  'radial-gradient(ellipse 80% 46% at 50% -10%, rgba(56, 189, 248, 0.16), rgba(99, 102, 241, 0.11) 46%, transparent 75%)',
-  'radial-gradient(ellipse 50% 34% at 82% 6%, rgba(129, 140, 248, 0.12), transparent 70%)',
-].join(', ')
 
 export interface LayoutProps {
   readonly children?: ReactNode
@@ -88,21 +84,7 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <div className="relative flex min-h-dvh flex-col bg-canvas text-ink">
-      <div
-        className="cosmic-starfield pointer-events-none fixed inset-0 z-0 opacity-65"
-        aria-hidden="true"
-      />
-
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[820px] overflow-hidden"
-      >
-        <div
-          className="absolute inset-0"
-          style={{ backgroundImage: COSMIC_NEBULA_BG }}
-        />
-        <div className="architectural-grid-bg absolute inset-0" />
-      </div>
+      <CosmicBackdrop />
 
       <a
         href="#main-content"

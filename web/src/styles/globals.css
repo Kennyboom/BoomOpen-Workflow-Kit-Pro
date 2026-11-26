@@ -182,15 +182,123 @@
 
   .cosmic-starfield {
     background-image:
-      radial-gradient(1px 1px at 38px 62px, rgba(248, 250, 252, 0.85) 50%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 174px 142px, rgba(125, 211, 252, 0.78) 50%, transparent 100%),
-      radial-gradient(1px 1px at 292px 88px, rgba(165, 180, 252, 0.75) 50%, transparent 100%),
-      radial-gradient(1px 1px at 188px 214px, rgba(255, 255, 255, 0.68) 50%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 84px 312px, rgba(199, 210, 254, 0.72) 50%, transparent 100%),
-      radial-gradient(1px 1px at 418px 396px, rgba(56, 189, 248, 0.70) 50%, transparent 100%);
-    background-size: 260px 260px, 390px 390px, 520px 520px;
-    opacity: 0.55;
+      radial-gradient(1px 1px at 38px 62px, rgba(248, 250, 252, 0.90) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 174px 142px, rgba(125, 211, 252, 0.85) 50%, transparent 100%),
+      radial-gradient(1px 1px at 292px 88px, rgba(196, 181, 253, 0.82) 50%, transparent 100%),
+      radial-gradient(1px 1px at 188px 214px, rgba(255, 255, 255, 0.72) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 84px 312px, rgba(199, 210, 254, 0.78) 50%, transparent 100%),
+      radial-gradient(1px 1px at 418px 396px, rgba(56, 189, 248, 0.76) 50%, transparent 100%);
+    background-size: 250px 250px, 370px 370px, 490px 490px;
   }
+
+  .cosmic-starfield-twinkle {
+    background-image:
+      radial-gradient(1.6px 1.6px at 96px 44px, rgba(255, 255, 255, 0.95) 45%, transparent 100%),
+      radial-gradient(2px 2px at 248px 186px, rgba(56, 189, 248, 0.92) 45%, transparent 100%),
+      radial-gradient(1.8px 1.8px at 364px 118px, rgba(216, 180, 254, 0.90) 45%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 142px 338px, rgba(165, 180, 252, 0.88) 45%, transparent 100%);
+    background-size: 320px 320px, 440px 440px;
+    animation: cosmic-twinkle 6.5s ease-in-out infinite alternate;
+    will-change: opacity;
+  }
+
+  .cosmic-aurora-primary {
+    background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.24) 0%, rgba(59, 130, 246, 0.16) 42%, rgba(99, 102, 241, 0.08) 68%, transparent 100%);
+    animation: cosmic-drift-a 18s ease-in-out infinite alternate;
+    will-change: transform, opacity;
+  }
+
+  .cosmic-aurora-violet {
+    background: radial-gradient(ellipse at center, rgba(168, 85, 247, 0.22) 0%, rgba(129, 140, 248, 0.13) 48%, transparent 100%);
+    animation: cosmic-drift-b 23s ease-in-out infinite alternate;
+    will-change: transform, opacity;
+  }
+
+  .cosmic-aurora-indigo {
+    background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.18) 0%, rgba(45, 212, 191, 0.09) 50%, transparent 100%);
+    animation: cosmic-drift-c 26s ease-in-out infinite alternate;
+    will-change: transform, opacity;
+  }
+
+  .cosmic-aurora-horizon {
+    background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.15) 0%, rgba(139, 92, 246, 0.11) 48%, transparent 100%);
+    animation: cosmic-drift-a 21s ease-in-out infinite alternate-reverse;
+    will-change: transform, opacity;
+  }
+
+  .cosmic-cross-star {
+    animation-name: cosmic-star-pulse;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    will-change: transform, opacity;
+  }
+
+  .cosmic-meteor {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(125, 211, 252, 0.72) 28%, rgba(168, 85, 247, 0.25) 65%, transparent 100%);
+    box-shadow: 0 0 12px rgba(125, 211, 252, 0.75);
+    opacity: 0;
+    transform: rotate(-32deg) translate3d(0, 0, 0);
+    animation-name: cosmic-meteor-flight;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-iteration-count: infinite;
+    will-change: transform, opacity;
+  }
+
+  .cosmic-pointer-halo {
+    background: radial-gradient(600px circle at var(--cosmic-x, 50%) var(--cosmic-y, 26%), rgba(99, 102, 241, 0.12), rgba(56, 189, 248, 0.06) 38%, transparent 72%);
+  }
+
+  .cosmic-orbit-ring {
+    animation: cosmic-orbit-spin 38s linear infinite;
+    will-change: transform;
+  }
+
+  .cosmic-core-pulse {
+    animation: cosmic-core-breathe 5.5s ease-in-out infinite alternate;
+    will-change: transform, opacity;
+  }
+}
+
+@keyframes cosmic-twinkle {
+  0% { opacity: 0.25; }
+  50% { opacity: 0.80; }
+  100% { opacity: 0.42; }
+}
+
+@keyframes cosmic-drift-a {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(28px, 22px, 0) scale(1.1); }
+}
+
+@keyframes cosmic-drift-b {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-44px, 34px, 0) scale(1.14); }
+}
+
+@keyframes cosmic-drift-c {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(42px, -28px, 0) scale(1.12); }
+}
+
+@keyframes cosmic-star-pulse {
+  0%, 100% { opacity: 0.28; transform: scale(0.78) rotate(0deg); }
+  50% { opacity: 0.95; transform: scale(1.15) rotate(12deg); }
+}
+
+@keyframes cosmic-meteor-flight {
+  0% { opacity: 0; transform: rotate(-32deg) translate3d(120px, -40px, 0) scaleX(0.4); }
+  4% { opacity: 0.95; transform: rotate(-32deg) translate3d(0, 0, 0) scaleX(1); }
+  15%, 100% { opacity: 0; transform: rotate(-32deg) translate3d(-460px, 18px, 0) scaleX(0.65); }
+}
+
+@keyframes cosmic-orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes cosmic-core-breathe {
+  from { opacity: 0.55; transform: scale(0.94); }
+  to { opacity: 0.95; transform: scale(1.08); }
 }
 
 .hero-display-gradient {

@@ -18,8 +18,10 @@ import type { Locale, PlatformId } from '../types/ui-contract'
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050816]'
 const PLATFORM_ID_SET = new Set<string>(PLATFORMS.map((p) => p.id))
-const HERO_COSMIC_GLOW =
-  'radial-gradient(ellipse 80% 54% at 50% -10%, rgba(56, 189, 248, 0.16), rgba(99, 102, 241, 0.10) 48%, transparent 78%)'
+const HERO_COSMIC_GLOW = [
+  'radial-gradient(ellipse 72% 48% at 50% -6%, rgba(56, 189, 248, 0.22), rgba(139, 92, 246, 0.14) 46%, transparent 78%)',
+  'radial-gradient(ellipse 46% 32% at 50% 42%, rgba(99, 102, 241, 0.14), transparent 72%)',
+].join(', ')
 
 interface HomeSectionCopy {
   readonly topPillLead: string
@@ -169,6 +171,16 @@ function HeroStage({
       className="relative overflow-hidden border-b border-indigo-200/[0.10]"
       style={{ backgroundImage: HERO_COSMIC_GLOW }}
     >
+      {/* Celestial Aurora Crown & Planetary Horizon Rim Behind Hero */}
+      <div
+        aria-hidden="true"
+        className="cosmic-core-pulse pointer-events-none absolute top-10 left-1/2 h-[320px] w-[760px] -translate-x-1/2 rounded-full bg-gradient-to-r from-sky-500/20 via-indigo-500/22 to-purple-500/20 blur-[95px]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute top-[390px] left-1/2 h-[520px] w-[1380px] -translate-x-1/2 rounded-[100%] border-t border-sky-300/25 bg-[radial-gradient(ellipse_at_top,rgba(56,189,248,0.16),rgba(139,92,246,0.08)_38%,transparent_68%)] shadow-[0_-24px_80px_-12px_rgba(56,189,248,0.22)]"
+      />
+
       <div className="relative mx-auto max-w-[90rem] px-4 pt-12 pb-18 sm:px-6 lg:px-10 lg:pt-20 lg:pb-26">
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 8 }}
