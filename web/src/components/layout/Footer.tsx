@@ -21,11 +21,11 @@ function FooterBrandStatement({ t }: { readonly t: Dictionary }) {
       <Link
         to="/"
         className={clsx(
-          'inline-flex min-h-11 items-center gap-3 rounded-xl pr-2 no-underline transition-opacity duration-150 motion-reduce:transition-none hover:opacity-90',
+          'inline-flex min-h-11 flex-wrap items-center gap-3 rounded-xl pr-2 no-underline transition-opacity duration-150 motion-reduce:transition-none hover:opacity-90',
           FOCUS_RING,
         )}
       >
-        <span className="inline-flex size-9 items-center justify-center rounded-xl border border-slate-900/[0.08] bg-white p-1 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.08)]">
+        <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl border border-indigo-200/[0.16] bg-[#0D1530] p-1 shadow-[0_0_20px_-4px_rgba(56,189,248,0.28)]">
           <img
             src="/assets/logo.webp"
             alt={SITE_NAME}
@@ -34,10 +34,10 @@ function FooterBrandStatement({ t }: { readonly t: Dictionary }) {
             className="size-full rounded-lg object-contain"
           />
         </span>
-        <span className="font-display text-xl leading-tight font-bold tracking-tight text-[#09090B]">
-          BoomOpen
+        <span className="font-display text-lg sm:text-xl leading-tight font-bold tracking-tight text-white">
+          BoomOpen Workflow Kit
         </span>
-        <span className="rounded-full border border-blue-200/80 bg-blue-50 px-2.5 py-0.5 font-mono text-xs leading-snug font-semibold text-blue-700 tabular-nums">
+        <span className="rounded-full border border-sky-400/25 bg-sky-400/10 px-2.5 py-0.5 font-mono text-xs leading-snug font-semibold text-sky-300 tabular-nums">
           {`v${KIT_VERSION}`}
         </span>
       </Link>
@@ -46,7 +46,7 @@ function FooterBrandStatement({ t }: { readonly t: Dictionary }) {
         {t.footer.tagline}
       </p>
 
-      <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-slate-50 px-3.5 py-1.5 font-mono text-[13px] leading-snug text-slate-600">
+      <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/[0.14] bg-white/[0.04] px-3.5 py-1.5 font-mono text-[13px] leading-snug text-slate-300">
         <span aria-hidden="true" className="size-2 rounded-full bg-accent" />
         <span>{t.footer.featuredBadge}</span>
       </div>
@@ -108,8 +108,8 @@ function FooterColumn({
 }
 
 /**
- * Expansive 1440px (90rem) Studio Daylight architectural footer:
- * bold brand statement paired with 3 generous navigation columns and a crisp metadata bar.
+ * Expansive 1440px (90rem) Cosmic Deep Space architectural footer:
+ * full BoomOpen Workflow Kit brand lockup paired with 3 navigation columns and a crisp metadata bar.
  */
 export function Footer() {
   const { t } = useLanguage()
@@ -136,7 +136,7 @@ export function Footer() {
   ]
 
   return (
-    <footer className="relative z-10 border-t border-slate-200/80 bg-white py-16 lg:py-20">
+    <footer className="relative z-10 border-t border-indigo-200/[0.10] bg-[#040714]/90 py-16 backdrop-blur-xl lg:py-20">
       <div className="mx-auto max-w-[90rem] px-5 sm:px-8 lg:px-12">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-16">
           <FooterBrandStatement t={t} />
@@ -160,7 +160,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col items-start justify-between gap-3 border-t border-slate-200/80 pt-8 text-sm leading-relaxed font-normal text-subtle sm:flex-row sm:items-center">
+        <div className="mt-14 flex flex-col items-start justify-between gap-3 border-t border-indigo-200/[0.10] pt-8 text-sm leading-relaxed font-normal text-subtle sm:flex-row sm:items-center">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <span>{t.footer.copyright}</span>
             <span aria-hidden="true" className="hidden sm:inline">/</span>

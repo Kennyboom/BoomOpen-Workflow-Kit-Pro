@@ -7,11 +7,11 @@ import type { Locale, TrailerChapter } from '../../types/ui-contract'
 import { ActionButton, ActionLink, InlineErrorState } from '../ui/Primitives'
 
 /**
- * Studio Daylight cinema player for the 90-second 1080p HD walkthrough film:
- * pairs a crisp porcelain header and chapter bar with a pure bg-slate-950 video stage.
+ * Cosmic Deep Space cinema player for the 90-second 1080p HD walkthrough film:
+ * pairs a midnight-indigo glass header and chapter bar with a pure deep-space video stage.
  */
 const FOCUS_RING =
-  'outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 focus-visible:ring-offset-white'
+  'outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050816]'
 
 interface ChapterSelection {
   readonly locale: Locale
@@ -62,18 +62,18 @@ function ChapterPillBar({
               'inline-flex min-h-11 min-w-0 items-center gap-2 rounded-full border px-3.5 py-2 text-left text-xs transition-all duration-150 motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-40 sm:text-[13px] cursor-pointer',
               FOCUS_RING,
               isSelected
-                ? 'border-blue-200 bg-blue-50 font-semibold text-blue-800 shadow-2xs'
-                : 'border-slate-200/80 bg-white font-medium text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900',
+                ? 'border-sky-400/40 bg-sky-400/15 font-semibold text-sky-200'
+                : 'border-indigo-200/[0.14] bg-white/[0.04] font-medium text-slate-300 hover:border-sky-300/30 hover:bg-white/[0.09] hover:text-white',
             )}
           >
             <Play
               aria-hidden="true"
-              className={clsx('size-3 shrink-0', isSelected ? 'fill-blue-600 text-blue-600' : 'text-slate-400')}
+              className={clsx('size-3 shrink-0', isSelected ? 'fill-sky-300 text-sky-300' : 'text-slate-400')}
             />
             <span
               className={clsx(
                 'shrink-0 font-mono text-[11px] tabular-nums',
-                isSelected ? 'font-semibold text-blue-700' : 'text-slate-500',
+                isSelected ? 'font-semibold text-sky-200' : 'text-slate-400',
               )}
             >
               {timestamp}
@@ -151,8 +151,8 @@ export function TrailerPlayer() {
   return (
     <div className="mx-auto w-full max-w-[82rem]">
       <div className="hardware-bezel">
-        <div className="overflow-hidden rounded-[20px] border border-slate-200/80 bg-white">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/80 bg-white px-4 py-3 sm:px-6">
+        <div className="overflow-hidden rounded-[20px] border border-indigo-200/[0.14] bg-[#080D21]">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-indigo-200/[0.12] bg-[#080D21] px-4 py-3 sm:px-6">
             <div className="flex items-center gap-3">
               <span aria-hidden="true" className="hidden items-center gap-1.5 sm:inline-flex">
                 <span className="size-2.5 rounded-full bg-[#FF5F56]" />
@@ -160,26 +160,26 @@ export function TrailerPlayer() {
                 <span className="size-2.5 rounded-full bg-[#27C93F]" />
               </span>
               <div className="flex items-center gap-2 text-xs sm:text-sm">
-                <Film aria-hidden="true" className="size-4 text-blue-600" />
-                <span className="font-semibold text-slate-900">{t.trailer.localeBadge}</span>
+                <Film aria-hidden="true" className="size-4 text-sky-400" />
+                <span className="font-semibold text-slate-100">{t.trailer.localeBadge}</span>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5">
               {activeChapter && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 font-mono text-xs font-semibold text-emerald-700">
-                  <CheckCircle2 aria-hidden="true" className="size-3.5 text-emerald-600" />
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/12 px-3 py-1 font-mono text-xs font-semibold text-emerald-300">
+                  <CheckCircle2 aria-hidden="true" className="size-3.5 text-emerald-400" />
                   <span>{`${t.trailer.chapterJumpedLabel}: ${activeChapter.label}`}</span>
                 </span>
               )}
-              <span className="rounded-full border border-slate-200/80 bg-slate-50 px-3 py-1 font-mono text-xs font-medium text-slate-600 tabular-nums">
+              <span className="rounded-full border border-indigo-200/[0.14] bg-white/[0.05] px-3 py-1 font-mono text-xs font-medium text-slate-300 tabular-nums">
                 1920x1080 · H.264 HD
               </span>
             </div>
           </div>
 
           {hasStreamError ? (
-            <div className="bg-white p-6 sm:p-8">
+            <div className="border-t border-indigo-200/[0.14] bg-[#090E22] p-6 text-slate-300 sm:p-8">
               <InlineErrorState
                 title={t.trailer.errorTitle}
                 message={t.trailer.errorBody}
@@ -207,7 +207,7 @@ export function TrailerPlayer() {
               </div>
             </div>
           ) : (
-            <div key={attempt} className="relative aspect-video w-full bg-slate-950">
+            <div key={attempt} className="relative aspect-video w-full bg-[#050816]">
               <video
                 key={locale}
                 ref={videoRef}
@@ -246,9 +246,9 @@ export function TrailerPlayer() {
                 <div
                   role="status"
                   aria-live="polite"
-                  className="pointer-events-none absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900/90 px-3.5 py-2 font-mono text-xs text-white animate-pulse motion-reduce:animate-none"
+                  className="pointer-events-none absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-indigo-200/[0.20] bg-[#090E22]/90 px-3.5 py-2 font-mono text-xs text-slate-100 backdrop-blur-md animate-pulse motion-reduce:animate-none"
                 >
-                  <span aria-hidden="true" className="size-2 rounded-full bg-blue-500" />
+                  <span aria-hidden="true" className="size-2 rounded-full bg-sky-400 shadow-[0_0_8px_#38BDF8]" />
                   <span>{t.trailer.loadingLabel}</span>
                 </div>
               )}
@@ -256,8 +256,8 @@ export function TrailerPlayer() {
           )}
 
           {showReducedMotionBanner && (
-            <div className="m-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-5 py-4">
-              <div className="max-w-prose text-sm leading-relaxed text-slate-600">{t.trailer.reducedMotionNotice}</div>
+            <div className="m-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-indigo-200/[0.14] bg-[#090E22] px-5 py-4 text-slate-300">
+              <div className="max-w-prose text-sm leading-relaxed text-slate-300">{t.trailer.reducedMotionNotice}</div>
               <ActionButton variant="primary" icon={<Play aria-hidden="true" className="size-4" />} onClick={handlePlayStudioTrailer}>
                 {t.trailer.playStudioCta}
               </ActionButton>

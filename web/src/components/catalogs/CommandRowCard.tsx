@@ -14,7 +14,7 @@ export function CommandRowCard({ item, categoryLabel }: CommandRowCardProps) {
   const { t, pick } = useLanguage()
 
   return (
-    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-slate-200/85 bg-white p-7 transition-colors duration-150 motion-reduce:transition-none hover:border-slate-300 sm:p-8">
+    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-indigo-200/[0.14] p-7 transition-colors duration-150 motion-reduce:transition-none hover:border-sky-300/30 sm:p-8">
       <div>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
@@ -24,13 +24,13 @@ export function CommandRowCard({ item, categoryLabel }: CommandRowCardProps) {
             {item.variants.map((variant) => (
               <code
                 key={variant}
-                className="rounded-lg border border-slate-200/85 bg-slate-50/90 px-2.5 py-1 font-mono text-[13px] text-slate-800 tabular-nums"
+                className="rounded-lg border border-indigo-200/[0.15] bg-white/[0.05] px-2.5 py-1 font-mono text-[13px] text-sky-200 tabular-nums"
               >
                 :{variant}
               </code>
             ))}
           </div>
-          <span className="shrink-0 rounded-full border border-slate-200/85 bg-slate-100/80 px-3 py-1 font-mono text-xs text-slate-600">
+          <span className="shrink-0 rounded-full border border-indigo-200/[0.14] bg-white/[0.05] px-3 py-1 font-mono text-xs text-slate-300">
             {categoryLabel}
           </span>
         </div>

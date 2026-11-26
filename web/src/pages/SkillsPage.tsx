@@ -33,20 +33,20 @@ function SkillsHeroHeader() {
   ]
 
   return (
-    <header className="border-b border-slate-200/85 pt-10 pb-12 sm:pt-14 sm:pb-16">
+    <header className="border-b border-indigo-200/[0.12] pt-10 pb-12 sm:pt-14 sm:pb-16">
       <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200/85 bg-slate-100/80 px-3.5 py-1 font-mono text-xs tracking-wider text-slate-600 uppercase">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-indigo-200/[0.16] bg-white/[0.05] px-3.5 py-1 font-mono text-xs tracking-wider text-slate-300 uppercase">
             <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
             <span>{copy.eyebrow}</span>
           </div>
-          <h1 className="hero-display-gradient text-[clamp(2.5rem,4.4vw,4rem)] leading-[1.06] font-bold tracking-[-0.036em] text-ink">
+          <h1 className="hero-display-gradient pb-1 text-[clamp(2.5rem,4.4vw,4rem)] leading-[1.16] font-bold tracking-[-0.036em] text-ink">
             {copy.title}
           </h1>
           <p className="mt-4 max-w-[58ch] text-lg leading-relaxed text-muted sm:text-xl">{copy.subtitle}</p>
         </div>
 
-        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-slate-200/85 bg-white px-6 py-5 sm:gap-8">
+        <dl className="specular-surface grid grid-cols-3 gap-6 rounded-2xl border border-indigo-200/[0.14] px-6 py-5 transition-colors duration-150 hover:border-sky-300/30 sm:gap-8">
           {stats.map((stat) => (
             <div key={stat.label} className="space-y-1">
               <dd className="text-3xl font-bold tracking-tight text-ink tabular-nums sm:text-4xl">{stat.value}</dd>
@@ -65,14 +65,16 @@ function SkillCard({ skill }: { readonly skill: SkillShowcaseItem }) {
   const skillPath = isCore ? `skills/${skill.id}/SKILL.md` : `skills_library/${skill.id}/SKILL.md`
 
   return (
-    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-slate-200/85 bg-white p-7 transition-colors duration-150 motion-reduce:transition-none hover:border-slate-300">
+    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-indigo-200/[0.14] p-7 transition-colors duration-150 motion-reduce:transition-none hover:border-sky-300/30">
       <div>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <code className="font-mono text-xl font-bold tracking-tight text-ink">{skill.id}</code>
           <span
             className={clsx(
               'shrink-0 rounded-full border px-3 py-1 font-mono text-xs font-medium',
-              isCore ? 'border-slate-300 bg-slate-100 text-slate-900' : 'border-slate-200/85 bg-slate-50/90 text-slate-600',
+              isCore
+                ? 'border-sky-400/30 bg-sky-400/12 text-sky-200'
+                : 'border-indigo-200/[0.14] bg-white/[0.05] text-slate-300',
             )}
           >
             {isCore ? 'core' : 'library'}
@@ -81,11 +83,11 @@ function SkillCard({ skill }: { readonly skill: SkillShowcaseItem }) {
         <p className="mt-3.5 text-base leading-relaxed text-muted">{pick(skill.summary)}</p>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-2.5 border-t border-slate-200/85 pt-4">
-        <code className="max-w-full truncate rounded-lg border border-slate-200/80 bg-slate-50/90 px-3 py-1.5 font-mono text-xs text-slate-800">
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-2.5 border-t border-indigo-200/[0.12] pt-4">
+        <code className="max-w-full truncate rounded-lg border border-indigo-200/[0.15] bg-white/[0.05] px-3 py-1.5 font-mono text-xs text-sky-200">
           {skillPath}
         </code>
-        <span className="shrink-0 rounded-md border border-slate-200/80 bg-slate-100/80 px-2.5 py-1 font-mono text-xs text-slate-600">
+        <span className="shrink-0 rounded-md border border-indigo-200/[0.14] bg-white/[0.05] px-2.5 py-1 font-mono text-xs text-slate-300">
           {pick(getSkillDomainLabel(skill.domainId))}
         </span>
       </div>
@@ -114,7 +116,9 @@ function DomainSidebar({
           className={clsx(
             'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 text-sm transition-colors cursor-pointer tabular-nums',
             FOCUS_RING,
-            activeDomain === 'all' ? 'border-primary bg-primary font-semibold text-primary-ink' : 'border-slate-200/85 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-950',
+            activeDomain === 'all'
+              ? 'border-primary bg-primary font-semibold text-primary-ink'
+              : 'border-indigo-200/[0.14] bg-[#070B19]/85 text-slate-300 hover:border-sky-300/30 hover:text-white',
           )}
         >
           <span>{allDomainsLabel}</span>
@@ -130,7 +134,9 @@ function DomainSidebar({
               className={clsx(
                 'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 text-sm transition-colors cursor-pointer tabular-nums',
                 FOCUS_RING,
-                selected ? 'border-primary bg-primary font-semibold text-primary-ink' : 'border-slate-200/85 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-950',
+                selected
+                  ? 'border-primary bg-primary font-semibold text-primary-ink'
+                  : 'border-indigo-200/[0.14] bg-[#070B19]/85 text-slate-300 hover:border-sky-300/30 hover:text-white',
               )}
             >
               <span>{pick(getSkillDomainLabel(domain.id))}</span>
@@ -144,7 +150,7 @@ function DomainSidebar({
 
       <nav
         aria-label={copy.domainsSectionTitle}
-        className="specular-surface hidden space-y-1 rounded-3xl border border-slate-200/85 bg-white p-4 lg:sticky lg:top-24 lg:block"
+        className="specular-surface hidden space-y-1 rounded-3xl border border-indigo-200/[0.14] p-4 lg:sticky lg:top-24 lg:block"
       >
         <div className="mb-3 px-3 font-mono text-xs tracking-wider text-subtle uppercase">{copy.domainsSectionTitle}</div>
         <button
@@ -154,11 +160,13 @@ function DomainSidebar({
           className={clsx(
             'flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-left text-[15px] transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
             FOCUS_RING,
-            activeDomain === 'all' ? 'border-slate-200/90 bg-slate-100/90 font-semibold text-slate-950' : 'border-transparent text-slate-600 hover:bg-slate-50/90 hover:text-slate-950',
+            activeDomain === 'all'
+              ? 'border-sky-400/35 bg-sky-400/12 font-semibold text-white'
+              : 'border-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white',
           )}
         >
           <span>{locale === 'vi' ? 'Tất cả lĩnh vực' : 'All Domains'}</span>
-          <span className="rounded-md border border-slate-200/80 bg-white px-2 py-0.5 font-mono text-xs text-slate-800 tabular-nums">
+          <span className="shrink-0 rounded-md border border-indigo-200/[0.14] bg-white/[0.05] px-2 py-0.5 font-mono text-xs text-slate-300 tabular-nums">
             {formatCount(KIT_STATS.skills)}
           </span>
         </button>
@@ -174,11 +182,13 @@ function DomainSidebar({
               className={clsx(
                 'flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-left text-[15px] transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
                 FOCUS_RING,
-                selected ? 'border-slate-200/90 bg-slate-100/90 font-semibold text-slate-950' : 'border-transparent text-slate-600 hover:bg-slate-50/90 hover:text-slate-950',
+                selected
+                  ? 'border-sky-400/35 bg-sky-400/12 font-semibold text-white'
+                  : 'border-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white',
               )}
             >
               <span className="truncate">{pick(getSkillDomainLabel(domain.id))}</span>
-              <span className="shrink-0 rounded-md border border-slate-200/80 bg-slate-50/90 px-2 py-0.5 font-mono text-xs text-slate-600 tabular-nums">
+              <span className="shrink-0 rounded-md border border-indigo-200/[0.14] bg-white/[0.05] px-2 py-0.5 font-mono text-xs text-slate-300 tabular-nums">
                 {formatCount(domain.count)}
               </span>
             </button>
@@ -195,13 +205,13 @@ function ProgressiveLookupStage() {
 
   return (
     <section aria-labelledby="progressive-lookup-heading" className="pt-4">
-      <div className="hardware-bezel rounded-3xl border border-slate-200/85 bg-slate-100/80 p-2.5 sm:p-3.5">
-        <div className="specular-surface space-y-7 rounded-2xl border border-slate-200/85 bg-white p-7 sm:p-9">
+      <div className="hardware-bezel rounded-3xl p-2.5 sm:p-3.5">
+        <div className="specular-surface space-y-7 rounded-2xl border border-indigo-200/[0.14] p-7 transition-colors duration-150 hover:border-sky-300/30 sm:p-9">
           <div className="space-y-2">
-            <span className="inline-flex rounded-full border border-slate-200/85 bg-slate-100/80 px-3.5 py-1 font-mono text-xs tracking-wider text-slate-600 uppercase">
+            <span className="inline-flex rounded-full border border-indigo-200/[0.16] bg-white/[0.05] px-3.5 py-1 font-mono text-xs tracking-wider text-slate-300 uppercase">
               {progressiveLookup.badge}
             </span>
-            <h2 id="progressive-lookup-heading" className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+            <h2 id="progressive-lookup-heading" className="pb-1 text-2xl leading-[1.16] font-bold tracking-tight text-ink sm:text-3xl">
               {progressiveLookup.title}
             </h2>
             <p className="max-w-[62ch] text-base leading-relaxed text-muted">{progressiveLookup.description}</p>
@@ -209,10 +219,10 @@ function ProgressiveLookupStage() {
 
           <div className="grid gap-5 xl:grid-cols-3">
             {progressiveLookup.steps.map((hop) => (
-              <div key={hop.step} className="space-y-3 rounded-2xl border border-slate-200/80 bg-slate-50/95 p-6 text-slate-800">
+              <div key={hop.step} className="space-y-3 rounded-2xl border border-indigo-200/[0.12] bg-[#070B19]/85 p-6 text-slate-200">
                 <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-xs text-subtle tabular-nums">
                   <span className="text-sm font-bold text-ink">{hop.step}</span>
-                  <code className="max-w-full truncate rounded-lg border border-slate-200/85 bg-white px-2.5 py-1 text-slate-800">
+                  <code className="max-w-full truncate rounded-lg border border-indigo-200/[0.15] bg-white/[0.05] px-2.5 py-1 text-sky-200">
                     {hop.code}
                   </code>
                 </div>

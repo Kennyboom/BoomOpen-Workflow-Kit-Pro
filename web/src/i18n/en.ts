@@ -10,7 +10,7 @@ export const en: Dictionary = {
     mobileMenuCloseAria: 'Close navigation menu', localeEnShort: 'EN', localeViShort: 'VI',
   },
   hero: {
-    badge: 'BoomOpen v5.5 · Antigravity · Claude Code · Codex · Cursor · Copilot',
+    badge: 'BoomOpen Workflow Kit v5.5 · Antigravity · Claude Code · Codex · Cursor · Copilot',
     eyebrow: 'Autonomous Engineering Workflows',
     headline: 'Autonomous AI engineering, unified.',
     subheadline: 'From project specs to verified production code across all 5 AI IDEs.',
@@ -33,7 +33,7 @@ export const en: Dictionary = {
   },
   trailer: {
     eyebrow: 'Product Walkthrough',
-    title: 'See BoomOpen v5.5 in 90 seconds',
+    title: 'See BoomOpen Workflow Kit v5.5 in 90 seconds',
     subtitle: 'Switch EN / VI in the header to change both the interface language and the narrated 1080p walkthrough.',
     localeBadge: 'English Narration (1080p)',
     media: {
@@ -195,7 +195,7 @@ export const en: Dictionary = {
   architecturePage: {
     eyebrow: 'System Architecture',
     title: 'Slim guardrails by default. Deep orchestration on demand.',
-    subtitle: 'How BoomOpen keeps daily sessions under 2.3 KB while supporting 7 lazy-loaded rule modules, 5 presets, clean deliverable routing, and SHA-256 project ledgers.',
+    subtitle: 'How BoomOpen Workflow Kit keeps daily sessions under 2.3 KB while supporting 7 lazy-loaded rule modules, 5 presets, clean deliverable routing, and SHA-256 project ledgers.',
     coreRules: {
       badge: '7 Lazy-Loaded Rule Modules', title: '21-Line Default Entry Files + On-Demand Rules',
       subtitle: 'Under frontier-guardrails, entry files stay at 21 lines (~600 tokens). The 7 rules/*.md modules load only when a multi-agent workflow runs.',
@@ -307,7 +307,7 @@ export const en: Dictionary = {
     maintenance: {
       summaryToggle: 'Clean Uninstall (Keeps Your Own Files)', badge: 'Safe Uninstall',
       safetyNotice: 'Uninstall removes only unmodified kit files listed in ~/.boomopen/manifests/<tool>.json and preserves local edits.',
-      description: 'To remove BoomOpen from one IDE or all platforms, run:',
+      description: 'To remove BoomOpen Workflow Kit from one IDE or all platforms, run:',
       commandHeading: 'Uninstall Command',
     },
   },

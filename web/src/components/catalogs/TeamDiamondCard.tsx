@@ -7,7 +7,7 @@ import type { TeamSpec } from '../../types/ui-contract'
 
 /**
  * Architectural 3-stage review team card displaying Tech Lead -> Executor -> Reviewer
- * inside connected Studio Daylight pipeline cells across the 1440px stage.
+ * inside connected Cosmic Deep Space pipeline cells across the 1440px stage.
  */
 export interface TeamDiamondCardProps {
   readonly team: TeamSpec
@@ -30,10 +30,10 @@ function PipelineRoleCell({
   taskNote,
 }: PipelineRoleCellProps) {
   return (
-    <div className="flex flex-col justify-between gap-3.5 rounded-2xl border border-slate-200/80 bg-slate-50/95 p-5 text-slate-800">
+    <div className="flex flex-col justify-between gap-3.5 rounded-2xl border border-indigo-200/[0.12] bg-[#070B19]/85 p-5 text-slate-200">
       <div className="space-y-2.5">
         <div className="flex items-center gap-2 font-mono text-xs font-medium tracking-wider text-subtle uppercase tabular-nums">
-          <span className="font-semibold text-slate-900">{step}</span>
+          <span className="font-semibold text-sky-300">{step}</span>
           <span aria-hidden="true">·</span>
           <span className="truncate">{roleLabel}</span>
         </div>
@@ -73,7 +73,7 @@ export function TeamDiamondCard({ team }: TeamDiamondCardProps) {
   }
 
   return (
-    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-slate-200/85 bg-white p-8 transition-colors duration-150 motion-reduce:transition-none hover:border-slate-300 sm:p-9">
+    <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-indigo-200/[0.14] p-8 transition-colors duration-150 motion-reduce:transition-none hover:border-sky-300/30 sm:p-9">
       <div>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-1.5">
@@ -94,7 +94,7 @@ export function TeamDiamondCard({ team }: TeamDiamondCardProps) {
               FOCUS_RING,
               copied
                 ? 'border-accent/40 bg-accent/10 text-accent'
-                : 'border-slate-200/85 bg-slate-50/90 text-slate-800 hover:border-slate-300 hover:bg-slate-100/80',
+                : 'border-indigo-200/[0.15] bg-white/[0.05] text-sky-200 hover:border-sky-300/35 hover:bg-white/[0.09]',
             )}
           >
             <code ref={triggerRef} className="font-mono tabular-nums">

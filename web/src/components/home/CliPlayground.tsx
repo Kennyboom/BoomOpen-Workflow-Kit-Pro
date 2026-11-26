@@ -46,12 +46,12 @@ interface CommandSidebarProps {
 
 function CommandSidebar({ commands, activeId, headingLabel, pick, onSelect }: CommandSidebarProps) {
   return (
-    <div className="flex flex-col bg-slate-50/90">
-      <div className="flex items-center justify-between gap-2 border-b border-slate-200/85 px-5 py-4">
+    <div className="flex flex-col bg-[#060A1B]/90">
+      <div className="flex items-center justify-between gap-2 border-b border-indigo-200/[0.12] px-5 py-4">
         <span className="font-mono text-xs font-semibold uppercase tracking-[0.08em] text-subtle">
           {headingLabel}
         </span>
-        <span className="rounded-md border border-slate-200/85 bg-white px-2 py-0.5 font-mono text-xs font-medium text-slate-800 tabular-nums">
+        <span className="rounded-md border border-indigo-200/[0.15] bg-white/[0.06] px-2 py-0.5 font-mono text-xs font-medium text-slate-200 tabular-nums">
           {commands.length}
         </span>
       </div>
@@ -69,8 +69,8 @@ function CommandSidebar({ commands, activeId, headingLabel, pick, onSelect }: Co
                 'flex min-h-14 flex-col justify-between gap-1.5 rounded-xl border p-3.5 text-left transition-all duration-150 motion-reduce:transition-none cursor-pointer',
                 FOCUS_RING,
                 isSelected
-                  ? 'border-accent/45 bg-white text-slate-950 shadow-xs ring-1 ring-accent/15'
-                  : 'border-slate-200/80 bg-white/75 text-slate-600 hover:border-slate-300 hover:bg-white hover:text-slate-950',
+                  ? 'border-sky-400/45 bg-[#101A3B]/90 text-white shadow-[0_14px_34px_-10px_rgba(56,189,248,0.22)] ring-1 ring-sky-400/25'
+                  : 'border-indigo-200/[0.12] bg-[#070B19]/75 text-slate-300 hover:border-indigo-200/25 hover:bg-[#0C1430]/85 hover:text-white',
               )}
             >
               <div className="flex w-full items-center justify-between gap-2">
@@ -85,8 +85,8 @@ function CommandSidebar({ commands, activeId, headingLabel, pick, onSelect }: Co
                   className={clsx(
                     'shrink-0 rounded-md border px-2 py-0.5 font-mono text-[11px] leading-none tabular-nums',
                     isSelected
-                      ? 'border-accent/35 bg-accent/10 font-semibold text-accent'
-                      : 'border-slate-200/80 bg-slate-100/80 text-slate-600',
+                      ? 'border-sky-400/35 bg-sky-400/12 font-semibold text-sky-300'
+                      : 'border-indigo-200/[0.14] bg-white/[0.05] text-slate-300',
                   )}
                 >
                   {`${cmd.gates.length}G`}
@@ -169,7 +169,7 @@ export function CliPlayground() {
         />
       ) : (
         <div className="hardware-bezel">
-          <div className="grid min-h-[540px] divide-y divide-slate-200/80 overflow-hidden rounded-[20px] border border-slate-200/85 bg-white lg:grid-cols-[380px_1fr] lg:divide-y-0 lg:divide-x">
+          <div className="grid min-h-[540px] divide-y divide-indigo-200/[0.12] overflow-hidden rounded-[20px] border border-indigo-200/[0.14] bg-[#080E24]/90 lg:grid-cols-[380px_1fr] lg:divide-y-0 lg:divide-x">
             <CommandSidebar
               commands={filteredCommands}
               activeId={activeCommand.id}
@@ -178,15 +178,15 @@ export function CliPlayground() {
               onSelect={setSelectedId}
             />
 
-            <div className="flex min-w-0 flex-col justify-between bg-white">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/85 bg-slate-50/90 px-5 py-3.5 lg:px-7">
+            <div className="flex min-w-0 flex-col justify-between bg-[#080E24]/90">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-indigo-200/[0.12] bg-[#060A1B]/90 px-5 py-3.5 lg:px-7">
                 <div className="flex flex-wrap items-center gap-3">
                   <span aria-hidden="true" className="hidden items-center gap-1.5 sm:inline-flex">
                     <span className="size-2.5 rounded-full bg-[#FF5F56]/85" />
                     <span className="size-2.5 rounded-full bg-[#FFBD2E]/85" />
                     <span className="size-2.5 rounded-full bg-[#27C93F]/85" />
                   </span>
-                  <span className="rounded-lg border border-slate-200/85 bg-white px-3 py-1 font-mono text-xs font-semibold text-slate-800">
+                  <span className="rounded-lg border border-indigo-200/[0.15] bg-white/[0.05] px-3 py-1 font-mono text-xs font-semibold text-sky-200">
                     {`bash : boomopen ${activeCommand.id}`}
                   </span>
                   <StatusBadge tone={simMode === 'pass' ? 'emerald' : 'danger'}>
@@ -204,7 +204,7 @@ export function CliPlayground() {
                 <div
                   role="group"
                   aria-label={t.cliPlayground.outputLabel}
-                  className="inline-flex items-center gap-1 rounded-xl border border-slate-200/85 bg-slate-100/85 p-1"
+                  className="inline-flex items-center gap-1 rounded-xl border border-indigo-200/[0.14] bg-[#050816] p-1"
                 >
                   <button
                     type="button"
@@ -214,8 +214,8 @@ export function CliPlayground() {
                       'inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3.5 font-mono text-xs leading-none transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
                       FOCUS_RING,
                       simMode === 'pass'
-                        ? 'border border-emerald-600/30 bg-white font-semibold text-emerald-700 shadow-xs'
-                        : 'border border-transparent text-slate-600 hover:text-slate-950',
+                        ? 'border border-emerald-400/35 bg-emerald-400/12 font-semibold text-emerald-300'
+                        : 'border border-transparent text-slate-400 hover:text-white',
                     )}
                   >
                     <CheckCircle2 aria-hidden="true" className="size-3.5" />
@@ -229,8 +229,8 @@ export function CliPlayground() {
                       'inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3.5 font-mono text-xs leading-none transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
                       FOCUS_RING,
                       simMode === 'fail'
-                        ? 'border border-danger/35 bg-white font-semibold text-danger shadow-xs'
-                        : 'border border-transparent text-slate-600 hover:text-slate-950',
+                        ? 'border border-rose-400/35 bg-rose-500/12 font-semibold text-rose-300'
+                        : 'border border-transparent text-slate-400 hover:text-white',
                     )}
                   >
                     <ShieldAlert aria-hidden="true" className="size-3.5" />
@@ -265,8 +265,8 @@ export function CliPlayground() {
                   />
                 </div>
 
-                <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-slate-800 bg-[#0F172A] text-slate-100 shadow-sm">
-                  <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900/90 px-4 py-2.5 font-mono text-xs tabular-nums">
+                <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-indigo-200/[0.14] bg-[#040713] text-slate-100">
+                  <div className="flex items-center justify-between border-b border-indigo-200/[0.12] bg-[#060A1B]/90 px-4 py-2.5 font-mono text-xs tabular-nums">
                     <span className="text-slate-400">{t.cliPlayground.outputLabel}</span>
                     <span className={simMode === 'pass' ? 'font-semibold text-emerald-400' : 'font-semibold text-rose-400'}>
                       {simMode === 'pass' ? 'exit code 0' : 'exit code 1'}
@@ -274,7 +274,7 @@ export function CliPlayground() {
                   </div>
                   <pre
                     aria-live="polite"
-                    className="flex-1 overflow-x-auto bg-[#0F172A] p-6 font-mono text-[15px] leading-relaxed text-slate-100 tabular-nums lg:p-8"
+                    className="flex-1 overflow-x-auto bg-[#040713] p-6 font-mono text-[15px] leading-relaxed text-slate-100 tabular-nums lg:p-8"
                   >
                     <code>
                       {outputLines.map((line, idx) => (

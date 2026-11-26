@@ -10,7 +10,7 @@ export const vi: Dictionary = {
     mobileMenuCloseAria: 'Đóng menu điều hướng', localeEnShort: 'EN', localeViShort: 'VI',
   },
   hero: {
-    badge: 'BoomOpen v5.5 · Antigravity · Claude Code · Codex · Cursor · Copilot',
+    badge: 'BoomOpen Workflow Kit v5.5 · Antigravity · Claude Code · Codex · Cursor · Copilot',
     eyebrow: 'Hệ thống điều phối kỹ sư AI',
     headline: 'Đội ngũ AI cho mọi dự án.',
     subheadline: 'Tự động từ tài liệu đến sản phẩm hoàn chỉnh trên cả 5 AI IDE.',
@@ -33,7 +33,7 @@ export const vi: Dictionary = {
   },
   trailer: {
     eyebrow: 'Video giới thiệu',
-    title: 'Xem tổng quan BoomOpen v5.5 trong 90 giây',
+    title: 'Xem tổng quan BoomOpen Workflow Kit v5.5 trong 90 giây',
     subtitle: 'Chuyển nút EN / VI trên thanh tiêu đề để đổi cả ngôn ngữ giao diện lẫn video 1080p thuyết minh tiếng Việt.',
     localeBadge: 'Thuyết minh tiếng Việt (1080p)',
     media: {
@@ -195,7 +195,7 @@ export const vi: Dictionary = {
   architecturePage: {
     eyebrow: 'Kiến trúc hệ thống',
     title: 'Mặc định gọn dưới 2.3 KB. Phối hợp sâu khi gọi lệnh.',
-    subtitle: 'Cách BoomOpen kết hợp tệp đầu vào 21 dòng với 7 module quy tắc nạp khi cần, 5 preset cấu hình, phân luồng báo cáo sạch Git và ledger SHA-256.',
+    subtitle: 'Cách BoomOpen Workflow Kit kết hợp tệp đầu vào 21 dòng với 7 module quy tắc nạp khi cần, 5 preset cấu hình, phân luồng báo cáo sạch Git và ledger SHA-256.',
     coreRules: {
       badge: '7 module quy tắc nạp khi cần', title: 'Tệp đầu vào 21 dòng + sổ tay nạp theo lệnh',
       subtitle: 'Ở chế độ mặc định frontier-guardrails, tệp đầu vào chỉ dài 21 dòng (~600 token). 7 tệp rules/*.md chỉ nạp khi kích hoạt quy trình multi-agent.',

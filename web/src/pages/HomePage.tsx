@@ -14,12 +14,12 @@ import { useLanguage } from '../i18n/context'
 import type { Dictionary } from '../i18n/types'
 import type { Locale, PlatformId } from '../types/ui-contract'
 
-/** Visual-first Studio Daylight startup homepage: Hero + SVG Hub, 3D Glass Bento, Metrics + Slash Dock, and Closing stage. */
+/** Visual-first Cosmic Deep Space startup homepage: Hero + SVG Hub, 3D Crystal Bento, Metrics + Slash Dock, and Closing stage. */
 const FOCUS_RING =
-  'outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 focus-visible:ring-offset-white'
+  'outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050816]'
 const PLATFORM_ID_SET = new Set<string>(PLATFORMS.map((p) => p.id))
-const HERO_DAYLIGHT_GLOW =
-  'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(37, 99, 235, 0.08), rgba(14, 165, 233, 0.03) 48%, transparent 76%)'
+const HERO_COSMIC_GLOW =
+  'radial-gradient(ellipse 80% 54% at 50% -10%, rgba(56, 189, 248, 0.16), rgba(99, 102, 241, 0.10) 48%, transparent 78%)'
 
 interface HomeSectionCopy {
   readonly topPillLead: string
@@ -36,7 +36,7 @@ interface HomeSectionCopy {
 
 const HOME_COPY: Record<Locale, HomeSectionCopy> = {
   en: {
-    topPillLead: 'BoomOpen v5.5',
+    topPillLead: 'BoomOpen Workflow Kit v5.5',
     topPillIdes: '5 AI IDEs',
     watchFilmCta: 'Watch Film (90s)',
     closeFilmAria: 'Close walkthrough film dialog',
@@ -48,7 +48,7 @@ const HOME_COPY: Record<Locale, HomeSectionCopy> = {
     closingPrimaryCta: 'Install Now',
   },
   vi: {
-    topPillLead: 'BoomOpen v5.5',
+    topPillLead: 'BoomOpen Workflow Kit v5.5',
     topPillIdes: '5 AI IDEs',
     watchFilmCta: 'Xem video (90s)',
     closeFilmAria: 'Đóng cửa sổ video giới thiệu',
@@ -67,10 +67,10 @@ function isPlatformId(value: string | null): value is PlatformId {
 
 function EyebrowPill({ index, label }: { readonly index: string; readonly label: string }) {
   return (
-    <div className="inline-flex items-center gap-2.5 rounded-full border border-slate-200/90 bg-white px-3.5 py-1.5 font-mono text-xs text-slate-600 shadow-2xs tabular-nums">
-      <span className="font-semibold text-blue-600">{index}</span>
-      <span aria-hidden="true" className="text-slate-300">/</span>
-      <span className="font-semibold uppercase tracking-[0.09em] text-slate-700">{label}</span>
+    <div className="inline-flex items-center gap-2.5 rounded-full border border-indigo-200/[0.16] bg-white/[0.05] px-3.5 py-1.5 font-mono text-xs text-slate-300 backdrop-blur-md tabular-nums">
+      <span className="font-semibold text-sky-400">{index}</span>
+      <span aria-hidden="true" className="text-indigo-300/35">/</span>
+      <span className="font-semibold uppercase tracking-[0.09em] text-slate-200">{label}</span>
     </div>
   )
 }
@@ -120,11 +120,11 @@ function TrailerCinemaModal({
         tabIndex={-1}
         aria-label={closeAriaLabel}
         onClick={onClose}
-        className="fixed inset-0 border-0 bg-slate-950/65 backdrop-blur-md cursor-default"
+        className="fixed inset-0 border-0 bg-[#02040D]/80 backdrop-blur-lg cursor-default"
       />
-      <div className="relative z-10 my-auto w-full max-w-5xl rounded-[28px] border border-slate-200/90 bg-white p-4 shadow-[0_32px_90px_-16px_rgba(15,23,42,0.45)] sm:p-6">
+      <div className="relative z-10 my-auto w-full max-w-5xl rounded-[28px] border border-indigo-200/[0.18] bg-[#090F24]/95 p-4 text-white shadow-[0_32px_90px_-16px_rgba(0,0,0,0.85)] backdrop-blur-2xl sm:p-6">
         <div className="mb-4 flex items-center justify-between gap-4 px-1">
-          <h2 id="home-trailer-modal-title" className="font-display text-lg font-bold text-slate-900 sm:text-xl">
+          <h2 id="home-trailer-modal-title" className="font-display text-lg font-bold text-white sm:text-xl">
             {title}
           </h2>
           <button
@@ -133,7 +133,7 @@ function TrailerCinemaModal({
             aria-label={closeAriaLabel}
             onClick={onClose}
             className={clsx(
-              'inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-200/90 bg-slate-50 text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900 cursor-pointer',
+              'inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-indigo-200/[0.16] bg-white/[0.06] text-slate-200 transition-colors hover:bg-white/[0.12] hover:text-white cursor-pointer',
               FOCUS_RING,
             )}
           >
@@ -166,8 +166,8 @@ function HeroStage({
   return (
     <section
       aria-labelledby="home-hero-heading"
-      className="relative overflow-hidden border-b border-slate-200/80"
-      style={{ backgroundImage: HERO_DAYLIGHT_GLOW }}
+      className="relative overflow-hidden border-b border-indigo-200/[0.10]"
+      style={{ backgroundImage: HERO_COSMIC_GLOW }}
     >
       <div className="relative mx-auto max-w-[90rem] px-4 pt-12 pb-18 sm:px-6 lg:px-10 lg:pt-20 lg:pb-26">
         <motion.div
@@ -179,25 +179,25 @@ function HeroStage({
           <Link
             to={installHref}
             className={clsx(
-              'inline-flex min-h-11 max-w-full items-center gap-2.5 rounded-full border border-slate-200/90 bg-white/90 px-4 py-1.5 text-sm font-medium text-slate-700 shadow-2xs transition-colors duration-150 motion-reduce:transition-none hover:border-slate-300 hover:bg-white no-underline',
+              'inline-flex min-h-11 max-w-full items-center gap-2.5 rounded-full border border-indigo-200/[0.18] bg-white/[0.06] px-4 py-1.5 text-sm font-medium text-slate-200 shadow-[0_0_24px_-6px_rgba(56,189,248,0.28)] backdrop-blur-xl transition-colors duration-150 motion-reduce:transition-none hover:border-sky-300/40 hover:bg-white/[0.10] no-underline',
               FOCUS_RING,
             )}
           >
-            <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-blue-600" />
-            <span className="shrink-0 font-semibold text-slate-900">{copy.topPillLead}</span>
-            <span aria-hidden="true" className="text-slate-300">·</span>
-            <span className="truncate text-xs text-slate-600 sm:text-sm">{copy.topPillIdes}</span>
-            <ArrowRight aria-hidden="true" className="size-3.5 shrink-0 text-blue-600" />
+            <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-sky-400 shadow-[0_0_10px_#38BDF8]" />
+            <span className="shrink-0 font-semibold text-white">{copy.topPillLead}</span>
+            <span aria-hidden="true" className="text-indigo-300/40">·</span>
+            <span className="truncate text-xs text-slate-300 sm:text-sm">{copy.topPillIdes}</span>
+            <ArrowRight aria-hidden="true" className="size-3.5 shrink-0 text-sky-400" />
           </Link>
 
           <h1
             id="home-hero-heading"
-            className="hero-display-gradient mx-auto mt-7 max-w-[16ch] text-center font-display text-[clamp(2.9rem,5.4vw,5.25rem)] leading-[1.04] font-bold tracking-[-0.04em]"
+            className="hero-display-gradient mx-auto mt-7 max-w-[16ch] pb-1 text-center font-display text-[clamp(2.9rem,5.4vw,5.25rem)] leading-[1.15] font-bold tracking-[-0.04em]"
           >
             {t.hero.headline}
           </h1>
 
-          <p className="mx-auto mt-5 max-w-[52ch] text-center text-lg leading-relaxed text-slate-600 sm:text-xl">
+          <p className="mx-auto mt-5 max-w-[52ch] text-center text-lg leading-relaxed text-slate-300 sm:text-xl">
             {t.hero.subheadline}
           </p>
 
@@ -215,11 +215,11 @@ function HeroStage({
               type="button"
               onClick={onOpenFilm}
               className={clsx(
-                'inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full border border-slate-200/90 bg-white px-7 py-3 text-base font-semibold text-slate-900 shadow-2xs transition-all duration-150 motion-reduce:transition-none hover:border-slate-300 hover:bg-slate-50 cursor-pointer',
+                'inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full border border-indigo-200/[0.18] bg-white/[0.06] px-7 py-3 text-base font-semibold text-white backdrop-blur-xl transition-all duration-150 motion-reduce:transition-none hover:border-sky-300/40 hover:bg-white/[0.12] cursor-pointer',
                 FOCUS_RING,
               )}
             >
-              <Play aria-hidden="true" className="size-4 fill-blue-600 text-blue-600" />
+              <Play aria-hidden="true" className="size-4 fill-sky-400 text-sky-400" />
               <span>{copy.watchFilmCta}</span>
             </button>
           </div>
@@ -285,7 +285,7 @@ export function HomePage() {
           <EyebrowPill index="01" label={copy.bentoEyebrow} />
           <h2
             id="home-bento-heading"
-            className="font-display text-[clamp(2.35rem,3.8vw,3.4rem)] leading-[1.06] font-bold tracking-[-0.035em] text-[#09090B]"
+            className="hero-display-gradient pb-1 font-display text-[clamp(2.35rem,3.8vw,3.4rem)] leading-[1.15] font-bold tracking-[-0.035em]"
           >
             {copy.bentoTitle}
           </h2>
@@ -295,13 +295,13 @@ export function HomePage() {
         </div>
       </section>
 
-      <section aria-labelledby="home-lifecycle-heading" className="border-t border-slate-200/80">
+      <section aria-labelledby="home-lifecycle-heading" className="border-t border-indigo-200/[0.10]">
         <div className="mx-auto max-w-[90rem] px-4 py-24 sm:px-6 lg:px-10 lg:py-32">
           <div className="space-y-4">
             <EyebrowPill index="02" label={copy.dockEyebrow} />
             <h2
               id="home-lifecycle-heading"
-              className="font-display text-[clamp(2.35rem,3.8vw,3.4rem)] leading-[1.06] font-bold tracking-[-0.035em] text-[#09090B]"
+              className="hero-display-gradient pb-1 font-display text-[clamp(2.35rem,3.8vw,3.4rem)] leading-[1.15] font-bold tracking-[-0.035em]"
             >
               {copy.dockTitle}
             </h2>
@@ -312,16 +312,16 @@ export function HomePage() {
         </div>
       </section>
 
-      <section aria-labelledby="home-closing-heading" className="border-t border-slate-200/80">
+      <section aria-labelledby="home-closing-heading" className="border-t border-indigo-200/[0.10]">
         <div className="mx-auto max-w-[90rem] px-4 py-24 sm:px-6 lg:px-10 lg:py-28">
           <div
-            className="relative mx-auto max-w-5xl overflow-hidden rounded-[36px] border border-slate-200/90 bg-[#EEF2F8] bg-cover bg-center shadow-[0_24px_64px_-16px_rgba(15,23,42,0.10)]"
+            className="relative mx-auto max-w-5xl overflow-hidden rounded-[36px] border border-indigo-200/[0.18] bg-[#070B1D] bg-cover bg-center shadow-[0_32px_80px_-18px_rgba(2,4,16,0.85),0_0_60px_-20px_rgba(56,189,248,0.20)]"
             style={{ backgroundImage: "url('/assets/studio-canvas.jpg')" }}
           >
-            <div className="bg-white/84 p-10 text-center backdrop-blur-xl sm:p-16">
+            <div className="bg-[#060A1B]/68 p-10 text-center backdrop-blur-md sm:p-16">
               <h2
                 id="home-closing-heading"
-                className="hero-display-gradient mx-auto font-display text-[clamp(2.35rem,4vw,3.45rem)] leading-[1.06] font-bold tracking-[-0.035em]"
+                className="hero-display-gradient mx-auto pb-1 font-display text-[clamp(2.35rem,4vw,3.45rem)] leading-[1.15] font-bold tracking-[-0.035em]"
               >
                 {copy.closingHeadline}
               </h2>
