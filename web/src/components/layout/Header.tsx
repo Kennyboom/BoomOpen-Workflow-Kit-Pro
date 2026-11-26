@@ -42,10 +42,10 @@ function HeaderBrand({ onNavigate }: { readonly onNavigate: () => void }) {
           className="size-full rounded-lg object-contain"
         />
       </span>
-      <span className="whitespace-nowrap font-display text-base xl:text-[17px] leading-tight font-bold tracking-tight text-white">
+      <span className="whitespace-nowrap font-display text-[15px] xl:text-base 2xl:text-[17px] leading-tight font-bold tracking-tight text-white">
         BoomOpen Workflow Kit
       </span>
-      <span className="hidden rounded-full border border-sky-400/25 bg-sky-400/10 px-2.5 py-0.5 font-mono text-xs leading-snug font-semibold text-sky-300 tabular-nums xl:inline-flex">
+      <span className="hidden rounded-full border border-sky-400/25 bg-sky-400/10 px-2.5 py-0.5 font-mono text-xs leading-snug font-semibold text-sky-300 tabular-nums 2xl:inline-flex">
         {`v${SHORT_VERSION}`}
       </span>
     </Link>
@@ -62,7 +62,7 @@ function DesktopNavTrack({
   return (
     <nav
       aria-label={ariaLabel}
-      className="hidden items-center gap-0.5 xl:gap-1 rounded-full border border-indigo-200/[0.12] bg-white/[0.04] p-1 lg:flex"
+      className="hidden items-center gap-0.5 2xl:gap-1 rounded-full border border-indigo-200/[0.12] bg-white/[0.04] p-1 lg:flex"
     >
       {items.map((item) => (
         <NavLink
@@ -71,7 +71,7 @@ function DesktopNavTrack({
           end={item.end}
           className={({ isActive }) =>
             clsx(
-              'inline-flex min-h-11 items-center rounded-full px-3 xl:px-3.5 py-2 text-[14px] xl:text-[15px] leading-snug whitespace-nowrap transition-all duration-150 motion-reduce:transition-none no-underline',
+              'inline-flex min-h-11 items-center rounded-full px-2.5 xl:px-3 2xl:px-3.5 py-2 text-[13.5px] xl:text-[14px] 2xl:text-[15px] leading-snug whitespace-nowrap transition-all duration-150 motion-reduce:transition-none no-underline',
               FOCUS_RING,
               isActive
                 ? 'bg-white text-[#050816] font-semibold shadow-[0_2px_12px_rgba(255,255,255,0.2)]'
@@ -231,12 +231,12 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-indigo-200/[0.10] bg-[#050816]/78 backdrop-blur-2xl">
-      <div className="mx-auto flex h-18 max-w-[90rem] items-center justify-between gap-3 xl:gap-4 px-5 sm:px-8 lg:px-6 xl:px-12">
+      <div className="mx-auto flex h-18 max-w-[90rem] items-center justify-between gap-2.5 xl:gap-3.5 px-4 sm:px-6 lg:px-5 xl:px-7 2xl:px-12">
         <HeaderBrand onNavigate={closeDrawer} />
 
         <DesktopNavTrack items={navItems} ariaLabel={t.nav.primaryNavAria} />
 
-        <div className="flex shrink-0 items-center gap-2 xl:gap-2.5">
+        <div className="flex shrink-0 items-center gap-2 2xl:gap-2.5">
           <LocalePillSwitcher locale={locale} onSelect={setLocale} t={t} />
 
           <a
@@ -245,7 +245,7 @@ export function Header() {
             rel="noopener noreferrer"
             aria-label={`${t.nav.githubLabel} (${t.common.openNewTab})`}
             className={clsx(
-              'hidden min-h-11 items-center gap-1.5 rounded-full border border-indigo-200/[0.15] bg-white/[0.05] px-3 xl:px-3.5 text-sm leading-snug font-medium text-slate-200 hover:border-sky-300/35 hover:bg-white/[0.10] hover:text-white transition-all duration-150 motion-reduce:transition-none no-underline sm:inline-flex',
+              'hidden min-h-11 items-center gap-1.5 rounded-full border border-indigo-200/[0.15] bg-white/[0.05] px-3 2xl:px-3.5 text-sm leading-snug font-medium text-slate-200 hover:border-sky-300/35 hover:bg-white/[0.10] hover:text-white transition-all duration-150 motion-reduce:transition-none no-underline sm:inline-flex lg:hidden xl:inline-flex',
               FOCUS_RING,
             )}
           >
