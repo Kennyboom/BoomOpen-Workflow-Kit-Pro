@@ -34,7 +34,7 @@ export const vi: Dictionary = {
   homeSurface: {
     topPillLead: 'BoomOpen Workflow Kit v5.5',
     topPillIdes: '5 AI IDEs',
-    watchFilmCta: 'Xem video (90s)',
+    watchFilmCta: 'Xem video (80s)',
     closeFilmAria: 'Đóng cửa sổ video giới thiệu',
     docsNodeSublabel: 'Tài liệu dự án',
     bentoEyebrow: 'ĐỘC QUYỀN',
@@ -76,7 +76,7 @@ export const vi: Dictionary = {
   },
   trailer: {
     eyebrow: 'Video giới thiệu',
-    title: 'Xem tổng quan BoomOpen Workflow Kit v5.5 trong 90 giây',
+    title: 'Xem tổng quan BoomOpen Workflow Kit Pro v5.5 trong 80 giây',
     subtitle: 'Chọn một trong 15 ngôn ngữ trên thanh tiêu đề để đổi ngôn ngữ giao diện và xem video 1080p thuyết minh tiếng Việt.',
     localeBadge: 'Thuyết minh tiếng Việt (1080p)',
     media: {
@@ -84,12 +84,12 @@ export const vi: Dictionary = {
       videoSrc: '/media/boomopen_v55_trailer_vi.mp4',
       posterSrc: '/media/poster_vi.png',
       fallbackUrl: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro',
-      caption: 'BoomOpen Workflow Kit v5.5: Video giới thiệu 1080p (Tiếng Việt)',
+      caption: 'BoomOpen Workflow Kit Pro v5.5: Video giới thiệu 1080p (Tiếng Việt)',
       chapters: [
-        { seconds: 0, label: '00:00  Mặc định gọn nhẹ & định tuyến' },
-        { seconds: 18, label: '00:18  Chạy song song 3-Wave khóa file' },
-        { seconds: 38, label: '00:38  Nhóm 3 vai trò phản biện' },
-        { seconds: 58, label: '00:58  1.462 kỹ năng & 14 lệnh CLI' },
+        { seconds: 0, label: '00:00  Mặc định smart-hybrid & 17 ngôn ngữ' },
+        { seconds: 18, label: '00:18  Khóa file 3-Wave & Đối soát Wave 2.5' },
+        { seconds: 38, label: '00:38  Nhóm 3 vai trò, Hội đồng & Autopilot' },
+        { seconds: 58, label: '00:58  1.462 kỹ năng, 14 cổng CLI & Cài đặt' },
       ],
     },
     rawStreamUrl: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_vi.mp4',

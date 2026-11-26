@@ -34,7 +34,7 @@ export const en: Dictionary = {
   homeSurface: {
     topPillLead: 'BoomOpen Workflow Kit v5.5',
     topPillIdes: '5 AI IDEs',
-    watchFilmCta: 'Watch Film (90s)',
+    watchFilmCta: 'Watch Film (80s)',
     closeFilmAria: 'Close walkthrough film dialog',
     docsNodeSublabel: 'Specs & PRD',
     bentoEyebrow: 'SUPERPOWERS',
@@ -76,7 +76,7 @@ export const en: Dictionary = {
   },
   trailer: {
     eyebrow: 'Product Walkthrough',
-    title: 'See BoomOpen Workflow Kit v5.5 in 90 seconds',
+    title: 'See BoomOpen Workflow Kit Pro v5.5 in 80 seconds',
     subtitle: 'Switch among 15 languages in the header to localize the interface and play the narrated 1080p walkthrough.',
     localeBadge: 'English Narration (1080p)',
     media: {
@@ -84,12 +84,12 @@ export const en: Dictionary = {
       videoSrc: '/media/boomopen_v55_trailer_en.mp4',
       posterSrc: '/media/poster_en.png',
       fallbackUrl: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro',
-      caption: 'BoomOpen Workflow Kit v5.5: English 1080p Walkthrough',
+      caption: 'BoomOpen Workflow Kit Pro v5.5: English 1080p Walkthrough',
       chapters: [
-        { seconds: 0, label: '00:00  Slim Guardrails & Routing' },
-        { seconds: 18, label: '00:18  3-Wave Shard Locks' },
-        { seconds: 38, label: '00:38  3-Role Review Teams' },
-        { seconds: 58, label: '00:58  1,462 Skills & 14 CLI Gates' },
+        { seconds: 0, label: '00:00  smart-hybrid & 17-Lang Routing' },
+        { seconds: 18, label: '00:18  3-Wave Locks & Wave 2.5 Reconcile' },
+        { seconds: 38, label: '00:38  3-Role Teams, Council & Autopilot' },
+        { seconds: 58, label: '00:58  1,462 Skills, 14 CLI Gates & Install' },
       ],
     },
     rawStreamUrl: 'https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro/raw/main/assets/media/boomopen_v55_trailer_en.mp4',
