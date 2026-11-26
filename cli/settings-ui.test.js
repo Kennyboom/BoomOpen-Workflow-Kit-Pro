@@ -128,10 +128,10 @@ test('settings UI global view never returns (or later saves) workspace overrides
     const headers = { Origin: `http://127.0.0.1:${port}`, 'X-BoomOpen-Token': token };
 
     const saved = JSON.parse((await jsonPost(port, '/api/settings', { scope: 'global', settings: { research: { depth: 'standard' } } }, headers)).body);
-    assert.equal(saved.settings.execution.mode, 'mode_a', 'global view shows global values only');
+    assert.equal(saved.settings.execution.mode, 'auto', 'global view shows global values only');
     await jsonPost(port, '/api/settings', { scope: 'global', settings: saved.settings }, headers);
     const globalRaw = JSON.parse(fs.readFileSync(path.join(homeDir, '.boomopen', 'settings.json'), 'utf8'));
-    assert.equal(globalRaw.execution.mode, 'mode_a');
+    assert.equal(globalRaw.execution.mode, 'auto');
 
     const projectView = JSON.parse((await request(port, { pathName: '/api/settings?scope=project', headers: { Host: `127.0.0.1:${port}`, 'X-BoomOpen-Token': token } })).body);
     assert.equal(projectView.settings.execution.mode, 'team', 'project view shows effective values');
@@ -178,12 +178,13 @@ test('settings UI caps request bodies and drops the connection instead of buffer
   });
 });
 
-test('settings UI exposes frontier-guardrails default, editorial tokens, zero inline handlers, EN/VI I18N, and WCAG attributes', async () => {
+test('settings UI exposes smart-hybrid default, editorial tokens, zero inline handlers, EN/VI I18N, and WCAG attributes', async () => {
   const { CATEGORY_SCHEMA, I18N, renderDashboardHtml } = require('./settings-ui-html.js');
   const html = renderDashboardHtml('deadbeef');
-  assert.equal(I18N.en.presets[0].id, 'frontier-guardrails');
+  assert.equal(I18N.en.presets[0].id, 'smart-hybrid');
   assert.match(I18N.en.presets[0].title, /Recommended Default/);
-  assert.equal(I18N.vi.presets[0].id, 'frontier-guardrails');
+  assert.equal(I18N.vi.presets[0].id, 'smart-hybrid');
+  assert.ok(I18N.en.presets.some((p) => p.id === 'frontier-guardrails'));
   assert.ok(I18N.en.presets.some((p) => p.id === 'carbon-guardrails'));
   assert.match(html, /Plus Jakarta Sans/);
   assert.match(html, /JetBrains Mono/);

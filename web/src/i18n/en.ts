@@ -242,8 +242,8 @@ export const en: Dictionary = {
         { title: '3. CLI & Workspace File', command: 'boomopen settings set execution.mode mode_b --project', summary: 'Updates global ~/.boomopen/settings.json or repo-scoped ./.boomopen.json.' },
       ],
       presets: [
-        { name: 'frontier-guardrails', mode: 'mode_a (<= 10 files direct, NL off, < 2.3 KB)', lineBudget: '400 / 500 lines', summary: 'Default out-of-the-box preset (21 lines, ~600 tokens) across all 5 IDEs. Native model drives daily tasks; carbon-guardrails alias supported.' },
-        { name: 'smart-hybrid', mode: 'auto (<= 2 files direct, > 2 multi-agent, NL on)', lineBudget: '400 / 500 lines', summary: 'Enables automatic sub-agent sharding above 2 files and 17-language natural-language routing.' },
+        { name: 'smart-hybrid', mode: 'auto (<= 2 files direct, > 2 multi-agent, NL on)', lineBudget: '400 / 500 lines', summary: 'Default out-of-the-box preset across all 5 IDEs: automatic sub-agent sharding above 2 files and 17-language natural-language routing.' },
+        { name: 'frontier-guardrails', mode: 'mode_a (<= 10 files direct, NL off, < 2.3 KB)', lineBudget: '400 / 500 lines', summary: 'Slim 21-line (~600 tokens) Mode A preset across all 5 IDEs. Native model drives daily tasks; carbon-guardrails alias supported.' },
         { name: 'solo-fast', mode: 'mode_a (<= 10 files direct, fast checks)', lineBudget: '600 / 800 lines', summary: 'Lightweight single-agent preset for quick scripts, prototypes, and hotfixes.' },
         { name: 'deep-architect', mode: 'mode_b (:hard multi-agent + council research)', lineBudget: '300 / 400 lines', summary: 'Strict multi-agent architecture, 5-lens research, and cross-family code review.' },
         { name: 'adversarial-team', mode: 'team (3-role review teams + council)', lineBudget: '300 / 400 lines', summary: 'High-assurance builds requiring 3-role review teams and multi-engine council critique.' },
@@ -309,7 +309,7 @@ export const en: Dictionary = {
       title: '3-Step Setup',
       items: [
         { step: 'Step 1', title: 'Clone the Repository', command: 'git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git && cd BoomOpen-Workflow-Kit-Pro', summary: 'Downloads all 36 commands (93 files), 22 sub-agents, 18 review teams, 1,462 skills, and the CLI.' },
-        { step: 'Step 2', title: 'Install for Your IDE (or --all)', command: 'node cli/install.js install --all', summary: 'Syncs 14 entry files (frontier-guardrails default) and links ~/.agents/skills_library. Add --with-hooks for Claude, Antigravity, or Cursor.' },
+        { step: 'Step 2', title: 'Install for Your IDE (or --all)', command: 'node cli/install.js install --all', summary: 'Syncs 14 entry files (smart-hybrid default) and links ~/.agents/skills_library. Add --with-hooks for Claude, Antigravity, or Cursor.' },
         { step: 'Step 3', title: 'Verify with Doctor', command: 'node cli/install.js doctor', summary: 'Runs a read-only check across entry files, manifests, commands, teams, and compact-index.json.' },
       ],
     },

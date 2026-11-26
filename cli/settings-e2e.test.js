@@ -56,7 +56,7 @@ function vsCodePromptsFile(home) {
   return path.join(base, 'boomopen-workflow-kit.agent.md');
 }
 
-test('fresh install writes <2.5KB frontier-guardrails slim entrypoints, round-trips presets, and uninstalls cleanly', { timeout: 600000 }, () => {
+test('fresh install writes smart-hybrid entrypoints, round-trips slim/full presets, and uninstalls cleanly', { timeout: 600000 }, () => {
   const kitRoot = buildFixtureKit();
   const home = tempDir('boomopen-settings-home-');
   const cwd = tempDir('boomopen-settings-cwd-');
@@ -81,8 +81,9 @@ test('fresh install writes <2.5KB frontier-guardrails slim entrypoints, round-tr
     ];
     for (const file of synced) {
       const content = read(file);
-      assert.ok(Buffer.byteLength(content, 'utf8') < 2500, `${file} fresh install must be < 2.5KB`);
-      assert.match(content, /\*\*Active Preset\*\*: `frontier-guardrails`/);
+      assert.match(content, /\*\*Active Preset\*\*: `smart-hybrid`/);
+      assert.match(content, /\*\*Execution Mode \(`execution\.mode`\)\*\*: `auto`/);
+      assert.match(content, /`naturalLanguageResearchTrigger = auto_team`/);
       assert.doesNotMatch(content, /Carbon drives/);
     }
     assert.match(read(path.join(home, '.cursor', 'rules', 'boomopen-workflow-kit.mdc')), /^---\r?\ndescription:/);
@@ -111,21 +112,26 @@ test('fresh install writes <2.5KB frontier-guardrails slim entrypoints, round-tr
       assert.equal(fs.existsSync(file), false, `${file} must be removed by uninstall after a settings sync`);
     }
 
-    // Antigravity --with-hooks: fresh frontier-guardrails <2.5KB -> smart-hybrid full -> carbon-guardrails <2.5KB -> uninstall
+    // Antigravity --with-hooks: fresh smart-hybrid full -> frontier-guardrails <2.5KB -> carbon-guardrails <2.5KB -> reset smart-hybrid -> uninstall
     fs.unlinkSync(userGemini);
     runCli(kitRoot, home, cwd, ['settings', 'reset']);
     runCli(kitRoot, home, cwd, ['install', 'antigravity', '--with-hooks']);
     const agGemini = path.join(home, '.gemini', 'GEMINI.md');
     const agAgent = path.join(home, '.gemini', 'agents', 'AntigravityGlobal.agent.md');
     const agHooks = path.join(home, '.gemini', 'config', 'hooks.json');
-    assert.ok(Buffer.byteLength(read(agGemini), 'utf8') < 2500, 'default frontier-guardrails GEMINI.md must be < 2.5KB');
-    const agAgentBody = read(agAgent).replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n+/, '');
-    assert.ok(Buffer.byteLength(agAgentBody, 'utf8') < 2500, 'default AntigravityGlobal.agent.md slim body must be < 2.5KB');
-    runCli(kitRoot, home, cwd, ['settings', 'preset', 'smart-hybrid']);
+    assert.match(read(agGemini), /\*\*Active Preset\*\*: `smart-hybrid`/);
     assert.match(read(agGemini), /Anti-Solo-Crawling Rule/);
+    assert.match(read(agAgent), /\*\*Active Preset\*\*: `smart-hybrid`/);
+    runCli(kitRoot, home, cwd, ['settings', 'preset', 'frontier-guardrails']);
+    assert.ok(Buffer.byteLength(read(agGemini), 'utf8') < 2500, 'frontier-guardrails GEMINI.md must be < 2.5KB');
+    const agAgentBody = read(agAgent).replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n+/, '');
+    assert.ok(Buffer.byteLength(agAgentBody, 'utf8') < 2500, 'frontier-guardrails AntigravityGlobal.agent.md slim body must be < 2.5KB');
     runCli(kitRoot, home, cwd, ['settings', 'preset', 'carbon-guardrails']);
     assert.ok(Buffer.byteLength(read(agGemini), 'utf8') < 2500, 'carbon-guardrails GEMINI.md must be < 2.5KB');
     assert.match(read(agGemini), /CARBON-GUARDRAILS EDITION/);
+    runCli(kitRoot, home, cwd, ['settings', 'reset']);
+    assert.match(read(agGemini), /\*\*Active Preset\*\*: `smart-hybrid`/);
+    assert.match(read(agGemini), /Anti-Solo-Crawling Rule/);
     assert.match(read(agHooks), /boomopen-guard/);
     runCli(kitRoot, home, cwd, ['uninstall', 'antigravity']);
     assert.equal(fs.existsSync(agGemini), false);

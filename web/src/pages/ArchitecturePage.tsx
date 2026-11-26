@@ -90,15 +90,19 @@ function CoreRulesSection() {
 }
 
 function PresetsControlSection({
-  selectedPresetIdx,
-  onSelectPreset,
+  selectedPresetName,
+  onSelectPresetName,
 }: {
-  readonly selectedPresetIdx: number
-  readonly onSelectPreset: (idx: number) => void
+  readonly selectedPresetName: string
+  readonly onSelectPresetName: (name: string) => void
 }) {
   const { t } = useLanguage()
   const { controlCenter } = t.architecturePage
-  const activePreset = controlCenter.presets[selectedPresetIdx] ?? controlCenter.presets[0]
+  const orderedPresets = [...controlCenter.presets].sort((a, b) =>
+    a.name === 'smart-hybrid' ? -1 : b.name === 'smart-hybrid' ? 1 : 0,
+  )
+  const activePreset =
+    orderedPresets.find((preset) => preset.name === selectedPresetName) ?? orderedPresets[0]
 
   return (
     <section aria-labelledby="control-center-heading" className="space-y-8 border-b border-indigo-200/[0.12] py-16 lg:py-20">
@@ -116,15 +120,15 @@ function PresetsControlSection({
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {controlCenter.presets.map((preset, idx) => {
-          const isSelected = idx === selectedPresetIdx
-          const isDefault = preset.name === 'frontier-guardrails'
+        {orderedPresets.map((preset) => {
+          const isSelected = preset.name === activePreset.name
+          const isDefault = preset.name === 'smart-hybrid'
           return (
             <button
               key={preset.name}
               type="button"
               aria-pressed={isSelected}
-              onClick={() => onSelectPreset(idx)}
+              onClick={() => onSelectPresetName(preset.name)}
               className={clsx(
                 'flex min-h-11 flex-col justify-between gap-5 rounded-3xl border p-7 text-left transition-all duration-150 motion-reduce:transition-none cursor-pointer sm:p-8',
                 FOCUS_RING,
@@ -277,7 +281,7 @@ function StandardsAndLedgerSection() {
 export function ArchitecturePage() {
   const { t } = useLanguage()
   const reduceMotion = useReducedMotion()
-  const [selectedPresetIdx, setSelectedPresetIdx] = useState(0)
+  const [selectedPresetName, setSelectedPresetName] = useState('smart-hybrid')
   const overnight = t.architecturePage.specRatchet.overnightPlaybook
 
   return (
@@ -290,7 +294,7 @@ export function ArchitecturePage() {
       <SEO routeId="architecture" />
       <ArchitectureHeroHeader />
       <CoreRulesSection />
-      <PresetsControlSection selectedPresetIdx={selectedPresetIdx} onSelectPreset={setSelectedPresetIdx} />
+      <PresetsControlSection selectedPresetName={selectedPresetName} onSelectPresetName={setSelectedPresetName} />
       <StandardsAndLedgerSection />
 
       <section aria-labelledby="overnight-playbook-heading" className="pt-16 lg:pt-20">

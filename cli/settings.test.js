@@ -61,27 +61,28 @@ function write(filePath, content) {
 
 const kitFile = (settings = DEFAULT_SETTINGS) => `${KIT_HEADER}${renderActiveSettingsMarkdown(settings)}\n\n## Rules\n`;
 
-test('every shipped settings block equals renderActiveSettingsMarkdown(DEFAULT_SETTINGS) and frontier-guardrails is first (L14)', () => {
+test('every shipped settings block equals renderActiveSettingsMarkdown(DEFAULT_SETTINGS) and smart-hybrid is first (L14)', () => {
   const expected = renderActiveSettingsMarkdown(DEFAULT_SETTINGS);
   assert.deepEqual(Object.keys(PRESETS), [
-    'frontier-guardrails',
     'smart-hybrid',
+    'frontier-guardrails',
     'carbon-guardrails',
     'solo-fast',
     'deep-architect',
     'adversarial-team',
   ]);
   assert.deepEqual(ALLOWED_ENUMS.preset, [...Object.keys(PRESETS), 'custom']);
-  assert.equal(DEFAULT_SETTINGS.preset, 'frontier-guardrails');
-  assert.equal(DEFAULT_SETTINGS.execution.mode, 'mode_a');
-  assert.equal(DEFAULT_SETTINGS.execution.modeAThresholdFiles, 10);
+  assert.equal(DEFAULT_SETTINGS.preset, 'smart-hybrid');
+  assert.equal(DEFAULT_SETTINGS.execution.mode, 'auto');
+  assert.equal(DEFAULT_SETTINGS.execution.modeAThresholdFiles, 2);
   assert.equal(DEFAULT_SETTINGS.execution.swarmScaling, 'elastic');
   assert.equal(DEFAULT_SETTINGS.execution.maxParallelSubagents, 8);
-  assert.equal(DEFAULT_SETTINGS.workflows.naturalLanguageResearchTrigger, 'off');
-  assert.deepEqual({ ...PRESETS['carbon-guardrails'], preset: 'frontier-guardrails' }, DEFAULT_SETTINGS);
-  assert.equal(PRESETS['smart-hybrid'].execution.mode, 'auto');
-  assert.equal(PRESETS['smart-hybrid'].execution.modeAThresholdFiles, 2);
-  assert.equal(PRESETS['smart-hybrid'].workflows.naturalLanguageResearchTrigger, 'auto_team');
+  assert.equal(DEFAULT_SETTINGS.workflows.naturalLanguageResearchTrigger, 'auto_team');
+  assert.deepEqual(PRESETS['smart-hybrid'], DEFAULT_SETTINGS);
+  assert.deepEqual({ ...PRESETS['carbon-guardrails'], preset: 'frontier-guardrails' }, PRESETS['frontier-guardrails']);
+  assert.equal(PRESETS['frontier-guardrails'].execution.mode, 'mode_a');
+  assert.equal(PRESETS['frontier-guardrails'].execution.modeAThresholdFiles, 10);
+  assert.equal(PRESETS['frontier-guardrails'].workflows.naturalLanguageResearchTrigger, 'off');
   assert.equal(PRESETS['solo-fast'].execution.swarmScaling, 'conservative');
   assert.equal(PRESETS['solo-fast'].execution.maxParallelSubagents, 3);
   assert.equal(PRESETS['deep-architect'].execution.maxParallelSubagents, 12);
@@ -137,14 +138,14 @@ test('BOM, UTF-16, carbon-guardrails alias, and broken JSON settings files are r
 
     const broken = '{ "execution": { "mode": "mode_b" }, }';
     write(globalPath, broken);
-    assert.equal(loadSettings({ ...box.opts, silent: true }).execution.mode, 'mode_a');
+    assert.equal(loadSettings({ ...box.opts, silent: true }).execution.mode, 'auto');
     assert.throws(() => setSettingByKey('research.depth', 'standard', { ...box.opts, silent: true }), /Refusing to overwrite/);
     assert.equal(fs.readFileSync(globalPath, 'utf8'), broken, 'a broken file must be left untouched');
 
     const reset = resetSettings({ ...box.opts, silent: true });
     assert.equal(fs.readFileSync(reset.backupPath, 'utf8'), broken, 'reset keeps a .bak of the broken file');
-    assert.equal(loadSettings(box.opts).preset, 'frontier-guardrails');
-    assert.equal(loadSettings(box.opts).execution.mode, 'mode_a');
+    assert.equal(loadSettings(box.opts).preset, 'smart-hybrid');
+    assert.equal(loadSettings(box.opts).execution.mode, 'auto');
   } finally {
     box.cleanup();
   }
@@ -261,12 +262,12 @@ test('sync touches only kit-owned files with valid blocks, preserves user text, 
     const targets = getSyncTargets(box.homeDir, { env: { APPDATA: path.join(box.homeDir, 'Roaming') }, platform: 'win32' });
     assert.ok(targets.copilot.includes(path.join(box.homeDir, 'Roaming', 'Code', 'User', 'prompts', 'boomopen-workflow-kit.agent.md')));
 
-    write(shared, kitFile(PRESETS['smart-hybrid']));
+    write(shared, kitFile(PRESETS['solo-fast']));
     const opts = { homeDir: box.homeDir, cwd: box.cwd, silent: true };
     assert.equal((await runSettingsCommand(['--help'], opts)).action, 'help');
     assert.equal((await runSettingsCommand(['status'], opts)).action, 'status');
     await runSettingsCommand(['sync'], opts);
-    assert.match(fs.readFileSync(shared, 'utf8'), /`frontier-guardrails`/);
+    assert.match(fs.readFileSync(shared, 'utf8'), /`smart-hybrid`/);
     assert.equal((await runSettingsCommand(['--set', 'codingStandards.softFileLines=420'], opts)).action, 'set');
     assert.equal((await runSettingsCommand(['--get', 'codingStandards.softFileLines'], opts)).value, 420);
     assert.equal((await runSettingsCommand(['--set', 'engines.councilMembers=cursor,copilot,claude'], opts)).action, 'set');

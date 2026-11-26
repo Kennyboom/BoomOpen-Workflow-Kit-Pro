@@ -1,6 +1,6 @@
 # 📚 REFERENCE
 
-> **VERSION**: 5.5 — Frontier-Guardrails & Smart-Hybrid Edition | **PURPOSE**: Fast lookup tables for `36` Base Commands (`93` files = `87` workflows + `6` `_ref/`), Built-In Presets (`frontier-guardrails` default, `carbon-guardrails` alias, `smart-hybrid`, `solo-fast`, `deep-architect`, `adversarial-team`), 17-Language Routing, 5-Stage Cook/Code + Wave 2.5 Reconcile (`boomopen cook|reconcile`), 5-Layer Phase Ratchet (`boomopen ledger|audit` + `rollback`), Cross-Engine Conductor (`boomopen conduct`), Antigravity `run_workflow` Templates, & Cross-Platform Tools (all 5 platforms)
+> **VERSION**: 5.5 — Smart-Hybrid & Frontier-Guardrails Edition | **PURPOSE**: Fast lookup tables for `36` Base Commands (`93` files = `87` workflows + `6` `_ref/`), Built-In Presets (`smart-hybrid` default, `frontier-guardrails` / `carbon-guardrails` slim alias, `solo-fast`, `deep-architect`, `adversarial-team`), 17-Language Routing, 5-Stage Cook/Code + Wave 2.5 Reconcile (`boomopen cook|reconcile`), 5-Layer Phase Ratchet (`boomopen ledger|audit` + `rollback`), Cross-Engine Conductor (`boomopen conduct`), Antigravity `run_workflow` Templates, & Cross-Platform Tools (all 5 platforms)
 
 ---
 
@@ -97,7 +97,7 @@ Commands, agents and rules are written in the **Antigravity tool vocabulary** (t
 | `/ask` | `ask.md` | `fast`, `hard` | `/ui-ux-pro-max` | `ui-ux-pro-max.md` | Design-system generation & UI/UX specs |
 | `/code` | `code.md` | `fast`, `hard`, `team` | `/orchestrate` | `orchestrate.md` | Multi-agent domain & `run_workflow` orchestration |
 | `/autopilot` | `autopilot.md` | `init`, `run`, `audit` | `/save`, `/recap` | `save.md`, `recap.md` | Save / restore session state & memory |
-| `/audit` | `audit.md` | `run`, `fix`, `auto` | `/settings` | `settings.md` | Unified Settings & Presets (`frontier-guardrails` default) |
+| `/audit` | `audit.md` | `run`, `fix`, `auto` | `/settings` | `settings.md` | Unified Settings & Presets (`smart-hybrid` default) |
 | `/conduct` | `conduct.md` | `council`, `pipeline` | `/release` | `release.md` | Semantic release, `CHANGELOG.md`, parity gates & tag |
 | `/pr` | `pr.md` | `review` (`pr-review.md`) | — | — | Pre-PR quality/reconcile gate, `gh pr create` & PR review |
 
@@ -129,7 +129,7 @@ design_cli_validator:   boomopen design <validate|contract> <design.md> [--json]
 plan_cli_validator:     boomopen plan <validate|compile> <plan.md> [--sync-ledger]  # 5-Gate static plan validator (< 50ms)
 cook_code_cli_engine:   boomopen cook <state|packets|verify-wave|preflight|amend-plan>  # 5-Stage Fast-Forward state, 5-Field Packet emitter, 3-Wave lock gate & delta wave amender
 reconcile_cli_engine:   boomopen reconcile [dir] [--plan <p>] [--specs <s1,s2>] [--strict] # Wave 2.5 REC-G1..G4 island shard, route parity, [SC-*] & .env.example parity scanner
-active_presets:         frontier-guardrails (default) | carbon-guardrails (Antigravity alias) | smart-hybrid | solo-fast | deep-architect | adversarial-team
+active_presets:         smart-hybrid (default) | frontier-guardrails (carbon-guardrails alias) | solo-fast | deep-architect | adversarial-team
 antigravity_workflows:  platforms/antigravity/workflows/{audit_fanout,review_fanout,research_fanout}.py # Executable Antigravity run_workflow templates
 audit_cli_ledger:       ./.boomopen/audit-ledger.json + ./.boomopen/AUDIT-PROGRESS.md (boomopen audit <init|slice|record|approve|verify-fix|rollback|status>)
 strict_quality_gate:    boomopen check <dir> --strict-phase --no-stubs              # Pragmatic 2-Tier quality, line limits & anti-stub/anti-skip verifier

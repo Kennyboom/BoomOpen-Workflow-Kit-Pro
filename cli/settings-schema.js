@@ -14,7 +14,7 @@ const CODING_STANDARDS_PRESETS = {
 };
 
 const ALLOWED_ENUMS = {
-  preset: ['frontier-guardrails', 'smart-hybrid', 'carbon-guardrails', 'solo-fast', 'deep-architect', 'adversarial-team', 'custom'],
+  preset: ['smart-hybrid', 'frontier-guardrails', 'carbon-guardrails', 'solo-fast', 'deep-architect', 'adversarial-team', 'custom'],
   'execution.mode': ['auto', 'mode_a', 'mode_b', 'team'],
   'execution.modeAThresholdFiles': [1, 2, 3, 5, 10],
   'execution.swarmScaling': ['elastic', 'hyper_swarm', 'conservative'],
@@ -67,7 +67,7 @@ const ALLOWED_ENUMS = {
 };
 
 const SETTING_DESCRIPTIONS = {
-  preset: 'Named configuration profile (frontier-guardrails, smart-hybrid, carbon-guardrails, solo-fast, deep-architect, adversarial-team, custom)',
+  preset: 'Named configuration profile (smart-hybrid, frontier-guardrails, carbon-guardrails, solo-fast, deep-architect, adversarial-team, custom)',
   'execution.mode': 'Orchestration gate mode (auto Proactive Sub-agent First, mode_a Direct, mode_b Orchestrator, team Golden Triangle)',
   'execution.modeAThresholdFiles': 'Max known-target files allowed in Mode A before spawning parallel sub-agents',
   'execution.swarmScaling': 'Sub-agent swarm scaling strategy (elastic 1->2-3->4-6->8+, hyper_swarm aggressive sharding, conservative 2-3 cap)',
@@ -119,16 +119,18 @@ const GUARDRAILS_BASE = {
   },
 };
 
-const DEFAULT_SETTINGS = structuredClone(GUARDRAILS_BASE);
+const SMART_HYBRID_BASE = {
+  ...structuredClone(GUARDRAILS_BASE),
+  preset: 'smart-hybrid',
+  execution: { mode: 'auto', modeAThresholdFiles: 2, swarmScaling: 'elastic', maxParallelSubagents: 8 },
+  workflows: { defaultVariant: 'auto', naturalLanguageResearchTrigger: 'auto_team' },
+};
+
+const DEFAULT_SETTINGS = structuredClone(SMART_HYBRID_BASE);
 
 const PRESETS = {
+  'smart-hybrid': structuredClone(SMART_HYBRID_BASE),
   'frontier-guardrails': structuredClone(GUARDRAILS_BASE),
-  'smart-hybrid': {
-    ...structuredClone(GUARDRAILS_BASE),
-    preset: 'smart-hybrid',
-    execution: { mode: 'auto', modeAThresholdFiles: 2, swarmScaling: 'elastic', maxParallelSubagents: 8 },
-    workflows: { defaultVariant: 'auto', naturalLanguageResearchTrigger: 'auto_team' },
-  },
   'carbon-guardrails': {
     ...structuredClone(GUARDRAILS_BASE),
     preset: 'carbon-guardrails',
@@ -284,7 +286,9 @@ function resolveCodingStandards(baseStandards, stdPreset, partial) {
 }
 
 function validateAndSanitizeSettings(partial = {}, base = DEFAULT_SETTINGS) {
-  const merged = structuredClone(base);
+  const rawPreset = coerceEnumValue('preset', readPatchValue(partial, 'preset'));
+  const effectiveBase = isPresetName(rawPreset) ? PRESETS[rawPreset] : base;
+  const merged = structuredClone(effectiveBase);
   const baseStandards = isPlainObject(merged.codingStandards) ? { ...merged.codingStandards } : undefined;
   for (const key of Object.keys(ALLOWED_ENUMS)) {
     const coerced = coerceEnumValue(key, readPatchValue(partial, key));

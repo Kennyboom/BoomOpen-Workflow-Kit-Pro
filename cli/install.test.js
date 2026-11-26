@@ -287,7 +287,7 @@ test('runDoctor with an empty sandboxed home: kit source checks pass, missing in
 
 test('Settings schema: version follows package.json, default preset and 20 enum settings', () => {
   assert.equal(DEFAULT_SETTINGS.version, KIT_VERSION);
-  assert.ok(['frontier-guardrails', 'smart-hybrid'].includes(DEFAULT_SETTINGS.preset));
+  assert.equal(DEFAULT_SETTINGS.preset, 'smart-hybrid');
   assert.equal(DEFAULT_SETTINGS.execution.swarmScaling, 'elastic');
   assert.equal(DEFAULT_SETTINGS.execution.maxParallelSubagents, 8);
   assert.ok(ALLOWED_ENUMS['execution.modeAThresholdFiles'].includes(2));
@@ -328,11 +328,14 @@ test('Settings schema: version follows package.json, default preset and 20 enum 
     assert.ok(ALLOWED_ENUMS[key].includes(val), `DEFAULT_SETTINGS.${key} (${val}) not in ALLOWED_ENUMS`);
   }
   const presetKeys = Object.keys(PRESETS);
-  const expectedTail = ['smart-hybrid', 'carbon-guardrails', 'solo-fast', 'deep-architect', 'adversarial-team'];
-  assert.deepEqual(
-    presetKeys,
-    presetKeys.includes('frontier-guardrails') ? ['frontier-guardrails', ...expectedTail] : expectedTail
-  );
+  assert.deepEqual(presetKeys, [
+    'smart-hybrid',
+    'frontier-guardrails',
+    'carbon-guardrails',
+    'solo-fast',
+    'deep-architect',
+    'adversarial-team',
+  ]);
   assert.equal(PRESETS['carbon-guardrails'].execution.mode, 'mode_a');
   assert.equal(PRESETS['carbon-guardrails'].execution.modeAThresholdFiles, 10);
   assert.equal(PRESETS['carbon-guardrails'].workflows.naturalLanguageResearchTrigger, 'off');

@@ -79,8 +79,8 @@ const I18N = {
     previewTitle: '⚡ Live AOT Injected Entrypoint Block Preview',
     previewBadge: '0ms Turn-1 Overhead',
     presets: [
-      { id: 'frontier-guardrails', title: '🛡️ Frontier-Guardrails (Recommended Default)', desc: 'Frontier model drives, BoomOpen guards: <2.5KB slim entrypoints across all 5 IDEs, Mode A (≤10 files), NL trigger off, Pragmatic 400/500 & E2E gates + opt-in /cmd.' },
-      { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Proactive Swarm)', desc: 'Mode A <= 2 known files; Proactive Sub-agent First on Turn 1 for > 2 files, unscoped exploration, or /cmd; 17-language NL workflow routing.' },
+      { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Recommended Default)', desc: 'Default out of the box: Mode A <= 2 known files; Proactive Sub-agent First on Turn 1 for > 2 files, unscoped exploration, or /cmd; 17-language NL workflow routing.' },
+      { id: 'frontier-guardrails', title: '🛡️ Frontier-Guardrails (Slim <2.5KB Mode A)', desc: 'Frontier model drives, BoomOpen guards: <2.5KB slim entrypoints across all 5 IDEs, Mode A (≤10 files), NL trigger off, Pragmatic 400/500 & E2E gates + opt-in /cmd.' },
       { id: 'carbon-guardrails', title: '🧭 Carbon-Guardrails (Antigravity Alias)', desc: 'Backward-compatible Antigravity alias for Frontier-Guardrails: <2.5KB slim guardrails, Mode A (≤10 files), NL trigger off, strict Pragmatic 400/500 & E2E gates.' },
       { id: 'solo-fast', title: '🚀 Solo-Fast (Direct Mode A)', desc: 'Force Mode A Direct Execution (≤10 files), conservative swarm (max 3), :fast variant, Relaxed 600/800 lines.' },
       { id: 'deep-architect', title: '🧠 Deep-Architect (Strict Mode B)', desc: 'Force Mode B Multi-Agent Orchestrator (max 12), :hard variant, Strict 300/400 lines, council/cross_family routing.' },
@@ -111,8 +111,8 @@ const I18N = {
     previewTitle: '⚡ Xem trước Khối Cấu hình AOT Nạp sẵn',
     previewBadge: '0ms Độ trễ Turn-1',
     presets: [
-      { id: 'frontier-guardrails', title: '🛡️ Frontier-Guardrails (Mặc định Khuyến nghị)', desc: 'Model gốc cầm lái, BoomOpen gác cổng: bản siêu gọn <2.5KB trên cả 5 IDE, Mode A (≤10 file), tắt bắt câu tự nhiên, chuẩn 400/500 dòng, E2E & /cmd chủ động.' },
-      { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Đàn Sub-Agent Chủ động)', desc: 'Mode A <= 2 file đã biết; Tự động gọi Sub-agent ngay Turn 1 khi > 2 file, khám phá codebase, hoặc /cmd; Định tuyến tự nhiên 17 ngôn ngữ.' },
+      { id: 'smart-hybrid', title: '⚡ Smart-Hybrid (Mặc định Khuyến nghị)', desc: 'Mặc định khi cài mới: Mode A <= 2 file đã biết; Tự động gọi Sub-agent ngay Turn 1 khi > 2 file, khám phá codebase, hoặc /cmd; Định tuyến tự nhiên 17 ngôn ngữ.' },
+      { id: 'frontier-guardrails', title: '🛡️ Frontier-Guardrails (Siêu gọn <2.5KB Mode A)', desc: 'Model gốc cầm lái, BoomOpen gác cổng: bản siêu gọn <2.5KB trên cả 5 IDE, Mode A (≤10 file), tắt bắt câu tự nhiên, chuẩn 400/500 dòng, E2E & /cmd chủ động.' },
       { id: 'carbon-guardrails', title: '🧭 Carbon-Guardrails (Bí danh Antigravity)', desc: 'Bí danh tương thích ngược cho Antigravity: bản siêu gọn <2.5KB, Carbon tự lái Mode A (≤10 file), tắt bắt câu tự nhiên, giữ chặt chuẩn 400/500 dòng & E2E.' },
       { id: 'solo-fast', title: '🚀 Solo-Fast (Trực tiếp Mode A)', desc: 'Ưu tiên Mode A trực tiếp (≤10 file), conservative (tối đa 3 sub-agent), biến thể :fast, giới hạn 600/800 dòng.' },
       { id: 'deep-architect', title: '🧠 Deep-Architect (Mode B Nghiêm ngặt)', desc: 'Bắt buộc Mode B đa tác tử (tối đa 12), biến thể :hard, chuẩn 300/400 dòng, định tuyến council/cross_family.' },

@@ -9,10 +9,13 @@ argument-hint: Type command + task, e.g. /cook:hard implement login
 > **ZERO-LATENCY ENTRYPOINT**: `rules/CORE.md`, `rules/PHASES.md`, `rules/AGENTS.md`, and `rules/TEAMS.md` are **Loaded On Demand** ONLY when **Mode B (Multi-Agent Orchestration)** or an explicit `/cmd` workflow is triggered.
 
 <!-- BOOMOPEN-SETTINGS-START -->
-## 🎛️ ACTIVE USER SETTINGS (`~/.boomopen/settings.json` | `/settings`)
-- **Active Preset**: `frontier-guardrails` | **Execution Mode (`execution.mode`)**: `mode_a` (`≤ 10` files direct; Frontier model drives daily tasks) | **Swarm**: `elastic` (max `8`)
-- **Workflows**: `defaultVariant = auto` | `naturalLanguageResearchTrigger = off` (explicit `/cmd` only — zero NL hijacking)
-- **Standards**: `pragmatic` (Soft `400` / Hard `500`L, `forbidExplicitAny = true`, `warnConsoleLog = true`) | `verification = strict_e2e` | `deliverables = brain_artifacts` | `lang = auto`
+## 🎛️ ACTIVE USER SETTINGS OVERRIDE (Managed via `/settings` & `~/.boomopen/settings.json`)
+> **PRECEDENCE**: `1. Explicit Turn Command (/cmd:variant, @fast/@deep/@team)` > `2. Workspace ./.boomopen.json` > `3. Active Settings Below` > `4. Default File Rules`.
+- **Active Preset**: `smart-hybrid` | **Execution Mode (`execution.mode`)**: `auto` (`auto` = **Proactive Sub-agent First**: Spawn parallel subagents on Turn 1 (your platform's subagent tool; a read-only scout for scouting) whenever scope is unknown, requires scouting/audit/research across > 2 files, or spans ≥ 2 domains; use Mode A Direct ONLY for known-target micro-edits ≤ 2 files or simple Q&A; `mode_a` = Force Direct Solo Mode unless `:hard`/`:team`/`/orchestrate`; `mode_b` = Force Multi-Agent Orchestrator; `team` = Force Golden Triangle 3-Agent `:team`) | **Swarm Scaling (`execution.swarmScaling`)**: `elastic` | **Max Parallel Sub-agents (`execution.maxParallelSubagents`)**: `8`
+- **Workflows**: `defaultVariant = auto` (`auto`|`fast`|`hard`|`team`|`ask`) | `naturalLanguageResearchTrigger = auto_team` (`auto_team` routes NL research/ideation/review to `:team` and NL plan/design/debug/fix/test/cook/docs to `commands/{cmd}-{variant}.md` across all 17 languages | `auto_hard` → `:hard` | `ask_first` | `off`)
+- **Intelligence & Research**: `models.subagentPolicy = quality_first` (`inherit` = subagents inherit the session model; never downgrade core roles) | `research.depth = 5_lens_deep` | `clarification.style = autonomous_first` | `teams.maxDebateRounds = 3` | **Cross-Engine Routing (`engines.*`)**: `researcher=current, planner=current, coder=current, debugger=current, reviewer=current, council=[claude,codex,antigravity]`
+- **Standards & Verification**: `codingStandards.preset = pragmatic` (Soft `400` / Hard `500` lines, `forbidExplicitAny = true`, `warnConsoleLog = true`) | `verification.level = strict_e2e`
+- **Deliverables & Language**: `deliverables.routing = brain_artifacts` (`brain_artifacts` = `<appDataDir>\brain\<conversation-id>\` on Antigravity, `./reports/{topic}/` elsewhere) | `language.response = auto`
 <!-- BOOMOPEN-SETTINGS-END -->
 
 ---

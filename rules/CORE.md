@@ -1,6 +1,6 @@
 # ⚡ CORE RULES — FRONTIER-GUARDRAILS & ELASTIC SWARM PROTOCOL
 
-> **VERSION**: 5.5 — Frontier-Guardrails & Smart-Hybrid Edition | **LOAD**: On-demand when **Mode B** or `/cmd` is triggered | **PURPOSE**: Single source of truth for Built-In Presets (`frontier-guardrails` default, `carbon-guardrails` alias, `smart-hybrid`, `solo-fast`, `deep-architect`, `adversarial-team`), `36` Base Commands (`93` files = `87` workflows + `6` `_ref/`), 17-Language Routing, 5-Stage Cook/Code + Wave 2.5 Reconcile, 5-Layer Phase Quality Ratchet (`G5 ledger verify` last + `rollback`), Cross-Engine Conductor (`boomopen conduct`), & Pragmatic 2-Tier Coding Standards
+> **VERSION**: 5.5 — Smart-Hybrid & Frontier-Guardrails Edition | **LOAD**: On-demand when **Mode B** or `/cmd` is triggered | **PURPOSE**: Single source of truth for Built-In Presets (`smart-hybrid` default, `frontier-guardrails` / `carbon-guardrails` slim alias, `solo-fast`, `deep-architect`, `adversarial-team`), `36` Base Commands (`93` files = `87` workflows + `6` `_ref/`), 17-Language Routing, 5-Stage Cook/Code + Wave 2.5 Reconcile, 5-Layer Phase Quality Ratchet (`G5 ledger verify` last + `rollback`), Cross-Engine Conductor (`boomopen conduct`), & Pragmatic 2-Tier Coding Standards
 
 ---
 

@@ -62,13 +62,13 @@ Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js settings status`
 ### 🎛️ BoomOpen Control Center (v5.5.0)
 | Category | Setting Key | Active Value | Description |
 |:---------|:------------|:-------------|:------------|
-| **Preset & Scope** | `preset` / `scope` | `🛡️ frontier-guardrails` (`global`) | Active profile (`frontier-guardrails` default, `carbon-guardrails` Antigravity alias, `smart-hybrid`, `solo-fast`, `deep-architect`, `adversarial-team`) & tier (`global` or `project`) |
-| **1. Orchestration** | `execution.mode` | `mode_a` | `mode_a` (`≤10` files direct in `frontier-guardrails`) \| `auto` (`≤2` files Mode A) \| `mode_b` \| `team` |
-| **1. Orchestration** | `execution.modeAThresholdFiles` | `10` | Max files for Mode A direct execution (`1` \| `2` \| `3` \| `5` \| `10`) |
+| **Preset & Scope** | `preset` / `scope` | `⚡ smart-hybrid` (`global`) | Active profile (`smart-hybrid` default, `frontier-guardrails` slim `<2.5KB`, `carbon-guardrails` Antigravity alias, `solo-fast`, `deep-architect`, `adversarial-team`) & tier (`global` or `project`) |
+| **1. Orchestration** | `execution.mode` | `auto` | `auto` (`≤2` files Mode A direct in `smart-hybrid`) \| `mode_a` (`≤10` files direct in `frontier-guardrails`) \| `mode_b` \| `team` |
+| **1. Orchestration** | `execution.modeAThresholdFiles` | `2` | Max files for Mode A direct execution (`1` \| `2` \| `3` \| `5` \| `10`) |
 | **1. Orchestration** | `execution.swarmScaling` | `elastic` | Sub-agent swarm scaling (`elastic` `1→2-3→4-6→8+` \| `hyper_swarm` \| `conservative`) |
 | **1. Orchestration** | `execution.maxParallelSubagents` | `8` | Max parallel sub-agents per wave (`3` \| `6` \| `8` \| `12` \| `16`) |
 | **1. Orchestration** | `workflows.defaultVariant` | `auto` | Default `/cmd` variant (`auto` \| `fast` \| `hard` \| `team` \| `ask`) |
-| **1. Orchestration** | `workflows.naturalLanguageResearchTrigger` | `off` | Explicit `/cmd` only in `frontier-guardrails` (`off`), or 17-language NL routing (`auto_team` \| `auto_hard` \| `ask_first` \| `off`) |
+| **1. Orchestration** | `workflows.naturalLanguageResearchTrigger` | `auto_team` | 17-language NL routing (`auto_team` default in `smart-hybrid` \| `auto_hard` \| `ask_first` \| `off` in `frontier-guardrails`) |
 | **2. Intelligence** | `models.subagentPolicy` | `quality_first` | `quality_first` (`inherit` Pro High) \| `strict_inherit` \| `balanced_speed` |
 | **2. Intelligence** | `research.depth` | `5_lens_deep` | `5_lens_deep` \| `standard` \| `quick_brief` |
 | **2. Intelligence** | `clarification.style` | `autonomous_first` | `autonomous_first` \| `interactive_ask` \| `zero_questions` |
@@ -86,8 +86,8 @@ Run `node ~/.{TOOL}/skills/boomopen-workflow-kit/cli/install.js settings status`
 Invoke the platform's native **`ask_question`** tool (or numbered Markdown menu if `ask_question` is unavailable) with these structured choices:
 
 1. **Question 1 — Preset Profile or Execution Mode**:
-   - `(Recommended) 🛡️ Preset: frontier-guardrails (Default Recommended — Frontier Agent Drives, BoomOpen Guards: <3KB slim entrypoint, Mode A ≤10 files, NL off, strict Pragmatic 400/500 & E2E; carbon-guardrails Antigravity alias)`
-   - `⚡ Preset: smart-hybrid (Proactive Mode B Orchestrator: Mode A ≤2 files, Elastic Swarm max 8 sub-agents, auto_team NL routing, Brain Artifacts)`
+   - `(Recommended) ⚡ Preset: smart-hybrid (Default Recommended — Proactive Mode B Orchestrator: Mode A ≤2 files, Elastic Swarm max 8 sub-agents, auto_team 17-language NL routing, Brain Artifacts)`
+   - `🛡️ Preset: frontier-guardrails (Slim <3KB Mode A ≤10 files, NL off, strict Pragmatic 400/500 & E2E; carbon-guardrails Antigravity alias)`
    - `🚀 Preset: solo-fast (Force Mode A Direct Execution, Conservative max 3 sub-agents, :fast variant, relaxed 600/800 lines)`
    - `🧠 Preset: deep-architect (Force Mode B Orchestrator, Elastic Swarm max 12 sub-agents, :hard variant, strict 300/400 lines)`
    - `🔺 Preset: adversarial-team (Force Elastic Golden Diamond :team + Cross-Engine Council, Hyper Swarm max 12 sub-agents, strict E2E)`
@@ -114,13 +114,13 @@ Invoke the platform's native **`ask_question`** tool (or numbered Markdown menu 
 
 ---
 
-## 📦 BUILT-IN PRESET PROFILES (REFERENCE — `frontier-guardrails` Default; `carbon-guardrails` Alias)
+## 📦 BUILT-IN PRESET PROFILES (REFERENCE — `smart-hybrid` Default; `frontier-guardrails` / `carbon-guardrails` Slim Mode A)
 
-| Setting Key | `frontier-guardrails` *(Default; `carbon-guardrails` alias)* | `smart-hybrid` | `solo-fast` | `deep-architect` | `adversarial-team` |
-|:------------|:------------------------------------------------------------:|:--------------:|:-----------:|:----------------:|:------------------:|
-| `execution.mode` / `modeAThresholdFiles` | **`mode_a`** / **`10`** | `auto` / `2` | `mode_a` / `10` | `mode_b` / `1` | `team` / `1` |
+| Setting Key | `smart-hybrid` *(Default)* | `frontier-guardrails` *(`carbon-guardrails` alias)* | `solo-fast` | `deep-architect` | `adversarial-team` |
+|:------------|:--------------------------:|:---------------------------------------------------:|:-----------:|:----------------:|:------------------:|
+| `execution.mode` / `modeAThresholdFiles` | **`auto`** / **`2`** | `mode_a` / `10` | `mode_a` / `10` | `mode_b` / `1` | `team` / `1` |
 | `execution.swarmScaling` / `maxParallelSubagents` | **`elastic`** / **`8`** | **`elastic`** / **`8`** | `conservative` / `3` | **`elastic`** / **`12`** | **`hyper_swarm`** / **`12`** |
-| `workflows.defaultVariant` / `naturalLanguageResearchTrigger` | `auto` / **`off`** | `auto` / **`auto_team`** | `fast` / `off` | `hard` / `auto_hard` | `team` / **`auto_team`** |
+| `workflows.defaultVariant` / `naturalLanguageResearchTrigger` | `auto` / **`auto_team`** | `auto` / `off` | `fast` / `off` | `hard` / `auto_hard` | `team` / **`auto_team`** |
 | `engines.researcher` / `engines.planner` | `current` / `current` | `current` / `current` | `current` / `current` | `council` / `auto` | `council` / `council` |
 | `engines.coder` / `engines.debugger` | `current` / `current` | `current` / `current` | `current` / `current` | `auto` / `cross_family` | `auto` / `cross_family` |
 | `engines.reviewer` / `engines.councilMembers` | `current` / `claude,codex,antigravity` | `current` / `claude,codex,antigravity` | `current` / `claude,codex` | `cross_family` / `claude,codex,antigravity` | `council` / `claude,codex,antigravity` |

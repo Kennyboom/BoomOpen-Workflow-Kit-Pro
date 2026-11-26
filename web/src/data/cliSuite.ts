@@ -228,8 +228,8 @@ export const CLI_COMMANDS: readonly CliCommandSpec[] = [
     },
     passOutput: [
       '$ boomopen settings status',
-      'Active Preset     : frontier-guardrails (< 2.3 KB, 21 lines; carbon-guardrails alias)',
-      'Execution Mode    : mode_a (<= 10 files direct, explicit /cmd only, maxParallelSubagents = 8)',
+      'Active Preset     : smart-hybrid (auto Mode A/B + 17-language NL routing)',
+      'Execution Mode    : auto (<= 2 files direct, > 2 parallel shards, maxParallelSubagents = 8)',
       'Model Policy      : quality_first (Model: inherit)',
       'Synced Entry Files: 14/14 platform files synchronized in 4.2ms',
     ].join('\n'),
@@ -251,7 +251,7 @@ export const CLI_COMMANDS: readonly CliCommandSpec[] = [
     },
     passOutput: [
       '$ boomopen doctor',
-      'BoomOpen Workflow Kit Pro v5.5.0 | Health Audit (preset: frontier-guardrails)',
+      'BoomOpen Workflow Kit Pro v5.5.0 | Health Audit (preset: smart-hybrid)',
       '[OK] Source tree: 93 command files (87 workflows + 6 _ref), 22 sub-agents, 18 teams (72 files)',
       '[OK] Skills vault: 22 core + 1,440 library = 1,462 indexed skills (~/.agents/skills_library)',
       '[OK] Platform bundles & settings blocks: 14/14 entry files aligned. Healthy.',
@@ -269,13 +269,13 @@ export const CLI_COMMANDS: readonly CliCommandSpec[] = [
     category: 'lifecycle',
     gates: ['14 Entry Files', 'Opt-In --with-hooks', 'Shared ~/.agents/skills_library'],
     summary: {
-      en: 'Syncs 14 entry files across 5 IDEs (frontier-guardrails default) and links ~/.agents/skills_library. Pass --with-hooks to register hooks on Claude Code, Antigravity, and Cursor; Codex uses OS sandbox_mode + config.toml.',
-      vi: 'Đồng bộ 14 tệp đầu vào trên 5 IDE (mặc định frontier-guardrails), quản lý qua manifest SHA-256 và nối kho ~/.agents/skills_library. Thêm --with-hooks để bật hook trên Claude Code, Antigravity, Cursor; Codex dùng OS sandbox_mode + config.toml.',
+      en: 'Syncs 14 entry files across 5 IDEs (smart-hybrid default) and links ~/.agents/skills_library. Pass --with-hooks to register hooks on Claude Code, Antigravity, and Cursor; Codex uses OS sandbox_mode + config.toml.',
+      vi: 'Đồng bộ 14 tệp đầu vào trên 5 IDE (mặc định smart-hybrid), quản lý qua manifest SHA-256 và nối kho ~/.agents/skills_library. Thêm --with-hooks để bật hook trên Claude Code, Antigravity, Cursor; Codex dùng OS sandbox_mode + config.toml.',
     },
     passOutput: [
       '$ node cli/install.js install --all',
       '[vault]       Linked 1,440 library skills -> shared ~/.agents/skills_library',
-      '[entrypoints] Synced 14 entry files across 5 IDEs (preset: frontier-guardrails, < 2.3 KB)',
+      '[entrypoints] Synced 14 entry files across 5 IDEs (preset: smart-hybrid, 17-lang NL routing)',
       '[codex]       Merged config.toml & 22 TOML roles (OS sandbox_mode read-only scouts/reviewers)',
       '[guard]       Opt-in hooks left untouched (pass --with-hooks for Claude, Antigravity & Cursor)',
     ].join('\n'),

@@ -242,8 +242,8 @@ export const vi: Dictionary = {
         { title: '3. Lệnh CLI & cấu hình theo repo', command: 'boomopen settings set execution.mode mode_b --project', summary: 'Ghi cấu hình toàn cục ~/.boomopen/settings.json hoặc riêng từng dự án ./.boomopen.json.' },
       ],
       presets: [
-        { name: 'frontier-guardrails', mode: 'mode_a (<= 10 file trực tiếp, tắt NL, < 2.3 KB)', lineBudget: '400 / 500 dòng', summary: 'Preset mặc định ngay khi cài đặt (21 dòng, ~600 token) trên cả 5 IDE; hỗ trợ bí danh tương thích ngược carbon-guardrails.' },
-        { name: 'smart-hybrid', mode: 'auto (<= 2 file trực tiếp, > 2 chia nhánh, bật NL)', lineBudget: '400 / 500 dòng', summary: 'Tự động chia nhánh chạy song song khi vượt 2 file và bật định tuyến câu lệnh tự nhiên 17 ngôn ngữ.' },
+        { name: 'smart-hybrid', mode: 'auto (<= 2 file trực tiếp, > 2 chia nhánh, bật NL)', lineBudget: '400 / 500 dòng', summary: 'Preset mặc định ngay khi cài mới trên cả 5 IDE: tự động chia nhánh song song khi vượt 2 file và bật định tuyến 17 ngôn ngữ.' },
+        { name: 'frontier-guardrails', mode: 'mode_a (<= 10 file trực tiếp, tắt NL, < 2.3 KB)', lineBudget: '400 / 500 dòng', summary: 'Bản siêu gọn 21 dòng (~600 token) ưu tiên Mode A trực tiếp; hỗ trợ bí danh tương thích ngược carbon-guardrails.' },
         { name: 'solo-fast', mode: 'mode_a (<= 10 file trực tiếp, kiểm tra nhanh)', lineBudget: '600 / 800 dòng', summary: 'Gọn nhẹ cho một agent xử lý nhanh script nhỏ, thử nghiệm mẫu và sửa lỗi gấp.' },
         { name: 'deep-architect', mode: 'mode_b (:hard multi-agent + hội đồng nghiên cứu)', lineBudget: '300 / 400 dòng', summary: 'Phù hợp thiết kế hệ thống mới, tái cấu trúc lớn và review chéo khác họ model.' },
         { name: 'adversarial-team', mode: 'team (nhóm 3 vai trò phản biện + hội đồng)', lineBudget: '300 / 400 dòng', summary: 'Dành cho bản phát hành quan trọng cần nhóm 3 vai trò phản biện và hội đồng đa mô hình kiểm duyệt.' },
@@ -309,7 +309,7 @@ export const vi: Dictionary = {
       title: '3 bước cài đặt',
       items: [
         { step: 'Bước 1', title: 'Clone kho mã nguồn', command: 'git clone https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro.git && cd BoomOpen-Workflow-Kit-Pro', summary: 'Tải về đủ 36 lệnh (93 tệp), 22 sub-agent, 18 nhóm phản biện, 1.462 kỹ năng và bộ CLI.' },
-        { step: 'Bước 2', title: 'Cài đặt cho IDE (hoặc --all)', command: 'node cli/install.js install --all', summary: 'Đồng bộ 14 tệp đầu vào (mặc định frontier-guardrails) và nối kho ~/.agents/skills_library. Thêm --with-hooks cho Claude, Antigravity hoặc Cursor.' },
+        { step: 'Bước 2', title: 'Cài đặt cho IDE (hoặc --all)', command: 'node cli/install.js install --all', summary: 'Đồng bộ 14 tệp đầu vào (mặc định smart-hybrid) và nối kho ~/.agents/skills_library. Thêm --with-hooks cho Claude, Antigravity hoặc Cursor.' },
         { step: 'Bước 3', title: 'Kiểm tra bằng doctor', command: 'node cli/install.js doctor', summary: 'Chạy kiểm tra chế độ chỉ đọc cho tệp đầu vào, manifest SHA-256, danh mục lệnh và compact-index.json.' },
       ],
     },

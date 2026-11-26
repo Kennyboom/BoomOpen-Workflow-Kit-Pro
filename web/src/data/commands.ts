@@ -71,10 +71,10 @@ const COMMAND_SEEDS: readonly CommandSeed[] = [
   ),
   defineSeed(
     'settings', 'orchestration',
-    'Configures all 5 presets (frontier-guardrails default), 22 config keys, local --ui dashboard, and < 10ms sync across 14 entry files.',
-    'Quản lý 5 preset (mặc định frontier-guardrails), 22 khóa cấu hình, bảng điều khiển --ui và đồng bộ 14 tệp đầu vào dưới 10ms.',
-    '"boomopen settings preset adversarial-team or /settings preset smart-hybrid"',
-    '"boomopen settings preset adversarial-team hoặc /settings preset smart-hybrid"',
+    'Configures all 5 presets (smart-hybrid default), 22 config keys, local --ui dashboard, and < 10ms sync across 14 entry files.',
+    'Quản lý 5 preset (mặc định smart-hybrid), 22 khóa cấu hình, bảng điều khiển --ui và đồng bộ 14 tệp đầu vào dưới 10ms.',
+    '"boomopen settings preset adversarial-team or /settings preset frontier-guardrails"',
+    '"boomopen settings preset adversarial-team hoặc /settings preset frontier-guardrails"',
   ),
 
   // Engineering (10)

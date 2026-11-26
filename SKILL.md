@@ -1,10 +1,10 @@
 ---
 name: boomopen-workflow-kit
-description: BoomOpen Workflow Kit (v5.5 Frontier-Guardrails & Smart-Hybrid Edition) — frontier-guardrails default preset (carbon-guardrails alias), Pragmatic 2-Tier Coding Standards, 36 base commands (93 command files = 87 workflows + 6 _ref) including /onboard, /pr (/pr:review), and /release, 17-Language Workflow Router, Multi-Session Project Autopilot (.boomopen/project-ledger.json with 5-Layer Phase Ratchet & ledger/audit rollback), Cross-Engine Conductor & Multi-Engine Council (boomopen conduct), Antigravity run_workflow Python templates, 4-Tier Dynamic Elastic Swarm Sharding (<= 3-4 OWNED_FILES per shard), Quality-First Model Policy (Model inherit default), E0-E6 Error Recovery & A1-A14 Anti-Patterns, and 22 core + 1,440 library skills (1,462 indexed in compact-index.json).
+description: BoomOpen Workflow Kit (v5.5 Smart-Hybrid & Frontier-Guardrails Edition) — smart-hybrid default preset (with frontier-guardrails / carbon-guardrails slim alias), Pragmatic 2-Tier Coding Standards, 36 base commands (93 command files = 87 workflows + 6 _ref) including /onboard, /pr (/pr:review), and /release, 17-Language Workflow Router, Multi-Session Project Autopilot (.boomopen/project-ledger.json with 5-Layer Phase Ratchet & ledger/audit rollback), Cross-Engine Conductor & Multi-Engine Council (boomopen conduct), Antigravity run_workflow Python templates, 4-Tier Dynamic Elastic Swarm Sharding (<= 3-4 OWNED_FILES per shard), Quality-First Model Policy (Model inherit default), E0-E6 Error Recovery & A1-A14 Anti-Patterns, and 22 core + 1,440 library skills (1,462 indexed in compact-index.json).
 version: "5.5.0"
 ---
 
-# ⚡ BoomOpen Workflow Kit (v5.5.0 — Frontier-Guardrails & Elastic Swarm Edition)
+# ⚡ BoomOpen Workflow Kit (v5.5.0 — Smart-Hybrid & Elastic Swarm Edition)
 
 > **PURPOSE**: Root skill entry point for the BoomOpen Workflow Kit multi-platform orchestration & deterministic guardrails framework (`~/.{TOOL}/skills/boomopen-workflow-kit/SKILL.md`).
 
@@ -17,7 +17,7 @@ version: "5.5.0"
 | **Specialist Agents** | **`22` specialist agents** (`planner`, `tech-lead`, `backend-engineer`, `frontend-engineer`, `database-architect`, `mobile-engineer`, `game-engineer`, `designer`, `researcher`, `scouter`, `brainstormer`, `debugger`, `tester`, `reviewer`, `spec-reconciler`, `security-engineer`, `performance-engineer`, `devops-engineer`, `docs-manager`, `business-analyst`, `project-manager`, `reporter`) | `agents/*.md` |
 | **Adversarial Teams** | **`18` specialist Golden Diamond / Golden Triangle teams (`72` team files)** including `backend-team`, `brainstorm-team`, `database-team`, `debug-team`, `design-team`, `devops-team`, `docs-team`, `frontend-team`, `fullstack-team`, `game-team`, `mobile-team`, `performance-team`, `planning-team`, `project-team`, `qa-team`, `report-team`, `research-team`, `security-team` | `agents/teams/*/` |
 | **Workflow Commands** | **`93` flat command & reference files** (`87` workflows + `6` `_ref/`) across **`36` base slash commands** (`/onboard`, `/pr`, `/pr:review`, `/release`, `/cook`, `/autopilot`, `/audit`, `/conduct`, etc.) & 17 natural-language intents | `commands/**/*.md` |
-| **Built-In Presets** | **`frontier-guardrails` (Default Recommended)** + `carbon-guardrails` (Antigravity alias) + `smart-hybrid`, `solo-fast`, `deep-architect`, `adversarial-team` | `cli/settings-schema.js` (`/settings`) |
+| **Built-In Presets** | **`smart-hybrid` (Default Recommended)** + `frontier-guardrails` (`carbon-guardrails` Antigravity alias) + `solo-fast`, `deep-architect`, `adversarial-team` | `cli/settings-schema.js` (`/settings`) |
 | **Antigravity Workflows** | **`3` executable `run_workflow` Python orchestration templates** (`audit_fanout.py`, `review_fanout.py`, `research_fanout.py`) | `platforms/antigravity/workflows/*.py` |
 | **Skill Ecosystem** | **`22` core skills + `1,440` library skills (`1,462` indexed in `compact-index.json`)** | `skills/` + `skills_library/` + `matrix-skills/compact-index.json` |
 | **Core Rules** | **`7` on-demand Mode B rule specs** (`<= 300` lines each; `E0–E6` error recovery & `A1–A14` anti-patterns) | `rules/{CORE,AGENTS,PHASES,TEAMS,SKILLS,ERRORS,REFERENCE}.md` |
@@ -27,9 +27,9 @@ version: "5.5.0"
 
 ## 🚦 Presets, Proactive Sub-agent Gate & 4-Tier Dynamic Elastic Swarm
 
-### 🛡️ Default `frontier-guardrails` Preset vs. `smart-hybrid` Swarm Mode (`/settings`)
-- **`frontier-guardrails` (Default Recommended; `carbon-guardrails` Antigravity alias)**: Native frontier agent drives daily tasks up to `≤ 10` known files (`execution.mode = mode_a`, `naturalLanguageResearchTrigger = off`, `< 3KB` slim entrypoint), while BoomOpen enforces Pragmatic 2-Tier Coding Standards (`400/500` lines, `0` `any`, `--strict-phase --no-stubs`) and unlocks full Mode B swarms whenever an explicit `/cmd` is invoked.
-- **`smart-hybrid` / `deep-architect` / `adversarial-team`**: Proactive Mode B orchestration (`≤ 2` or `1` file Mode A threshold) with 17-language natural-language workflow routing (`auto_team` / `auto_hard`) and Multi-Engine Council integration.
+### ⚡ Default `smart-hybrid` Swarm Preset vs. `frontier-guardrails` Slim Mode (`/settings`)
+- **`smart-hybrid` (Default Recommended)** / `deep-architect` / `adversarial-team`: Proactive Mode B orchestration (`≤ 2` or `1` file Mode A threshold) with 17-language natural-language workflow routing (`auto_team` / `auto_hard`) and Multi-Engine Council integration right out of the box.
+- **`frontier-guardrails` (`carbon-guardrails` Antigravity alias)**: Optional `< 2.5 KB` slim Mode A preset (`execution.mode = mode_a` up to `≤ 10` files, `naturalLanguageResearchTrigger = off`), keeping Pragmatic 2-Tier Coding Standards (`400/500` lines, `0` `any`, `--strict-phase --no-stubs`) while triggering Mode B only on explicit `/cmd`.
 - **Cognitive Load Sharding Law (`MAX 3–4 Heavy Files or 1 Deep Vector per Sub-Agent`)**:
   $$N_{\text{agents}} = \min\!\left(\text{maxParallelSubagents},\; \max\!\left(\left\lceil \frac{\text{Total Target Files}}{3.5} \right\rceil,\; \text{Distinct Domains},\; \text{Research Vectors}\right)\right)$$
   - **Tier 0 — Micro Direct (`0` sub-agents)**: Known-target files within `modeAThresholdFiles`, `1` domain, `0` exploration, no `/cmd`.

@@ -1,12 +1,12 @@
 # BoomOpen Workflow Kit Pro (v5.5.0)
 
-> Slim `frontier-guardrails` default preset (< 2.3 KB, 21 lines, ~600 tokens; `mode_a` up to 10 files direct with zero natural-language hijacking), opt-in 3-Wave Contract-First sharding, Wave 2.5 spec-to-code reconciliation, multi-round project audit (/audit), multi-session /autopilot, and 14 local CLI commands across 5 AI coding IDEs (Google Antigravity 2.0, Claude Code, OpenAI Codex, Cursor, GitHub Copilot).
+> Proactive `smart-hybrid` default preset (auto Mode A/B + 17-language routing, plus < 2.3 KB `frontier-guardrails` slim Mode A), 3-Wave Contract-First sharding, Wave 2.5 spec-to-code reconciliation, multi-round project audit (/audit), multi-session /autopilot, and 14 local CLI commands across 5 AI coding IDEs (Google Antigravity 2.0, Claude Code, OpenAI Codex, Cursor, GitHub Copilot).
 
 ## Canonical Inventory
 - Production Website: https://boomopen.com
 - Version: v5.5.0
 - Platforms (5): Antigravity 2.0, Claude Code, OpenAI Codex, Cursor, GitHub Copilot
-- Default Preset: `frontier-guardrails` (< 2.3 KB slim rules across 14 entry files; presets: `frontier-guardrails`, `smart-hybrid`, `solo-fast`, `deep-architect`, `adversarial-team`, plus `carbon-guardrails` alias; 22 config keys = 20 enum + 2 line limits)
+- Default Preset: `smart-hybrid` (auto Mode A/B across 14 entry files; presets: `smart-hybrid`, `frontier-guardrails` < 2.3 KB slim, `solo-fast`, `deep-architect`, `adversarial-team`, plus `carbon-guardrails` alias; 22 config keys = 20 enum + 2 line limits)
 - Slash Commands: 36 base commands (93 files: 87 workflows + 6 shared references, including /onboard, /pr, /pr:review, /release, /audit, /autopilot, /conduct, /cook, /code)
 - Sub-Agents: 22 domain specialists
 - Review Teams: 18 adversarial 3-role review teams (72 files: Tech Lead, Executor, Reviewer)
@@ -31,6 +31,6 @@ node cli/install.js doctor
 - [Slash Commands Catalog](https://boomopen.com/commands): Searchable reference of all 36 commands and variants
 - [Sub-Agents & 3-Role Review Teams](https://boomopen.com/agents): 22 sub-agents and 18 review teams
 - [Skills Vault Explorer](https://boomopen.com/skills): 1,462 indexed skills across 19 engineering domains
-- [Architecture & CLI Gates](https://boomopen.com/architecture): frontier-guardrails default, 3-wave sharding, deliverable routing, and /autopilot ratchet
+- [Architecture & CLI Gates](https://boomopen.com/architecture): smart-hybrid default, 3-wave sharding, deliverable routing, and /autopilot ratchet
 - [Git Installation Guide](https://boomopen.com/install): Per-IDE setup, doctor checks, and opt-in hook registration
 - [GitHub Repository](https://github.com/Kennyboom/BoomOpen-Workflow-Kit-Pro): Source code, rules, agents, skills, and release notes
