@@ -327,10 +327,9 @@ export function HomePage() {
       <section aria-labelledby="home-closing-heading" className="border-t border-indigo-200/[0.10]">
         <div className="mx-auto max-w-[90rem] px-4 py-24 sm:px-6 lg:px-10 lg:py-28">
           <div
-            className="relative mx-auto max-w-5xl overflow-hidden rounded-[36px] border border-indigo-200/[0.18] bg-[#070B1D] bg-cover bg-center shadow-[0_32px_80px_-18px_rgba(2,4,16,0.85),0_0_60px_-20px_rgba(56,189,248,0.20)]"
-            style={{ backgroundImage: "url('/assets/studio-canvas.jpg')" }}
+            className="relative mx-auto max-w-5xl overflow-hidden rounded-[36px] border border-indigo-200/[0.18] bg-[#060A1B]/72 shadow-[0_32px_80px_-18px_rgba(2,4,16,0.85),0_0_60px_-20px_rgba(56,189,248,0.20)] backdrop-blur-md"
           >
-            <div className="bg-[#060A1B]/68 p-10 text-center backdrop-blur-md sm:p-16">
+            <div className="p-10 text-center sm:p-16">
               <h2
                 id="home-closing-heading"
                 className="hero-display-gradient mx-auto pb-1 font-display text-[clamp(2.35rem,4vw,3.45rem)] leading-[1.15] font-bold tracking-[-0.035em]"

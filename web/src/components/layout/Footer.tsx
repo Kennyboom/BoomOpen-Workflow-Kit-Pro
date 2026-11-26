@@ -1,4 +1,6 @@
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
+import { useReducedMotion } from 'framer-motion'
 import { clsx } from 'clsx'
 import { ExternalLink } from 'lucide-react'
 import { KIT_VERSION } from '../../data/kitStats'
@@ -25,7 +27,7 @@ function FooterBrandStatement({ t }: { readonly t: Dictionary }) {
           FOCUS_RING,
         )}
       >
-        <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl border border-indigo-200/[0.16] bg-[#0D1530] p-1 shadow-[0_0_20px_-4px_rgba(56,189,248,0.28)]">
+        <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl border border-indigo-200/[0.18] bg-[#0D1530] p-1 shadow-[0_0_20px_-4px_rgba(56,189,248,0.32)]">
           <img
             src="/assets/logo.webp"
             alt={SITE_NAME}
@@ -46,7 +48,7 @@ function FooterBrandStatement({ t }: { readonly t: Dictionary }) {
         {t.footer.tagline}
       </p>
 
-      <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/[0.14] bg-white/[0.04] px-3.5 py-1.5 font-mono text-[13px] leading-snug text-slate-300">
+      <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/[0.16] bg-[#090F24]/75 px-3.5 py-1.5 font-mono text-[13px] leading-snug text-slate-300">
         <span aria-hidden="true" className="size-2 rounded-full bg-accent" />
         <span>{t.footer.featuredBadge}</span>
       </div>
@@ -65,7 +67,7 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <div className="mb-4 text-sm leading-tight font-semibold tracking-wide text-ink">
+      <div className="mb-4 font-mono text-xs leading-tight font-semibold tracking-[0.09em] text-slate-300 uppercase">
         {heading}
       </div>
       <ul className="space-y-1">
@@ -75,7 +77,7 @@ function FooterColumn({
               <Link
                 to={item.to}
                 className={clsx(
-                  'inline-flex min-h-11 items-center rounded-lg text-[15px] leading-snug font-normal text-muted hover:text-ink transition-colors duration-150 motion-reduce:transition-none no-underline',
+                  'inline-flex min-h-11 items-center rounded-lg text-[15px] leading-snug font-normal text-slate-400 hover:text-white transition-colors duration-150 motion-reduce:transition-none no-underline',
                   FOCUS_RING,
                 )}
               >
@@ -87,7 +89,7 @@ function FooterColumn({
                 target={item.newTab ? '_blank' : undefined}
                 rel={item.newTab ? 'noopener noreferrer' : undefined}
                 className={clsx(
-                  'inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] leading-snug font-normal text-muted hover:text-ink transition-colors duration-150 motion-reduce:transition-none no-underline',
+                  'inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] leading-snug font-normal text-slate-400 hover:text-white transition-colors duration-150 motion-reduce:transition-none no-underline',
                   FOCUS_RING,
                 )}
               >
@@ -108,11 +110,55 @@ function FooterColumn({
 }
 
 /**
- * Expansive 1440px (90rem) Cosmic Deep Space architectural footer:
- * full BoomOpen Workflow Kit brand lockup paired with 3 navigation columns and a crisp metadata bar.
+ * Open cosmic glyph stage footer inspired by treg.to:
+ * transparent unblurred surface revealing the live WebGL interactive micro-glyph forcefield,
+ * scroll-linked rising columns, and a colossal bled-edge architectural watermark at the bottom.
  */
 export function Footer() {
   const { t } = useLanguage()
+  const reduceMotion = Boolean(useReducedMotion())
+  const footerRef = useRef<HTMLElement | null>(null)
+  const contentRef = useRef<HTMLDivElement | null>(null)
+  const watermarkRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (reduceMotion || typeof window === 'undefined') return
+    let rafId = 0
+
+    const updateParallax = () => {
+      rafId = 0
+      const foot = footerRef.current
+      if (!foot) return
+      const rect = foot.getBoundingClientRect()
+      const vh = Math.max(1, window.innerHeight)
+      const progress = Math.max(0, Math.min(1, (vh - rect.top) / Math.min(vh, rect.height + 120)))
+      const eased = 1 - Math.pow(1 - progress, 2)
+      const contentRise = ((1 - eased) * 36).toFixed(2)
+      const markDrift = ((1 - eased) * 64).toFixed(2)
+
+      if (contentRef.current) {
+        contentRef.current.style.transform = `translate3d(0, ${contentRise}px, 0)`
+      }
+      if (watermarkRef.current) {
+        watermarkRef.current.style.transform = `translate3d(-50%, ${markDrift}px, 0)`
+      }
+    }
+
+    const onScroll = () => {
+      if (rafId === 0) {
+        rafId = window.requestAnimationFrame(updateParallax)
+      }
+    }
+
+    updateParallax()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+    return () => {
+      if (rafId !== 0) window.cancelAnimationFrame(rafId)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [reduceMotion])
 
   const productLinks: readonly FooterItem[] = [
     { to: '/', label: t.footer.links.overview },
@@ -136,8 +182,11 @@ export function Footer() {
   ]
 
   return (
-    <footer className="relative z-10 border-t border-indigo-200/[0.10] bg-[#040714]/90 py-16 backdrop-blur-xl lg:py-20">
-      <div className="mx-auto max-w-[90rem] px-5 sm:px-8 lg:px-12">
+    <footer
+      ref={footerRef}
+      className="relative z-10 overflow-hidden border-t border-indigo-200/[0.12] bg-transparent pt-16 pb-28 sm:pb-36 lg:pt-20 lg:pb-44"
+    >
+      <div ref={contentRef} className="relative z-10 mx-auto max-w-[90rem] px-5 sm:px-8 lg:px-12 will-change-transform">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-16">
           <FooterBrandStatement t={t} />
 
@@ -168,6 +217,16 @@ export function Footer() {
           </div>
           <div className="font-mono text-[13px] tabular-nums">{`MIT License / v${KIT_VERSION}`}</div>
         </div>
+      </div>
+
+      {/* Colossal bled-edge architectural watermark over the live WebGL glyph field */}
+      <div
+        ref={watermarkRef}
+        aria-hidden="true"
+        style={{ transform: 'translate3d(-50%, 0px, 0)' }}
+        className="pointer-events-none absolute bottom-[-0.26em] left-1/2 z-0 font-mono text-[clamp(5.2rem,17.5vw,16.5rem)] leading-none font-bold tracking-[-0.045em] whitespace-nowrap text-white/[0.055] select-none will-change-transform"
+      >
+        BoomOpen
       </div>
     </footer>
   )
