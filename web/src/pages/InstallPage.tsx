@@ -38,12 +38,12 @@ function isInstallTargetId(value: string | null): value is InstallTargetId {
 }
 
 function InstallHeroHeader() {
-  const { locale, t } = useLanguage()
+  const { t } = useLanguage()
   const copy = t.installPage
   const stats = [
-    { value: String(KIT_STATS.platforms), label: locale === 'vi' ? 'IDE hỗ trợ' : 'Supported IDEs' },
-    { value: '14', label: locale === 'vi' ? 'Tệp đồng bộ' : 'Entry Files' },
-    { value: '60s', label: locale === 'vi' ? 'Kiểm tra nhanh' : 'Doctor Verify' },
+    { value: String(KIT_STATS.platforms), label: t.pageChrome.installStats.supportedIdes },
+    { value: '14', label: t.pageChrome.installStats.entryFiles },
+    { value: '60s', label: t.pageChrome.installStats.doctorVerify },
   ]
 
   return (
@@ -83,7 +83,7 @@ function InstallHeroHeader() {
 }
 
 function CloneSetupStage() {
-  const { locale, t } = useLanguage()
+  const { t } = useLanguage()
   const copy = t.installPage
 
   return (
@@ -91,7 +91,7 @@ function CloneSetupStage() {
       <div className="specular-surface space-y-8 rounded-3xl border border-indigo-200/[0.14] p-8 transition-colors duration-150 hover:border-sky-300/30 sm:p-10">
         <div className="space-y-2">
           <p className="font-mono text-xs tracking-wider text-subtle uppercase">
-            {locale === 'vi' ? '01 · Sao chép & cài đặt' : '01 · Clone & Install'}
+            {t.pageChrome.installStats.stage01}
           </p>
           <h2 id="step-clone-heading" className="pb-1 text-2xl leading-[1.16] font-bold tracking-tight text-ink sm:text-3xl">{copy.steps.title}</h2>
           <p className="max-w-[62ch] text-base leading-relaxed text-muted">{t.platformsSection.safetyGuarantee}</p>
@@ -133,7 +133,7 @@ function DoctorAndCliSection({
   readonly verifyCommand: string
   readonly compilerQuickList: readonly CliCommandSpec[]
 }) {
-  const { locale, t } = useLanguage()
+  const { t } = useLanguage()
   const copy = t.installPage
   const doctorOutput = findCliCommand('doctor')?.passOutput ?? ''
 
@@ -144,7 +144,7 @@ function DoctorAndCliSection({
           <div className="specular-surface h-full space-y-6 rounded-2xl border border-indigo-200/[0.14] p-7 transition-colors duration-150 hover:border-sky-300/30 sm:p-9">
             <div className="space-y-2">
               <p className="font-mono text-xs tracking-wider text-subtle uppercase">
-                {locale === 'vi' ? '03 · Kiểm tra với Doctor' : '03 · Verify with Doctor'}
+                {t.pageChrome.installStats.stage03}
               </p>
               <h2 id="step-doctor-heading" className="pb-1 text-2xl leading-[1.16] font-bold tracking-tight text-ink sm:text-3xl">{copy.verification.title}</h2>
               <p className="text-base leading-relaxed text-muted">{copy.verification.subtitle}</p>
@@ -216,7 +216,7 @@ function SafeUninstallNote({ maintenanceCommand }: { readonly maintenanceCommand
 }
 
 export function InstallPage() {
-  const { locale, t, pick } = useLanguage()
+  const { t, platformSummary } = useLanguage()
   const reduceMotion = useReducedMotion()
   const [searchParams, setSearchParams] = useSearchParams()
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
@@ -239,13 +239,13 @@ export function InstallPage() {
     const perIde: InstallTabTarget[] = PLATFORMS.map((p) => ({
       id: p.id, label: p.name, vendor: p.vendor, entryFile: p.entryFile, frameworkPath: p.frameworkPath,
       installCommand: p.installCommand, verifyCommand: p.verifyCommand, maintenanceCommand: p.uninstallCommand,
-      summary: pick(p.summary),
+      summary: platformSummary(p),
     }))
     return [
       ...perIde,
       {
         id: 'all',
-        label: locale === 'vi' ? 'Cả 5 IDE (--all)' : 'All 5 IDEs (--all)',
+        label: t.pageChrome.installStats.allFiveTab,
         vendor: 'Antigravity · Claude · Codex · Cursor · Copilot',
         entryFile: 'GEMINI.md · CLAUDE.md · AGENTS.md · CURSOR.md · COPILOT.md',
         frameworkPath: '~/.{gemini,claude,codex,cursor,copilot}/.../boomopen-workflow-kit/',
@@ -255,7 +255,7 @@ export function InstallPage() {
         summary: t.platformsSection.safetyGuarantee,
       },
     ]
-  }, [locale, pick, t.platformsSection.safetyGuarantee])
+  }, [platformSummary, t.pageChrome.installStats.allFiveTab, t.platformsSection.safetyGuarantee])
 
   const selectedIndex = Math.max(0, targets.findIndex((item) => item.id === selectedId))
   const activeTarget = targets[selectedIndex] ?? targets[0]
@@ -295,7 +295,7 @@ export function InstallPage() {
         <div className="specular-surface space-y-7 rounded-3xl border border-indigo-200/[0.14] p-8 transition-colors duration-150 hover:border-sky-300/30 sm:p-10">
           <div className="space-y-2">
             <p className="font-mono text-xs tracking-wider text-subtle uppercase">
-              {locale === 'vi' ? '02 · Chọn môi trường IDE' : '02 · Select Target IDE'}
+              {t.pageChrome.installStats.stage02}
             </p>
             <h2 id="step-ide-heading" className="pb-1 text-2xl leading-[1.16] font-bold tracking-tight text-ink sm:text-3xl">{t.platformsSection.title}</h2>
             <p className="max-w-[62ch] text-base leading-relaxed text-muted">{t.platformsSection.subtitle}</p>

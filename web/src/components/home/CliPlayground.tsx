@@ -40,11 +40,11 @@ interface CommandSidebarProps {
   readonly commands: readonly CliCommandSpec[]
   readonly activeId: CliCommandId
   readonly headingLabel: string
-  readonly pick: (b: { readonly en: string; readonly vi: string }) => string
+  readonly cliSummary: (cmd: CliCommandSpec) => string
   readonly onSelect: (id: CliCommandId) => void
 }
 
-function CommandSidebar({ commands, activeId, headingLabel, pick, onSelect }: CommandSidebarProps) {
+function CommandSidebar({ commands, activeId, headingLabel, cliSummary, onSelect }: CommandSidebarProps) {
   return (
     <div className="flex flex-col bg-[#060A1B]/90">
       <div className="flex items-center justify-between gap-2 border-b border-indigo-200/[0.12] px-5 py-4">
@@ -92,7 +92,7 @@ function CommandSidebar({ commands, activeId, headingLabel, pick, onSelect }: Co
                   {`${cmd.gates.length}G`}
                 </span>
               </div>
-              <p className="line-clamp-2 text-xs leading-relaxed text-muted">{pick(cmd.summary)}</p>
+              <p className="line-clamp-2 text-xs leading-relaxed text-muted">{cliSummary(cmd)}</p>
             </button>
           )
         })}
@@ -102,7 +102,7 @@ function CommandSidebar({ commands, activeId, headingLabel, pick, onSelect }: Co
 }
 
 export function CliPlayground() {
-  const { t, pick } = useLanguage()
+  const { t, cliSummary } = useLanguage()
   const [activeCategory, setActiveCategory] = useState<CliCategoryFilter>('all')
   const [selectedId, setSelectedId] = useState<CliCommandId>('plan')
   const [simMode, setSimMode] = useState<SimulationMode>('pass')
@@ -174,7 +174,7 @@ export function CliPlayground() {
               commands={filteredCommands}
               activeId={activeCommand.id}
               headingLabel={t.cliPlayground.categories[activeCategory]}
-              pick={pick}
+              cliSummary={cliSummary}
               onSelect={setSelectedId}
             />
 
@@ -242,7 +242,7 @@ export function CliPlayground() {
               <div className="flex flex-1 flex-col justify-between gap-6 p-6 lg:p-8">
                 <div className="space-y-4">
                   <p className="max-w-[70ch] text-[15px] leading-relaxed text-muted sm:text-base">
-                    {pick(activeCommand.summary)}
+                    {cliSummary(activeCommand)}
                   </p>
 
                   <div className="flex flex-wrap items-center gap-2">

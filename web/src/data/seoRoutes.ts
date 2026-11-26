@@ -1,35 +1,18 @@
 /**
- * Canonical bilingual (`EN / VI`) SEO route manifest & `/llms.txt` compiler.
+ * Canonical 15-locale SEO route manifest & `/llms.txt` compiler.
  *
  * Pure TypeScript (zero DOM and zero Node APIs) so both `build/site-plugin.ts`
  * at Vite build time and `src/components/seo/SEO.tsx` at runtime share one
  * ground-truth route table derived dynamically from `KIT_STATS`.
  */
+import type { BilingualText, Locale, PageRouteId, PageSeoEntry } from '../types/ui-contract'
 import { KIT_STATS, formatCount, type KitStats } from './kitStats'
 
-export type Locale = 'en' | 'vi'
+export type { BilingualText, Locale, PageRouteId, PageSeoEntry }
 
-export interface BilingualText {
-  readonly en: string
-  readonly vi: string
-}
-
-export type PageRouteId =
-  | 'home'
-  | 'commands'
-  | 'agents'
-  | 'skills'
-  | 'architecture'
-  | 'install'
-  | 'notFound'
-
-export interface PageSeoEntry {
-  readonly id: PageRouteId
-  readonly pathname?: string
-  readonly priority?: number
-  readonly noindex?: boolean
-  readonly title: BilingualText
-  readonly description: BilingualText
+export interface RouteSeoCopy {
+  readonly title: string
+  readonly description: string
 }
 
 export const SITE_URL = 'https://boomopen.com'
@@ -158,8 +141,27 @@ export function toCanonicalUrl(pathname: string = '/'): string {
   return clean === '/' ? `${SITE_URL}/` : `${SITE_URL}${clean}`
 }
 
-export function formatDocumentTitle(entry: PageSeoEntry, locale: Locale = 'en'): string {
-  return entry.title[locale]
+export function getRouteSeoCopy(
+  entry: PageSeoEntry,
+  locale: Locale = 'en',
+  catalogSeo?: Readonly<Partial<Record<PageRouteId, RouteSeoCopy>>>,
+): RouteSeoCopy {
+  const override = catalogSeo?.[entry.id]
+  if (override) {
+    return override
+  }
+  return {
+    title: locale === 'vi' ? entry.title.vi : entry.title.en,
+    description: locale === 'vi' ? entry.description.vi : entry.description.en,
+  }
+}
+
+export function formatDocumentTitle(
+  entry: PageSeoEntry,
+  locale: Locale = 'en',
+  catalogSeo?: Readonly<Partial<Record<PageRouteId, RouteSeoCopy>>>,
+): string {
+  return getRouteSeoCopy(entry, locale, catalogSeo).title
 }
 
 /**

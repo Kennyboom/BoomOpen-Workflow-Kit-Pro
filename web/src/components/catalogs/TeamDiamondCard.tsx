@@ -54,7 +54,7 @@ function PipelineRoleCell({
 }
 
 export function TeamDiamondCard({ team }: TeamDiamondCardProps) {
-  const { locale, t, pick } = useLanguage()
+  const { t, teamSummary } = useLanguage()
   const { copied, copyFailed, copy } = useCopyCommand()
   const triggerRef = useRef<HTMLElement | null>(null)
 
@@ -109,7 +109,7 @@ export function TeamDiamondCard({ team }: TeamDiamondCardProps) {
         </div>
 
         <p className="mt-3 text-base leading-relaxed text-muted">
-          {pick(team.summary)}
+          {teamSummary(team)}
         </p>
       </div>
 
@@ -119,7 +119,7 @@ export function TeamDiamondCard({ team }: TeamDiamondCardProps) {
             step="01"
             roleLabel={t.agentsPage.roleBadges.techlead}
             agents={team.roles.techlead}
-            taskNote={locale === 'vi' ? 'Khóa hợp đồng & chia shard' : 'Contract lock & sharding'}
+            taskNote={t.pageChrome.teamRoleNotes.contractLock}
           />
           <PipelineRoleCell
             step="02"
@@ -131,7 +131,7 @@ export function TeamDiamondCard({ team }: TeamDiamondCardProps) {
             step="03"
             roleLabel={t.agentsPage.roleBadges.reviewer}
             agents={team.roles.reviewer}
-            taskNote={locale === 'vi' ? 'Phản biện độc lập' : 'Adversarial sign-off'}
+            taskNote={t.pageChrome.teamRoleNotes.adversarialSignOff}
           />
         </div>
 

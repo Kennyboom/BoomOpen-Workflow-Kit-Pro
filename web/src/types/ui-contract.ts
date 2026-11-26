@@ -1,6 +1,21 @@
 import type { ButtonHTMLAttributes, HTMLAttributes, InputHTMLAttributes, ReactNode } from 'react'
 
-export type Locale = 'en' | 'vi'
+export type Locale =
+  | 'en'
+  | 'vi'
+  | 'zh-CN'
+  | 'zh-TW'
+  | 'ja'
+  | 'ko'
+  | 'es'
+  | 'fr'
+  | 'de'
+  | 'pt-BR'
+  | 'ru'
+  | 'hi'
+  | 'ar'
+  | 'id'
+  | 'th'
 
 export type UiInteractiveState = 'default' | 'loading' | 'empty' | 'error' | 'disabled'
 

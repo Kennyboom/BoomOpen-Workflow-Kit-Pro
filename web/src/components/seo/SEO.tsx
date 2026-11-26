@@ -5,7 +5,6 @@ import {
   REPO_URL,
   SITE_NAME,
   SITE_URL,
-  formatDocumentTitle,
   getRouteSeo,
   toCanonicalUrl,
   type Locale,
@@ -54,9 +53,13 @@ function upsertCanonicalLink(href: string | null): void {
   link.setAttribute('href', href)
 }
 
-function buildLocalizedJsonLd(entry: PageSeoEntry, locale: Locale): Record<string, unknown> {
+function buildLocalizedJsonLd(
+  entry: PageSeoEntry,
+  locale: Locale,
+  title: string,
+  description: string,
+): Record<string, unknown> {
   const canonicalUrl = toCanonicalUrl(entry.pathname ?? '/')
-  const localizedDescription = entry.description[locale]
 
   return {
     '@context': 'https://schema.org',
@@ -78,14 +81,14 @@ function buildLocalizedJsonLd(entry: PageSeoEntry, locale: Locale): Record<strin
         url: SITE_URL,
         downloadUrl: REPO_URL,
         author: { '@id': `${SITE_URL}/#organization` },
-        description: localizedDescription,
+        description,
       },
       {
         '@type': 'WebPage',
         '@id': `${canonicalUrl}#webpage`,
         url: canonicalUrl,
-        name: formatDocumentTitle(entry, locale),
-        description: localizedDescription,
+        name: title,
+        description,
         inLanguage: locale,
         isPartOf: { '@id': `${SITE_URL}/#software` },
       },
@@ -93,7 +96,12 @@ function buildLocalizedJsonLd(entry: PageSeoEntry, locale: Locale): Record<strin
   }
 }
 
-function upsertJsonLdScript(entry: PageSeoEntry, locale: Locale): void {
+function upsertJsonLdScript(
+  entry: PageSeoEntry,
+  locale: Locale,
+  title: string,
+  description: string,
+): void {
   let script = document.getElementById(JSON_LD_ELEMENT_ID) as HTMLScriptElement | null
   if (!script) {
     script = document.createElement('script')
@@ -101,28 +109,31 @@ function upsertJsonLdScript(entry: PageSeoEntry, locale: Locale): void {
     script.type = 'application/ld+json'
     document.head.appendChild(script)
   }
-  script.textContent = JSON.stringify(buildLocalizedJsonLd(entry, locale)).replace(/</g, '\\u003c')
+  script.textContent = JSON.stringify(buildLocalizedJsonLd(entry, locale, title, description)).replace(
+    /</g,
+    '\\u003c',
+  )
 }
 
 /**
  * Synchronizes document `<head>` tags, canonical link, Open Graph metadata,
- * and localized JSON-LD across AnimatePresence route transitions and `EN / VI` toggles.
+ * `lang`/`dir` attributes, and localized JSON-LD across all 15 supported locales.
  */
 export function SEO({ routeId }: SEOProps): null {
-  const { locale } = useLanguage()
+  const { locale, localeMeta, seoCopy } = useLanguage()
 
   useEffect(() => {
     if (typeof document === 'undefined') {
       return
     }
     const entry = getRouteSeo(routeId)
-    const title = formatDocumentTitle(entry, locale)
-    const description = entry.description[locale]
+    const { title, description } = seoCopy(entry)
     const robots = entry.noindex ? 'noindex, nofollow' : 'index, follow'
     const canonicalUrl = entry.pathname ? toCanonicalUrl(entry.pathname) : null
     const ogImage = `${SITE_URL}${locale === 'vi' ? VI_OG_IMAGE : DEFAULT_OG_IMAGE}`
 
     document.documentElement.lang = locale
+    document.documentElement.dir = localeMeta.dir
     document.title = title
 
     upsertMetaTag('name', 'description', description)
@@ -146,8 +157,8 @@ export function SEO({ routeId }: SEOProps): null {
     upsertMetaTag('name', 'twitter:description', description)
     upsertMetaTag('name', 'twitter:image', ogImage)
 
-    upsertJsonLdScript(entry, locale)
-  }, [routeId, locale])
+    upsertJsonLdScript(entry, locale, title, description)
+  }, [routeId, locale, localeMeta.dir, seoCopy])
 
   return null
 }

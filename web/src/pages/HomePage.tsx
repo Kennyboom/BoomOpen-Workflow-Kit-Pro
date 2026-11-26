@@ -12,7 +12,7 @@ import { ActionLink, CopyCommandBar } from '../components/ui/Primitives'
 import { INSTALL_ALL_COMMAND, PLATFORMS } from '../data/platforms'
 import { useLanguage } from '../i18n/context'
 import type { Dictionary } from '../i18n/types'
-import type { Locale, PlatformId } from '../types/ui-contract'
+import type { PlatformId } from '../types/ui-contract'
 
 /** Visual-first Cosmic Deep Space startup homepage: Hero + SVG Hub, 3D Crystal Bento, Metrics + Slash Dock, and Closing stage. */
 const FOCUS_RING =
@@ -22,46 +22,6 @@ const HERO_COSMIC_GLOW = [
   'radial-gradient(ellipse 72% 48% at 50% -6%, rgba(56, 189, 248, 0.22), rgba(139, 92, 246, 0.14) 46%, transparent 78%)',
   'radial-gradient(ellipse 46% 32% at 50% 42%, rgba(99, 102, 241, 0.14), transparent 72%)',
 ].join(', ')
-
-interface HomeSectionCopy {
-  readonly topPillLead: string
-  readonly topPillIdes: string
-  readonly watchFilmCta: string
-  readonly closeFilmAria: string
-  readonly bentoEyebrow: string
-  readonly bentoTitle: string
-  readonly dockEyebrow: string
-  readonly dockTitle: string
-  readonly closingHeadline: string
-  readonly closingPrimaryCta: string
-}
-
-const HOME_COPY: Record<Locale, HomeSectionCopy> = {
-  en: {
-    topPillLead: 'BoomOpen Workflow Kit v5.5',
-    topPillIdes: '5 AI IDEs',
-    watchFilmCta: 'Watch Film (90s)',
-    closeFilmAria: 'Close walkthrough film dialog',
-    bentoEyebrow: 'SUPERPOWERS',
-    bentoTitle: 'Built different.',
-    dockEyebrow: 'ECOSYSTEM',
-    dockTitle: 'Built for real scale.',
-    closingHeadline: 'Ready in 30 seconds.',
-    closingPrimaryCta: 'Install Now',
-  },
-  vi: {
-    topPillLead: 'BoomOpen Workflow Kit v5.5',
-    topPillIdes: '5 AI IDEs',
-    watchFilmCta: 'Xem video (90s)',
-    closeFilmAria: 'Đóng cửa sổ video giới thiệu',
-    bentoEyebrow: 'ĐỘC QUYỀN',
-    bentoTitle: 'Sức mạnh độc quyền.',
-    dockEyebrow: 'HỆ SINH THÁI',
-    dockTitle: 'Quy mô thực chiến.',
-    closingHeadline: 'Sẵn sàng trong 30 giây.',
-    closingPrimaryCta: 'Cài đặt ngay',
-  },
-}
 
 function isPlatformId(value: string | null): value is PlatformId {
   return value !== null && PLATFORM_ID_SET.has(value)
@@ -150,7 +110,6 @@ function TrailerCinemaModal({
 
 function HeroStage({
   t,
-  copy,
   installHref,
   selectedPlatformId,
   reduceMotion,
@@ -158,13 +117,13 @@ function HeroStage({
   filmButtonRef,
 }: {
   readonly t: Dictionary
-  readonly copy: HomeSectionCopy
   readonly installHref: string
   readonly selectedPlatformId: PlatformId | null
   readonly reduceMotion: boolean
   readonly onOpenFilm: () => void
   readonly filmButtonRef: React.RefObject<HTMLButtonElement | null>
 }) {
+  const surface = t.homeSurface
   return (
     <section
       aria-labelledby="home-hero-heading"
@@ -192,9 +151,9 @@ function HeroStage({
             )}
           >
             <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-sky-400 shadow-[0_0_10px_#38BDF8]" />
-            <span className="shrink-0 font-semibold text-white">{copy.topPillLead}</span>
+            <span className="shrink-0 font-semibold text-white">{surface.topPillLead}</span>
             <span aria-hidden="true" className="text-indigo-300/40">·</span>
-            <span className="truncate text-xs text-slate-300 sm:text-sm">{copy.topPillIdes}</span>
+            <span className="truncate text-xs text-slate-300 sm:text-sm">{surface.topPillIdes}</span>
             <ArrowRight aria-hidden="true" className="size-3.5 shrink-0 text-sky-400" />
           </Link>
 
@@ -228,11 +187,11 @@ function HeroStage({
               )}
             >
               <Play aria-hidden="true" className="size-4 fill-sky-400 text-sky-400" />
-              <span>{copy.watchFilmCta}</span>
+              <span>{surface.watchFilmCta}</span>
             </button>
           </div>
 
-          <div className="mx-auto mt-6 w-full max-w-4xl text-left">
+          <div className="mx-auto mt-6 w-full max-w-4xl text-start">
             <CopyCommandBar
               compact
               command={INSTALL_ALL_COMMAND}
@@ -258,7 +217,7 @@ function HeroStage({
 }
 
 export function HomePage() {
-  const { locale, t } = useLanguage()
+  const { t } = useLanguage()
   const reduceMotion = useReducedMotion()
   const [searchParams] = useSearchParams()
   const [isFilmOpen, setIsFilmOpen] = useState<boolean>(false)
@@ -267,7 +226,7 @@ export function HomePage() {
   const rawTool = searchParams.get('tool')
   const selectedPlatformId: PlatformId | null = isPlatformId(rawTool) ? rawTool : null
   const installHref = selectedPlatformId ? `/install?tool=${selectedPlatformId}` : '/install'
-  const copy = HOME_COPY[locale]
+  const surface = t.homeSurface
 
   const handleCloseFilm = () => {
     setIsFilmOpen(false)
@@ -279,7 +238,6 @@ export function HomePage() {
       <SEO routeId="home" />
       <HeroStage
         t={t}
-        copy={copy}
         installHref={installHref}
         selectedPlatformId={selectedPlatformId}
         reduceMotion={Boolean(reduceMotion)}
@@ -290,18 +248,18 @@ export function HomePage() {
       <TrailerCinemaModal
         open={isFilmOpen}
         title={t.trailer.title}
-        closeAriaLabel={copy.closeFilmAria}
+        closeAriaLabel={surface.closeFilmAria}
         onClose={handleCloseFilm}
       />
 
       <section aria-labelledby="home-bento-heading" className="mx-auto max-w-[90rem] px-4 py-24 sm:px-6 lg:px-10 lg:py-32">
         <div className="space-y-4">
-          <EyebrowPill index="01" label={copy.bentoEyebrow} />
+          <EyebrowPill index="01" label={surface.bentoEyebrow} />
           <h2
             id="home-bento-heading"
             className="hero-display-gradient pb-1 font-display text-[clamp(2.35rem,3.8vw,3.4rem)] leading-[1.15] font-bold tracking-[-0.035em]"
           >
-            {copy.bentoTitle}
+            {surface.bentoTitle}
           </h2>
         </div>
         <div className="mt-12 lg:mt-14">
@@ -312,12 +270,12 @@ export function HomePage() {
       <section aria-labelledby="home-lifecycle-heading" className="border-t border-indigo-200/[0.10]">
         <div className="mx-auto max-w-[90rem] px-4 py-24 sm:px-6 lg:px-10 lg:py-32">
           <div className="space-y-4">
-            <EyebrowPill index="02" label={copy.dockEyebrow} />
+            <EyebrowPill index="02" label={surface.dockEyebrow} />
             <h2
               id="home-lifecycle-heading"
               className="hero-display-gradient pb-1 font-display text-[clamp(2.35rem,3.8vw,3.4rem)] leading-[1.15] font-bold tracking-[-0.035em]"
             >
-              {copy.dockTitle}
+              {surface.dockSectionTitle}
             </h2>
           </div>
           <div className="mt-12 lg:mt-14">
@@ -336,10 +294,10 @@ export function HomePage() {
                 id="home-closing-heading"
                 className="hero-display-gradient mx-auto pb-1 font-display text-[clamp(2.35rem,4vw,3.45rem)] leading-[1.15] font-bold tracking-[-0.035em]"
               >
-                {copy.closingHeadline}
+                {surface.closingHeadline}
               </h2>
 
-              <div className="mx-auto mt-8 max-w-3xl text-left">
+              <div className="mx-auto mt-8 max-w-3xl text-start">
                 <CopyCommandBar
                   compact
                   command={INSTALL_ALL_COMMAND}
@@ -356,7 +314,7 @@ export function HomePage() {
                   trailingIcon={<ArrowRight aria-hidden="true" className="size-4" />}
                   className="px-8"
                 >
-                  {copy.closingPrimaryCta}
+                  {surface.closingPrimaryCta}
                 </ActionLink>
               </div>
             </div>

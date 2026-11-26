@@ -4,7 +4,7 @@ import { clsx } from 'clsx'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowUpRight, FolderGit2 } from 'lucide-react'
 import { useLanguage } from '../../i18n/context'
-import type { Locale, PlatformId } from '../../types/ui-contract'
+import type { PlatformId } from '../../types/ui-contract'
 
 /**
  * Pure visual animated SVG + cosmic glass Multi-AI Hub over `/assets/studio-canvas.jpg`:
@@ -73,11 +73,6 @@ const ORBITAL_BADGES = [
   { label: '/conduct', dotClass: 'bg-amber-400', positionClass: '-bottom-2.5 left-2 sm:left-3' },
   { label: '/audit', dotClass: 'bg-indigo-400', positionClass: '-bottom-2.5 right-2 sm:right-3' },
 ] as const
-
-const DOCS_SUBLABEL: Record<Locale, string> = {
-  vi: 'Tài liệu dự án',
-  en: 'Specs & PRD',
-}
 
 function IdeMonogram({ id }: { readonly id: PlatformId }) {
   if (id === 'antigravity') {
@@ -212,7 +207,7 @@ function DesktopOrbitalSvg({ reduceMotion }: { readonly reduceMotion: boolean })
 }
 
 export function StudioHeroShowcase({ selectedPlatformId = null }: StudioHeroShowcaseProps) {
-  const { locale } = useLanguage()
+  const { t } = useLanguage()
   const reduceMotion = Boolean(useReducedMotion())
 
   return (
@@ -242,7 +237,7 @@ export function StudioHeroShowcase({ selectedPlatformId = null }: StudioHeroShow
                 <FolderGit2 aria-hidden="true" className="size-6" />
               </span>
               <span className="mt-3.5 font-mono text-lg font-bold tracking-tight text-white">docs/</span>
-              <span className="mt-1 text-xs font-semibold text-slate-400">{DOCS_SUBLABEL[locale]}</span>
+              <span className="mt-1 text-xs font-semibold text-slate-400">{t.homeSurface.docsNodeSublabel}</span>
             </div>
           </div>
 

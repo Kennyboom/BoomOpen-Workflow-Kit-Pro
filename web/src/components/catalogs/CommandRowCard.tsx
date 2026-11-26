@@ -11,7 +11,7 @@ export interface CommandRowCardProps {
 }
 
 export function CommandRowCard({ item, categoryLabel }: CommandRowCardProps) {
-  const { t, pick } = useLanguage()
+  const { t, commandCopy } = useLanguage()
 
   return (
     <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-indigo-200/[0.14] p-7 transition-colors duration-150 motion-reduce:transition-none hover:border-sky-300/30 sm:p-8">
@@ -36,7 +36,7 @@ export function CommandRowCard({ item, categoryLabel }: CommandRowCardProps) {
         </div>
 
         <p className="mt-3.5 text-base leading-relaxed text-muted">
-          {pick(item.summary)}
+          {commandCopy(item).summary}
         </p>
       </div>
 

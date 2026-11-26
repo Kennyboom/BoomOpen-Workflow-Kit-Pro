@@ -24,6 +24,7 @@ import {
   toCanonicalUrl,
   type PageSeoEntry,
 } from '../src/data/seoRoutes'
+import { SUPPORTED_LOCALES } from '../src/i18n/locales-meta'
 import { renderLlmsTxt, renderRobotsTxt, renderSitemapXml } from './kit-stats.mjs'
 
 const SEO_PLACEHOLDER = '<!--app-seo-->'
@@ -83,7 +84,7 @@ function buildJsonLdGraph(entry: PageSeoEntry): Record<string, unknown> {
         url: canonicalUrl,
         name: formatDocumentTitle(entry, 'en'),
         description: entry.description.en,
-        inLanguage: ['en', 'vi'],
+        inLanguage: SUPPORTED_LOCALES.map((l) => l.code),
         isPartOf: { '@id': `${SITE_URL}/#software` },
       },
     ],

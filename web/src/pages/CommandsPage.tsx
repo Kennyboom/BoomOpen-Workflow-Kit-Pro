@@ -25,19 +25,19 @@ function isCommandFilterKey(value: string | null): value is CommandFilterKey {
 }
 
 function CommandsHeroHeader() {
-  const { locale, t } = useLanguage()
+  const { t } = useLanguage()
   const stats = [
     {
       value: formatCount(KIT_STATS.commands.length),
-      label: locale === 'vi' ? 'Lệnh nền tảng' : 'Slash Commands',
+      label: t.pageChrome.commandsStats.slashCommands,
     },
     {
       value: formatCount(KIT_STATS.commandFiles),
-      label: locale === 'vi' ? 'Tệp đặc tả' : 'Workflow Specs',
+      label: t.pageChrome.commandsStats.workflowSpecs,
     },
     {
       value: formatCount(TEAM_COMMANDS.length),
-      label: locale === 'vi' ? 'Biến thể :team' : ':team Variants',
+      label: t.pageChrome.commandsStats.teamVariants,
     },
   ]
 
@@ -75,7 +75,7 @@ function CommandsHeroHeader() {
 }
 
 export function CommandsPage() {
-  const { t } = useLanguage()
+  const { t, commandCopy } = useLanguage()
   const reduceMotion = useReducedMotion()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -130,6 +130,7 @@ export function CommandsPage() {
         return true
       }
       const categoryLabel = t.commandsPage.categories[item.category].toLowerCase()
+      const localized = commandCopy(item)
       const variantTokens = item.variants.flatMap((variant) => [
         variant.toLowerCase(),
         `:${variant.toLowerCase()}`,
@@ -140,15 +141,15 @@ export function CommandsPage() {
         item.slash.toLowerCase(),
         item.category.toLowerCase(),
         categoryLabel,
+        localized.summary.toLowerCase(),
+        localized.nlExample.toLowerCase(),
         item.summary.en.toLowerCase(),
-        item.summary.vi.toLowerCase(),
         item.nlExamples.en.toLowerCase(),
-        item.nlExamples.vi.toLowerCase(),
         ...variantTokens,
       ]
       return searchableFields.some((field) => field.includes(normalizedQuery))
     })
-  }, [activeCategory, query, t.commandsPage.categories])
+  }, [activeCategory, commandCopy, query, t.commandsPage.categories])
 
   const hasActiveFilters = query.trim().length > 0 || activeCategory !== 'all'
 

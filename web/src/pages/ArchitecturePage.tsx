@@ -14,12 +14,12 @@ const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
 
 function ArchitectureHeroHeader() {
-  const { locale, t } = useLanguage()
+  const { t } = useLanguage()
   const copy = t.architecturePage
   const stats = [
-    { value: '21L', label: locale === 'vi' ? 'Tệp đầu vào' : '< 2.3 KB Entry' },
-    { value: String(copy.coreRules.items.length), label: locale === 'vi' ? 'Module quy tắc' : 'Rule Modules' },
-    { value: String(copy.controlCenter.presets.length), label: locale === 'vi' ? 'Preset đồng bộ' : 'Sync Presets' },
+    { value: '21L', label: t.pageChrome.architectureStats.entryBudget },
+    { value: String(copy.coreRules.items.length), label: t.pageChrome.architectureStats.ruleModules },
+    { value: String(copy.controlCenter.presets.length), label: t.pageChrome.architectureStats.syncPresets },
   ]
 
   return (
@@ -96,7 +96,7 @@ function PresetsControlSection({
   readonly selectedPresetIdx: number
   readonly onSelectPreset: (idx: number) => void
 }) {
-  const { locale, t } = useLanguage()
+  const { t } = useLanguage()
   const { controlCenter } = t.architecturePage
   const activePreset = controlCenter.presets[selectedPresetIdx] ?? controlCenter.presets[0]
 
@@ -138,7 +138,7 @@ function PresetsControlSection({
                   <code className="font-mono text-lg font-bold text-ink sm:text-xl">{preset.name}</code>
                   {isDefault ? (
                     <span className="rounded-full bg-primary px-3 py-1 font-mono text-xs font-semibold text-primary-ink">
-                      {locale === 'vi' ? 'Mặc định' : 'Default'}
+                      {t.pageChrome.architectureStats.defaultTag}
                     </span>
                   ) : (
                     <span className="rounded-full border border-indigo-200/[0.14] bg-white/[0.05] px-3 py-1 font-mono text-xs text-slate-300 tabular-nums">
@@ -181,7 +181,7 @@ function PresetsControlSection({
 }
 
 function StandardsAndLedgerSection() {
-  const { locale, t } = useLanguage()
+  const { t } = useLanguage()
   const { codingStandards, specRatchet, artifactRouting } = t.architecturePage
 
   return (
@@ -197,11 +197,11 @@ function StandardsAndLedgerSection() {
           <div className="grid grid-cols-2 gap-4">
             <div className="rounded-2xl border border-indigo-200/[0.12] bg-[#070B19]/85 p-5 text-slate-200">
               <div className="font-mono text-3xl font-bold text-ink tabular-nums sm:text-4xl">{`${codingStandards.softLines}L`}</div>
-              <div className="mt-1 text-xs font-medium text-muted">{locale === 'vi' ? 'Trần mềm cho module gắn kết' : 'Soft ceiling per module'}</div>
+              <div className="mt-1 text-xs font-medium text-muted">{t.pageChrome.architectureStats.softCeiling}</div>
             </div>
             <div className="rounded-2xl border border-indigo-200/[0.12] bg-[#070B19]/85 p-5 text-slate-200">
               <div className="font-mono text-3xl font-bold text-ink tabular-nums sm:text-4xl">{`${codingStandards.hardLines}L`}</div>
-              <div className="mt-1 text-xs font-medium text-muted">{locale === 'vi' ? 'Ngưỡng tách file bắt buộc' : 'Hard split threshold'}</div>
+              <div className="mt-1 text-xs font-medium text-muted">{t.pageChrome.architectureStats.hardThreshold}</div>
             </div>
           </div>
 
@@ -257,7 +257,7 @@ function StandardsAndLedgerSection() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {[
-          { card: artifactRouting.brainCard, tag: locale === 'vi' ? 'Mặc định' : 'Default' },
+          { card: artifactRouting.brainCard, tag: t.pageChrome.architectureStats.defaultTag },
           { card: artifactRouting.workspaceCard, tag: '/docs' },
         ].map(({ card, tag }) => (
           <div key={card.title} className="specular-surface space-y-3 rounded-3xl border border-indigo-200/[0.14] p-7 transition-colors duration-150 hover:border-sky-300/30 sm:p-8">

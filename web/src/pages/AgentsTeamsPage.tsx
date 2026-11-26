@@ -10,7 +10,8 @@ import { SPECIALIST_AGENTS } from '../data/agents'
 import { formatCount, KIT_STATS } from '../data/kitStats'
 import { SPECIALIST_TEAMS } from '../data/teams'
 import { useLanguage } from '../i18n/context'
-import type { AgentSpec, BilingualText } from '../types/ui-contract'
+import type { AgentDomainKey, PageChromeCopy } from '../i18n/types'
+import type { AgentSpec } from '../types/ui-contract'
 
 /**
  * Flagship 1440px workforce showcase for 22 specialist sub-agents and 18 3-role review teams.
@@ -21,30 +22,26 @@ const WORKFORCE_TAB_ORDER: readonly WorkforceTabId[] = ['agents', 'teams']
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
 
-const DOMAIN_LABELS: Readonly<Record<string, BilingualText>> = {
-  architecture: { en: 'Architecture', vi: 'Kiến trúc' },
-  backend: { en: 'Backend', vi: 'Backend' },
-  data: { en: 'Database', vi: 'Cơ sở dữ liệu' },
-  design: { en: 'UI/UX Design', vi: 'Thiết kế UI/UX' },
-  devops: { en: 'DevOps & Cloud', vi: 'DevOps & Hạ tầng' },
-  frontend: { en: 'Frontend', vi: 'Frontend' },
-  gaming: { en: 'Real-Time & Game', vi: 'Game & Đồ họa' },
-  management: { en: 'Governance', vi: 'Quản trị dự án' },
-  mobile: { en: 'Mobile', vi: 'Di động' },
-  performance: { en: 'Performance', vi: 'Hiệu năng' },
-  planning: { en: 'Planning', vi: 'Lập kế hoạch' },
-  quality: { en: 'QA & Review', vi: 'Kiểm thử & Review' },
-  research: { en: 'Research & Docs', vi: 'Nghiên cứu & Tài liệu' },
-  security: { en: 'Security', vi: 'Bảo mật' },
-  validation: { en: 'Spec Validation', vi: 'Đối soát đặc tả' },
+const VALID_AGENT_DOMAINS = new Set<string>([
+  'architecture', 'backend', 'data', 'design', 'devops', 'frontend', 'gaming', 'management',
+  'mobile', 'performance', 'planning', 'quality', 'research', 'security', 'validation',
+])
+
+function resolveAgentDomainLabel(
+  domain: string,
+  agentDomains: PageChromeCopy['agentDomains'],
+): string {
+  return VALID_AGENT_DOMAINS.has(domain)
+    ? agentDomains[domain as AgentDomainKey]
+    : domain
 }
 
 function AgentsHeroHeader() {
-  const { locale, t } = useLanguage()
+  const { t } = useLanguage()
   const stats = [
-    { value: formatCount(KIT_STATS.agents), label: locale === 'vi' ? 'Chuyên gia' : 'Specialists' },
-    { value: formatCount(KIT_STATS.teams), label: locale === 'vi' ? 'Đội phản biện' : 'Review Teams' },
-    { value: formatCount(KIT_STATS.teamFiles), label: locale === 'vi' ? 'Tệp vai trò' : 'Role Specs' },
+    { value: formatCount(KIT_STATS.agents), label: t.pageChrome.agentsStats.specialists },
+    { value: formatCount(KIT_STATS.teams), label: t.pageChrome.agentsStats.reviewTeams },
+    { value: formatCount(KIT_STATS.teamFiles), label: t.pageChrome.agentsStats.roleSpecs },
   ]
 
   return (
@@ -77,8 +74,9 @@ function AgentsHeroHeader() {
 }
 
 function SpecialistAgentCard({ agent }: { readonly agent: AgentSpec }) {
-  const { pick } = useLanguage()
-  const domainLabel = DOMAIN_LABELS[agent.domain] ? pick(DOMAIN_LABELS[agent.domain]) : agent.domain
+  const { t, agentCopy } = useLanguage()
+  const localized = agentCopy(agent)
+  const domainLabel = resolveAgentDomainLabel(agent.domain, t.pageChrome.agentDomains)
 
   return (
     <article className="specular-surface flex h-full flex-col justify-between rounded-3xl border border-indigo-200/[0.14] p-7 transition-colors duration-150 motion-reduce:transition-none hover:border-sky-300/30 sm:p-8">
@@ -86,13 +84,13 @@ function SpecialistAgentCard({ agent }: { readonly agent: AgentSpec }) {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-1">
             <code className="block font-mono text-xl font-bold tracking-tight text-ink">{agent.id}</code>
-            <div className="text-sm font-medium text-ink/80">{pick(agent.title)}</div>
+            <div className="text-sm font-medium text-ink/80">{localized.title}</div>
           </div>
           <span className="shrink-0 rounded-full border border-indigo-200/[0.14] bg-white/[0.05] px-3 py-1 text-xs font-medium text-slate-300">
             {domainLabel}
           </span>
         </div>
-        <p className="mt-4 text-[15.5px] leading-relaxed text-muted sm:text-base">{pick(agent.summary)}</p>
+        <p className="mt-4 text-[15.5px] leading-relaxed text-muted sm:text-base">{localized.summary}</p>
       </div>
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-indigo-200/[0.12] pt-5">
@@ -129,7 +127,7 @@ function TeamsScalingBanner() {
 }
 
 export function AgentsTeamsPage() {
-  const { t, locale, pick } = useLanguage()
+  const { t, agentCopy, teamSummary } = useLanguage()
   const reduceMotion = useReducedMotion()
   const [searchParams, setSearchParams] = useSearchParams()
   const tabRefs = useRef<Record<WorkforceTabId, HTMLButtonElement | null>>({ agents: null, teams: null })
@@ -139,7 +137,7 @@ export function AgentsTeamsPage() {
     rawTab === 'teams' || (!rawTab && searchParams.has('team')) ? 'teams' : 'agents'
   const query = searchParams.get('q') ?? searchParams.get('agent') ?? searchParams.get('team') ?? ''
   const rawDomain = searchParams.get('domain')
-  const activeDomain = rawDomain && rawDomain in DOMAIN_LABELS ? rawDomain : 'all'
+  const activeDomain = rawDomain && VALID_AGENT_DOMAINS.has(rawDomain) ? rawDomain : 'all'
 
   const updateParam = (key: 'tab' | 'q' | 'domain', value: string | null) => {
     const next = new URLSearchParams(searchParams)
@@ -184,12 +182,14 @@ export function AgentsTeamsPage() {
     return SPECIALIST_AGENTS.filter((agent) => {
       if (activeDomain !== 'all' && agent.domain !== activeDomain) return false
       if (!normalized) return true
+      const localized = agentCopy(agent)
+      const domainLabel = resolveAgentDomainLabel(agent.domain, t.pageChrome.agentDomains)
       return [
-        agent.id, agent.domain, agent.deliverable,
-        agent.title.en, agent.title.vi, agent.summary.en, agent.summary.vi,
+        agent.id, agent.domain, domainLabel, agent.deliverable,
+        localized.title, localized.summary, agent.title.en, agent.summary.en,
       ].some((field) => field.toLowerCase().includes(normalized))
     })
-  }, [activeDomain, query])
+  }, [activeDomain, agentCopy, query, t.pageChrome.agentDomains])
 
   const filteredTeams = useMemo(() => {
     const normalized = query.trim().toLowerCase()
@@ -197,11 +197,11 @@ export function AgentsTeamsPage() {
       if (activeDomain !== 'all' && !teamDomainsById.get(team.id)?.has(activeDomain)) return false
       if (!normalized) return true
       return [
-        team.id, team.dirName, team.triggerCommand, team.summary.en, team.summary.vi,
+        team.id, team.dirName, team.triggerCommand, teamSummary(team), team.summary.en,
         ...team.roles.techlead, ...team.roles.executor, ...team.roles.reviewer,
       ].some((field) => field.toLowerCase().includes(normalized))
     })
-  }, [activeDomain, query, teamDomainsById])
+  }, [activeDomain, query, teamDomainsById, teamSummary])
 
   const visibleCount = activeTab === 'agents' ? filteredAgents.length : filteredTeams.length
   const totalForTab = activeTab === 'agents' ? SPECIALIST_AGENTS.length : SPECIALIST_TEAMS.length
@@ -222,14 +222,8 @@ export function AgentsTeamsPage() {
   }
 
   const tabMeta: Readonly<Record<WorkforceTabId, { readonly label: string; readonly count: number }>> = {
-    agents: {
-      label: locale === 'vi' ? `${formatCount(KIT_STATS.agents)} Chuyên gia` : `${formatCount(KIT_STATS.agents)} Specialists`,
-      count: filteredAgents.length,
-    },
-    teams: {
-      label: locale === 'vi' ? `${formatCount(KIT_STATS.teams)} Đội 3 vai trò` : `${formatCount(KIT_STATS.teams)} Teams`,
-      count: filteredTeams.length,
-    },
+    agents: { label: t.agentsPage.tabs.agents, count: filteredAgents.length },
+    teams: { label: t.agentsPage.tabs.teams, count: filteredTeams.length },
   }
 
   return (
@@ -313,7 +307,7 @@ export function AgentsTeamsPage() {
             {domains.map((domain) => (
               <FilterPill
                 key={domain}
-                label={DOMAIN_LABELS[domain] ? pick(DOMAIN_LABELS[domain]) : domain}
+                label={resolveAgentDomainLabel(domain, t.pageChrome.agentDomains)}
                 active={activeDomain === domain}
                 onSelect={() => setActiveDomain(activeDomain === domain ? 'all' : domain)}
               />

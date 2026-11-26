@@ -5,16 +5,16 @@ import { clsx } from 'clsx'
 import { ExternalLink, Menu, X } from 'lucide-react'
 import { KIT_VERSION } from '../../data/kitStats'
 import { REPO_URL, SITE_NAME } from '../../data/seoRoutes'
-import { useLanguage, type Dictionary, type Locale } from '../../i18n/context'
+import { useLanguage, type Dictionary } from '../../i18n/context'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 /**
  * Cosmic Crystal Glass navbar (h-18 / 72px, max-w-90rem):
- * full BoomOpen Workflow Kit brand lockup, centered pill navigation track, EN/VI switcher, and Starlight White CTA.
+ * full BoomOpen Workflow Kit brand lockup, centered pill navigation track, 15-Language Switcher, and Starlight White CTA.
  */
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
 
-const LOCALE_OPTIONS: readonly Locale[] = ['en', 'vi']
 const SHORT_VERSION = KIT_VERSION.split('.').slice(0, 2).join('.')
 
 interface HeaderNavItem {
@@ -29,7 +29,7 @@ function HeaderBrand({ onNavigate }: { readonly onNavigate: () => void }) {
       to="/"
       onClick={onNavigate}
       className={clsx(
-        'inline-flex min-h-11 shrink-0 items-center gap-2.5 xl:gap-3 rounded-xl pr-1 no-underline transition-opacity duration-150 motion-reduce:transition-none hover:opacity-90',
+        'inline-flex min-h-11 shrink-0 items-center gap-2.5 xl:gap-3 rounded-xl pe-1 no-underline transition-opacity duration-150 motion-reduce:transition-none hover:opacity-90',
         FOCUS_RING,
       )}
     >
@@ -62,7 +62,7 @@ function DesktopNavTrack({
   return (
     <nav
       aria-label={ariaLabel}
-      className="hidden items-center gap-0.5 2xl:gap-1 rounded-full border border-indigo-200/[0.12] bg-white/[0.04] p-1 lg:flex"
+      className="scrollbar-none hidden max-w-[54vw] items-center gap-0.5 overflow-x-auto rounded-full border border-indigo-200/[0.12] bg-white/[0.04] p-1 lg:flex 2xl:gap-1"
     >
       {items.map((item) => (
         <NavLink
@@ -71,7 +71,7 @@ function DesktopNavTrack({
           end={item.end}
           className={({ isActive }) =>
             clsx(
-              'inline-flex min-h-11 items-center rounded-full px-2.5 xl:px-3 2xl:px-3.5 py-2 text-[13.5px] xl:text-[14px] 2xl:text-[15px] leading-snug whitespace-nowrap transition-all duration-150 motion-reduce:transition-none no-underline',
+              'inline-flex min-h-11 shrink-0 items-center rounded-full px-2.5 xl:px-3 py-2 text-[13px] xl:text-[14px] leading-snug whitespace-nowrap transition-all duration-150 motion-reduce:transition-none no-underline',
               FOCUS_RING,
               isActive
                 ? 'bg-white text-[#050816] font-semibold shadow-[0_2px_12px_rgba(255,255,255,0.2)]'
@@ -83,46 +83,6 @@ function DesktopNavTrack({
         </NavLink>
       ))}
     </nav>
-  )
-}
-
-function LocalePillSwitcher({
-  locale,
-  onSelect,
-  t,
-}: {
-  readonly locale: Locale
-  readonly onSelect: (next: Locale) => void
-  readonly t: Dictionary
-}) {
-  return (
-    <div
-      role="group"
-      aria-label={t.nav.langToggleAria}
-      className="inline-flex items-center rounded-full border border-indigo-200/[0.12] bg-white/[0.04] p-0.5"
-    >
-      {LOCALE_OPTIONS.map((option) => {
-        const active = locale === option
-        const shortLabel = option === 'en' ? t.nav.localeEnShort : t.nav.localeViShort
-        return (
-          <button
-            key={option}
-            type="button"
-            aria-pressed={active}
-            onClick={() => onSelect(option)}
-            className={clsx(
-              'inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2.5 xl:px-3 font-mono text-xs leading-none transition-all duration-150 motion-reduce:transition-none cursor-pointer',
-              FOCUS_RING,
-              active
-                ? 'bg-white text-[#050816] font-semibold shadow-[0_2px_10px_rgba(255,255,255,0.18)]'
-                : 'bg-transparent text-slate-300 hover:text-white font-medium',
-            )}
-          >
-            {shortLabel}
-          </button>
-        )
-      })}
-    </div>
   )
 }
 
@@ -200,7 +160,7 @@ function MobileNavDrawer({ isOpen, items, t, reduceMotion, onClose }: MobileDraw
 }
 
 export function Header() {
-  const { locale, setLocale, t } = useLanguage()
+  const { t } = useLanguage()
   const { pathname } = useLocation()
   const reduceMotion = useReducedMotion()
   const [openedPath, setOpenedPath] = useState<string | null>(null)
@@ -237,7 +197,7 @@ export function Header() {
         <DesktopNavTrack items={navItems} ariaLabel={t.nav.primaryNavAria} />
 
         <div className="flex shrink-0 items-center gap-2 2xl:gap-2.5">
-          <LocalePillSwitcher locale={locale} onSelect={setLocale} t={t} />
+          <LanguageSwitcher />
 
           <a
             href={REPO_URL}

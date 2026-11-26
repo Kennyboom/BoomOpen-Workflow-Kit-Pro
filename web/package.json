@@ -11,7 +11,7 @@
     "prebuild": "node build/kit-stats.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "node --test build/kit-stats.test.mjs",
+    "test": "node --test build/kit-stats.test.mjs build/i18n-locales.test.mjs",
     "verify:ci": "npm run lint && npm test && npm run build",
     "preview": "vite preview"
   },

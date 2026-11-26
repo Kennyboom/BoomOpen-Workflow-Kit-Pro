@@ -6,7 +6,7 @@ import { clsx } from 'clsx'
 import { SEO } from '../components/seo/SEO'
 import { ActionButton, CopyCommandBar, EmptyCatalogState, FilterPill, SearchField } from '../components/ui/Primitives'
 import { KIT_STATS, formatCount } from '../data/kitStats'
-import { ALL_SHOWCASE_SKILLS, CORE_SKILLS_SHOWCASE, FEATURED_LIBRARY_SKILLS, getSkillDomainLabel } from '../data/skills'
+import { ALL_SHOWCASE_SKILLS, CORE_SKILLS_SHOWCASE, FEATURED_LIBRARY_SKILLS } from '../data/skills'
 import { useLanguage } from '../i18n/context'
 import type { SkillShowcaseItem } from '../types/ui-contract'
 
@@ -24,12 +24,12 @@ function isSkillTier(value: string | null): value is SkillTierFilter {
 }
 
 function SkillsHeroHeader() {
-  const { locale, t } = useLanguage()
+  const { t } = useLanguage()
   const copy = t.skillsPage
   const stats = [
-    { value: formatCount(KIT_STATS.skills), label: locale === 'vi' ? 'Tổng kỹ năng' : 'Indexed Skills' },
-    { value: formatCount(KIT_STATS.coreSkills), label: locale === 'vi' ? 'Cốt lõi' : 'Core Skills' },
-    { value: formatCount(KIT_STATS.domains.length), label: locale === 'vi' ? 'Lĩnh vực' : 'Domains' },
+    { value: formatCount(KIT_STATS.skills), label: t.pageChrome.skillsStats.indexedSkills },
+    { value: formatCount(KIT_STATS.coreSkills), label: t.pageChrome.skillsStats.coreSkills },
+    { value: formatCount(KIT_STATS.domains.length), label: t.pageChrome.skillsStats.domains },
   ]
 
   return (
@@ -60,7 +60,7 @@ function SkillsHeroHeader() {
 }
 
 function SkillCard({ skill }: { readonly skill: SkillShowcaseItem }) {
-  const { pick } = useLanguage()
+  const { skillSummary, skillDomainLabel } = useLanguage()
   const isCore = skill.tier === 'core'
   const skillPath = isCore ? `skills/${skill.id}/SKILL.md` : `skills_library/${skill.id}/SKILL.md`
 
@@ -80,7 +80,7 @@ function SkillCard({ skill }: { readonly skill: SkillShowcaseItem }) {
             {isCore ? 'core' : 'library'}
           </span>
         </div>
-        <p className="mt-3.5 text-base leading-relaxed text-muted">{pick(skill.summary)}</p>
+        <p className="mt-3.5 text-base leading-relaxed text-muted">{skillSummary(skill)}</p>
       </div>
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-2.5 border-t border-indigo-200/[0.12] pt-4">
@@ -88,7 +88,7 @@ function SkillCard({ skill }: { readonly skill: SkillShowcaseItem }) {
           {skillPath}
         </code>
         <span className="shrink-0 rounded-md border border-indigo-200/[0.14] bg-white/[0.05] px-2.5 py-1 font-mono text-xs text-slate-300">
-          {pick(getSkillDomainLabel(skill.domainId))}
+          {skillDomainLabel(skill.domainId)}
         </span>
       </div>
     </article>
@@ -102,9 +102,9 @@ function DomainSidebar({
   readonly activeDomain: string
   readonly onSelectDomain: (domainId: string) => void
 }) {
-  const { locale, t, pick } = useLanguage()
+  const { t, skillDomainLabel } = useLanguage()
   const copy = t.skillsPage
-  const allDomainsLabel = locale === 'vi' ? `Tất cả ${formatCount(KIT_STATS.skills)}` : `All ${formatCount(KIT_STATS.skills)}`
+  const allDomainsLabel = `${t.pageChrome.skillsStats.allCountPrefix} ${formatCount(KIT_STATS.skills)}`
 
   return (
     <aside aria-label={copy.domainsSectionTitle}>
@@ -139,7 +139,7 @@ function DomainSidebar({
                   : 'border-indigo-200/[0.14] bg-[#070B19]/85 text-slate-300 hover:border-sky-300/30 hover:text-white',
               )}
             >
-              <span>{pick(getSkillDomainLabel(domain.id))}</span>
+              <span>{skillDomainLabel(domain.id)}</span>
               <span className={clsx('font-mono text-xs', selected ? 'text-primary-ink' : 'text-subtle')}>
                 {formatCount(domain.count)}
               </span>
@@ -158,14 +158,14 @@ function DomainSidebar({
           aria-pressed={activeDomain === 'all'}
           onClick={() => onSelectDomain('all')}
           className={clsx(
-            'flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-left text-[15px] transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
+            'flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-start text-[15px] transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
             FOCUS_RING,
             activeDomain === 'all'
               ? 'border-sky-400/35 bg-sky-400/12 font-semibold text-white'
               : 'border-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white',
           )}
         >
-          <span>{locale === 'vi' ? 'Tất cả lĩnh vực' : 'All Domains'}</span>
+          <span>{t.pageChrome.skillsStats.allDomainsNav}</span>
           <span className="shrink-0 rounded-md border border-indigo-200/[0.14] bg-white/[0.05] px-2 py-0.5 font-mono text-xs text-slate-300 tabular-nums">
             {formatCount(KIT_STATS.skills)}
           </span>
@@ -180,14 +180,14 @@ function DomainSidebar({
               aria-pressed={selected}
               onClick={() => onSelectDomain(selected ? 'all' : domain.id)}
               className={clsx(
-                'flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-left text-[15px] transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
+                'flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-start text-[15px] transition-colors duration-150 motion-reduce:transition-none cursor-pointer',
                 FOCUS_RING,
                 selected
                   ? 'border-sky-400/35 bg-sky-400/12 font-semibold text-white'
                   : 'border-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white',
               )}
             >
-              <span className="truncate">{pick(getSkillDomainLabel(domain.id))}</span>
+              <span className="truncate">{skillDomainLabel(domain.id)}</span>
               <span className="shrink-0 rounded-md border border-indigo-200/[0.14] bg-white/[0.05] px-2 py-0.5 font-mono text-xs text-slate-300 tabular-nums">
                 {formatCount(domain.count)}
               </span>
@@ -245,7 +245,7 @@ function ProgressiveLookupStage() {
 }
 
 export function SkillsPage() {
-  const { t } = useLanguage()
+  const { t, skillSummary, skillDomainLabel } = useLanguage()
   const reduceMotion = useReducedMotion()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -278,11 +278,12 @@ export function SkillsPage() {
       if (tier !== 'all' && skill.tier !== tier) return false
       if (activeDomain !== 'all' && skill.domainId !== activeDomain) return false
       if (!normalized) return true
-      const domainLabel = getSkillDomainLabel(skill.domainId)
-      const haystack = `${skill.id} ${skill.domainId} ${domainLabel.en} ${domainLabel.vi} ${skill.summary.en} ${skill.summary.vi}`.toLowerCase()
+      const domainLabel = skillDomainLabel(skill.domainId)
+      const localizedSummary = skillSummary(skill)
+      const haystack = `${skill.id} ${skill.domainId} ${domainLabel} ${localizedSummary} ${skill.summary.en}`.toLowerCase()
       return haystack.includes(normalized)
     })
-  }, [query, tier, activeDomain])
+  }, [query, tier, activeDomain, skillDomainLabel, skillSummary])
 
   const hasFilters = query.trim().length > 0 || tier !== 'all' || activeDomain !== 'all'
   const resetFilters = () => setSearchParams(new URLSearchParams(), { replace: true })

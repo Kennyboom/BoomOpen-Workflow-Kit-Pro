@@ -41,7 +41,7 @@
     scroll-padding-top: 5.5rem;
     background-color: var(--surface-canvas);
     color: var(--text-primary);
-    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    font-family: "Plus Jakarta Sans", "Hiragino Sans", "Yu Gothic UI", "PingFang SC", "Microsoft YaHei", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans Arabic", "Noto Sans Devanagari", "Leelawadee UI", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -50,7 +50,7 @@
     min-height: 100dvh;
     background-color: var(--surface-canvas);
     color: var(--text-primary);
-    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    font-family: "Plus Jakarta Sans", "Hiragino Sans", "Yu Gothic UI", "PingFang SC", "Microsoft YaHei", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans Arabic", "Noto Sans Devanagari", "Leelawadee UI", system-ui, sans-serif;
     font-size: 1rem;
     line-height: 1.6;
     text-rendering: optimizeLegibility;
@@ -61,11 +61,21 @@
   h2,
   h3,
   h4 {
-    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    font-family: "Plus Jakarta Sans", "Hiragino Sans", "Yu Gothic UI", "PingFang SC", "Microsoft YaHei", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans Arabic", "Noto Sans Devanagari", "Leelawadee UI", system-ui, sans-serif;
     letter-spacing: -0.034em;
     line-height: 1.16;
     font-weight: 700;
     text-wrap: balance;
+  }
+
+  :root:lang(ar) h1, :root:lang(ar) h2, :root:lang(hi) h1, :root:lang(hi) h2, :root:lang(th) h1, :root:lang(th) h2 {
+    letter-spacing: 0;
+    line-height: 1.28;
+  }
+
+  :root:lang(ja) h1, :root:lang(ja) h2, :root:lang(ko) h1, :root:lang(ko) h2, :root:lang(zh-CN) h1, :root:lang(zh-CN) h2, :root:lang(zh-TW) h1, :root:lang(zh-TW) h2 {
+    letter-spacing: -0.015em;
+    line-height: 1.22;
   }
 
   p {
@@ -78,6 +88,8 @@
   samp {
     font-family: "JetBrains Mono", ui-monospace, monospace;
     font-variant-numeric: tabular-nums;
+    direction: ltr;
+    unicode-bidi: isolate;
   }
 
   input::placeholder,
@@ -133,8 +145,8 @@
   --color-cobalt: var(--signal-cobalt);
   --color-warning: var(--signal-warning);
   --color-danger: var(--signal-danger);
-  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
-  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Hiragino Sans", "Yu Gothic UI", "PingFang SC", "Microsoft YaHei", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans Arabic", "Noto Sans Devanagari", "Leelawadee UI", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Hiragino Sans", "Yu Gothic UI", "PingFang SC", "Microsoft YaHei", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans Arabic", "Noto Sans Devanagari", "Leelawadee UI", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
