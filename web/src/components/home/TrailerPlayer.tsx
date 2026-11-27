@@ -10,6 +10,7 @@ import { ActionButton, ActionLink, InlineErrorState } from '../ui/Primitives'
  * Cosmic Deep Space cinema player for the 90-second 1080p HD walkthrough film:
  * pairs a midnight-indigo glass header and chapter bar with a pure deep-space video stage.
  */
+const TRAILER_ASSET_VERSION = '552'
 const FOCUS_RING =
   'outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050816]'
 
@@ -215,7 +216,7 @@ export function TrailerPlayer() {
                 playsInline
                 preload="metadata"
                 poster={t.trailer.media.posterSrc}
-                src={t.trailer.media.videoSrc}
+                src={`${t.trailer.media.videoSrc}?v=${TRAILER_ASSET_VERSION}`}
                 aria-label={t.trailer.media.caption}
                 onLoadStart={() => {
                   if (manualPlayLocale === locale) setLoadingStreamKey(currentStreamKey)
